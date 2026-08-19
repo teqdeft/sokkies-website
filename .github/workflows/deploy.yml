@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "sokkies-local/**"   # only run when files inside sokkies-local change
+      - "sokkies-local/**" # only run when files inside sokkies-local change
 
   # allows manual run from the Actions tab too
   workflow_dispatch:
@@ -25,11 +25,11 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps                # use "ftp" if your host doesn't support FTPS
+          protocol: ftps # use "ftp" if your host doesn't support FTPS
           port: 21
-          local-dir: ./sokkies-local/   # folder in the repo to deploy
-          server-dir: /public_html/sokkies-website/sokkies-local/  # target on server
-          dangerous-clean-slate: false  # never wipe the server folder
+          local-dir: ./sokkies-local/ # folder in the repo to deploy
+          server-dir: /public_html/sokkies-website/sokkies-local/ # target on server
+          dangerous-clean-slate: false # never wipe the server folder
           exclude: |
             **/.git*
             **/.git*/**
@@ -38,3 +38,9 @@ jobs:
             **/.vscode/**
             **/wp-config.php
             **/.env
+            **/wp-admin/**
+            **/wp-includes/**
+            **/wp-content/uploads/**
+            **/wp-content/upgrade/**
+            **/wp-content/cache/**
+            **/*.log
