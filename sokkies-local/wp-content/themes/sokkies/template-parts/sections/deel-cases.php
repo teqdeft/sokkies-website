@@ -10,6 +10,12 @@ $case_ids     = $args['case_ids'];
 $feet         = ! empty( $args['feet'] );
 $strip        = ! empty( $args['strip'] );
 if ( ! $case_ids ) { return; }
+if ( 2 === count( $case_ids ) ) {
+	// Swiper 11-loop hapert op precies 2 slides (de andere slide is dan
+	// tegelijk prev én next) — set verdubbelen; met crossfade onzichtbaar.
+	// Zelfde htmlv-truc als testimonial (≥8) en hero-gallery (≥16).
+	$case_ids = array_merge( $case_ids, $case_ids );
+}
 $assets = get_template_directory_uri() . '/assets/media/';
 ?>
 <?php $sectie_klasse = $args['sectie_klasse'] ?? ( 'cases' . $stijl_klasse ); ?>

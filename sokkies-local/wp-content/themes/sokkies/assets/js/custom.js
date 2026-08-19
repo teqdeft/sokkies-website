@@ -268,7 +268,13 @@
         loop: true,
         speed: 600,
         // autoplay: { delay: 5000, disableOnInteraction: false },
-        navigation: { prevEl: scope.querySelector('.case-prev'), nextEl: scope.querySelector('.case-next') },
+        // De pijlen zitten IN elke slide (crossfade stapelt de slides), dus
+        // álle knoppen wiren — met alleen de eerste set is de slider dood
+        // zodra slide 2 bovenop ligt.
+        navigation: {
+          prevEl: Array.from(scope.querySelectorAll('.case-prev')),
+          nextEl: Array.from(scope.querySelectorAll('.case-next')),
+        },
       });
     });
 
