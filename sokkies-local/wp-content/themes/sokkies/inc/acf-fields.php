@@ -829,7 +829,8 @@ add_action( 'acf/init', function () {
 								'type'         => 'repeater',
 								'layout'       => 'block',
 								'button_label' => 'Kaart toevoegen',
-								'instructions' => 'Leeg = de vier standaardkaarten (labels, doosjes, wikkels, kaartjes).',
+								'max'          => 4,
+								'instructions' => 'Maximaal 4 kaarten (het ontwerp is één rij van vier). Leeg = de vier standaardkaarten (labels, doosjes, wikkels, kaartjes).',
 								'sub_fields'   => array(
 									array( 'key' => 'field_gift_kaart_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_gift_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
@@ -844,7 +845,7 @@ add_action( 'acf/init', function () {
 											array( 'key' => 'field_gift_kaart_punt', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'text' ),
 										),
 									),
-									array( 'key' => 'field_gift_kaart_link', 'label' => 'Link', 'name' => 'link', 'type' => 'link', 'instructions' => 'Leeg = "Meer informatie" zonder doel (zoals htmlv).' ),
+									array( 'key' => 'field_gift_kaart_link', 'label' => 'Link', 'name' => 'link', 'type' => 'link', 'instructions' => 'Leeg = geen "Meer informatie"-regel op de kaart.' ),
 								),
 							),
 						),

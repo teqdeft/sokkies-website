@@ -6,6 +6,14 @@
 $titel   = get_sub_field( 'titel' ) ?: 'Maak je sokkengeschenk compleet';
 $rijen   = get_sub_field( 'kaarten' );
 $assets  = get_template_directory_uri() . '/assets/media/';
+if ( $rijen ) {
+	// Volledig lege rijen (per ongeluk toegevoegd) niet renderen; max 4 kaarten
+	// (het grid is op 4 ontworpen — 'max' op het veld dekt alleen nieuwe rijen).
+	$rijen = array_filter( $rijen, function ( $rij ) {
+		return ! empty( $rij['foto'] ) || '' !== trim( (string) $rij['titel'] ) || ! empty( $rij['punten'] ) || ! empty( $rij['link']['url'] );
+	} );
+	$rijen = array_slice( $rijen, 0, 4 );
+}
 $standaard = array(
 	array( 'bestand' => 'gift1.png', 'titel' => 'Labels', 'punten' => array( 'Bedrukt of geweven', 'Hangtags op maat', 'Sustainability claim' ) ),
 	array( 'bestand' => 'gift2.png', 'titel' => 'Geschenkdoosjes', 'punten' => array( 'Vier doos-formaten', 'Branding deksel', 'FSC karton' ) ),
@@ -17,10 +25,7 @@ $standaard = array(
   <div class="container">
     <h2><?php echo sokkies_kop( $titel ); ?></h2>
     <div class="gift-grid">
-      <?php if ( $rijen ) : foreach ( $rijen as $rij ) :
-        $link_url   = ! empty( $rij['link']['url'] ) ? $rij['link']['url'] : '#';
-        $link_label = ! empty( $rij['link']['title'] ) ? $rij['link']['title'] : 'Meer informatie';
-      ?>
+      <?php if ( $rijen ) : foreach ( $rijen as $rij ) : ?>
       <div class="gift-card">
         <div class="gift-img">
           <?php if ( ! empty( $rij['foto'] ) ) : ?><img src="<?php echo esc_url( $rij['foto']['url'] ); ?>" alt="<?php echo esc_attr( $rij['titel'] ); ?>"><?php endif; ?>
@@ -34,10 +39,12 @@ $standaard = array(
             <?php endforeach; ?>
           </ul>
           <?php endif; ?>
-          <a href="<?php echo esc_url( $link_url ); ?>" class="gift-link">
+          <?php if ( ! empty( $rij['link']['url'] ) ) : ?>
+          <a href="<?php echo esc_url( $rij['link']['url'] ); ?>" class="gift-link"<?php echo ! empty( $rij['link']['target'] ) ? ' target="_blank" rel="noopener"' : ''; ?>>
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="13" viewBox="0 0 15 13" fill="none" stroke="#28121b" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v4a2 2 0 0 0 2 2h7"/><path d="m10 5 3 3-3 3"/></svg>
-            <?php echo esc_html( $link_label ); ?>
+            <?php echo esc_html( ! empty( $rij['link']['title'] ) ? $rij['link']['title'] : 'Meer informatie' ); ?>
           </a>
+          <?php endif; ?>
         </div>
       </div>
       <?php endforeach; else : foreach ( $standaard as $rij ) : ?>
