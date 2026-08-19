@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Editing pages — Sokkies CMS guide</title>
+<link rel="stylesheet" href="stijl.css">
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <div class="logo"><strong>SOKKIES</strong><span>CMS guide for editors</span></div>
+<div class="kop">The basics</div>
+<a href="index.html">Start & inloggen</a>
+<a href="paginas.html" class="actief">Pagina's bewerken</a>
+<a href="secties.html">Alle secties (bibliotheek)</a>
+<div class="kop">Content & settings</div>
+<a href="content.html">Content: vragen, sokken, cases…</a>
+<a href="instellingen.html">Website-instellingen</a>
+<div class="kop">Help</div>
+<a href="tips.html">Tips, regels & veelgestelde vragen</a>
+</nav>
+<main>
+<h1>Editing pages</h1>
+<p class="sub">Pages are stacks of sections. Here's how to stack them.</p>
+
+<h2>Editing a page</h2>
+<div class="stap"><div class="nr">1</div><div>Go to <kbd>Pages</kbd> → click the page you want to edit.</div></div>
+<div class="stap"><div class="nr">2</div><div>You see the page <strong>title</strong> and the <strong>Secties</strong> box — the list of sections on this page, top to bottom.</div></div>
+<div class="stap"><div class="nr">3</div><div>Click a section to fold it open and edit its fields. Click <kbd>Update</kbd> to save, and <kbd>View Page</kbd> to check the result.</div></div>
+
+<h2>Adding a section</h2>
+<p>Click <kbd>Sectie toevoegen</kbd>. A full-screen picker opens with all available sections, grouped by category (Paginakoppen, Collectie, Veelgestelde vragen, …), <strong>each with a screenshot</strong> of what it looks like. Click one and it's added at the bottom of the page.</p>
+<img class="shot" src="../sokkies-local/wp-content/themes/sokkies/assets/acf-previews/collection.png" alt="Example: the sock-cards section as shown in the picker">
+
+<h2>Reordering, duplicating, removing</h2>
+<ul>
+<li><strong>Reorder:</strong> drag a section up or down by its header bar.</li>
+<li><strong>Remove / duplicate:</strong> hover over the section header — icons appear on the right.</li>
+<li>Changes only go live after you click <kbd>Update</kbd>.</li>
+</ul>
+
+<h2>Per-page settings (below the sections)</h2>
+<table>
+<tr><th>Setting</th><th>What it does</th></tr>
+<tr><td><kbd>Vaste knoppenbalk op mobiel</kbd></td><td>The button bar that sticks to the bottom of the screen on phones. Choose: none, one button (Gratis proefdesign), two buttons (offerte + collectie), or the contact bar (call / WhatsApp / e-mail).</td></tr>
+<tr><td><kbd>Footer</kbd></td><td>Full footer (normal pages) or the short mini-footer (used on the quote/sample/thank-you/contact pages).</td></tr>
+<tr><td><kbd>Promokaart op deze pagina</kbd></td><td>Show or hide the floating promo card (bottom-left) on this page. What the card says is set centrally in <a href="instellingen.html">Website-instellingen</a>.</td></tr>
+</table>
+
+<h2>Writing titles: the two tricks</h2>
+<div class="blok">
+<p><strong>Yellow highlight:</strong> put the highlighted part of a title between square brackets. <br><kbd>Sokken [bedrukken] voor jouw bedrijf</kbd> → "bedrukken" becomes yellow (on some sections the accent color is red or dark — the design decides).</p>
+<p><strong>Line break:</strong> type <kbd>&lt;br&gt;</kbd> where the title should break onto a new line. <br>Example: <kbd>Klaar om jouw eigen&lt;br&gt;sokken te ontwerpen?</kbd></p>
+<p>Any other code you type in a text field is neutralized automatically — it will show as plain text, never break the page.</p>
+</div>
+
+<footer>Sokkies CMS guide — updates automatically travel with the website code. Questions? Ask Kulwant.</footer>
+</main>
+</div>
+</body>
+</html>
