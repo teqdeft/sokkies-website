@@ -37,12 +37,7 @@ $doel = max( 9, count( $urls ) );
     </div>
   </div>
 
-  <div class="designed-nav">
-    <button class="d-prev" aria-label="Vorige">
-      <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">                 <g id="arrow_3" data-name="arrow 3" transform="translate(11.699 8.707) rotate(180)">                   <path id="Path_3670" data-name="Path 3670" d="M1289.087,547h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                   <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                 </g>               </svg>
-    </button>
-    <button class="d-next" aria-label="Volgende">
-      <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">                 <g id="arrow_3" data-name="arrow 3" transform="translate(0.5 0.683)">                   <path id="Path_3670" data-name="Path 3670" d="M1289.087,547h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                   <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                 </g>               </svg>
-    </button>
-  </div>
+  <?php /* designed-nav-pijlen verwijderd (verzoek Kulwant 2026-08-19):
+     de strip autoscrollt continu (QA #11), pijlen overbodig. De
+     d-prev/d-next-wiring in custom.js is null-guarded en blijft staan. */ ?>
 </div>
