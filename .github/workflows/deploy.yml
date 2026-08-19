@@ -1,0 +1,40 @@
+name: Deploy Sokkies Website
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "sokkies-local/**"   # only run when files inside sokkies-local change
+
+  # allows manual run from the Actions tab too
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to dev.studioubique.com
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps                # use "ftp" if your host doesn't support FTPS
+          port: 21
+          local-dir: ./sokkies-local/   # folder in the repo to deploy
+          server-dir: /public_html/sokkies-website/sokkies-local/  # target on server
+          dangerous-clean-slate: false  # never wipe the server folder
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.claude/**
+            **/.vscode/**
+            **/wp-config.php
+            **/.env
