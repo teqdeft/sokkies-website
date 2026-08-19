@@ -1,0 +1,6600 @@
+/* ===================================================================
+   SOKKIES — responsive.css (FLOOR-ANCHORED BANDEN, 2026-07-30 v2,
+   schema Kulwant). Elk design staat aan de ONDERKANT van zijn band en
+   schaalt omhoog (meer ruimte = veilig). Banden zijn range-fenced en
+   volledig geisoleerd; regels die in meerdere banden horen staan
+   bewust gedupliceerd.
+   - basis style.css  = 1920-design (1920 en breder, plus 1681-1919
+     via de 60px-gutter-guard zolang de 1681-1919-band leeg is)
+   - 1440-1680        = 1440-design (Kulwant-final)
+   - 1280-1439        = 1280-opmaak
+   - 1025-1279        = idem (aparte band voor toekomstige tuning;
+     ondergrens 1025 i.p.v. 992 zodat 992-1024 tablet blijft — daar
+     zit de compacte navbar die anders zou wegvallen)
+   - 769-1024         = tablet
+   - 521-768          = klein/hamburger (768-XD hoort hierbij)
+   - t/m 520          = mobiel (final)
+   Backups: _BACKUP-responsive-cascade-2026-07-30.css (cascade) en
+   _BACKUP-responsive-banden-v1-2026-07-30.css (ceiling-banden v1).
+   =================================================================== */
+
+/* ===================================================================
+   2000px en breder
+   =================================================================== */
+@media (min-width:2000px){
+
+
+  .collection:before{
+    top: -100%;
+  }
+}
+
+/* ===================================================================
+   1681-1919 — (leeg scaffold; basis + gutter-guard bedient dit
+   bereik — hier tunen als 1681-1919 ooit eigen regels nodig heeft)
+   =================================================================== */
+@media (min-width:1680px) and (max-width:1919px){
+  /* (nog geen eigen regels) */
+}
+
+/* ===================================================================
+   1440-1680 — 1440-DESIGN (Kulwant-final; schaalt omhoog t/m 1680)
+   =================================================================== */
+@media (min-width:1440px) and (max-width:1679px){
+
+
+  /* ————— uit oud ≤1680 ————— */
+
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+     --body-sm-font-size: 12px;
+  }
+  .container{
+    max-width: min(1440px, 100% - 40px);
+  }
+  /* 1680-test 2026-07-28: betaal/verzend-strip paste nét niet meer op één
+     regel (852+1+533 content + 2×30 gap = 1446 > 1440) en wikkelde lelijk */
+  .footer-pay{
+    gap:20px 20px;
+  }
+  /* telefoonnummer in de footer brak midden in het nummer af */
+  footer a[href^="tel:"]{
+    white-space:nowrap;
+  }
+
+  /* ————— uit oud ≤1550 ————— */
+
+  /* 1280-test 2026-07-28: onder de 1320-container past de betaal/verzend-strip
+     nooit op één regel — netjes gecentreerd laten wrappen, zwevende divider weg */
+  .footer-pay{
+    justify-content:space-between;
+    row-gap:16px;
+  }
+  
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+
+    --h1-font-size:58px;
+    --h2-font-size: 38px;
+    --h3-font-size: 26px;
+    --h4-font-size: 28px;
+    --h5-font-size: 17px;
+    --h6-font-size: 20px;
+  }
+   .container{
+    max-width: min(1320px, 100% - 40px);
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 25px;
+  }
+  .logo{
+    display: flex;
+    width: 96px;
+  }
+  .mega {
+    padding: 30px;
+  }
+  .prod-card .prod-img-card {
+    height: 150px;
+    border-radius: 10px;
+  }
+  .types {
+    gap: 10px 30px;
+  }
+  .type-item .type-img {
+    width: 58px;
+    height: 58px;
+    border-radius: 5px;
+  }
+  .gallery-swiper .swiper-slide {
+    width: 314px;
+    height: 440px;
+  }
+  .impact {
+    padding: 8px 0 125px;
+  }
+  .impact-inner {
+      height: 465px;
+      gap: 56px;
+  }
+  .impact-gallery {
+      width: 890px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul {
+    gap: 19px;
+  }
+  .impact-left {
+      padding-inline-start: 0;
+  }
+  .stat-num {
+    font-size: 58px;
+  }
+  .feat-label{
+    font-size:18px;
+  }
+  .collection:before {
+    top: -51%;
+    background: url(../media/yellow-shape-1440.svg);
+    background-size: cover;
+  }
+
+  .collection-img {
+    height: 295px;
+  }
+  .collection-name {
+    font-size: 17px;
+  }
+  .collection-card-foot {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 22px;
+    gap: 20px;
+  }
+  .collection-grid {
+    gap: 20px;
+  }
+  .collection-cta{
+    margin-top: 30px;
+  }
+  .collection:after {
+    bottom: -16%;
+  }
+  .v-swiper .swiper-slide {
+    width: 276px;
+    height: 345px;
+    border-radius: 15px; 
+  }
+  .process {
+    padding: 155px 0 120px;
+  }
+  .process:not(.conf-works) > .container > h2{
+    padding-top: 0;
+    margin-bottom: 30px;
+  }
+  .process-steps {
+    gap: 67px;
+  }
+  .calc-grid {
+    grid-template-columns: 1fr 440px;
+  }
+  .calc-panel {
+    padding: 40px;
+  }
+  .calc-mid{
+    grid-template-columns: 440px 1fr;
+    gap: 35px;
+  }
+  .calc-hint{
+    height: 112px;
+  }
+  .staffel-row {
+    padding: 8px 20px;
+  }
+  .calc-panel h3 {
+    margin-bottom: 20px;
+  }
+  .calc-result {
+    padding-top: 5px;
+  }
+  .calc-row{
+    margin-bottom: 20px;
+  }
+  .calc-total-row{
+    margin-bottom: 8px;
+  }
+  .calc-field {
+    margin-bottom: 20px;
+  }
+  .staffel-head-row {
+    padding: 8px 20px;
+    height: 36px;
+  }
+  .gift {
+    padding: 100px 0 70px;
+  }
+  .gift-img {
+    height: 295px;
+    border-radius: 10px;
+  }
+  .cases {
+    padding: 95px 0 50px;
+  }
+  .case-inner {
+    gap: 50px;
+  }
+  .case-img.case-img-main {
+    height: 382px;
+    width: 382px;
+  }
+  .case-img {
+    border-radius: 15px;
+    width: 248px;
+    height: 180px;
+  }
+   .cases:before{
+    background:url(../media/blue-shape-lg.png);
+    background-size: cover;
+    height: 75%;
+    background-repeat: no-repeat;
+  }
+  .cases-feet {
+    top: -22%;
+    right: 3%;
+    width: 204px;
+    height: 304px;
+  }
+  .designed {
+    margin-top: 102px;
+  }
+  .designed-swiper .swiper-slide {
+    width: 295px;
+    height: 295px;
+    border-radius: 15px;
+  }
+  .designed-swiper {
+    width: 105vw;
+  }
+  .brand-intro-inner {
+    max-width: 60%;
+  }
+  .brand-intro {
+    padding: 70px 0 100px;
+  }
+  .brand-intro-inner h2 {
+    margin-bottom: 10px;
+  }
+  .brand-duddle-icons .dubble-left {
+    top: -19%;
+    left: 4%;
+    width: 81px;
+    height: auto;
+  }
+  .brand-duddle-icons .dubble-right {
+    bottom: 4%;
+    right: 4%;
+    width: 81px;
+    height: auto;
+  }
+
+  .faq-q {
+    padding: 14px 4px;
+  }
+  .faq-grid {
+    grid-template-columns: 382px 1fr;
+    gap: 135px;
+  }
+  .faq-left p {
+    max-width: 100%;
+  }
+  .faq-a-inner p{
+    max-width: 92%;
+  }
+  .cta-final-feet {
+    top: -79%;
+    left: 69px;
+    width: 31%;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1.32fr auto 1.35fr;
+  }
+
+  .footer-brand p {
+    max-width: 94%;
+    margin-bottom: 30px;
+  }
+  .footer-certs {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+  .footer-col {
+    padding: 40px 50px 0;
+  }
+  .footer-brand {
+    padding-top: 10px;
+  }
+  .footer-contact {
+    padding-bottom: 50px;
+    padding-inline-end: 0;
+  }
+  .footer-address br{
+    display: none;
+  }
+  .footer-socials {
+    gap: 10px;
+    margin-bottom: 42px;
+  }
+  .footer-socials a{
+    width: 42PX;
+    height: 42px;
+  }
+  .footer-contact-row{
+    margin-bottom: 30px;
+  }
+  .footer-pay-inner, .footer-ship-inner {
+    gap: 23px;
+  }
+  
+
+  /* ————— range-blok 1301-1550 ————— */
+
+  /* ===== Chrome (globaal) ===== */
+  .navbar{
+    padding-top:10px;
+    padding-bottom:10px;
+  }
+  .navbar-inner{
+    width:calc(100% - 140px);
+    justify-content: space-between;
+  }
+
+  /* ===== Home: hero ===== */
+  .banner-section{
+    padding-top:176px;
+    padding-bottom:60px;
+  }
+
+  /* ===== Home: brands ===== */
+  .brands{
+    padding-top:60px;
+  }
+
+  /* ===== Collectiekaarten (globaal) ===== */
+  /* basis-foot is 70px hoog (desktop: één rij) — in dit bereik stapelt de
+     foot (kolom) en stak de Bekijk-knop uit de kaart */
+  .collection-card-foot{
+    height:auto;
+  }
+
+  /* ===== Brand-intro: sok-doodles ===== */
+  .brand-duddle-icons .dubble-left{
+    top:-22%;
+    left:6%;
+    width:140px;
+    height:auto;
+  }
+  .brand-duddle-icons .dubble-right{
+    bottom:24%;
+    right:8%;
+    width:140px;
+    height:auto;
+  }
+
+  /* ===== Footer ===== */
+
+  /* logo-marquee full-width (universeel besluit Kulwant) */
+  .brands{
+    overflow:hidden;
+  }
+  .brands .brands-swiper{
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+  }
+
+  /* promo-float 15% kleiner (schaal = font+breedte+marges+afbeelding ineens) */
+  .promo-float{
+    transform:scale(.85);
+    transform-origin:left bottom;
+  }
+
+  /* Collectie-hero (specs Kulwant 2026-08-03) */
+  .coll-hero{
+    height:100vh;
+  }
+  .coll-hero-left{
+    gap:20vh;
+  }
+  .coll-hero-gallery{
+    height:110vh;
+  }
+  .coll-hero-left p{
+    font-size:17px;
+    line-height:24px;
+  }
+  .coll-hero-btns .cta,
+  .coll-hero-btns .cta-transparent{
+    height:44px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .coll-hero-content ul{
+    gap:12px 20px;
+  }
+  .coll-hero-content ul li{
+    font-size:19px;
+  }
+  .ch-swiper .swiper-slide{
+    height:440px;
+  }
+  .types-section{
+    padding-top:80px;
+    padding-bottom:60px;
+  }
+  .type-card-img{
+    height:295px;
+  }
+  .type-card-content h3{
+    font-size:23px;
+  }
+  .type-card-btn{
+    height:48px;
+    font-size:17px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .types-grid{
+    gap:60px 40px;
+  }
+  .compare-inner-main{
+    background-position:right top;
+    padding-top:150px;
+  }
+  .compare-floating-elements{
+    width:253px;
+    top: -7%;
+  }
+  .compare-table{
+    width:100%;
+  }
+  .compare-inner-main h2{
+    font-size:46px;
+  }
+  .bg-yellow-shape{
+    background-position:right top;
+    top:0px;
+    background-size:104%;
+  }
+  .calculator-bg{
+    padding-top:115px;
+  }
+  .calc-panel h3{
+    font-size:26px;
+  }
+  .process.process-split{
+    padding-top:100px;
+  }
+  .process-left h2{
+    font-size:46px;
+  }
+  .process-collage img{
+    height:317px;
+  }
+  .process-btn{
+    justify-content:flex-start;
+  }
+  .process-btn a{
+    margin-inline-start:137px;
+  }
+  .case-inner-page:before{
+    content:"";
+    background:url(../media/sock-element-up.svg) no-repeat center / contain;
+    width:264px;
+    height:266px;
+    top:30px;
+  }
+  .case-inner-page:after{
+    content:"";
+    background:url(../media/sock-element-up.svg) no-repeat center / contain;
+    width:276px;
+    height:278px;
+    bottom:-16%;
+  }
+  .case-text h3{
+    font-size:26px;
+  }
+}
+
+/* ===================================================================
+   1280-1439 — 1280-opmaak (perfect bevonden op 1280; schaalt omhoog)
+   =================================================================== */
+@media (min-width:1280px) and (max-width:1439px){
+
+
+  /* ————— uit oud ≤1680 ————— */
+
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+     --body-sm-font-size: 12px;
+  }
+  .container{
+    max-width: min(1440px, 100% - 40px);
+  }
+  /* 1680-test 2026-07-28: betaal/verzend-strip paste nét niet meer op één
+     regel (852+1+533 content + 2×30 gap = 1446 > 1440) en wikkelde lelijk */
+  .footer-pay{
+    gap:20px 20px;
+  }
+  /* telefoonnummer in de footer brak midden in het nummer af */
+  footer a[href^="tel:"]{
+    white-space:nowrap;
+  }
+
+  /* ————— uit oud ≤1550 ————— */
+
+  /* 1280-test 2026-07-28: onder de 1320-container past de betaal/verzend-strip
+     nooit op één regel — netjes gecentreerd laten wrappen, zwevende divider weg */
+  .footer-pay{
+    justify-content:center;
+    row-gap:16px;
+  }
+ 
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+
+    --h1-font-size:58px;
+    --h2-font-size: 38px;
+    --h3-font-size: 26px;
+    --h4-font-size: 28px;
+    --h5-font-size: 17px;
+    --h6-font-size: 20px;
+  }
+   .container{
+    max-width: min(1320px, 100% - 40px);
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 25px;
+  }
+  .logo{
+    display: flex;
+    width: 86px;
+  }
+  .mega {
+    padding: 30px;
+  }
+  .prod-card .prod-img-card {
+    height: 150px;
+    border-radius: 10px;
+  }
+  .types {
+    gap: 10px 30px;
+  }
+  .type-item .type-img {
+    width: 58px;
+    height: 58px;
+    border-radius: 5px;
+  }
+  .gallery-swiper .swiper-slide {
+    width: 314px;
+    height: 440px;
+  }
+  .impact {
+    padding: 8px 0 125px;
+  }
+  .impact-inner {
+      height: 465px;
+      gap: 56px;
+  }
+  .impact-gallery {
+      width: 890px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul {
+    gap: 19px;
+  }
+  .impact-left {
+      padding-inline-start: 0;
+  }
+  .stat-num {
+    font-size: 58px;
+  }
+  .feat-label{
+    font-size:18px;
+  }
+  .collection:before {
+    top: -51%;
+    background: url(../media/yellow-shape-1440.svg);
+    background-size: cover;
+  }
+
+  .collection-img {
+    height: 295px;
+  }
+  .collection-name {
+    font-size: 17px;
+  }
+  .collection-card-foot {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 22px;
+    gap: 20px;
+  }
+  .collection-grid {
+    gap: 20px;
+  }
+  .collection-cta{
+    margin-top: 30px;
+  }
+  .collection:after {
+    bottom: -16%;
+  }
+  .v-swiper .swiper-slide {
+    width: 276px;
+    height: 345px;
+    border-radius: 15px; 
+  }
+  .process {
+    padding: 155px 0 120px;
+  }
+  .process:not(.conf-works) > .container > h2{
+    padding-top: 0;
+    margin-bottom: 30px;
+  }
+  .process-steps {
+    gap: 67px;
+  }
+  .calc-grid {
+    grid-template-columns: 1fr 440px;
+  }
+  .calc-panel {
+    padding: 40px;
+  }
+  .calc-mid{
+    grid-template-columns: 440px 1fr;
+    gap: 35px;
+  }
+  .calc-hint{
+    height: 112px;
+  }
+  .staffel-row {
+    padding: 8px 20px;
+  }
+  .calc-panel h3 {
+    margin-bottom: 20px;
+  }
+  .calc-result {
+    padding-top: 5px;
+  }
+  .calc-row{
+    margin-bottom: 20px;
+  }
+  .calc-total-row{
+    margin-bottom: 8px;
+  }
+  .calc-field {
+    margin-bottom: 20px;
+  }
+  .staffel-head-row {
+    padding: 8px 20px;
+    height: 36px;
+  }
+  .gift {
+    padding: 100px 0 70px;
+  }
+  .gift-img {
+    height: 295px;
+    border-radius: 10px;
+  }
+  .cases {
+    padding: 95px 0 50px;
+  }
+  .case-inner {
+    gap: 50px;
+  }
+  .case-img.case-img-main {
+    height: 382px;
+    width: 382px;
+  }
+  .case-img {
+    border-radius: 15px;
+    width: 248px;
+    height: 180px;
+  }
+   .cases:before{
+    background:url(../media/blue-shape-lg.png);
+    background-size: cover;
+    height: 75%;
+    background-repeat: no-repeat;
+  }
+  .cases-feet {
+    top: -22%;
+    right: 3%;
+    width: 204px;
+    height: 304px;
+  }
+  .designed {
+    margin-top: 102px;
+  }
+  .designed-swiper .swiper-slide {
+    width: 295px;
+    height: 295px;
+    border-radius: 15px;
+  }
+  .designed-swiper {
+    width: 105vw;
+  }
+  .brand-intro-inner {
+    max-width: 60%;
+  }
+  .brand-intro {
+    padding: 70px 0 100px;
+  }
+  .brand-intro-inner h2 {
+    margin-bottom: 10px;
+  }
+  .brand-duddle-icons .dubble-left {
+    top: -19%;
+    left: 4%;
+    width: 81px;
+    height: auto;
+  }
+  .brand-duddle-icons .dubble-right {
+    bottom: 4%;
+    right: 4%;
+    width: 81px;
+    height: auto;
+  }
+
+  .faq-q {
+    padding: 14px 4px;
+  }
+  .faq-grid {
+    grid-template-columns: 382px 1fr;
+    gap: 135px;
+  }
+  .faq-left p {
+    max-width: 100%;
+  }
+  .faq-a-inner p{
+    max-width: 92%;
+  }
+  .cta-final-feet {
+    top: -79%;
+    left: 69px;
+    width: 31%;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1.32fr auto 1.35fr;
+  }
+
+  .footer-brand p {
+    max-width: 94%;
+    margin-bottom: 30px;
+  }
+  .footer-certs {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+  .footer-col {
+    padding: 40px 50px 0;
+  }
+  .footer-brand {
+    padding-top: 10px;
+  }
+  .footer-contact {
+    padding-bottom: 50px;
+    padding-inline-end: 0;
+  }
+  .footer-address br{
+    display: none;
+  }
+  .footer-socials {
+    gap: 10px;
+    margin-bottom: 42px;
+  }
+  .footer-socials a{
+    width: 42PX;
+    height: 42px;
+  }
+  .footer-contact-row{
+    margin-bottom: 30px;
+  }
+  .footer-pay-inner, .footer-ship-inner {
+    gap: 23px;
+  }
+  
+
+  /* ————— uit oud ≤1300 ————— */
+
+  .container{
+    max-width: min(1190px, 100% - 40px);
+  }
+  /* 1280-test 2026-07-28: adresblok naast de contactlijst werd een smalle
+     kolom van 6 regels — vanaf hier onder de lijst stapelen */
+  .footer-contact-row{
+    flex-direction:column;
+    gap:18px;
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 17px;
+  }
+  .navbar-inner {
+    gap: 25px;
+  }
+/* ————— overgenomen uit de 1440-ronde (verzoek Kulwant) ————— */
+
+  /* ===== Chrome (globaal) ===== */
+  .navbar{
+    padding-top:10px;
+    padding-bottom:10px;
+  }
+  .navbar-inner{
+    width:calc(100% - 140px);
+    justify-content: space-between;
+  }
+
+  /* ===== Home: hero ===== */
+  .banner-section{
+    padding-top:141px; /* -20% ritme */
+    padding-bottom:48px;
+  }
+
+  /* ===== Home: brands ===== */
+  .brands{
+    padding-top:48px; /* -20% ritme */
+    padding-bottom:40px;
+    overflow:hidden; /* knipt de 100vw-slider op de scrollbar-rand af */
+  }
+  /* logo-marquee full-width (verzoek Kulwant): uit de container breken */
+  .brands .brands-swiper{
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+  }
+
+  /* ===== Collectiekaarten (globaal) ===== */
+  /* basis-foot is 70px hoog (desktop: één rij) — in dit bereik stapelt de
+     foot (kolom) en stak de Bekijk-knop uit de kaart */
+  .collection-card-foot{
+    height:auto;
+  }
+
+  /* ===== Brand-intro: sok-doodles ===== */
+  .brand-duddle-icons .dubble-left{
+    top:-22%;
+    left:6%;
+    width:140px;
+    height:auto;
+  }
+  .brand-duddle-icons .dubble-right{
+    bottom:24%;
+    right:8%;
+    width:140px;
+    height:auto;
+  }
+
+  /* ===== Footer ===== */
+  /* handmatige 1440-tweak Kulwant: strip verdelen i.p.v. centreren */
+  .footer-pay{
+    justify-content:space-between;
+    flex-wrap: nowrap;
+  }
+  /* menu compacter in deze band */
+  .menu .menu-link a{
+    font-size:14px;
+  }
+  /* header-iconen kleiner (48 → 42, iconen naar verhouding mee) */
+  .icon-btn{
+    width:42px;
+    height:42px;
+  }
+  .icon-btn svg{
+    width:18px;
+    height:18px;
+  }
+  /* verticaal ritme -20% (secties, gemeten op 1350 en herrekend) */
+  .gallery .gallery-swiper{ padding-top:80px; padding-bottom:24px; }
+  /* hero-slider: slides -20% en de stagger mee geschaald — de -100px-lift
+     stak boven de (verkleinde) padding uit en werd door de sectie afgeknipt */
+  .gallery-swiper .swiper-slide{
+    width:250px;
+    height:350px;
+  }
+  .gallery-swiper .swiper-slide:nth-child(3n + 1){
+    transform:translateY(-40px);
+  }
+  .gallery-swiper .swiper-slide:nth-child(3n){
+    transform:translateY(-80px);
+  }
+  .impact{ margin-top:34px; padding-top:6px; padding-bottom:100px; }
+  .collection{ padding-bottom:24px; }
+  .process{ padding-top:124px; padding-bottom:96px; }
+  .calculator{ padding-top:96px; padding-bottom:54px; }
+  .gift{ padding-top:80px; padding-bottom:56px; }
+  .cases{ padding-top:76px; padding-bottom:40px; }
+  .designed{ margin-top:82px; }
+  .brand-intro{ padding-top:56px; padding-bottom:80px; }
+  .faq{ padding-top:94px; padding-bottom:72px; }
+  .cta-final-panel{ padding-top:120px; padding-bottom:72px; }
+  .footer-grid{ padding-top:40px; }
+  .footer-col{ padding-top:32px; }
+  .footer-brand{ padding-top:8px; }
+
+  /* koppen 20% kleiner in deze band (t.o.v. 1440-tokens 58/38/26/28) */
+  :root{
+    --h1-font-size:46px;
+    --h2-font-size:30px;
+    --h3-font-size:21px;
+    --h4-font-size:22px;
+  }
+
+  /* promo-float 25% kleiner (schaal = font+breedte+marges+afbeelding ineens) */
+  .promo-float{
+    transform:scale(.75);
+    transform-origin:left bottom;
+  }
+
+  /* ═══ Collectie — GEKOPIEERD UIT DE 1440-1679-BAND (verzoek Kulwant
+     2026-08-03); band-eigen fijnslijpen volgt ═══ */
+  /* Collectie-hero (specs Kulwant 2026-08-03) */
+  .coll-hero{
+    height:100vh;
+  }
+  .coll-hero-left{
+    gap:20vh;
+  }
+  .coll-hero-gallery{
+    height:110vh;
+  }
+  .coll-hero-left p{
+    font-size:17px;
+    line-height:24px;
+  }
+  .coll-hero-content ul{
+    gap:12px 20px;
+  }
+  .coll-hero-content ul li{
+    font-size:17px;
+  }
+  .ch-swiper .swiper-slide{
+    height:440px;
+  }
+  .types-section{
+    padding-top:80px;
+    padding-bottom:60px;
+  }
+  .type-card-img{
+    height:268px;
+  }
+  .type-card-content h3{
+    font-size:21px;
+  }
+  .type-card-btn{
+    height:44px;
+    font-size:17px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .types-grid{
+    gap:60px 40px;
+  }
+  .compare-inner-main{
+    background-position:right top;
+    padding-top:150px;
+  }
+  .compare-floating-elements{
+    width:220px;
+    top: -7%;
+  }
+  .compare-table{
+    width:100%;
+  }
+  .compare-inner-main h2{
+    font-size:30px;
+  }
+  .bg-yellow-shape{
+    background-position:right top;
+    top:0px;
+    background-size:116%;
+  }
+  .calculator-bg{
+    padding-top:115px;
+  }
+  .calc-panel h3{
+    font-size:26px;
+  }
+  .process.process-split{
+    padding-top:80px;
+  }
+  .process-left h2{
+    font-size:30px;
+  }
+  .process-collage img{
+    height:280px;
+  }
+  .process-left ul li{
+    padding:20px 0 25px;
+  }
+  .process-btn{
+    justify-content:flex-start;
+  }
+  .process-btn a{
+    margin-inline-start:137px;
+  }
+  .case-inner-page:before{
+    content:"";
+    background:url(../media/sock-element-up.svg) no-repeat center / contain;
+    width:264px;
+    height:266px;
+    top:-40px;
+  }
+  .case-inner-page:after{
+    content:"";
+    background:url(../media/sock-element-up.svg) no-repeat center / contain;
+    width:276px;
+    height:278px;
+    bottom:-16%;
+  }
+  .case-text h3{
+    font-size:26px;
+  }
+}
+
+/* ===================================================================
+   992-1279 — zelfde 1280-opmaak (gevloerd op 992, besluit Kulwant)
+   =================================================================== */
+@media (min-width:992px) and (max-width:1279px){
+
+
+  /* ————— uit oud ≤1680 ————— */
+
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+     --body-sm-font-size: 12px;
+  }
+  .container{
+    max-width: min(1440px, 100% - 40px);
+  }
+  /* 1680-test 2026-07-28: betaal/verzend-strip paste nét niet meer op één
+     regel (852+1+533 content + 2×30 gap = 1446 > 1440) en wikkelde lelijk */
+  .footer-pay{
+    gap:20px 20px;
+  }
+  /* telefoonnummer in de footer brak midden in het nummer af */
+  footer a[href^="tel:"]{
+    white-space:nowrap;
+  }
+
+  /* ————— uit oud ≤1550 ————— */
+
+  /* 1280-test 2026-07-28: onder de 1320-container past de betaal/verzend-strip
+     nooit op één regel — netjes gecentreerd laten wrappen, zwevende divider weg */
+  .footer-pay{
+    justify-content:center;
+    row-gap:16px;
+  }
+ 
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+
+    --h1-font-size:58px;
+    --h2-font-size: 38px;
+    --h3-font-size: 26px;
+    --h4-font-size: 28px;
+    --h5-font-size: 17px;
+    --h6-font-size: 20px;
+  }
+   .container{
+    max-width: min(1320px, 100% - 40px);
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 25px;
+  }
+  .logo{
+    display: flex;
+    width: 96px;
+  }
+  .mega {
+    padding: 30px;
+  }
+  .prod-card .prod-img-card {
+    height: 150px;
+    border-radius: 10px;
+  }
+  .types {
+    gap: 10px 30px;
+  }
+  .type-item .type-img {
+    width: 58px;
+    height: 58px;
+    border-radius: 5px;
+  }
+  .gallery-swiper .swiper-slide {
+    width: 314px;
+    height: 440px;
+  }
+  .impact {
+    padding: 8px 0 125px;
+  }
+  .impact-inner {
+      height: 465px;
+      gap: 56px;
+  }
+  .impact-gallery {
+      width: 890px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul {
+    gap: 19px;
+  }
+  .impact-left {
+      padding-inline-start: 0;
+  }
+  .stat-num {
+    font-size: 58px;
+  }
+  .feat-label{
+    font-size:18px;
+  }
+  .collection:before {
+    top: -51%;
+    background: url(../media/yellow-shape-1440.svg);
+    background-size: cover;
+  }
+
+  .collection-img {
+    height: 295px;
+  }
+  .collection-name {
+    font-size: 17px;
+  }
+  .collection-card-foot {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 22px;
+    gap: 20px;
+  }
+  .collection-grid {
+    gap: 20px;
+  }
+  .collection-cta{
+    margin-top: 30px;
+  }
+  .collection:after {
+    bottom: -16%;
+  }
+  .v-swiper .swiper-slide {
+    width: 276px;
+    height: 345px;
+    border-radius: 15px; 
+  }
+  .process {
+    padding: 155px 0 120px;
+  }
+  .process:not(.conf-works) > .container > h2{
+    padding-top: 0;
+    margin-bottom: 30px;
+  }
+  .process-steps {
+    gap: 67px;
+  }
+  .calc-grid {
+    grid-template-columns: 1fr 440px;
+  }
+  .calc-panel {
+    padding: 40px;
+  }
+  .calc-mid{
+    grid-template-columns: 440px 1fr;
+    gap: 35px;
+  }
+  .calc-hint{
+    height: 112px;
+  }
+  .staffel-row {
+    padding: 8px 20px;
+  }
+  .calc-panel h3 {
+    margin-bottom: 20px;
+  }
+  .calc-result {
+    padding-top: 5px;
+  }
+  .calc-row{
+    margin-bottom: 20px;
+  }
+  .calc-total-row{
+    margin-bottom: 8px;
+  }
+  .calc-field {
+    margin-bottom: 20px;
+  }
+  .staffel-head-row {
+    padding: 8px 20px;
+    height: 36px;
+  }
+  .gift {
+    padding: 100px 0 70px;
+  }
+  .gift-img {
+    height: 295px;
+    border-radius: 10px;
+  }
+  .cases {
+    padding: 95px 0 50px;
+  }
+  .case-inner {
+    gap: 50px;
+  }
+  .case-img.case-img-main {
+    height: 382px;
+    width: 382px;
+  }
+  .case-img {
+    border-radius: 15px;
+    width: 248px;
+    height: 180px;
+  }
+   .cases:before{
+    background:url(../media/blue-shape-lg.png) top right;
+    background-size: cover;
+    height: 78%;
+    background-repeat: no-repeat;
+  }
+  .cases-feet {
+    top: -16%;
+    right: 3%;
+    width: 204px;
+    height: 304px;
+  }
+  .designed {
+    margin-top: 102px;
+  }
+  .designed-swiper .swiper-slide {
+    width: 295px;
+    height: 295px;
+    border-radius: 15px;
+  }
+  .designed-swiper {
+    width: 105vw;
+  }
+  .brand-intro-inner {
+    max-width: 60%;
+  }
+  .brand-intro {
+    padding: 70px 0 100px;
+  }
+  .brand-intro-inner h2 {
+    margin-bottom: 10px;
+  }
+  .brand-duddle-icons .dubble-left {
+    top: -19%;
+    left: 4%;
+    width: 81px;
+    height: auto;
+  }
+  .brand-duddle-icons .dubble-right {
+    bottom: 4%;
+    right: 4%;
+    width: 81px;
+    height: auto;
+  }
+
+  .faq-q {
+    padding: 14px 4px;
+  }
+  .faq-grid {
+    grid-template-columns: 382px 1fr;
+    gap: 60px;
+  }
+  .faq-left p {
+    max-width: 100%;
+  }
+  .faq-a-inner p{
+    max-width: 92%;
+  }
+  .cta-final-feet {
+    top: -70%;
+    left: 69px;
+    width: 31%;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1.32fr auto 1.35fr;
+  }
+
+  .footer-brand p {
+    max-width: 94%;
+    margin-bottom: 30px;
+  }
+  .footer-certs {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+  .footer-col {
+    padding: 40px 50px 0;
+  }
+  .footer-brand {
+    padding-top: 10px;
+  }
+  .footer-contact {
+    padding-bottom: 50px;
+    padding-inline-end: 0;
+  }
+  .footer-address br{
+    display: none;
+  }
+  .footer-socials {
+    gap: 10px;
+    margin-bottom: 42px;
+  }
+  .footer-socials a{
+    width: 42PX;
+    height: 42px;
+  }
+  .footer-contact-row{
+    margin-bottom: 30px;
+  }
+  .footer-pay-inner, .footer-ship-inner {
+    gap: 23px;
+  }
+  
+
+  /* ————— uit oud ≤1300 ————— */
+
+  .container{
+    max-width: min(1190px, 100% - 40px);
+  }
+  /* 1280-test 2026-07-28: adresblok naast de contactlijst werd een smalle
+     kolom van 6 regels — vanaf hier onder de lijst stapelen */
+  .footer-contact-row{
+    flex-direction:column;
+    gap:18px;
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 17px;
+  }
+  .navbar-inner {
+    gap: 25px;
+  }
+
+  /* ————— gekopieerd uit de 1280-1439-band (verzoek Kulwant) ————— */
+
+  /* ===== Chrome (globaal) ===== */
+  .navbar{
+    padding-top:10px;
+    padding-bottom:10px;
+  }
+  .navbar-inner{
+    width:calc(100% - 140px);
+    justify-content: right;
+  }
+
+  /* ===== Home: hero ===== */
+  .banner-section{
+    padding-top:141px; /* -20% ritme */
+    padding-bottom:48px;
+  }
+
+  /* ===== Home: brands ===== */
+  .brands{
+    padding-top:48px; /* -20% ritme */
+    padding-bottom:40px;
+    overflow:hidden; /* knipt de 100vw-slider op de scrollbar-rand af */
+  }
+  /* logo-marquee full-width (verzoek Kulwant): uit de container breken */
+  .brands .brands-swiper{
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+  }
+
+  /* ===== Collectiekaarten (globaal) ===== */
+  /* basis-foot is 70px hoog (desktop: één rij) — in dit bereik stapelt de
+     foot (kolom) en stak de Bekijk-knop uit de kaart */
+  .collection-card-foot{
+    height:auto;
+  }
+
+  /* ===== Brand-intro: sok-doodles ===== */
+  .brand-duddle-icons .dubble-left{
+    top:-22%;
+    left:6%;
+    width:140px;
+    height:auto;
+  }
+  .brand-duddle-icons .dubble-right{
+    bottom:10%;
+    right:4%;
+    width:140px;
+    height:auto;
+  }
+
+  /* ===== Footer ===== */
+  /* handmatige 1440-tweak Kulwant: strip verdelen i.p.v. centreren */
+  .footer-pay{
+    justify-content:space-between;
+    flex-wrap: nowrap;
+  }
+  /* menu compacter in deze band */
+  .menu .menu-link a{
+    font-size:14px;
+  }
+  /* header-iconen kleiner (48 → 42, iconen naar verhouding mee) */
+  .icon-btn{
+    width:42px;
+    height:42px;
+  }
+  .icon-btn svg{
+    width:18px;
+    height:18px;
+  }
+  /* verticaal ritme -20% (secties, gemeten op 1350 en herrekend) */
+  .gallery .gallery-swiper{ padding-top:80px; padding-bottom:24px; }
+  /* hero-slider: slides -20% en de stagger mee geschaald — de -100px-lift
+     stak boven de (verkleinde) padding uit en werd door de sectie afgeknipt */
+  .gallery-swiper .swiper-slide{
+    width:250px;
+    height:350px;
+  }
+  .gallery-swiper .swiper-slide:nth-child(3n + 1){
+    transform:translateY(-40px);
+  }
+  .gallery-swiper .swiper-slide:nth-child(3n){
+    transform:translateY(-80px);
+  }
+  .impact{ margin-top:34px; padding-top:6px; padding-bottom:100px; }
+  .collection{ padding-bottom:24px; }
+  .process{ padding-top:124px; padding-bottom:96px; }
+  .calculator{ padding-top:96px; padding-bottom:54px; }
+  .gift{ padding-top:80px; padding-bottom:56px; }
+  .cases{ padding-top:76px; padding-bottom:40px; }
+  .designed{ margin-top:82px; }
+  .brand-intro{ padding-top:56px; padding-bottom:80px; }
+  .faq{ padding-top:94px; padding-bottom:72px; }
+  .cta-final-panel{ padding-top:120px; padding-bottom:72px; }
+  .footer-grid{ padding-top:40px; }
+  .footer-col{ padding-top:32px; }
+  .footer-brand{ padding-top:8px; }
+
+  /* koppen 20% kleiner in deze band (t.o.v. 1440-tokens 58/38/26/28) */
+  :root{
+    --h1-font-size:46px;
+    --h2-font-size:30px;
+    --h3-font-size:21px;
+    --h4-font-size:22px;
+  }
+
+
+  /* ————— eigen tuning 1025-1279 ————— */
+  /* nav: op ~1100 wrapten Sokkencollectie/Over ons — compacter en nowrap;
+     linkerpadding iets in zodat de globe binnen beeld blijft */
+  .navbar{
+    padding-left:20px;
+  }
+  .menu{
+    gap:12px;
+  }
+  .menu > li > a{
+    white-space:nowrap;
+  }
+  .navbar-inner{
+    width:calc(100% - 120px);
+  }
+  /* mega-dropdown: basis is 100%+78px en stak (onzichtbaar) buiten de
+     viewport → h-scroll */
+  .mega{
+    width:calc(100% + 40px);
+  }
+  /* calculator: 1fr+440px paste hier nooit (latent, zone was ongetest) —
+     rechterkolom smaller en de midden-rij gestapeld */
+  .calc-grid{
+    grid-template-columns:1fr 360px;
+    gap:24px;
+  }
+  .calc-mid{
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+
+  /* cases (specs Kulwant): case-gallery 45% breed met twee rijen —
+     rij 1 = case-img-main, rij 2 = de twee case-img-col-foto's naast
+     elkaar; case-text 55% breed */
+  .case-gallery{
+    flex:0 0 45%;
+    width:45%;
+    flex-direction:column;
+  }
+  .case-text{
+    flex:0 0 55%;
+    width:55%;
+    min-width:0;
+  }
+  .case-img.case-img-main{
+    width:100%;
+    height:280px;
+  }
+  .case-img-col{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto;
+    width:100%;
+  }
+  .case-img{
+    width:100%;
+    height:130px;
+  }
+
+  /* hero-usps: kleinere onderlinge afstand */
+  .usps{
+    gap:20px;
+  }
+
+  /* stats-cijfers -20% (58 → 46) */
+  .stat-num{
+    font-size:46px;
+  }
+
+  /* promo-float 25% kleiner (schaal = font+breedte+marges+afbeelding ineens) */
+  .promo-float{
+    transform:scale(.75);
+    transform-origin:left bottom;
+  }
+
+  /* promo-float: link en beschrijving iets groter (compenseert de
+     0.75-schaal; specs Kulwant) */
+  .promo-float-body p{
+    font-size:17px;
+  }
+  .promo-float-link{
+    font-size:17px;
+  }
+
+  /* ═══ Collectie — GEKOPIEERD UIT DE 1280-1439-BAND (verzoek Kulwant
+     2026-08-03, incl. home-typografie-sync); band-eigen fijnslijpen volgt ═══ */
+  /* Collectie-hero (specs Kulwant 2026-08-03) */
+  .coll-hero{
+    height:100vh;
+  }
+  .coll-hero-left{
+    gap:12vh;
+  }
+  .coll-hero-gallery{
+    height:110vh;
+  }
+  .coll-hero-left p{
+    font-size:17px;
+    line-height:24px;
+  }
+  .coll-hero-content ul{
+    gap:12px 20px;
+  }
+  .coll-hero-content ul li{
+    font-size:17px;
+  }
+  .ch-swiper .swiper-slide{
+    height:320px;
+  }
+  .types-section{
+    padding-top:80px;
+    padding-bottom:60px;
+  }
+  .type-card-img{
+    height:268px;
+  }
+  .type-card-content h3{
+    font-size:21px;
+  }
+  .type-card-btn{
+    height:44px;
+    font-size:17px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .types-grid{
+    gap:60px 40px;
+  }
+  .compare-inner-main{
+    background-position:right top;
+    padding-top:150px;
+  }
+  .compare-floating-elements{
+    width:220px;
+    top: -7%;
+  }
+  .compare-table{
+    width:100%;
+  }
+  .compare-inner-main h2{
+    font-size:30px;
+  }
+  .bg-yellow-shape{
+    background-position:right top;
+    top:0px;
+    background-size:116%;
+  }
+  .calculator-bg{
+    padding-top:115px;
+  }
+  .calc-panel h3{
+    font-size:26px;
+  }
+  .process.process-split{
+    padding-top:80px;
+  }
+  .process-left h2{
+    font-size:30px;
+  }
+  .process-collage img{
+    height:280px;
+  }
+  .process-left ul li{
+    padding:20px 0 25px;
+  }
+  .process-btn{
+    justify-content:flex-start;
+  }
+  .process-btn a{
+    margin-inline-start:137px;
+  }
+  .case-inner-page:before{
+    content:"";
+    background:url(../media/sock-element-up.svg) no-repeat center / contain;
+    width:264px;
+    height:266px;
+    top:-40px;
+  }
+  .case-inner-page:after{
+    content:"";
+    background:url(../media/sock-element-up.svg) no-repeat center / contain;
+    width:276px;
+    height:278px;
+    bottom:-16%;
+  }
+  .case-text h3{
+    font-size:26px;
+  }
+}
+
+/* ===================================================================
+   768-991 (tablet)
+   =================================================================== */
+@media (min-width:768px) and (max-width:991px){
+
+
+  /* ————— uit oud ≤1680 ————— */
+
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+     --body-sm-font-size: 12px;
+  }
+  .container{
+    max-width: min(1440px, 100% - 40px);
+  }
+  /* 1680-test 2026-07-28: betaal/verzend-strip paste nét niet meer op één
+     regel (852+1+533 content + 2×30 gap = 1446 > 1440) en wikkelde lelijk */
+  .footer-pay{
+    gap:20px 20px;
+  }
+  /* telefoonnummer in de footer brak midden in het nummer af */
+  footer a[href^="tel:"]{
+    white-space:nowrap;
+  }
+
+  /* ————— uit oud ≤1550 ————— */
+
+  /* 1280-test 2026-07-28: onder de 1320-container past de betaal/verzend-strip
+     nooit op één regel — netjes gecentreerd laten wrappen, zwevende divider weg */
+  .footer-pay{
+    justify-content:center;
+    row-gap:16px;
+  }
+  .footer-pay .border-v{
+    display:none;
+  }
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+
+    --h1-font-size:58px;
+    --h2-font-size: 38px;
+    --h3-font-size: 26px;
+    --h4-font-size: 28px;
+    --h5-font-size: 17px;
+    --h6-font-size: 20px;
+  }
+   .container{
+    max-width: min(1320px, 100% - 40px);
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 25px;
+  }
+  .logo{
+    display: flex;
+    width: 96px;
+  }
+  .mega {
+    padding: 30px;
+  }
+  .prod-card .prod-img-card {
+    height: 150px;
+    border-radius: 10px;
+  }
+  .types {
+    gap: 10px 30px;
+  }
+  .type-item .type-img {
+    width: 58px;
+    height: 58px;
+    border-radius: 5px;
+  }
+  .gallery-swiper .swiper-slide {
+    width: 314px;
+    height: 440px;
+  }
+  .impact {
+    padding: 8px 0 125px;
+  }
+  .impact-inner {
+      height: 465px;
+      gap: 56px;
+  }
+  .impact-gallery {
+      width: 890px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul {
+    gap: 19px;
+  }
+  .impact-left {
+      padding-inline-start: 0;
+  }
+  .stat-num {
+    font-size: 58px;
+  }
+  .feat-label{
+    font-size:18px;
+  }
+  .collection:before {
+    top: -21%;
+    background: url(../media/yellow-shape-1440.svg);
+    background-size: cover;
+  }
+
+  .collection-img {
+    height: 295px;
+  }
+  .collection-name {
+    font-size: 17px;
+  }
+  .collection-card-foot {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 22px;
+    gap: 20px;
+  }
+  .collection-grid {
+    gap: 20px;
+  }
+  .collection-cta{
+    margin-top: 30px;
+  }
+  .collection:after {
+    bottom: -16%;
+  }
+  .v-swiper .swiper-slide {
+    width: 276px;
+    height: 345px;
+    border-radius: 15px; 
+  }
+  .process {
+    padding: 155px 0 100px;
+  }
+  .process:not(.conf-works) > .container > h2{
+    padding-top: 0;
+    margin-bottom: 30px;
+  }
+  .process-steps {
+    gap: 67px;
+  }
+  .calc-grid {
+    grid-template-columns: 1fr 440px;
+  }
+  .calc-panel {
+    padding: 40px;
+  }
+  .calc-mid{
+    grid-template-columns: 440px 1fr;
+    gap: 35px;
+  }
+  .calc-hint{
+    height: 112px;
+  }
+  .staffel-row {
+    padding: 8px 20px;
+  }
+  .calc-panel h3 {
+    margin-bottom: 20px;
+  }
+  .calc-result {
+    padding-top: 5px;
+  }
+  .calc-row{
+    margin-bottom: 20px;
+  }
+  .calc-total-row{
+    margin-bottom: 8px;
+  }
+  .calc-field {
+    margin-bottom: 20px;
+  }
+  .staffel-head-row {
+    padding: 8px 20px;
+    height: 36px;
+  }
+  .gift {
+    padding: 100px 0 0px;
+  }
+  .gift-img {
+    height: 295px;
+    border-radius: 10px;
+  }
+  .cases {
+    padding: 150px 0 50px;
+  }
+  .case-inner {
+    gap: 50px;
+  }
+  .case-img.case-img-main {
+    height: 382px;
+    width: 382px;
+  }
+  .case-img {
+    border-radius: 15px;
+    width: 248px;
+    height: 180px;
+  }
+   .cases:before{
+    background:url(../media/blue-shape-lg.png) 82% top;
+    background-size: cover;
+    height: 78%;
+    background-repeat: no-repeat;
+  }
+  .cases-feet {
+    top: -22%;
+    right: 2%;
+    width: 141px;
+    height: 206px;
+  }
+  .designed {
+    margin-top: 102px;
+  }
+  .designed-swiper .swiper-slide {
+    width: 295px;
+    height: 295px;
+    border-radius: 15px;
+  }
+  .designed-swiper {
+    width: 105vw;
+  }
+  .brand-intro-inner {
+    max-width: 100%;
+  }
+  .brand-intro {
+    padding: 70px 0 100px;
+  }
+  .brand-intro-inner h2 {
+    margin-bottom: 10px;
+  }
+  .brand-duddle-icons .dubble-left {
+    top: -19%;
+    left: 4%;
+    width: 81px;
+    height: auto;
+  }
+  .brand-duddle-icons .dubble-right {
+    bottom: 4%;
+    right: 4%;
+    width: 81px;
+    height: auto;
+  }
+
+  .faq-q {
+    padding: 14px 4px;
+  }
+  .faq-grid {
+    grid-template-columns: 382px 1fr;
+    gap: 135px;
+  }
+  .faq-left p {
+    max-width: 100%;
+  }
+  .faq-a-inner p{
+    max-width: 92%;
+  }
+  .cta-final-feet {
+    top: -29%;
+    left: 20px;
+    width: 26%;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1.32fr auto 1.35fr;
+  }
+
+  .footer-brand p {
+    max-width: 94%;
+    margin-bottom: 30px;
+  }
+  .footer-certs {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+  .footer-col {
+    padding: 40px 50px 0;
+  }
+  .footer-brand {
+    padding-top: 10px;
+  }
+  .footer-contact {
+    padding-bottom: 50px;
+    padding-inline-end: 0;
+  }
+  .footer-address br{
+    display: none;
+  }
+  .footer-socials {
+    gap: 10px;
+    margin-bottom: 42px;
+  }
+  .footer-socials a{
+    width: 42PX;
+    height: 42px;
+  }
+  .footer-contact-row{
+    margin-bottom: 30px;
+  }
+  .footer-pay-inner, .footer-ship-inner {
+    gap: 23px;
+  }
+  
+
+  /* ————— uit oud ≤1300 ————— */
+
+  .container{
+    max-width: min(1190px, 100% - 40px);
+  }
+  /* 1280-test 2026-07-28: adresblok naast de contactlijst werd een smalle
+     kolom van 6 regels — vanaf hier onder de lijst stapelen */
+  .footer-contact-row{
+    flex-direction:column;
+    gap:18px;
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 17px;
+  }
+  .navbar-inner {
+    gap: 25px;
+  }
+
+  /* ————— tabletblok ————— */
+
+  /* ===== Tablet-pass 2026-07-28 (home, zonder design — projectinzicht) ===== */
+  /* gutters: container 1190 raakte de rand */
+  .container{
+    max-width:94%;
+  }
+  /* navbar paste niet: logo over menu, "Over ons" wikkelde, CTA/globe buiten beeld */
+  .menu{
+    gap:7px;
+  }
+  .menu > li > a{
+    font-size:14px;
+    white-space:nowrap;
+  }
+  .navbar-inner{
+    gap:10px;
+  }
+  .navbar .cta{
+    white-space:nowrap;
+    padding:8px 12px;
+    font-size:13px;
+  }
+  .icon-btn{
+    width:34px;
+    height:34px;
+  }
+  .logo{
+    width:80px;
+    margin-right:8px;
+  }
+  header .container{
+    max-width:98%;
+  }
+  .nav-wrap{
+    gap:8px;
+  }
+  .navbar{
+    padding-inline:14px;
+  }
+  .globe{
+    width:52px;
+    height:52px;
+  }
+  /* mega-menu (ook verborgen) stak buiten de viewport → h-scroll */
+  .mega{
+    width:calc(100vw - 48px);
+    max-width:calc(100vw - 48px);
+  }
+  /* impact: vaste galleriebreedte 890 duwde de sectie uit beeld —
+     2 marqueekolommen i.p.v. 3 */
+  .impact-inner{
+    gap:30px;
+    height:auto;
+  }
+  .impact-gallery{
+    width:575px;
+  }
+  .impact-gallery .v-swiper:nth-child(3){
+    display:none;
+  }
+  /* USP-chips: 6 op één regel werd te krap — het bestaande 3-koloms-grid
+     werkte niet omdat de basis flex is */
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul{
+    display:grid;
+  }
+  /* calculator: vaste 560/440-kolommen pasten niet — stapelen */
+  .calc-grid{
+    grid-template-columns:1fr;
+  }
+  .calc-mid{
+    grid-template-columns:1fr 1fr;
+  }
+  /* FAQ-grid: 382px + 135px gap werd te krap */
+  .faq-grid{
+    grid-template-columns:300px 1fr;
+    gap:50px;
+  }
+  .usecases-masonry{ column-count:2; }
+  .case-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul{
+    grid-template-columns:repeat(3,1fr);
+  }
+  .collection-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+  .gift-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+  .types-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  /* ————— eigen tuning 769-991 ————— */
+  /* footer: 3-koloms grid overliep hier (zone was alleen op 1024 getest) */
+  .footer-grid{
+    grid-template-columns:1fr;
+    gap:0;
+  }
+  footer .border-v{
+    display:none;
+  }
+  .footer-col{
+    padding:30px 0 0;
+    border-left:0;
+    border-right:0;
+  }
+
+  /* logo-marquee full-width (zelfde als 992-1279-band) */
+  .brands{
+    overflow:hidden;
+  }
+  .brands .brands-swiper{
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+  }
+
+  /* cases (specs Kulwant): gallery gestapeld zoals mobiel (hoofdfoto als
+     eigen rij, twee kleine eronder) — kolommen 45% gallery / 55% tekst */
+  .case-gallery{
+    flex:0 0 45%;
+    width:45%;
+    flex-direction:column;
+  }
+  .case-text{
+    flex:0 0 55%;
+    width:55%;
+    min-width:0;
+  }
+  .case-img.case-img-main{
+    width:100%;
+    height:260px;
+  }
+  .case-img-col{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto;
+    width:100%;
+  }
+  .case-img{
+    width:100%;
+    height:120px;
+  }
+
+  /* topbar-items groter (specs Kulwant, 769-991-ronde) */
+  .topbar li{
+    font-size:15px;
+  }
+
+  /* topbar-marquee (zelfde mechaniek als mobiel; custom.js dupliceert de
+     items en zet .topbar-marquee — gate staat op ≤520 én 768-991) */
+  .topbar{
+    position:relative;
+    overflow:hidden;
+  }
+  .topbar:after{
+    content:"";
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    width:56px;
+    background:linear-gradient(to left, var(--dark), rgba(40,18,27,0));
+    pointer-events:none;
+  }
+  .topbar ul{
+    flex-wrap:nowrap;
+    justify-content:flex-start;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .topbar ul::-webkit-scrollbar{
+    display:none;
+  }
+  .topbar li{
+    white-space:nowrap;
+    flex:0 0 auto;
+  }
+  .topbar ul.topbar-marquee{
+    overflow:visible;
+    width:max-content;
+    gap:0;
+    padding-inline:0;
+    animation:sokkiesTopbarMarquee 18s linear infinite;
+  }
+  .topbar ul.topbar-marquee li{
+    margin-right:34px;
+  }
+  @keyframes sokkiesTopbarMarquee{
+    to{ transform:translateX(-50%); }
+  }
+
+  /* containers (specs Kulwant): 100% breed met VASTE 40px-gutters
+     i.p.v. percentages (overschrijft de oude 94%/98%-regels) */
+  .container,
+  .container-md{
+    max-width:100%;
+    width:100%;
+    padding-left:40px;
+    padding-right:40px;
+  }
+  header .container{
+    max-width:100%;
+  }
+  /* nav-wrap is absolute met width:100% — bij de padding-container
+     resolvet dat tegen de padding-box en schoof hij 40px naar rechts */
+  header .nav-wrap{
+    width:calc(100% - 80px);
+  }
+  /* geneste containers niet dubbel padden (hero heeft container-in-container) */
+  .container .container,
+  .container .container-md,
+  .container-md .container{
+    padding-left:0;
+    padding-right:0;
+  }
+
+  /* logo compacter (specs Kulwant; .navbar-prefix wint van de
+     104px-regel in de drawer-band die later in het bestand staat) */
+  .navbar .logo{
+    width:96px;
+  }
+  /* icon-knoppen 44px met 16px-iconen (specs Kulwant; .navbar-prefix
+     wint van de 40px-regel in de drawer-band) */
+  .navbar .icon-btn{
+    width:44px;
+    height:44px;
+  }
+  .navbar .icon-btn svg{
+    width:16px;
+    height:16px;
+  }
+  /* taalknop 68x68 met 20px-icoon (specs Kulwant) */
+  .lang .globe{
+    width:68px;
+    height:68px;
+  }
+  .lang .globe svg{
+    width:20px;
+    height:20px;
+  }
+  /* menu-toggle 68x68, hamburger-glyph 28x16 (3 balkjes van 2px + 5px gap) */
+  .navbar .nav-burger{
+    width:68px;
+    height:68px;
+    gap:5px;
+  }
+  .navbar .nav-burger span{
+    width:28px;
+  }
+  .navbar.menu-open .nav-burger span:nth-child(1){
+    transform:translateY(7px) rotate(45deg);
+  }
+  .navbar.menu-open .nav-burger span:nth-child(3){
+    transform:translateY(-7px) rotate(-45deg);
+  }
+
+  /* hero (specs Kulwant): banner pt 170 / pb 0, kop 58 (clamp zat op
+     6vw=54), usps onder elkaar op 17px/25px zonder extra marges ertussen */
+  .banner-section{
+    padding-top:170px;
+    padding-bottom:0;
+  }
+  .banner-section h1{
+    font-size:58px;
+  }
+  .usps{
+    flex-direction:column;
+    align-items:center;
+    gap:0;
+    margin-top:30px;
+    margin-bottom:30px;
+  }
+  .usps span{
+    font-size:17px;
+    line-height:25px;
+    margin:0;
+    padding:0;
+  }
+
+  /* hero-CTA's: 44px hoog, 15px (specs Kulwant) */
+  .hero-btns .cta,
+  .hero-btns .cta-light{
+    height:44px;
+    font-size:15px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:0 20px;
+  }
+  /* hero-slider zoals mobiel: actieve PAAR gecentreerd met 5%-slivers —
+     hier met swiper-gap 20 (breakpoint 768) i.p.v. 14 op mobiel */
+  .gallery .gallery-swiper{
+    width:calc(90vw - 40px);
+    margin-inline:auto;
+    overflow:visible;
+  }
+  .gallery-swiper .swiper-slide{
+    width:calc(50% - 10px);
+    height:440px;
+  }
+  /* stagger op runtime-klassen (de loop husselt de DOM; nth-child-offsets
+     van de basis uit) — zelfde patroon als mobiel */
+  .gallery-swiper .swiper-slide:nth-child(3n + 1),
+  .gallery-swiper .swiper-slide:nth-child(3n + 2),
+  .gallery-swiper .swiper-slide:nth-child(3n){
+    transform:none;
+  }
+  .gallery-swiper .swiper-slide{
+    transition:transform .6s;
+  }
+  .gallery-swiper .swiper-slide.swiper-slide-prev,
+  .gallery-swiper .swiper-slide.swiper-slide-next{
+    transform:translateY(24px);
+  }
+  .gallery-swiper .swiper-slide.swiper-slide-active,
+  .gallery-swiper .swiper-slide.swiper-slide-next + .swiper-slide{
+    transform:translateY(-24px);
+  }
+
+  /* impact zoals mobiel (specs Kulwant): stats op één regel links,
+     beschrijving uitgelijnd op de cijfers, gallery plat en 120vw
+     gecentreerd, chips 2 kolommen — plus tablet-specifieke overrides
+     (kolomlayout, 575px-gallery en verborgen 3e marquee ongedaan) */
+  .brands{
+    margin-bottom:0;
+  }
+  .impact{
+    margin-top:40px;
+    padding:60px 0 40px;
+  }
+  .impact:before{
+    background-size:950px auto;
+  }
+  .impact-inner{
+    flex-direction:column;
+    align-items:center;
+    overflow:visible;
+    height:auto;
+    gap:28px;
+  }
+  .impact-left{
+    max-width:100%;
+    text-align:left;
+    width:100%;
+  }
+  .stat-arrow{
+    margin-top:2px;
+  }
+  .stat-arrow svg{
+    width:15px;
+    height:auto;
+  }
+  .impact .impact-left ul{
+    display:flex;
+    flex-direction:row;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:20px;
+    justify-content: space-between;
+  }
+  .impact .impact-left ul li{
+    justify-content:flex-start;
+    flex:0 1 auto;
+    min-width:0;
+  }
+  .impact .impact-left p{
+    margin:0;
+    padding-left:29px;
+  }
+  .stat-num{
+    font-size:58px;
+  }
+  .stat-label{
+    font-size:13px;
+    white-space:nowrap;
+  }
+  .impact-gallery{
+    /* rotatie uit de basis (-4°) blijft staan — zelfde hoek als desktop */
+    width:100%; /* binnen de 40px-container-gutters (correctie Kulwant) */
+    max-width:100%;
+    margin-left:0;
+    padding-right:0;
+    height:340px;
+    gap:12px;
+  }
+  .impact-gallery .v-swiper:nth-child(3){
+    display:block;
+  }
+  .v-swiper .swiper-slide{
+    width:100%;
+    height:150px;
+    border-radius:12px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:10px;
+    margin-top:80px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul li{
+    width:auto;
+    min-width:0;
+    height:104px;
+    justify-content:center;
+    text-align:center;
+  }
+  .feat-icon{
+    width:40px;
+    height:40px;
+  }
+  .feat-icon svg,
+  .feat-icon img{
+    width:40px;
+    height:40px;
+  }
+  .feat-label{
+    font-size:17px;
+    white-space:normal;
+  }
+
+  /* collectie (specs Kulwant): horizontale scroll-rij zoals mobiel,
+     2 kaarten volledig + 3e voor 25% zichtbaar */
+  .collection{
+    padding-top:70px;
+  }
+  .collection-grid{
+    display:flex;
+    overflow-x:auto;
+    gap:16px;
+    padding-bottom:8px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none; /* scrollbar verborgen (specs Kulwant) */
+  }
+  .collection-grid::-webkit-scrollbar{
+    display:none;
+  }
+  .collection-card{
+    flex:0 0 calc((100% - 32px) / 2.25);
+    height:auto;
+  }
+  /* basis-foot is 70px (desktop één rij) — knipte de Bekijk-knop af */
+  .collection-card-foot{
+    height:auto;
+  }
+
+  /* process (specs Kulwant): stappen 2 rijen x 2 kolommen */
+  .process-steps{
+    grid-template-columns:repeat(2, 1fr);
+    gap:40px 24px;
+  }
+
+  /* gift (specs Kulwant): horizontale scroll-rij, 2 kaarten volledig +
+     3e voor 25% zichtbaar, scrollbar verborgen */
+  .gift-grid{
+    display:flex;
+    overflow-x:auto;
+    gap:16px;
+    padding-bottom:8px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .gift-grid::-webkit-scrollbar{
+    display:none;
+  }
+  .gift-card{
+    flex:0 0 calc((100% - 32px) / 2.25);
+    height:auto;
+  }
+
+  .gift-nav,
+  .collection-nav{
+    display:flex; /* pijlen aan bij de scroll-rijen */
+  }
+  /* gift- en collectierij full-width zonder zijpadding (specs Kulwant):
+     via de vaste 40px-gutters naar buiten breken — geen vw nodig */
+  .collection-grid,
+  .gift-grid{
+    width:calc(100% + 80px);
+    margin-left:-40px;
+    padding-left:40px; /* eerste kaart lijnt uit met de kop; rij blijft
+                          rechts full-bleed en scrollt links de rand in */
+  }
+  /* gift-pijlen rechts naast de kop (specs Kulwant) */
+  .gift .container{
+    position:relative;
+  }
+  .gift-nav{
+    position:absolute;
+    top:0;
+    right:40px;
+    margin-top:0;
+  }
+
+  /* faq (specs Kulwant): één kolom i.p.v. twee, sectie pt 100 */
+  .faq{
+    padding-top:100px;
+    padding-bottom:220px;
+  }
+  .faq-grid{
+    grid-template-columns:1fr;
+    gap:30px;
+  }
+  .faq-right{
+    padding-top:0; /* desktop-uitlijnoffset zou dode ruimte geven */
+  }
+
+  /* footer-structuur tablet (specs Kulwant):
+     rij 1: logo+tekst links | certs rechts
+     rij 2/3: Sokkies-links links | contactinfo rechts
+     rij 4: nieuwsbrief links | socials rechts — daarna partners.
+     .footer-contact op display:contents zodat zijn onderdelen (h5,
+     contactrij, socials, news) los in het grid geplaatst kunnen worden. */
+  .footer-grid{
+    display:grid;
+    grid-template-columns:6fr 4fr; /* 60/40 (fr = gap-veilig) */
+    column-gap:40px;
+    padding-top:40px;
+    padding-bottom: 40px;
+  }
+  .footer-brand{
+    grid-column:1 / -1;
+    display:grid;
+    grid-template-columns:6fr 4fr; /* zelfde 60/40 als de rijen eronder */
+    column-gap:40px;
+    padding:0 0 40px;
+    border-bottom:1px solid rgba(255,255,255,.35);
+    margin-bottom:40px;
+  }
+  .footer-brand .footer-logo{
+    grid-column:1;
+  }
+  .footer-brand p{
+    grid-column:1;
+    margin-bottom:0;
+    max-width:none;
+  }
+  .footer-brand .footer-certs{
+    grid-column:2;
+    grid-row:1 / span 2;
+    align-self:start;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:16px;
+  }
+  .footer-certs-list{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .footer-links{
+    grid-column:1;
+    grid-row:2 / span 2;
+    padding:0;
+    border:0;
+  }
+  .footer-contact{
+    display:contents;
+  }
+  .footer-contact > h5{
+    grid-column:2;
+    grid-row:2;
+    margin-bottom:20px;
+  }
+  .footer-contact-row{
+    grid-column:2;
+    grid-row:3;
+    flex-direction:column;
+    gap:24px;
+    margin-bottom:0;
+  }
+  .footer-news{
+    grid-column:1;
+    grid-row:4;
+    margin-top:40px;
+  }
+  .footer-socials{
+    grid-column:2;
+    grid-row:4;
+    margin:40px 0 0;
+    align-self:center;
+  }
+  .footer-partners{
+    margin-top:0px;
+    margin-bottom: 40px;
+  }
+
+  /* betaalstrip (specs Kulwant) */
+  .footer-pay-group{
+    padding-top:40px;
+    text-align:center;
+    justify-content:center;
+  }
+  /* verzendpartners in twee rijen: label boven, logo's eronder */
+  .footer-ship{
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+    padding-top: 20px;
+    padding-bottom: 40px;
+  }
+
+  /* reviews + legal (specs Kulwant) */
+  .footer-review{
+    margin-bottom:20px;
+  }
+  .footer-legal{
+    padding-top:20px;
+    line-height:26px;
+  }
+
+  /* calculator (specs Kulwant) */
+  .calc-mid{
+    grid-template-columns:60% 40%;
+  }
+  .footer-reviews{
+    padding-bottom:20px;
+  }
+
+  /* promo-float 25% kleiner (schaal = font+breedte+marges+afbeelding ineens) */
+  .promo-float{
+    transform:scale(.75);
+    transform-origin:left bottom;
+  }
+
+  /* promo-float: link en beschrijving iets groter (compenseert de
+     0.75-schaal; specs Kulwant) */
+  .promo-float-body p{
+    font-size:17px;
+  }
+  .promo-float-link{
+    font-size:17px;
+  }
+}
+
+/* ===================================================================
+   768-1279 — HAMBURGER-MENU (besluit Kulwant: onder de 1280 is er
+   nooit genoeg ruimte voor het volledige menu — zelfde menustijl als
+   ≤768: horizontale menu eruit, toggle/drawer erin. Kopie van het
+   menuchrome uit de 521-768-band; custom.js-drempel voor de mega
+   staat op 1280.)
+   =================================================================== */
+@media (min-width:768px) and (max-width:1279px){
+  /* ===== Mobiel menu (hamburger + subpaneel, 768-XD 2026-07-28) ===== */
+  /* burger = losse donkere cirkel rechts naast de globe (buiten de pill);
+     navbar wordt static zodat burger en drawer op .nav-wrap ankeren */
+  .nav-wrap{
+    position:relative;
+    padding-right:72px;
+  }
+  .nav-burger{
+    display:flex;
+    position:absolute;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+  }
+  .navbar{
+    position:static;
+    justify-content:flex-start;
+    gap:10px;
+    padding:8px 8px 8px 22px;
+  }
+  .navbar-inner{
+    margin-left:auto;
+  }
+  .logo{
+    width:104px;
+  }
+  .icon-btn{
+    width:44px;
+    height:44px;
+  }
+  .globe{
+    width:56px;
+    height:56px;
+  }
+  .navbar .cta{
+    white-space:nowrap;
+    padding:9px 14px;
+    font-size:13px;
+  }
+  /* drawer: hoofdlijst */
+  .navbar-inner .menu{
+    display:none;
+    position:absolute;
+    top:calc(100% + 10px);
+    left:0;
+    right:0;
+    background:var(--white);
+    border-radius:20px;
+    box-shadow:0 14px 34px rgba(0,0,0,.16);
+    flex-direction:column;
+    align-items:stretch;
+    gap:2px;
+    padding:14px;
+    z-index:80;
+    max-height:calc(100vh - 140px);
+    overflow-y:auto;
+  }
+  .navbar.menu-open .menu{
+    display:flex;
+  }
+  .navbar-inner .menu > li > a{
+    display:block;
+    padding:12px 14px;
+    font-size:17px;
+  }
+  .menu .caret{
+    display:none;
+  }
+  .mega{
+    display:none !important;
+  }
+  /* subpaneel: mega-inhoud in de drawer (tap op Sokkencollectie) */
+  .navbar.sub-open .menu{
+    padding:24px 28px 30px;
+  }
+  .navbar.sub-open .menu > li > a{
+    display:none;
+  }
+  .navbar.sub-open .mega{
+    display:grid !important;
+    position:static;
+    width:100%;
+    opacity:1;
+    visibility:visible;
+    transform:none;
+    box-shadow:none;
+    border-radius:0;
+    padding:0;
+    grid-template-columns:1.6fr 1fr;
+    gap:0 34px;
+    justify-items:stretch;
+    justify-content:stretch;
+  }
+  .navbar.sub-open .mega-back{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    grid-column:1 / -1;
+    justify-self:start;
+    border:none;
+    background:none;
+    padding:0;
+    font-family:var(--roc-grotesk);
+    font-size:15px;
+    font-weight:600;
+    color:var(--text);
+    cursor:pointer;
+    margin-bottom:24px;
+  }
+  .navbar.sub-open .mega-mob-title{
+    display:block;
+    grid-column:1 / -1;
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:20px;
+  }
+  .navbar.sub-open .bestsellers-col{
+    grid-column:1;
+    grid-row:3 / span 2;
+  }
+  .navbar.sub-open .types-col{
+    grid-column:2;
+    grid-row:3;
+  }
+  .navbar.sub-open .mega-usps{
+    grid-column:2;
+    grid-row:4;
+    margin-top:18px;
+  }
+  .navbar.sub-open .mega-usps h4{
+    display:none;
+  }
+  .navbar.sub-open .mega-usps span{
+    font-size:14px;
+  }
+  .navbar.sub-open .bestsellers{
+    grid-template-columns:1fr 1fr;
+    gap:30px 10px;
+  }
+  .navbar.sub-open .prod-card .prod-price{
+    font-size:14px;
+  }
+  .navbar.sub-open .prod-card .prod-img-card{
+    height:150px;
+  }
+  .navbar.sub-open .types{
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+  .navbar.sub-open .type-item .type-img{
+    width:50px;
+    height:50px;
+  }
+
+  /* pijl bij Sokkencollectie (submenu-indicator, zoals in het mobiele menu) */
+  .has-mega > a::after{
+    content:"";
+    display:inline-block;
+    width:15px;
+    height:10px;
+    margin-left:8px;
+    vertical-align:middle;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='12' viewBox='0 0 18 12'%3E%3Cpath d='M12 1l5 5-5 5M17 6H1' fill='none' stroke='%2328121b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+  }
+
+  /* subpaneel-layout (specs Kulwant): bestsellers-kolom en types-kolom
+     elk 50%, types 2 per rij, mega-usps 50% ónder de types-kolom */
+  .navbar.sub-open .mega{
+    grid-template-columns:1fr 1fr;
+  }
+  .navbar.sub-open .mega-usps span{
+    font-size:16px;
+  }
+  .navbar.sub-open .types{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+/* ===================================================================
+   521-767
+   =================================================================== */
+@media (min-width:521px) and (max-width:767px){
+
+
+  /* ————— uit oud ≤1680 ————— */
+
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+     --body-sm-font-size: 12px;
+  }
+  .container{
+    max-width: min(1440px, 100% - 40px);
+  }
+  /* 1680-test 2026-07-28: betaal/verzend-strip paste nét niet meer op één
+     regel (852+1+533 content + 2×30 gap = 1446 > 1440) en wikkelde lelijk */
+  .footer-pay{
+    gap:20px 20px;
+  }
+  /* telefoonnummer in de footer brak midden in het nummer af */
+  footer a[href^="tel:"]{
+    white-space:nowrap;
+  }
+
+  /* ————— uit oud ≤1550 ————— */
+
+  /* 1280-test 2026-07-28: onder de 1320-container past de betaal/verzend-strip
+     nooit op één regel — netjes gecentreerd laten wrappen, zwevende divider weg */
+  .footer-pay{
+    justify-content:center;
+    row-gap:16px;
+  }
+  .footer-pay .border-v{
+    display:none;
+  }
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+
+    --h1-font-size:58px;
+    --h2-font-size: 38px;
+    --h3-font-size: 26px;
+    --h4-font-size: 28px;
+    --h5-font-size: 17px;
+    --h6-font-size: 20px;
+  }
+   .container{
+    max-width: min(1320px, 100% - 40px);
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 25px;
+  }
+  .logo{
+    display: flex;
+    width: 96px;
+  }
+  .mega {
+    padding: 30px;
+  }
+  .prod-card .prod-img-card {
+    height: 150px;
+    border-radius: 10px;
+  }
+  .types {
+    gap: 10px 30px;
+  }
+  .type-item .type-img {
+    width: 58px;
+    height: 58px;
+    border-radius: 5px;
+  }
+  .gallery-swiper .swiper-slide {
+    width: 314px;
+    height: 440px;
+  }
+  .impact {
+    padding: 8px 0 125px;
+  }
+  .impact-inner {
+      height: 465px;
+      gap: 56px;
+  }
+  .impact-gallery {
+      width: 890px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul {
+    gap: 19px;
+  }
+  .impact-left {
+      padding-inline-start: 0;
+  }
+  .stat-num {
+    font-size: 58px;
+  }
+  .feat-label{
+    font-size:18px;
+  }
+  .collection:before {
+    top: -51%;
+    background: url(../media/yellow-shape-1440.svg);
+    background-size: cover;
+  }
+
+  .collection-img {
+    height: 295px;
+  }
+  .collection-name {
+    font-size: 17px;
+  }
+  .collection-card-foot {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 22px;
+    gap: 20px;
+  }
+  .collection-grid {
+    gap: 20px;
+  }
+  .collection-cta{
+    margin-top: 30px;
+  }
+  .collection:after {
+    bottom: -16%;
+  }
+  .v-swiper .swiper-slide {
+    width: 276px;
+    height: 345px;
+    border-radius: 15px; 
+  }
+  .process {
+    padding: 155px 0 120px;
+  }
+  .process:not(.conf-works) > .container > h2{
+    padding-top: 0;
+    margin-bottom: 30px;
+  }
+  .process-steps {
+    gap: 67px;
+  }
+  .calc-grid {
+    grid-template-columns: 1fr 440px;
+  }
+  .calc-panel {
+    padding: 40px;
+  }
+  .calc-mid{
+    grid-template-columns: 440px 1fr;
+    gap: 35px;
+  }
+  .calc-hint{
+    height: 112px;
+  }
+  .staffel-row {
+    padding: 8px 20px;
+  }
+  .calc-panel h3 {
+    margin-bottom: 20px;
+  }
+  .calc-result {
+    padding-top: 5px;
+  }
+  .calc-row{
+    margin-bottom: 20px;
+  }
+  .calc-total-row{
+    margin-bottom: 8px;
+  }
+  .calc-field {
+    margin-bottom: 20px;
+  }
+  .staffel-head-row {
+    padding: 8px 20px;
+    height: 36px;
+  }
+  .gift {
+    padding: 100px 0 70px;
+  }
+  .gift-img {
+    height: 295px;
+    border-radius: 10px;
+  }
+  .cases {
+    padding: 95px 0 50px;
+  }
+  .case-inner {
+    gap: 50px;
+  }
+  .case-img.case-img-main {
+    height: 382px;
+    width: 382px;
+  }
+  .case-img {
+    border-radius: 15px;
+    width: 248px;
+    height: 180px;
+  }
+   .cases:before{
+    background:url(../media/blue-shape-lg.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  .cases-feet {
+    top: -22%;
+    right: 3%;
+    width: 204px;
+    height: 304px;
+  }
+  .designed {
+    margin-top: 102px;
+  }
+  .designed-swiper .swiper-slide {
+    width: 295px;
+    height: 295px;
+    border-radius: 15px;
+  }
+  .designed-swiper {
+    width: 105vw;
+  }
+  .brand-intro-inner {
+    max-width: 60%;
+  }
+  .brand-intro {
+    padding: 70px 0 100px;
+  }
+  .brand-intro-inner h2 {
+    margin-bottom: 10px;
+  }
+  .brand-duddle-icons .dubble-left {
+    top: -19%;
+    left: 4%;
+    width: 81px;
+    height: auto;
+  }
+  .brand-duddle-icons .dubble-right {
+    bottom: 4%;
+    right: 4%;
+    width: 81px;
+    height: auto;
+  }
+
+  .faq-q {
+    padding: 14px 4px;
+  }
+  .faq-grid {
+    grid-template-columns: 382px 1fr;
+    gap: 135px;
+  }
+  .faq-left p {
+    max-width: 100%;
+  }
+  .faq-a-inner p{
+    max-width: 92%;
+  }
+  .cta-final-feet {
+    top: -79%;
+    left: 69px;
+    width: 31%;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1.32fr auto 1.35fr;
+  }
+
+  .footer-brand p {
+    max-width: 94%;
+    margin-bottom: 30px;
+  }
+  .footer-certs {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+  .footer-col {
+    padding: 40px 50px 0;
+  }
+  .footer-brand {
+    padding-top: 10px;
+  }
+  .footer-contact {
+    padding-bottom: 50px;
+    padding-inline-end: 0;
+  }
+  .footer-address br{
+    display: none;
+  }
+  .footer-socials {
+    gap: 10px;
+    margin-bottom: 42px;
+  }
+  .footer-socials a{
+    width: 42PX;
+    height: 42px;
+  }
+  .footer-contact-row{
+    margin-bottom: 30px;
+  }
+  .footer-pay-inner, .footer-ship-inner {
+    gap: 23px;
+  }
+  
+
+  /* ————— uit oud ≤1300 ————— */
+
+  .container{
+    max-width: min(1190px, 100% - 40px);
+  }
+  /* 1280-test 2026-07-28: adresblok naast de contactlijst werd een smalle
+     kolom van 6 regels — vanaf hier onder de lijst stapelen */
+  .footer-contact-row{
+    flex-direction:column;
+    gap:18px;
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 17px;
+  }
+  .navbar-inner {
+    gap: 25px;
+  }
+
+  /* ————— uit oud ≤768 ————— */
+
+  /* globale gutters (768-pass): .container(-md) had hier geen regel — secties raakten de viewportrand */
+  .container,
+  .container-md{
+    max-width:94%;
+  }
+  /* ===== Mobiel menu (hamburger + subpaneel, 768-XD 2026-07-28) ===== */
+  /* burger = losse donkere cirkel rechts naast de globe (buiten de pill);
+     navbar wordt static zodat burger en drawer op .nav-wrap ankeren */
+  .nav-wrap{
+    position:relative;
+    padding-right:72px;
+  }
+  .nav-burger{
+    display:flex;
+    position:absolute;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+  }
+  .navbar{
+    position:static;
+    justify-content:flex-start;
+    gap:10px;
+    padding:8px 8px 8px 22px;
+  }
+  .navbar-inner{
+    margin-left:auto;
+  }
+  .logo{
+    width:104px;
+  }
+  .icon-btn{
+    width:40px;
+    height:40px;
+  }
+  .globe{
+    width:56px;
+    height:56px;
+  }
+  .navbar .cta{
+    white-space:nowrap;
+    padding:9px 14px;
+    font-size:13px;
+  }
+  /* drawer: hoofdlijst */
+  .navbar-inner .menu{
+    display:none;
+    position:absolute;
+    top:calc(100% + 10px);
+    left:0;
+    right:0;
+    background:var(--white);
+    border-radius:20px;
+    box-shadow:0 14px 34px rgba(0,0,0,.16);
+    flex-direction:column;
+    align-items:stretch;
+    gap:2px;
+    padding:14px;
+    z-index:80;
+    max-height:calc(100vh - 140px);
+    overflow-y:auto;
+  }
+  .navbar.menu-open .menu{
+    display:flex;
+  }
+  .navbar-inner .menu > li > a{
+    display:block;
+    padding:12px 14px;
+    font-size:17px;
+  }
+  .menu .caret{
+    display:none;
+  }
+  .mega{
+    display:none !important;
+  }
+  /* subpaneel: mega-inhoud in de drawer (tap op Sokkencollectie) */
+  .navbar.sub-open .menu{
+    padding:24px 28px 30px;
+  }
+  .navbar.sub-open .menu > li > a{
+    display:none;
+  }
+  .navbar.sub-open .mega{
+    display:grid !important;
+    position:static;
+    width:100%;
+    opacity:1;
+    visibility:visible;
+    transform:none;
+    box-shadow:none;
+    border-radius:0;
+    padding:0;
+    grid-template-columns:1.6fr 1fr;
+    gap:0 34px;
+    justify-items:stretch;
+    justify-content:stretch;
+  }
+  .navbar.sub-open .mega-back{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    grid-column:1 / -1;
+    justify-self:start;
+    border:none;
+    background:none;
+    padding:0;
+    font-family:var(--roc-grotesk);
+    font-size:15px;
+    font-weight:600;
+    color:var(--text);
+    cursor:pointer;
+    margin-bottom:24px;
+  }
+  .navbar.sub-open .mega-mob-title{
+    display:block;
+    grid-column:1 / -1;
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:20px;
+  }
+  .navbar.sub-open .bestsellers-col{
+    grid-column:1;
+    grid-row:3 / span 2;
+  }
+  .navbar.sub-open .types-col{
+    grid-column:2;
+    grid-row:3;
+  }
+  .navbar.sub-open .mega-usps{
+    grid-column:2;
+    grid-row:4;
+    margin-top:18px;
+  }
+  .navbar.sub-open .mega-usps h4{
+    display:none;
+  }
+  .navbar.sub-open .mega-usps span{
+    font-size:14px;
+  }
+  .navbar.sub-open .bestsellers{
+    grid-template-columns:1fr 1fr;
+    gap:30px 10px;
+  }
+  .navbar.sub-open .prod-card .prod-price{
+    font-size:14px;
+  }
+  .navbar.sub-open .prod-card .prod-img-card{
+    height:150px;
+  }
+  .navbar.sub-open .types{
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+  .navbar.sub-open .type-item .type-img{
+    width:50px;
+    height:50px;
+  }
+
+  /* ===== Product-detail page ===== */
+  .prod-top{ grid-template-columns:1fr; gap:26px; }
+  .prod-gallery{ grid-template-columns:1fr; }
+  .prod-main{ height:320px; }
+  .prod-cost{ position:static; width:100%; margin-top:16px; }
+  .prod-thumbs{ flex-direction:row; }
+  .prod-thumb{ flex:1; height:74px; }
+  .pdp-usps-main ul{ margin-top:24px; justify-content:flex-start; gap:8px 20px; }
+  .prod-info h1{ font-size:30px; }
+  .promises-grid{ grid-template-columns:1fr; }
+  .specs-grid{ grid-template-columns:1fr; gap:0; }
+  .weave-grid{ grid-template-columns:1fr; }
+  .design-now-card{ grid-template-columns:1fr; }
+  .design-now-doodle,
+  .design-now-feet{ display:none; }
+  .usecases-masonry{ column-count:1; }
+  .usecases-head{ padding:0 0 6px; }
+  .usecase-img-md,
+  .usecase-img-lg{ height:200px; }
+  .also-head{ flex-direction:column; align-items:flex-start; gap:14px; }
+  .promises h2,
+  .specs-section-inner h2,
+  .weave-inner h2,
+  .versus h2,
+  .also-title,
+  .design-now h2,
+  .usecases-head h2{ font-size:26px; }
+
+  /* ===== Case-detail page ===== */
+  .case-promo{ max-width:none; }
+  .case-specs-grid{ grid-template-columns:1fr 1fr; }
+  .case-result{ background:linear-gradient(#fff 0, #fff 12%, #3f38d6 12%, #3f38d6 100%); }
+  .case-result-grid{ grid-template-columns:1fr; gap:14px; }
+  .case-result-grid img{ height:220px; margin-top:0 !important; }
+  .case-quote{ padding:30px 20px 24px; }
+  .case-video-doodle,
+  .case-video-feet{ display:none; }
+  .case-video-card img{ height:240px; }
+  .case-story-left h2,
+  .case-specs h2,
+  .case-result h2,
+  .case-video h2,
+  .case-others h2{ font-size:26px; }
+
+  /* ===== Inspiratie / cases page ===== */
+  .insp-title{ font-size:28px; }
+  .case-grid{ grid-template-columns:1fr; gap:16px; }
+  .case-filters{ flex-direction:column; gap:14px; align-items:flex-start; }
+  .case-grid-section h2{ font-size:26px; }
+
+  /* ===== Werkwijze page ===== */
+  .steps-promo{ position:static; width:100%; margin-bottom:24px; }
+  .steps-section h2{ font-size:26px; }
+  .step-card-img{ height:180px; }
+
+  /* ===== Configurator page ===== */
+  .conf-title{ font-size:34px; }
+  .conf-doodle{ display:none; }
+  .conf-preview-card{ height:240px; }
+  .conf-promo{ position:static; width:100%; margin-top:16px; }
+  .configurator-section ul{ margin-top:30px; gap:10px 24px; }
+  .conf-works > .container > h2,
+  .conf-types h2{ font-size:26px; }
+  .conf-check-btns{ gap:8px; }
+
+  /* ===== Bedankt page ===== */
+  .thanks-hero-content{ padding-top:50px; }
+  .thanks-steps{ grid-template-columns:1fr; gap:26px; margin-bottom:56px; }
+  .wait-grid{ grid-template-columns:1fr; gap:16px; }
+  .wait-img{ height:200px; }
+  .follow{ padding:180px 0 50px; }
+  .follow-inner{ flex-direction:column; align-items:stretch; }
+  .newsletter-row{ flex-direction:column; align-items:stretch; gap:14px; }
+
+  /* ===== Sample-request page ===== */
+  .sample-actions{ flex-direction:column; align-items:stretch; }
+  .sample-actions-right{ flex-direction:column; }
+  .sample-proof-grid{ grid-template-columns:1fr; }
+
+  /* ===== Offerte page ===== */
+  .offerte-title{ font-size:32px; }
+  .offerte-nav{ padding:12px 12px 12px 20px; }
+  .offerte-logo{ font-size:22px; }
+  .quote-wrap{ grid-template-columns:1fr; gap:18px; }
+  .quote-card{ padding:22px 18px; }
+  .quote-aside{ position:static; }
+  .stepper{ flex-direction:column; gap:14px; align-items:flex-start; }
+  .stepper-item{ flex-direction:row; align-items:center; gap:12px; text-align:left; padding:0; width:100%; }
+  .stepper-item::before{ display:none; }
+  .stepper-dot{ margin-bottom:0; }
+  .type-picker{ grid-template-columns:repeat(2,1fr); }
+  .extra-picker{ grid-template-columns:repeat(2,1fr); }
+  .quote-grid,
+  .quote-grid-3{ grid-template-columns:1fr; }
+  .quote-actions-split{ flex-direction:column; align-items:stretch; gap:12px; }
+  .quote-actions-right{ flex-direction:column; }
+  .aanvraag-steps{ grid-template-columns:1fr; gap:26px; }
+  .aanvraag-doodle{ display:none; }
+  .aanvraag-title{ font-size:28px; }
+  .mini-footer .container{ flex-direction:column; text-align:center; }
+
+  /* ===== Expanding search ===== */
+  .nav-search{
+    right:52px;
+  }
+  .navbar.search-open .nav-search{
+    width:calc(100% - 120px);
+  }
+  .nav-search-input{
+    font-size:15px;
+  }
+
+  /* ===== Trusted by / brand logos ===== */
+  .brands-swiper{
+    --logo-gap:40px;
+  }
+  .brand-logo-items{
+    height:26px;
+  }
+
+  /* ===== Impact / stats + vertical socks galleries ===== */
+  .impact-inner{
+    flex-direction:column;
+    gap:40px;
+  }
+  .impact-left{
+    max-width:100%;
+    text-align:center;
+  }
+  .impact .impact-left ul li{
+    justify-content:center;
+  }
+  .stat-num{
+    font-size:34px;
+  }
+  .impact-gallery{
+    width:100%;
+    max-width:100%;
+    height:340px;
+    gap:12px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin-top:40px;
+  }
+
+  /* ===== Sokken collectie ===== */
+  .collection-grid{
+    display:flex;
+    overflow-x:auto;
+    gap:16px;
+    padding-bottom:8px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .collection-card{
+    flex:0 0 46%;
+    height:auto;
+  }
+  /* basis-foot is 70px hoog (desktop: één rij) — gestapelde foot heeft meer nodig */
+  .collection-card-foot{
+    height:auto;
+  }
+  .collection h2{
+    font-size:26px;
+    text-align:center;
+  }
+
+  /* ===== Process ===== */
+  .process{
+    padding:130px 0 70px;
+  }
+  .process-wave svg{
+    height:70px;
+  }
+  .process:not(.conf-works) > .container > h2{
+    font-size:28px;
+    margin-bottom:44px;
+  }
+  .process-steps{
+    grid-template-columns:repeat(2,1fr);
+    gap:36px 24px;
+  }
+  .process-step p{
+    max-width:none;
+  }
+
+  /* ===== Prijscalculator ===== */
+  .calc-box{
+    padding:24px 16px 30px;
+  }
+  .calc-grid{
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+  .calc-panel{
+    padding:22px 18px;
+  }
+  .calc-mid{
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+  .calc-slider-row{
+    flex-wrap:wrap;
+    gap:14px;
+  }
+
+  /* ===== Sokkengeschenk compleet ===== */
+  /* cases: desktop-naast-elkaar knipte de tekst af — stapelen; blauwe shape meerekken */
+  .cases:before{
+    background-size:100% 100%;
+  }
+  .cases{
+    padding-top:160px;
+  }
+  .cases-nav{
+    top:0;
+    margin-top:22px;
+  }
+  .case-inner{
+    flex-direction:column;
+    gap:26px;
+  }
+  .case-gallery{
+    width:100%;
+  }
+  .case-img.case-img-main{
+    width:58%;
+    height:280px;
+  }
+  .case-img{
+    width:100%;
+    height:127px;
+  }
+  .case-img-col{
+    flex:1;
+  }
+  .cases-feet{
+    display:none;
+  }
+  .gift-grid{
+    display:flex;
+    overflow-x:auto;
+    gap:16px;
+    padding-bottom:8px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .gift-card{
+    flex:0 0 46%;
+    height:auto;
+  }
+  .gift h2{
+    font-size:26px;
+    text-align:center;
+  }
+
+  /* ===== Klantcases ===== */
+  .cases-cut,
+  .cases-feet{
+    display:none;
+  }
+  .case-section-outer h2{
+    font-size:28px;
+    text-align:center;
+  }
+  .case-inner{
+    grid-template-columns:1fr;
+    gap:26px;
+  }
+  .case-text h3{
+    font-size:26px;
+  }
+  .cases-nav{
+    padding-left:0;
+    justify-content:center;
+  }
+  .designed{
+    margin-top:50px;
+  }
+  .designed-head h3{
+    font-size:28px;
+  }
+  .designed-swiper .swiper-slide{
+    width:200px;
+    height:250px;
+  }
+  .designed::before{
+    height:300px;
+    top: 50%;
+  }
+
+  /* ===== Brand intro ===== */
+  .doodle{
+    display:none;
+  }
+  .brand-intro-inner h2{
+    font-size:28px;
+  }
+
+  /* ===== FAQ ===== */
+  .faq-grid{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+  .faq-left h2{
+    font-size:28px;
+  }
+  .faq-feet{
+    display:none;
+  }
+  .faq-left p{
+    max-width:none;
+  }
+  .faq-right{
+    padding-top:0;
+  }
+
+  /* ===== Slot-CTA ===== */
+  .cta-final-feet{
+        width: 300px;
+        left: 10%;
+        top: -80%;
+  }
+  .cta-final-panel{
+    padding:90px 0 70px;
+  }
+  .cta-final-panel h2{
+    font-size:32px;
+  }
+
+  /* ===== Footer ===== */
+  .footer-grid{
+    grid-template-columns:1fr;
+    gap:34px;
+  }
+  .footer-links::before,
+  .footer-contact::before{
+    display:none;
+  }
+  .footer-contact-row{
+    flex-direction:column;
+    gap:22px;
+  }
+  .footer-partners{
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .footer-partner-slot{
+    width:100px;
+    height:44px;
+  }
+  .footer-pay{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .footer-reviews{
+    gap:24px;
+  }
+  .footer-legal{
+    line-height:1.9;
+  }
+
+  /* ===== Collectie page ===== */
+  .coll-hero-inner{
+    grid-template-columns:1fr;
+    gap:30px;
+  }
+  .coll-hero-content h1{
+    font-size:34px;
+  }
+  .coll-hero-gallery{
+    height:360px;
+  }
+  .ch-swiper .swiper-slide{
+    height:180px;
+  }
+  .types-head{
+    flex-direction:column;
+    gap:20px;
+    min-height:0;
+  }
+  .types-promo{
+    position:static;
+    max-width:none;
+  }
+  .types-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+  }
+  .compare-inner-main h2,
+  .testi-title{
+    font-size:28px;
+  }
+  .process-split-inner{
+    grid-template-columns:1fr;
+    gap:34px;
+  }
+  .process-left h2{
+    font-size:28px;
+    max-width:none;
+  }
+  .process-collage img{
+    height:180px;
+  }
+
+  /* pijl bij Sokkencollectie (submenu-indicator, zoals in het mobiele menu) */
+  .has-mega > a::after{
+    content:"";
+    display:inline-block;
+    width:15px;
+    height:10px;
+    margin-left:8px;
+    vertical-align:middle;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='12' viewBox='0 0 18 12'%3E%3Cpath d='M12 1l5 5-5 5M17 6H1' fill='none' stroke='%2328121b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+  }
+
+  /* logo-marquee full-width (universeel besluit Kulwant) */
+  .brands{
+    overflow:hidden;
+  }
+  .brands .brands-swiper{
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+  }
+
+  /* topbar-marquee (zelfde mechaniek als mobiel/tablet; JS-gate is ≤991) */
+  .topbar{
+    position:relative;
+    overflow:hidden;
+  }
+  .topbar:after{
+    content:"";
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    width:56px;
+    background:linear-gradient(to left, var(--dark), rgba(40,18,27,0));
+    pointer-events:none;
+  }
+  .topbar ul.topbar-marquee{
+    overflow:visible;
+    width:max-content;
+    gap:0;
+    padding-inline:0;
+    animation:sokkiesTopbarMarquee 18s linear infinite;
+  }
+  .topbar ul.topbar-marquee li{
+    margin-right:34px;
+  }
+  @keyframes sokkiesTopbarMarquee{
+    to{ transform:translateX(-50%); }
+  }
+
+  /* promo-float 25% kleiner (schaal = font+breedte+marges+afbeelding ineens) */
+  .promo-float{
+    transform:scale(.75);
+    transform-origin:left bottom;
+  }
+
+  /* USP-chips: cellen mochten niet krimpen (geen minmax) — labels
+     staken buiten beeld op ~640 */
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul{
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul li{
+    width:auto;
+    min-width:0;
+  }
+  .feat-label{
+    white-space:normal;
+  }
+
+  /* ═══════ GEKOPIEERD UIT DE 768-991-BAND (verzoek Kulwant 2026-07-31)
+     — volledige tabletronde; band-eigen fijnslijpen volgt ═══════ */
+
+
+
+  /* ————— uit oud ≤1680 ————— */
+
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+     --body-sm-font-size: 12px;
+  }
+  .container{
+    max-width: min(1440px, 100% - 40px);
+  }
+  /* 1680-test 2026-07-28: betaal/verzend-strip paste nét niet meer op één
+     regel (852+1+533 content + 2×30 gap = 1446 > 1440) en wikkelde lelijk */
+  .footer-pay{
+    gap:20px 20px;
+  }
+  /* telefoonnummer in de footer brak midden in het nummer af */
+  footer a[href^="tel:"]{
+    white-space:nowrap;
+  }
+
+  /* ————— uit oud ≤1550 ————— */
+
+  /* 1280-test 2026-07-28: onder de 1320-container past de betaal/verzend-strip
+     nooit op één regel — netjes gecentreerd laten wrappen, zwevende divider weg */
+  .footer-pay{
+    justify-content:center;
+    row-gap:16px;
+  }
+  .footer-pay .border-v{
+    display:none;
+  }
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+
+    --h1-font-size:58px;
+    --h2-font-size: 38px;
+    --h3-font-size: 26px;
+    --h4-font-size: 28px;
+    --h5-font-size: 17px;
+    --h6-font-size: 20px;
+  }
+   .container{
+    max-width: min(1320px, 100% - 40px);
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 25px;
+  }
+  .logo{
+    display: flex;
+    width: 96px;
+  }
+  .mega {
+    padding: 30px;
+  }
+  .prod-card .prod-img-card {
+    height: 150px;
+    border-radius: 10px;
+  }
+  .types {
+    gap: 10px 30px;
+  }
+  .type-item .type-img {
+    width: 58px;
+    height: 58px;
+    border-radius: 5px;
+  }
+  .gallery-swiper .swiper-slide {
+    width: 314px;
+    height: 440px;
+  }
+  .impact {
+    padding: 8px 0 125px;
+  }
+  .impact-inner {
+      height: 465px;
+      gap: 56px;
+  }
+  .impact-gallery {
+      width: 890px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul {
+    gap: 19px;
+  }
+  .impact-left {
+      padding-inline-start: 0;
+  }
+  .stat-num {
+    font-size: 58px;
+  }
+  .feat-label{
+    font-size:18px;
+  }
+  .collection:before {
+    top: -21%;
+    background: url(../media/yellow-shape-1440.svg);
+    background-size: cover;
+  }
+
+  .collection-img {
+    height: 295px;
+  }
+  .collection-name {
+    font-size: 17px;
+  }
+  .collection-card-foot {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 22px;
+    gap: 20px;
+  }
+  .collection-grid {
+    gap: 20px;
+  }
+  .collection-cta{
+    margin-top: 30px;
+  }
+  .collection:after {
+    bottom: -16%;
+  }
+  .v-swiper .swiper-slide {
+    width: 276px;
+    height: 345px;
+    border-radius: 15px; 
+  }
+  .process {
+    padding: 155px 0 100px;
+  }
+  .process:not(.conf-works) > .container > h2{
+    padding-top: 0;
+    margin-bottom: 30px;
+  }
+  .process-steps {
+    gap: 67px;
+  }
+  .calc-grid {
+    grid-template-columns: 1fr 440px;
+  }
+  .calc-panel {
+    padding: 40px;
+  }
+  .calc-mid{
+    grid-template-columns: 440px 1fr;
+    gap: 35px;
+  }
+  .calc-hint{
+    height: 112px;
+  }
+  .staffel-row {
+    padding: 8px 20px;
+  }
+  .calc-panel h3 {
+    margin-bottom: 20px;
+  }
+  .calc-result {
+    padding-top: 5px;
+  }
+  .calc-row{
+    margin-bottom: 20px;
+  }
+  .calc-total-row{
+    margin-bottom: 8px;
+  }
+  .calc-field {
+    margin-bottom: 20px;
+  }
+  .staffel-head-row {
+    padding: 8px 20px;
+    height: 36px;
+  }
+  .gift {
+    padding: 100px 0 0px;
+  }
+  .gift-img {
+    height: 295px;
+    border-radius: 10px;
+  }
+  .cases {
+    padding: 150px 0 50px;
+  }
+  .case-inner {
+    gap: 50px;
+  }
+  .case-img.case-img-main {
+    height: 382px;
+    width: 382px;
+  }
+  .case-img {
+    border-radius: 15px;
+    width: 248px;
+    height: 180px;
+  }
+   .cases:before{
+    background:url(../media/blue-shape-lg.png) 82% top;
+    background-size: cover;
+    height: 78%;
+    background-repeat: no-repeat;
+  }
+  .cases-feet {
+    top: -22%;
+    right: 2%;
+    width: 141px;
+    height: 206px;
+  }
+  .designed {
+    margin-top: 102px;
+  }
+  .designed-swiper .swiper-slide {
+    width: 295px;
+    height: 295px;
+    border-radius: 15px;
+  }
+  .designed-swiper {
+    width: 105vw;
+  }
+  .brand-intro-inner {
+    max-width: 100%;
+  }
+  .brand-intro {
+    padding: 70px 0 100px;
+  }
+  .brand-intro-inner h2 {
+    margin-bottom: 10px;
+  }
+  .brand-duddle-icons .dubble-left {
+    top: -19%;
+    left: 4%;
+    width: 81px;
+    height: auto;
+  }
+  .brand-duddle-icons .dubble-right {
+    bottom: 4%;
+    right: 4%;
+    width: 81px;
+    height: auto;
+  }
+
+  .faq-q {
+    padding: 14px 4px;
+  }
+  .faq-grid {
+    grid-template-columns: 382px 1fr;
+    gap: 135px;
+  }
+  .faq-left p {
+    max-width: 100%;
+  }
+  .faq-a-inner p{
+    max-width: 92%;
+  }
+  .cta-final-feet {
+    top: -29%;
+    left: 20px;
+    width: 26%;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1.32fr auto 1.35fr;
+  }
+
+  .footer-brand p {
+    max-width: 94%;
+    margin-bottom: 30px;
+  }
+  .footer-certs {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+  .footer-col {
+    padding: 40px 50px 0;
+  }
+  .footer-brand {
+    padding-top: 10px;
+  }
+  .footer-contact {
+    padding-bottom: 50px;
+    padding-inline-end: 0;
+  }
+  .footer-address br{
+    display: none;
+  }
+  .footer-socials {
+    gap: 10px;
+    margin-bottom: 42px;
+  }
+  .footer-socials a{
+    width: 42PX;
+    height: 42px;
+  }
+  .footer-contact-row{
+    margin-bottom: 30px;
+  }
+  .footer-pay-inner, .footer-ship-inner {
+    gap: 23px;
+  }
+  
+
+  /* ————— uit oud ≤1300 ————— */
+
+  .container{
+    max-width: min(1190px, 100% - 40px);
+  }
+  /* 1280-test 2026-07-28: adresblok naast de contactlijst werd een smalle
+     kolom van 6 regels — vanaf hier onder de lijst stapelen */
+  .footer-contact-row{
+    flex-direction:column;
+    gap:18px;
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 17px;
+  }
+  .navbar-inner {
+    gap: 25px;
+  }
+
+  /* ————— tabletblok ————— */
+
+  /* ===== Tablet-pass 2026-07-28 (home, zonder design — projectinzicht) ===== */
+  /* gutters: container 1190 raakte de rand */
+  .container{
+    max-width:94%;
+  }
+  /* navbar paste niet: logo over menu, "Over ons" wikkelde, CTA/globe buiten beeld */
+  .menu{
+    gap:7px;
+  }
+  .menu > li > a{
+    font-size:14px;
+    white-space:nowrap;
+  }
+  .navbar-inner{
+    gap:10px;
+  }
+  .navbar .cta{
+    white-space:nowrap;
+    padding:8px 12px;
+    font-size:13px;
+  }
+  .icon-btn{
+    width:34px;
+    height:34px;
+  }
+  .logo{
+    width:80px;
+    margin-right:8px;
+  }
+  header .container{
+    max-width:98%;
+  }
+  .nav-wrap{
+    gap:8px;
+  }
+  .navbar{
+    padding-inline:14px;
+  }
+  .globe{
+    width:52px;
+    height:52px;
+  }
+  /* mega-menu (ook verborgen) stak buiten de viewport → h-scroll */
+  .mega{
+    width:calc(100vw - 48px);
+    max-width:calc(100vw - 48px);
+  }
+  /* impact: vaste galleriebreedte 890 duwde de sectie uit beeld —
+     2 marqueekolommen i.p.v. 3 */
+  .impact-inner{
+    gap:30px;
+    height:auto;
+  }
+  .impact-gallery{
+    width:575px;
+  }
+  .impact-gallery .v-swiper:nth-child(3){
+    display:none;
+  }
+  /* USP-chips: 6 op één regel werd te krap — het bestaande 3-koloms-grid
+     werkte niet omdat de basis flex is */
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul{
+    display:grid;
+  }
+  /* calculator: vaste 560/440-kolommen pasten niet — stapelen */
+  .calc-grid{
+    grid-template-columns:1fr;
+  }
+  .calc-mid{
+    grid-template-columns:1fr 1fr;
+  }
+  /* FAQ-grid: 382px + 135px gap werd te krap */
+  .faq-grid{
+    grid-template-columns:300px 1fr;
+    gap:50px;
+  }
+  .usecases-masonry{ column-count:2; }
+  .case-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul{
+    grid-template-columns:repeat(3,1fr);
+  }
+  .collection-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+  .gift-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+  .types-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  /* ————— eigen tuning 769-991 ————— */
+  /* footer: 3-koloms grid overliep hier (zone was alleen op 1024 getest) */
+  .footer-grid{
+    grid-template-columns:1fr;
+    gap:0;
+  }
+  footer .border-v{
+    display:none;
+  }
+  .footer-col{
+    padding:30px 0 0;
+    border-left:0;
+    border-right:0;
+  }
+
+  /* logo-marquee full-width (zelfde als 992-1279-band) */
+  .brands{
+    overflow:hidden;
+  }
+  .brands .brands-swiper{
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+  }
+
+  /* cases (specs Kulwant): gallery gestapeld zoals mobiel (hoofdfoto als
+     eigen rij, twee kleine eronder) — kolommen 45% gallery / 55% tekst */
+  .case-gallery{
+    flex:0 0 45%;
+    width:45%;
+    flex-direction:column;
+  }
+  .case-text{
+    flex:0 0 55%;
+    width:55%;
+    min-width:0;
+  }
+  .case-img.case-img-main{
+    width:100%;
+    height:260px;
+  }
+  .case-img-col{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto;
+    width:100%;
+  }
+  .case-img{
+    width:100%;
+    height:120px;
+  }
+
+  /* topbar-items groter (specs Kulwant, 769-991-ronde) */
+  .topbar li{
+    font-size:15px;
+  }
+
+  /* topbar-marquee (zelfde mechaniek als mobiel; custom.js dupliceert de
+     items en zet .topbar-marquee — gate staat op ≤520 én 768-991) */
+  .topbar{
+    position:relative;
+    overflow:hidden;
+  }
+  .topbar:after{
+    content:"";
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    width:56px;
+    background:linear-gradient(to left, var(--dark), rgba(40,18,27,0));
+    pointer-events:none;
+  }
+  .topbar ul{
+    flex-wrap:nowrap;
+    justify-content:flex-start;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .topbar ul::-webkit-scrollbar{
+    display:none;
+  }
+  .topbar li{
+    white-space:nowrap;
+    flex:0 0 auto;
+  }
+  .topbar ul.topbar-marquee{
+    overflow:visible;
+    width:max-content;
+    gap:0;
+    padding-inline:0;
+    animation:sokkiesTopbarMarquee 18s linear infinite;
+  }
+  .topbar ul.topbar-marquee li{
+    margin-right:34px;
+  }
+  @keyframes sokkiesTopbarMarquee{
+    to{ transform:translateX(-50%); }
+  }
+
+  /* containers (specs Kulwant): 100% breed met VASTE 40px-gutters
+     i.p.v. percentages (overschrijft de oude 94%/98%-regels) */
+  .container,
+  .container-md{
+    max-width:100%;
+    width:100%;
+    padding-left:20px;
+    padding-right:20px;
+  }
+  header .container{
+    max-width:100%;
+  }
+  /* nav-wrap is absolute met width:100% — bij de padding-container
+     resolvet dat tegen de padding-box en schoof hij 40px naar rechts */
+  header .nav-wrap{
+    width:calc(100% - 40px);
+  }
+  /* geneste containers niet dubbel padden (hero heeft container-in-container) */
+  .container .container,
+  .container .container-md,
+  .container-md .container{
+    padding-left:0;
+    padding-right:0;
+  }
+
+  /* logo compacter (specs Kulwant; .navbar-prefix wint van de
+     104px-regel in de drawer-band die later in het bestand staat) */
+  .navbar .logo{
+    width:96px;
+  }
+  /* icon-knoppen 44px met 16px-iconen (specs Kulwant; .navbar-prefix
+     wint van de 40px-regel in de drawer-band) */
+  .navbar .icon-btn{
+    width:44px;
+    height:44px;
+  }
+  .navbar .icon-btn svg{
+    width:16px;
+    height:16px;
+  }
+  /* taalknop 68x68 met 20px-icoon (specs Kulwant) */
+  .lang .globe{
+    width:68px;
+    height:68px;
+  }
+  .lang .globe svg{
+    width:20px;
+    height:20px;
+  }
+  /* menu-toggle 68x68, hamburger-glyph 28x16 (3 balkjes van 2px + 5px gap) */
+  .navbar .nav-burger{
+    width:68px;
+    height:68px;
+    gap:5px;
+  }
+  .navbar .nav-burger span{
+    width:28px;
+  }
+  .navbar.menu-open .nav-burger span:nth-child(1){
+    transform:translateY(7px) rotate(45deg);
+  }
+  .navbar.menu-open .nav-burger span:nth-child(3){
+    transform:translateY(-7px) rotate(-45deg);
+  }
+
+  /* hero (specs Kulwant): banner pt 170 / pb 0, kop 58 (clamp zat op
+     6vw=54), usps onder elkaar op 17px/25px zonder extra marges ertussen */
+  .banner-section{
+    padding-top:170px;
+    padding-bottom:0;
+  }
+  .banner-section h1{
+    font-size:58px;
+  }
+  .usps{
+    flex-direction:column;
+    align-items:center;
+    gap:0;
+    margin-top:30px;
+    margin-bottom:30px;
+  }
+  .usps span{
+    font-size:17px;
+    line-height:25px;
+    margin:0;
+    padding:0;
+  }
+
+  /* hero-CTA's: 44px hoog, 15px (specs Kulwant) */
+  .hero-btns .cta,
+  .hero-btns .cta-light{
+    height:44px;
+    font-size:15px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:0 20px;
+  }
+  /* hero-slider zoals mobiel: actieve PAAR gecentreerd met 5%-slivers —
+     hier met swiper-gap 20 (breakpoint 768) i.p.v. 14 op mobiel */
+  .gallery .gallery-swiper{
+    width:calc(90vw - 40px);
+    margin-inline:auto;
+    overflow:visible;
+  }
+  .gallery-swiper .swiper-slide{
+    width:calc(50% - 10px);
+    height:440px;
+  }
+  /* stagger op runtime-klassen (de loop husselt de DOM; nth-child-offsets
+     van de basis uit) — zelfde patroon als mobiel */
+  .gallery-swiper .swiper-slide:nth-child(3n + 1),
+  .gallery-swiper .swiper-slide:nth-child(3n + 2),
+  .gallery-swiper .swiper-slide:nth-child(3n){
+    transform:none;
+  }
+  .gallery-swiper .swiper-slide{
+    transition:transform .6s;
+  }
+  .gallery-swiper .swiper-slide.swiper-slide-prev,
+  .gallery-swiper .swiper-slide.swiper-slide-next{
+    transform:translateY(24px);
+  }
+  .gallery-swiper .swiper-slide.swiper-slide-active,
+  .gallery-swiper .swiper-slide.swiper-slide-next + .swiper-slide{
+    transform:translateY(-24px);
+  }
+
+  /* impact zoals mobiel (specs Kulwant): stats op één regel links,
+     beschrijving uitgelijnd op de cijfers, gallery plat en 120vw
+     gecentreerd, chips 2 kolommen — plus tablet-specifieke overrides
+     (kolomlayout, 575px-gallery en verborgen 3e marquee ongedaan) */
+  .brands{
+    margin-bottom:0;
+  }
+  .impact{
+    margin-top:40px;
+    padding:60px 0 40px;
+  }
+  .impact:before{
+    background-size:950px auto;
+  }
+  .impact-inner{
+    flex-direction:column;
+    align-items:center;
+    overflow:visible;
+    height:auto;
+    gap:28px;
+  }
+  .impact-left{
+    max-width:100%;
+    text-align:left;
+    width:100%;
+  }
+  .stat-arrow{
+    margin-top:2px;
+  }
+  .stat-arrow svg{
+    width:15px;
+    height:auto;
+  }
+  .impact .impact-left ul{
+    display:flex;
+    flex-direction:row;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:20px;
+    justify-content: space-between;
+  }
+  .impact .impact-left ul li{
+    justify-content:flex-start;
+    flex:0 1 auto;
+    min-width:0;
+  }
+  .impact .impact-left p{
+    margin:0;
+    padding-left:29px;
+  }
+  .stat-num{
+    font-size:58px;
+  }
+  .stat-label{
+    font-size:13px;
+    white-space:nowrap;
+  }
+  .impact-gallery{
+    /* rotatie uit de basis (-4°) blijft staan — zelfde hoek als desktop */
+    width:100%; /* binnen de 40px-container-gutters (correctie Kulwant) */
+    max-width:100%;
+    margin-left:0;
+    padding-right:0;
+    height:340px;
+    gap:12px;
+  }
+  .impact-gallery .v-swiper:nth-child(3){
+    display:block;
+  }
+  .v-swiper .swiper-slide{
+    width:100%;
+    height:150px;
+    border-radius:12px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:10px;
+    margin-top:80px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul li{
+    width:auto;
+    min-width:0;
+    height:104px;
+    justify-content:center;
+    text-align:center;
+  }
+  .feat-icon{
+    width:40px;
+    height:40px;
+  }
+  .feat-icon svg,
+  .feat-icon img{
+    width:40px;
+    height:40px;
+  }
+  .feat-label{
+    font-size:17px;
+    white-space:normal;
+  }
+
+  /* collectie (specs Kulwant): horizontale scroll-rij zoals mobiel,
+     2 kaarten volledig + 3e voor 25% zichtbaar */
+  .collection{
+    padding-top:70px;
+  }
+  .collection-grid{
+    display:flex;
+    overflow-x:auto;
+    gap:16px;
+    padding-bottom:8px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none; /* scrollbar verborgen (specs Kulwant) */
+  }
+  .collection-grid::-webkit-scrollbar{
+    display:none;
+  }
+  .collection-card{
+    flex:0 0 calc((100% - 32px) / 2.25);
+    height:auto;
+  }
+  /* basis-foot is 70px (desktop één rij) — knipte de Bekijk-knop af */
+  .collection-card-foot{
+    height:auto;
+  }
+
+  /* process (specs Kulwant): stappen 2 rijen x 2 kolommen */
+  .process-steps{
+    grid-template-columns:repeat(2, 1fr);
+    gap:40px 24px;
+  }
+
+  /* gift (specs Kulwant): horizontale scroll-rij, 2 kaarten volledig +
+     3e voor 25% zichtbaar, scrollbar verborgen */
+  .gift-grid{
+    display:flex;
+    overflow-x:auto;
+    gap:16px;
+    padding-bottom:8px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .gift-grid::-webkit-scrollbar{
+    display:none;
+  }
+  .gift-card{
+    flex:0 0 calc((100% - 32px) / 2.25);
+    height:auto;
+  }
+
+  .gift-nav,
+  .collection-nav{
+    display:flex; /* pijlen aan bij de scroll-rijen */
+  }
+  /* gift- en collectierij full-width zonder zijpadding (specs Kulwant):
+     via de vaste 40px-gutters naar buiten breken — geen vw nodig */
+  .collection-grid,
+  .gift-grid{
+    width:calc(100% + 40px);
+    margin-left:-20px;
+    padding-left:20px; /* eerste kaart lijnt uit met de kop; rij blijft
+                          rechts full-bleed en scrollt links de rand in */
+  }
+  /* gift-pijlen rechts naast de kop (specs Kulwant) */
+  .gift .container{
+    position:relative;
+  }
+  .gift-nav{
+    position:absolute;
+    top:0;
+    right:20px;
+    margin-top:0;
+  }
+
+  /* faq (specs Kulwant): één kolom i.p.v. twee, sectie pt 100 */
+  .faq{
+    padding-top:100px;
+    padding-bottom:220px;
+  }
+  .faq-grid{
+    grid-template-columns:1fr;
+    gap:30px;
+  }
+  .faq-right{
+    padding-top:0; /* desktop-uitlijnoffset zou dode ruimte geven */
+  }
+
+  /* footer-structuur tablet (specs Kulwant):
+     rij 1: logo+tekst links | certs rechts
+     rij 2/3: Sokkies-links links | contactinfo rechts
+     rij 4: nieuwsbrief links | socials rechts — daarna partners.
+     .footer-contact op display:contents zodat zijn onderdelen (h5,
+     contactrij, socials, news) los in het grid geplaatst kunnen worden. */
+  .footer-grid{
+    display:grid;
+    grid-template-columns:6fr 4fr; /* 60/40 (fr = gap-veilig) */
+    column-gap:40px;
+    padding-top:40px;
+    padding-bottom: 40px;
+  }
+  .footer-brand{
+    grid-column:1 / -1;
+    display:grid;
+    grid-template-columns:6fr 4fr; /* zelfde 60/40 als de rijen eronder */
+    column-gap:40px;
+    padding:0 0 40px;
+    border-bottom:1px solid rgba(255,255,255,.35);
+    margin-bottom:40px;
+  }
+  .footer-brand .footer-logo{
+    grid-column:1;
+  }
+  .footer-brand p{
+    grid-column:1;
+    margin-bottom:0;
+    max-width:none;
+  }
+  .footer-brand .footer-certs{
+    grid-column:2;
+    grid-row:1 / span 2;
+    align-self:start;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:16px;
+  }
+  .footer-certs-list{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .footer-links{
+    grid-column:1;
+    grid-row:2 / span 2;
+    padding:0;
+    border:0;
+  }
+  .footer-contact{
+    display:contents;
+  }
+  .footer-contact > h5{
+    grid-column:2;
+    grid-row:2;
+    margin-bottom:20px;
+  }
+  .footer-contact-row{
+    grid-column:2;
+    grid-row:3;
+    flex-direction:column;
+    gap:24px;
+    margin-bottom:0;
+  }
+  .footer-news{
+    grid-column:1;
+    grid-row:4;
+    margin-top:40px;
+  }
+  .footer-socials{
+    grid-column:2;
+    grid-row:4;
+    margin:40px 0 0;
+    align-self:center;
+  }
+  .footer-partners{
+    margin-top:0px;
+    margin-bottom: 40px;
+  }
+
+  /* betaalstrip (specs Kulwant) */
+  .footer-pay-group{
+    padding-top:40px;
+    text-align:center;
+    justify-content:center;
+  }
+  /* verzendpartners in twee rijen: label boven, logo's eronder */
+  .footer-ship{
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+    padding-top: 20px;
+    padding-bottom: 40px;
+  }
+
+  /* reviews + legal (specs Kulwant) */
+  .footer-review{
+    margin-bottom:20px;
+  }
+  .footer-legal{
+    padding-top:20px;
+    line-height:26px;
+  }
+
+  /* calculator (specs Kulwant) */
+  .calc-mid{
+    grid-template-columns:60% 40%;
+  }
+  .footer-reviews{
+    padding-bottom:20px;
+  }
+
+  /* promo-float 25% kleiner (schaal = font+breedte+marges+afbeelding ineens) */
+  .promo-float{
+    transform:scale(.75);
+    transform-origin:left bottom;
+  }
+
+  /* promo-float: link en beschrijving iets groter (compenseert de
+     0.75-schaal; specs Kulwant) */
+  .promo-float-body p{
+    font-size:17px;
+  }
+  .promo-float-link{
+    font-size:17px;
+  }
+
+
+  /* koppen -20% (specs Kulwant; alles onder de 20px blijft staan):
+     58→46, 38→30, 32→26, 28→22, 26→21 — tokens + expliciete regels */
+  :root{
+    --h1-font-size:46px;
+    --h2-font-size:30px;
+    --h3-font-size:21px;
+    --h4-font-size:22px;
+  }
+  .banner-section h1{
+    font-size:46px;
+  }
+  .collection h2,
+  .gift h2{
+    font-size:21px;
+  }
+  .brand-intro-inner h2,
+  .case-section-outer h2,
+  .faq-left h2,
+  .process:not(.conf-works) > .container > h2{
+    font-size:22px;
+  }
+  .cta-final-panel h2{
+    font-size:26px;
+  }
+  .designed-head h3{
+    font-size:22px;
+  }
+  .case-text h3{
+    font-size:21px;
+  }
+
+  /* fijnslijpronde 2 (specs Kulwant): stats -30%, scroll-rijen 1 kaart +
+     halve kaart, calc-mid gestapeld, gift-kop links */
+  .stat-num{
+    font-size:41px;
+  }
+  .collection-card{
+    flex:0 0 calc((100% - 16px) / 1.5);
+  }
+  .gift-card{
+    flex:0 0 calc((100% - 16px) / 1.5);
+  }
+  .gift h2{
+    text-align:left;
+  }
+  .calc-mid{
+    grid-template-columns:1fr;
+  }
+
+  /* Collectie-sweep (2026-08-03): coll-hero gestapeld — basis fixeert 730px
+     (desktop-layout) waardoor de 1-koloms inhoud clipte en de gallery met
+     top:-60px over de USP-chips viel; geldt ook voor werkwijze/partners/
+     toepassingen (zelfde hero-patroon) */
+  .coll-hero{
+    height:auto;
+    padding-bottom:50px;
+  }
+  .coll-hero-gallery{
+    top:0;
+    margin-top:30px;
+    margin-right:0;
+  }
+}
+
+/* ===================================================================
+   520px en smaller (mobiel — FINAL)
+   =================================================================== */
+@media (max-width:520px){
+
+
+  /* ————— uit oud ≤1680 ————— */
+
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+     --body-sm-font-size: 12px;
+  }
+  .container{
+    max-width: min(1440px, 100% - 40px);
+  }
+  /* 1680-test 2026-07-28: betaal/verzend-strip paste nét niet meer op één
+     regel (852+1+533 content + 2×30 gap = 1446 > 1440) en wikkelde lelijk */
+  .footer-pay{
+    gap:20px 20px;
+  }
+  /* telefoonnummer in de footer brak midden in het nummer af */
+  footer a[href^="tel:"]{
+    white-space:nowrap;
+  }
+
+  /* ————— uit oud ≤1550 ————— */
+
+  /* 1280-test 2026-07-28: onder de 1320-container past de betaal/verzend-strip
+     nooit op één regel — netjes gecentreerd laten wrappen, zwevende divider weg */
+  .footer-pay{
+    justify-content:center;
+    row-gap:16px;
+  }
+  .footer-pay .border-v{
+    display:none;
+  }
+  :root{
+     --body-font-size: 15px;
+     --body-lg-font-size: 17px;
+
+    --h1-font-size:58px;
+    --h2-font-size: 38px;
+    --h3-font-size: 26px;
+    --h4-font-size: 28px;
+    --h5-font-size: 17px;
+    --h6-font-size: 20px;
+  }
+   .container{
+    max-width: min(1320px, 100% - 40px);
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 25px;
+  }
+  .logo{
+    display: flex;
+    width: 96px;
+  }
+  .mega {
+    padding: 30px;
+  }
+  .prod-card .prod-img-card {
+    height: 150px;
+    border-radius: 10px;
+  }
+  .types {
+    gap: 10px 30px;
+  }
+  .type-item .type-img {
+    width: 58px;
+    height: 58px;
+    border-radius: 5px;
+  }
+  .gallery-swiper .swiper-slide {
+    width: 314px;
+    height: 440px;
+  }
+  .impact {
+    padding: 8px 0 125px;
+  }
+  .impact-inner {
+      height: 465px;
+      gap: 56px;
+  }
+  .impact-gallery {
+      width: 890px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul {
+    gap: 19px;
+  }
+  .impact-left {
+      padding-inline-start: 0;
+  }
+  .stat-num {
+    font-size: 58px;
+  }
+  .feat-label{
+    font-size:18px;
+  }
+  .collection:before {
+    top: -51%;
+    background: url(../media/yellow-shape-1440.svg);
+    background-size: cover;
+  }
+
+  .collection-img {
+    height: 295px;
+  }
+  .collection-name {
+    font-size: 17px;
+  }
+  .collection-card-foot {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 22px;
+    gap: 20px;
+  }
+  .collection-grid {
+    gap: 20px;
+  }
+  .collection-cta{
+    margin-top: 30px;
+  }
+  .collection:after {
+    bottom: -16%;
+  }
+  .v-swiper .swiper-slide {
+    width: 276px;
+    height: 345px;
+    border-radius: 15px; 
+  }
+  .process {
+    padding: 155px 0 120px;
+  }
+  .process:not(.conf-works) > .container > h2{
+    padding-top: 0;
+    margin-bottom: 30px;
+  }
+  .process-steps {
+    gap: 67px;
+  }
+  .calc-grid {
+    grid-template-columns: 1fr 440px;
+  }
+  .calc-panel {
+    padding: 40px;
+  }
+  .calc-mid{
+    grid-template-columns: 440px 1fr;
+    gap: 35px;
+  }
+  .calc-hint{
+    height: 112px;
+  }
+  .staffel-row {
+    padding: 8px 20px;
+  }
+  .calc-panel h3 {
+    margin-bottom: 20px;
+  }
+  .calc-result {
+    padding-top: 5px;
+  }
+  .calc-row{
+    margin-bottom: 20px;
+  }
+  .calc-total-row{
+    margin-bottom: 8px;
+  }
+  .calc-field {
+    margin-bottom: 20px;
+  }
+  .staffel-head-row {
+    padding: 8px 20px;
+    height: 36px;
+  }
+  .gift {
+    padding: 100px 0 70px;
+  }
+  .gift-img {
+    height: 295px;
+    border-radius: 10px;
+  }
+  .cases {
+    padding: 95px 0 50px;
+  }
+  .case-inner {
+    gap: 50px;
+  }
+  .case-img.case-img-main {
+    height: 382px;
+    width: 382px;
+  }
+  .case-img {
+    border-radius: 15px;
+    width: 248px;
+    height: 180px;
+  }
+   .cases:before{
+    background:url(../media/blue-shape-lg.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  .cases-feet {
+    top: -22%;
+    right: 3%;
+    width: 204px;
+    height: 304px;
+  }
+  .designed {
+    margin-top: 102px;
+  }
+  .designed-swiper .swiper-slide {
+    width: 295px;
+    height: 295px;
+    border-radius: 15px;
+  }
+  .designed-swiper {
+    width: 105vw;
+  }
+  .brand-intro-inner {
+    max-width: 60%;
+  }
+  .brand-intro {
+    padding: 70px 0 100px;
+  }
+  .brand-intro-inner h2 {
+    margin-bottom: 10px;
+  }
+  .brand-duddle-icons .dubble-left {
+    top: -19%;
+    left: 4%;
+    width: 81px;
+    height: auto;
+  }
+  .brand-duddle-icons .dubble-right {
+    bottom: 4%;
+    right: 4%;
+    width: 81px;
+    height: auto;
+  }
+
+  .faq-q {
+    padding: 14px 4px;
+  }
+  .faq-grid {
+    grid-template-columns: 382px 1fr;
+    gap: 135px;
+  }
+  .faq-left p {
+    max-width: 100%;
+  }
+  .faq-a-inner p{
+    max-width: 92%;
+  }
+  .cta-final-feet {
+    top: -79%;
+    left: 69px;
+    width: 31%;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1.32fr auto 1.35fr;
+  }
+
+  .footer-brand p {
+    max-width: 94%;
+    margin-bottom: 30px;
+  }
+  .footer-certs {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+  .footer-col {
+    padding: 40px 50px 0;
+  }
+  .footer-brand {
+    padding-top: 10px;
+  }
+  .footer-contact {
+    padding-bottom: 50px;
+    padding-inline-end: 0;
+  }
+  .footer-address br{
+    display: none;
+  }
+  .footer-socials {
+    gap: 10px;
+    margin-bottom: 42px;
+  }
+  .footer-socials a{
+    width: 42PX;
+    height: 42px;
+  }
+  .footer-contact-row{
+    margin-bottom: 30px;
+  }
+  .footer-pay-inner, .footer-ship-inner {
+    gap: 23px;
+  }
+  
+
+  /* ————— uit oud ≤1300 ————— */
+
+  .container{
+    max-width: min(1190px, 100% - 40px);
+  }
+  /* 1280-test 2026-07-28: adresblok naast de contactlijst werd een smalle
+     kolom van 6 regels — vanaf hier onder de lijst stapelen */
+  .footer-contact-row{
+    flex-direction:column;
+    gap:18px;
+  }
+  header .container{
+    max-width: 95.9%;
+  }
+  .menu {
+    gap: 17px;
+  }
+  .navbar-inner {
+    gap: 25px;
+  }
+
+  /* ————— uit oud ≤768 ————— */
+
+  /* globale gutters (768-pass): .container(-md) had hier geen regel — secties raakten de viewportrand */
+  .container,
+  .container-md{
+    max-width:94%;
+  }
+  /* ===== Mobiel menu (hamburger + subpaneel, 768-XD 2026-07-28) ===== */
+  /* burger = losse donkere cirkel rechts naast de globe (buiten de pill);
+     navbar wordt static zodat burger en drawer op .nav-wrap ankeren */
+  .nav-wrap{
+    position:relative;
+    padding-right:72px;
+  }
+  .nav-burger{
+    display:flex;
+    position:absolute;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+  }
+  .navbar{
+    position:static;
+    justify-content:flex-start;
+    gap:10px;
+    padding:8px 8px 8px 22px;
+  }
+  .navbar-inner{
+    margin-left:auto;
+  }
+  .logo{
+    width:104px;
+  }
+  .icon-btn{
+    width:40px;
+    height:40px;
+  }
+  .globe{
+    width:56px;
+    height:56px;
+  }
+  .navbar .cta{
+    white-space:nowrap;
+    padding:9px 14px;
+    font-size:13px;
+  }
+  /* drawer: hoofdlijst */
+  .navbar-inner .menu{
+    display:none;
+    position:absolute;
+    top:calc(100% + 10px);
+    left:0;
+    right:0;
+    background:var(--white);
+    border-radius:20px;
+    box-shadow:0 14px 34px rgba(0,0,0,.16);
+    flex-direction:column;
+    align-items:stretch;
+    gap:2px;
+    padding:14px;
+    z-index:80;
+    max-height:calc(100vh - 140px);
+    overflow-y:auto;
+  }
+  .navbar.menu-open .menu{
+    display:flex;
+  }
+  .navbar-inner .menu > li > a{
+    display:block;
+    padding:12px 14px;
+    font-size:17px;
+  }
+  .menu .caret{
+    display:none;
+  }
+  .mega{
+    display:none !important;
+  }
+  /* subpaneel: mega-inhoud in de drawer (tap op Sokkencollectie) */
+  .navbar.sub-open .menu{
+    padding:24px 28px 30px;
+  }
+  .navbar.sub-open .menu > li > a{
+    display:none;
+  }
+  .navbar.sub-open .mega{
+    display:grid !important;
+    position:static;
+    width:100%;
+    opacity:1;
+    visibility:visible;
+    transform:none;
+    box-shadow:none;
+    border-radius:0;
+    padding:0;
+    grid-template-columns:1.6fr 1fr;
+    gap:0 34px;
+    justify-items:stretch;
+    justify-content:stretch;
+  }
+  .navbar.sub-open .mega-back{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    grid-column:1 / -1;
+    justify-self:start;
+    border:none;
+    background:none;
+    padding:0;
+    font-family:var(--roc-grotesk);
+    font-size:15px;
+    font-weight:600;
+    color:var(--text);
+    cursor:pointer;
+    margin-bottom:24px;
+  }
+  .navbar.sub-open .mega-mob-title{
+    display:block;
+    grid-column:1 / -1;
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:20px;
+  }
+  .navbar.sub-open .bestsellers-col{
+    grid-column:1;
+    grid-row:3 / span 2;
+  }
+  .navbar.sub-open .types-col{
+    grid-column:2;
+    grid-row:3;
+  }
+  .navbar.sub-open .mega-usps{
+    grid-column:2;
+    grid-row:4;
+    margin-top:18px;
+  }
+  .navbar.sub-open .mega-usps h4{
+    display:none;
+  }
+  .navbar.sub-open .mega-usps span{
+    font-size:14px;
+  }
+  .navbar.sub-open .bestsellers{
+    grid-template-columns:1fr 1fr;
+    gap:30px 10px;
+  }
+  .navbar.sub-open .prod-card .prod-price{
+    font-size:14px;
+  }
+  .navbar.sub-open .prod-card .prod-img-card{
+    height:150px;
+  }
+  .navbar.sub-open .types{
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+  .navbar.sub-open .type-item .type-img{
+    width:50px;
+    height:50px;
+  }
+
+  /* ===== Product-detail page ===== */
+  .prod-top{ grid-template-columns:1fr; gap:26px; }
+  .prod-gallery{ grid-template-columns:1fr; }
+  .prod-main{ height:320px; }
+  .prod-cost{ position:static; width:100%; margin-top:16px; }
+  .prod-thumbs{ flex-direction:row; }
+  .prod-thumb{ flex:1; height:74px; }
+  .pdp-usps-main ul{ margin-top:24px; justify-content:flex-start; gap:8px 20px; }
+  .prod-info h1{ font-size:30px; }
+  .promises-grid{ grid-template-columns:1fr; }
+  .specs-grid{ grid-template-columns:1fr; gap:0; }
+  .weave-grid{ grid-template-columns:1fr; }
+  .design-now-card{ grid-template-columns:1fr; }
+  .design-now-doodle,
+  .design-now-feet{ display:none; }
+  .usecases-masonry{ column-count:1; }
+  .usecases-head{ padding:0 0 6px; }
+  .usecase-img-md,
+  .usecase-img-lg{ height:200px; }
+  .also-head{ flex-direction:column; align-items:flex-start; gap:14px; }
+  .promises h2,
+  .specs-section-inner h2,
+  .weave-inner h2,
+  .versus h2,
+  .also-title,
+  .design-now h2,
+  .usecases-head h2{ font-size:26px; }
+
+  /* ===== Case-detail page ===== */
+  .case-promo{ max-width:none; }
+  .case-specs-grid{ grid-template-columns:1fr 1fr; }
+  .case-result{ background:linear-gradient(#fff 0, #fff 12%, #3f38d6 12%, #3f38d6 100%); }
+  .case-result-grid{ grid-template-columns:1fr; gap:14px; }
+  .case-result-grid img{ height:220px; margin-top:0 !important; }
+  .case-quote{ padding:30px 20px 24px; }
+  .case-video-doodle,
+  .case-video-feet{ display:none; }
+  .case-video-card img{ height:240px; }
+  .case-story-left h2,
+  .case-specs h2,
+  .case-result h2,
+  .case-video h2,
+  .case-others h2{ font-size:26px; }
+
+  /* ===== Inspiratie / cases page ===== */
+  .insp-title{ font-size:28px; }
+  .case-grid{ grid-template-columns:1fr; gap:16px; }
+  .case-filters{ flex-direction:column; gap:14px; align-items:flex-start; }
+  .case-grid-section h2{ font-size:26px; }
+
+  /* ===== Werkwijze page ===== */
+  .steps-promo{ position:static; width:100%; margin-bottom:24px; }
+  .steps-section h2{ font-size:26px; }
+  .step-card-img{ height:180px; }
+
+  /* ===== Configurator page ===== */
+  .conf-title{ font-size:34px; }
+  .conf-doodle{ display:none; }
+  .conf-preview-card{ height:240px; }
+  .conf-promo{ position:static; width:100%; margin-top:16px; }
+  .configurator-section ul{ margin-top:30px; gap:10px 24px; }
+  .conf-works > .container > h2,
+  .conf-types h2{ font-size:26px; }
+  .conf-check-btns{ gap:8px; }
+
+  /* ===== Bedankt page ===== */
+  .thanks-hero-content{ padding-top:50px; }
+  .thanks-steps{ grid-template-columns:1fr; gap:26px; margin-bottom:56px; }
+  .wait-grid{ grid-template-columns:1fr; gap:16px; }
+  .wait-img{ height:200px; }
+  .follow{ padding:180px 0 50px; }
+  .follow-inner{ flex-direction:column; align-items:stretch; }
+  .newsletter-row{ flex-direction:column; align-items:stretch; gap:14px; }
+
+  /* ===== Sample-request page ===== */
+  .sample-actions{ flex-direction:column; align-items:stretch; }
+  .sample-actions-right{ flex-direction:column; }
+  .sample-proof-grid{ grid-template-columns:1fr; }
+
+  /* ===== Offerte page ===== */
+  .offerte-title{ font-size:32px; }
+  .offerte-nav{ padding:12px 12px 12px 20px; }
+  .offerte-logo{ font-size:22px; }
+  .quote-wrap{ grid-template-columns:1fr; gap:18px; }
+  .quote-card{ padding:22px 18px; }
+  .quote-aside{ position:static; }
+  .stepper{ flex-direction:column; gap:14px; align-items:flex-start; }
+  .stepper-item{ flex-direction:row; align-items:center; gap:12px; text-align:left; padding:0; width:100%; }
+  .stepper-item::before{ display:none; }
+  .stepper-dot{ margin-bottom:0; }
+  .type-picker{ grid-template-columns:repeat(2,1fr); }
+  .extra-picker{ grid-template-columns:repeat(2,1fr); }
+  .quote-grid,
+  .quote-grid-3{ grid-template-columns:1fr; }
+  .quote-actions-split{ flex-direction:column; align-items:stretch; gap:12px; }
+  .quote-actions-right{ flex-direction:column; }
+  .aanvraag-steps{ grid-template-columns:1fr; gap:26px; }
+  .aanvraag-doodle{ display:none; }
+  .aanvraag-title{ font-size:28px; }
+  .mini-footer .container{ flex-direction:column; text-align:center; }
+
+  /* ===== Expanding search ===== */
+  .nav-search{
+    right:52px;
+  }
+  .navbar.search-open .nav-search{
+    width:calc(100% - 120px);
+  }
+  .nav-search-input{
+    font-size:15px;
+  }
+
+  /* ===== Trusted by / brand logos ===== */
+  .brands-swiper{
+    --logo-gap:40px;
+  }
+  .brand-logo-items{
+    height:26px;
+  }
+
+  /* ===== Impact / stats + vertical socks galleries ===== */
+  .impact-inner{
+    flex-direction:column;
+    gap:40px;
+  }
+  .impact-left{
+    max-width:100%;
+    text-align:center;
+  }
+  .impact .impact-left ul li{
+    justify-content:center;
+  }
+  .stat-num{
+    font-size:34px;
+  }
+  .impact-gallery{
+    width:100%;
+    max-width:100%;
+    height:340px;
+    gap:12px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin-top:40px;
+  }
+
+  /* ===== Sokken collectie ===== */
+  .collection-grid{
+    display:flex;
+    overflow-x:auto;
+    gap:16px;
+    padding-bottom:8px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .collection-card{
+    flex:0 0 46%;
+    height:auto;
+  }
+  /* basis-foot is 70px hoog (desktop: één rij) — gestapelde foot heeft meer nodig */
+  .collection-card-foot{
+    height:auto;
+  }
+  .collection h2{
+    font-size:26px;
+    text-align:center;
+  }
+
+  /* ===== Process ===== */
+  .process{
+    padding:130px 0 70px;
+  }
+  .process-wave svg{
+    height:70px;
+  }
+  .process:not(.conf-works) > .container > h2{
+    font-size:28px;
+    margin-bottom:44px;
+  }
+  .process-steps{
+    grid-template-columns:repeat(2,1fr);
+    gap:36px 24px;
+  }
+  .process-step p{
+    max-width:none;
+  }
+
+  /* ===== Prijscalculator ===== */
+  .calc-box{
+    padding:24px 16px 30px;
+  }
+  .calc-grid{
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+  .calc-panel{
+    padding:22px 18px;
+  }
+  .calc-mid{
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+  .calc-slider-row{
+    flex-wrap:wrap;
+    gap:14px;
+  }
+
+  /* ===== Sokkengeschenk compleet ===== */
+  /* cases: desktop-naast-elkaar knipte de tekst af — stapelen; blauwe shape meerekken */
+  .cases:before{
+    background-size:100% 100%;
+  }
+  .cases{
+    padding-top:160px;
+  }
+  .cases-nav{
+    top:0;
+    margin-top:22px;
+  }
+  .case-inner{
+    flex-direction:column;
+    gap:26px;
+  }
+  .case-gallery{
+    width:100%;
+  }
+  .case-img.case-img-main{
+    width:58%;
+    height:280px;
+  }
+  .case-img{
+    width:100%;
+    height:127px;
+  }
+  .case-img-col{
+    flex:1;
+  }
+  .cases-feet{
+    display:none;
+  }
+  .gift-grid{
+    display:flex;
+    overflow-x:auto;
+    gap:16px;
+    padding-bottom:8px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .gift-card{
+    flex:0 0 46%;
+    height:auto;
+  }
+  .gift h2{
+    font-size:26px;
+    text-align:center;
+  }
+
+  /* ===== Klantcases ===== */
+  .cases-cut,
+  .cases-feet{
+    display:none;
+  }
+  .case-section-outer h2{
+    font-size:28px;
+    text-align:center;
+  }
+  .case-inner{
+    grid-template-columns:1fr;
+    gap:26px;
+  }
+  .case-text h3{
+    font-size:26px;
+  }
+  .cases-nav{
+    padding-left:0;
+    justify-content:center;
+  }
+  .designed{
+    margin-top:50px;
+  }
+  .designed-head h3{
+    font-size:28px;
+  }
+  .designed-swiper .swiper-slide{
+    width:200px;
+    height:250px;
+  }
+  .designed::before{
+    height:300px;
+    top: 50%;
+  }
+
+  /* ===== Brand intro ===== */
+  .doodle{
+    display:none;
+  }
+  .brand-intro-inner h2{
+    font-size:28px;
+  }
+
+  /* ===== FAQ ===== */
+  .faq-grid{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+  .faq-left h2{
+    font-size:28px;
+  }
+  .faq-feet{
+    display:none;
+  }
+  .faq-left p{
+    max-width:none;
+  }
+  .faq-right{
+    padding-top:0;
+  }
+
+  /* ===== Slot-CTA ===== */
+  .cta-final-feet{
+        width: 300px;
+        left: 10%;
+        top: -58%;
+  }
+  .cta-final-panel{
+    padding:90px 0 70px;
+  }
+  .cta-final-panel h2{
+    font-size:32px;
+  }
+
+  /* ===== Footer ===== */
+  .footer-grid{
+    grid-template-columns:1fr;
+    gap:34px;
+  }
+  .footer-links::before,
+  .footer-contact::before{
+    display:none;
+  }
+  .footer-contact-row{
+    flex-direction:column;
+    gap:22px;
+  }
+  .footer-partners{
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .footer-partner-slot{
+    width:100px;
+    height:44px;
+  }
+  .footer-pay{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .footer-reviews{
+    gap:24px;
+  }
+  .footer-legal{
+    line-height:1.9;
+  }
+
+  /* ===== Collectie page ===== */
+  .coll-hero-inner{
+    grid-template-columns:1fr;
+    gap:30px;
+  }
+  .coll-hero-content h1{
+    font-size:34px;
+  }
+  .coll-hero-gallery{
+    height:360px;
+  }
+  .ch-swiper .swiper-slide{
+    height:180px;
+  }
+  .types-head{
+    flex-direction:column;
+    gap:20px;
+    min-height:0;
+  }
+  .types-promo{
+    position:static;
+    max-width:none;
+  }
+  .types-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+  }
+  .compare-inner-main h2,
+  .testi-title{
+    font-size:28px;
+  }
+  .process-split-inner{
+    grid-template-columns:1fr;
+    gap:34px;
+  }
+  .process-left h2{
+    font-size:28px;
+    max-width:none;
+  }
+  .process-collage img{
+    height:180px;
+  }
+
+  /* ————— mobiel ≤520 ————— */
+
+  /* globale gutters (specs Kulwant): container 100% breed met vaste
+     20px-padding links/rechts i.p.v. de 94%-max-width uit het 768-blok */
+  .container,
+  .container-md{
+    max-width:100%;
+    width:100%;
+    padding-left:20px;
+    padding-right:20px;
+  }
+  /* geneste containers niet dubbel padden (hero heeft container-in-container) */
+  .container .container,
+  .container .container-md,
+  .container-md .container{
+    padding-left:0;
+    padding-right:0;
+  }
+  /* ===== Mobiel menu (mobiel-XD, 2026-07-28) ===== */
+  /* topbar: marquee met fade rechts (XD); zonder JS: swipebare strip */
+  .topbar{
+    position:relative;
+    overflow:hidden;
+  }
+  .topbar:after{
+    content:"";
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    width:56px;
+    background:linear-gradient(to left, var(--dark), rgba(40,18,27,0));
+    pointer-events:none;
+  }
+  .topbar ul{
+    flex-wrap:nowrap;
+    justify-content:flex-start;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .topbar ul::-webkit-scrollbar{
+    display:none;
+  }
+  .topbar li{
+    white-space:nowrap;
+    flex:0 0 auto;
+  }
+  /* custom.js verdubbelt de items en zet .topbar-marquee (alleen ≤520) */
+  .topbar ul.topbar-marquee{
+    overflow:visible;
+    width:max-content;
+    gap:0;
+    padding-inline:0;
+    animation:sokkiesTopbarMarquee 18s linear infinite;
+  }
+  .topbar ul.topbar-marquee li{
+    margin-right:34px;
+  }
+  @keyframes sokkiesTopbarMarquee{
+    to{ transform:translateX(-50%); }
+  }
+  /* navbar (mobiel-XD): volle-breedte witte balk vast aan de topbar —
+     bovenkant strak, alleen onderhoeken rond; iconen als outline-cirkels,
+     donkere burger rechts. CTA vervalt op mobiel. */
+  .navbar .cta{
+    display:none;
+  }
+  header .container{
+    max-width:100%;
+    padding-left:0;
+    padding-right:0;
+  }
+  header .nav-wrap{
+    top:0;
+  }
+  .nav-wrap{
+    background:var(--white);
+    border-radius:0 0 16px 16px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+    padding:10px 66px 10px 16px;
+    gap:10px;
+    min-height:62px; /* hoogte vast: in substate verdwijnen logo/iconen
+                        en zakte de balk naar 20px — de X sprong omhoog */
+  }
+  .navbar{
+    background:transparent;
+    box-shadow:none;
+    border-radius:0;
+    padding:0;
+  }
+  .logo{
+    width:100px;
+  }
+  .actions{
+    gap:8px;
+  }
+  .icon-btn{
+    width:38px;
+    height:38px;
+  }
+  .globe{
+    width:38px;
+    height:38px;
+    box-shadow:none;
+    border:1.5px solid #e3e3e3;
+  }
+  .nav-burger{
+    width:44px;
+    height:44px;
+    right:14px;
+  }
+  /* open menu = witte sheet over de volle breedte, fixed onder de topbar;
+     de logo/icon-rij zweeft erboven (pill-look uit), lijst gecentreerd
+     condensed uppercase met scheidingslijnen (mobiel-XD) */
+  .navbar.menu-open{
+    background:transparent;
+    box-shadow:none;
+  }
+  .navbar.menu-open .menu{
+    position:fixed;
+    top:30px;
+    height:calc(100vh - 30px); /* volledige schermhoogte onder de topbar */
+    max-height:none;
+    padding:100px 20px 26px;
+    border-radius:0;
+    gap:0;
+    z-index:-1;
+  }
+  .navbar-inner .menu > li > a{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:32px;
+    text-align:center;
+    padding:16px 12px;
+  }
+  .menu > li + li{
+    border-top:1px solid var(--border-light);
+  }
+  .menu .menu-link.active > a{
+    color:var(--yellow);
+  }
+  .menu-home{
+    display:block;
+  }
+  .menu-prijzen{
+    display:none;
+  }
+  .has-mega > a::after{
+    content:"";
+    display:inline-block;
+    width:18px;
+    height:12px;
+    margin-left:10px;
+    vertical-align:middle;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='12' viewBox='0 0 18 12'%3E%3Cpath d='M12 1l5 5-5 5M17 6H1' fill='none' stroke='%2328121b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+  }
+  /* subpaneel: volledig scherm — header = alleen Terug + X (mobiel-XD) */
+  .navbar.sub-open .logo,
+  .navbar.sub-open .actions{
+    display:none;
+  }
+  .navbar.sub-open ~ .lang{
+    display:none;
+  }
+  .navbar.sub-open .menu{
+    padding:24px 20px 26px;
+  }
+  /* hoofdlijst-li's helemaal weg in substate (anders blijven de scheidingslijnen staan) */
+  .navbar.sub-open .menu > li:not(.has-mega){
+    display:none;
+  }
+  .navbar.sub-open .menu > li{
+    border-top:0;
+  }
+  .navbar.sub-open .mega{
+    grid-template-columns:1fr;
+    gap:0;
+  }
+  .navbar.sub-open .mega-back{
+    margin-bottom:70px;
+  }
+  .navbar.sub-open .mega-mob-title{
+    font-size:24px;
+    margin-bottom:16px;
+  }
+  .navbar.sub-open .bestsellers-col{
+    grid-row:auto;
+    grid-column:1;
+  }
+  .navbar.sub-open .types-col{
+    grid-row:auto;
+    grid-column:1;
+    margin-top:58px;
+  }
+  /* USP's + "Bekijk collectie"-knop volledig uit het mobiele subpaneel
+     (verzoek Kulwant; desktop-mega behoudt ze) */
+  .navbar.sub-open .mega-usps{
+    display:none;
+  }
+  .navbar.sub-open .prod-card .prod-img-card{
+    height:170px;
+  }
+  .navbar.sub-open .types{
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:repeat(3, auto);
+    grid-auto-flow:column;
+    gap:16px 18px;
+  }
+  .navbar.sub-open .type-item .type-img{
+    width:45px;
+    height:45px;
+  }
+  .navbar.sub-open .menu .menu-link .type-item{
+    font-size:15px;
+    gap:12px;
+  }
+  /* menu-XD-maten vastzetten nu de mobiele tokens kleiner zijn */
+  .navbar.sub-open .mega h4{
+    font-size:18px;
+  }
+  .navbar.sub-open .prod-card .prod-name{
+    font-size:17px;
+  }
+
+
+  /* ===== MOBIELE KALIBRATIE (2026-07-28, o.b.v. mobiel-XD vergelijking) =====
+     mobiel erfde de 1440-tokens (h1 40 via clamp-floor, body 15, sectie-
+     paddings 90-160) — alles globaal verkleind naar de XD-schaal */
+  :root{
+    --h1-font-size:34px;
+    --h2-font-size:32px;
+    --h3-font-size:20px;
+    --h4-font-size:18px;
+    --h5-font-size:15px;
+    --h6-font-size:16px;
+    --body-font-size:15px;
+    --body-lg-font-size:15px;
+    --body-sm-font-size:11px;
+  }
+  /* alle CTA's op mobiel: volle breedte, 44 hoog, 15px (specs Kulwant) */
+  .cta,
+  .cta-light,
+  .cta-dark{
+    font-size:15px;
+    height:44px;
+    width:100%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:0 20px;
+  }
+  /* hero: clamp-floor was 40px en de gewrapte usps kregen de 40px-flexgap
+     als verticale ruimte */
+  .banner-section{
+    padding:150px 0 50px;
+  }
+  .banner-section h1{
+    font-size:44px;
+    line-height:38px;
+  }
+  /* desktop-regelafbreking uit — mobiel wrapt zelf naar twee regels */
+  .banner-section h1 br{
+    display:none;
+  }
+  .usps{
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    margin:16px 0 20px;
+  }
+  .usps span{
+    font-size:17px;
+    line-height:23px;
+  }
+  .rating-outer{
+    margin-bottom:24px;
+  }
+  .rating-info-bottom{
+    font-size:17px;
+  }
+  .hero-btns{
+    flex-direction:column;
+    gap:10px;
+  }
+  .hero-btns .cta,
+  .hero-btns .cta-light{
+    width:100%;
+  }
+  .banner-bottom-info{
+    margin-top:12px;
+    font-size:13px;
+    flex-wrap:wrap;
+  }
+  /* hero-slider (mobiel-XD): het actieve PAAR gecentreerd met 5%-slivers
+     links en rechts — swiper-container versmald tot het paar (90% - 2x de
+     14px spaceBetween) en overflow zichtbaar, zodat de buurslides precies
+     5% uitsteken en de sectie (overflow:hidden) ze op de rand afknipt.
+     Overflow:visible lost ook de vlakke topjes van de gestaggerde slides
+     op (ze werden door de swiper-clip afgeknipt). */
+  .gallery .gallery-swiper{
+    width:calc(90vw - 28px);
+    margin-inline:auto;
+    overflow:visible;
+    padding:50px 0 54px; /* 54 = 24px stagger + 30px marge tot de knoppen */
+  }
+  .gallery-swiper .swiper-slide{
+    width:calc(50% - 7px);
+    height:260px;
+    border-radius:18px;
+  }
+  /* stagger op runtime-klassen i.p.v. nth-child: de loop husselt de DOM,
+     waardoor nth-child-offsets na een wrap omdraaiden. Actief paar =
+     links hoog, rechts laag (XD); slivers volgen de afwisseling. */
+  .gallery-swiper .swiper-slide:nth-child(3n + 1),
+  .gallery-swiper .swiper-slide:nth-child(3n + 2),
+  .gallery-swiper .swiper-slide:nth-child(3n){
+    transform:none;
+  }
+  .gallery-swiper .swiper-slide{
+    transition:transform .6s;
+  }
+  .gallery-swiper .swiper-slide.swiper-slide-prev,
+  .gallery-swiper .swiper-slide.swiper-slide-next{
+    transform:translateY(24px);
+  }
+  .gallery-swiper .swiper-slide.swiper-slide-active,
+  .gallery-swiper .swiper-slide.swiper-slide-next + .swiper-slide{
+    transform:translateY(-24px);
+  }
+  .gallery-nav{
+    margin-top:0;
+  }
+  /* sectieritme */
+  /* brand-specs Kulwant: 60px vanaf de slider, kop 17px, 25px kop→logo's */
+  .gallery{
+    padding-bottom:0;
+  }
+  .brands{
+    padding:60px 0 32px;
+  }
+  .brands h2{
+    font-size:17px;
+    margin-bottom:25px;
+  }
+  /* stats-specs Kulwant: beide stats op één regel, alles links uitgelijnd,
+     20px stats→beschrijving, sectie 40px onder brands, padding-top 60px */
+  .brands{
+    margin-bottom:0;
+  }
+  .impact{
+    margin-top:40px;
+    padding:60px 0 40px;
+  }
+  /* sokkenpatroon: op auto rendert de 1980px-tegel enorme sokken op 390 */
+  .impact:before{
+    background-size:950px auto;
+  }
+  /* pijlen kleiner en uitgelijnd op de cijfer-regel (XD) */
+  .stat-arrow{
+    margin-top:2px;
+  }
+  .stat-arrow svg{
+    width:15px;
+    height:auto;
+  }
+  .impact-left{
+    text-align:left;
+  }
+  .impact .impact-left ul{
+    display:flex;
+    flex-direction:row;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:20px;
+  }
+  .impact .impact-left ul li{
+    justify-content:flex-start;
+    flex:0 1 auto;
+    min-width:0;
+  }
+  .impact .impact-left p{
+    margin:0;
+    /* basis heeft padding-left:36 (desktop-pijl); mobiel: pijl 15 + gap 14 */
+    padding-left:29px;
+  }
+  .stat-num{
+    font-size:26px;
+  }
+  .stat-label{
+    font-size:13px;
+    white-space:nowrap;
+  }
+  .impact-inner{
+    gap:28px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul{
+    margin-top:24px;
+  }
+  /* impact-gallery (specs Kulwant): rotatie eruit (basis −4°), 120% van de
+     viewportbreedte en gecentreerd — de sectie knipt de uitloop af */
+  .impact-inner{
+    overflow:visible; /* basis-hidden knipte de 120vw-gallery af op de container */
+    height:auto; /* 1550-blok fixeert 465px terwijl de content 478px is */
+  }
+  .impact-gallery{
+    transform:none;
+    width:120vw;
+    max-width:none;
+    margin-left:0;
+    padding-right:0; /* basis had 20px rechts — trok de foto's uit het midden */
+  }
+  /* impact-marquees: 276px-slides in ~115px-kolommen gaven zoom-crops */
+  .v-swiper .swiper-slide{
+    width:100%;
+    height:150px;
+    border-radius:12px;
+  }
+  .process{
+    padding:120px 0 90px;
+  }
+  .process-wave svg{
+    height:50px;
+  }
+  .process:not(.conf-works) > .container > h2{
+    font-size:26px;
+    margin-bottom:30px;
+  }
+  .process-steps{
+    gap:26px;
+  }
+  .process-step svg{
+    width:64px;
+    height:64px;
+  }
+  .step-num{
+    margin-bottom:10px;
+  }
+  .step-icon{
+    margin-bottom:16px;
+  }
+  /* calculator (specs Kulwant): kop 32 gecentreerd, sectie pt 40,
+     container-gutters 10px, calc-box zonder zijpadding */
+  .calculator{
+    padding:40px 0 20px;
+  }
+  .calculator h2{
+    font-size:32px;
+    text-align:center;
+    margin-bottom:25px;
+  }
+  .calc-panel h3{
+    font-size:22px;
+  }
+  .calc-label{
+    font-size:17px;
+  }
+  /* range + aantal-input op één regel; "paar" onder het invoerveld */
+  .calc-slider-row{
+    flex-wrap:nowrap;
+    align-items:flex-start;
+    gap:14px;
+  }
+  .calc-slider-progress{
+    flex:1;
+    min-width:0;
+  }
+  .qty-input{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:4px;
+    flex:0 0 auto;
+  }
+  .qty-input input{
+    width:90px;
+  }
+  .calc-hint{
+    padding:10px;
+    align-items:flex-start;
+  }
+  .calc-result{
+    padding-top:20px;
+  }
+  .calculator .container{
+    padding-left:10px;
+    padding-right:10px;
+  }
+  .calc-box{
+    padding-left:0;
+    padding-right:0;
+  }
+  .gift{
+    padding:90px 0 50px;
+  }
+  .gift h2{
+    text-align:left;
+  }
+  .gift-grid{
+    gap:10px;
+  }
+  .gift-card{
+    flex:0 0 75%;
+  }
+  .gift-img{
+    height:180px;
+  }
+  .cases{
+    padding:110px 0 44px;
+  }
+
+  /* case-gallery (specs Kulwant): hoofdfoto als eigen rij, daaronder de
+     twee kleine foto's naast elkaar */
+  .case-gallery{
+    flex-direction:column;
+  }
+  .case-img.case-img-main{
+    width:100%;
+    height:240px;
+  }
+  .case-img-col{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto;
+    width:100%;
+  }
+  .case-img{
+    height:110px;
+  }
+  .case-text h3{
+    font-size:22px;
+  }
+  /* globale mobiele sectiekop 32px — neutraliseert per-sectie px uit het
+     768-blok (brands-kop blijft bewust 17px per aparte spec) */
+  .gift h2,
+  .case-section-outer h2{
+    font-size:32px;
+  }
+  /* "Door onze klanten ontworpen": 22px en geen uppercase (specs Kulwant) */
+  .designed-head h3{
+    font-size:22px;
+    text-transform:none;
+  }
+  /* cyaan band zichtbaar op mobiel: hij stond op z -1 ONDER de blauwe
+     cases-laag (desktop toont hem door transparantie in de shape-PNG,
+     maar de mobiele cover-size maakt het blauw dekkend) */
+  .designed::before{
+    z-index:0;
+  }
+  .designed{
+    margin-top:56px;
+  }
+  .designed-swiper .swiper-slide{
+    width:200px;
+    height:200px;
+  }
+  .brand-intro{
+    padding:48px 0 100px;
+  }
+  .brand-intro-inner{
+    max-width:100%;
+  }
+  .brand-intro-inner h2{
+    font-size:32px;
+  }
+  .faq{
+    padding:70px 0 250px;
+  }
+  .faq-left h2{
+    font-size:32px;
+  }
+  .faq-q{
+    font-size:17px;
+  }
+  .cta-final-panel{
+    padding:100px 0 60px;
+  }
+  .cta-final-panel h2{
+    font-size:44px;
+    line-height:38px;
+  }
+  .cta-final-panel h2 br{
+    display:none;
+  }
+  .cta-final-panel > .container > p{
+    font-size:17px;
+  }
+  /* footer: 50px zij-padding at kolombreedte op */
+  .footer-grid{
+    padding-top:30px;
+  }
+  /* footer (specs Kulwant, deel 1) */
+  .footer-logo svg{
+    width:102px;
+    height:auto;
+  }
+  .footer-logo{
+    margin-bottom:20px;
+  }
+  .footer-brand{
+    padding-top:0;
+    padding-bottom:40px;
+    border-bottom:1px solid #F96D69;
+  }
+  .footer-certs{
+    flex-direction:row;
+    align-items:center;
+    gap:15px;
+    justify-content: space-between;
+  }
+  .footer-certs-list{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .footer-certs-list img{
+    height:70px;
+    width:auto;
+  }
+  .footer-col{
+    padding:50px 0 0;
+  }
+  :is(.footer-col, .footer-news) :is(h4, h5){
+    font-size:17px;
+    margin-bottom:20px;
+  }
+  .footer-col li a{
+    font-size:15px;
+    line-height:22px;
+  }
+  footer .border-v{
+    display:none;
+  }
+  .footer-col{
+    border-left:0;
+    border-right:0;
+    padding-top: 0px;
+  }
+  /* footer (specs Kulwant, deel 2) */
+  .footer-links-cols{
+    display:grid;
+    grid-template-columns:40% 60%;
+    gap:0;
+    justify-content: space-between;
+  }
+  .footer-links{
+    padding-bottom:40px;
+    border-bottom:1px solid #F96D69;
+  }
+  .footer-contact{
+    padding-top:0px;
+    padding-bottom:40px;
+    border-bottom:1px solid #F96D69;
+  }
+  .footer-contact-row{
+    flex-direction:row;
+    gap:16px;
+    margin-bottom:30px;
+  }
+  .footer-contact-row > *{
+    flex:1;
+    min-width:0;
+  }
+  .footer-socials{
+    margin-top:0;
+    margin-bottom:50px;
+  }
+  .footer-partners{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    text-align:center;
+    margin-top:0px;
+  }
+  .footer-partners-label{
+    width:100%;
+    margin-bottom:20px; /* + 10px flex-gap = 30px visueel */
+  }
+  .footer-partners img{
+    flex:0 1 calc(50% - 5px);
+    max-width:calc(50% - 5px);
+    min-width:0;
+    height:auto;
+  }
+  /* zwevende kerst-promokaart: uit op mobiel (besluit Kulwant 2026-07-28) */
+  .promo-float{
+    display:none;
+  }
+  /* ===== einde mobiele kalibratie ===== */
+
+  /* footer-bottom (specs Kulwant): 40px boven/onder, groepen links
+     uitgelijnd, 20px label→logo's, 30/lijn/30 tussen de blokken */
+  .footer-bottom{
+    padding:40px 0;
+  }
+  .footer-pay{
+    flex-direction:column;
+    gap:0;
+    border-bottom:0;
+  }
+  .footer-pay-group{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:20px;
+    width:100%;
+    max-width:100%;
+  }
+  .footer-pay-group:not(.footer-ship){
+    padding-bottom:30px;
+    border-bottom:1px solid var(--light-beige);
+  }
+  .footer-ship{
+    padding-top:30px;
+    padding-bottom:30px;
+    border-bottom:1px solid var(--light-beige);
+  }
+  .footer-pay-inner,
+  .footer-ship-inner{
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:12px 16px;
+    max-width:100%;
+    width: 100%;
+    height:auto;
+  }
+  .footer-reviews{
+    margin-top:0px;
+    flex-direction:column;
+    gap:20px;
+  }
+  /* "uit 300+ reviews" niet laten breken: span nowrap + kleinere logo's */
+  .footer-review > span:last-child{
+    white-space:nowrap;
+  }
+  .footer-review img{
+    height:22px;
+  }
+  /* legal-regel: drie nette regels op mobiel (spans; desktop blijft één regel) */
+  .footer-legal > span{
+    display:block;
+  }
+  .footer-legal > span + span{
+    margin-top:0px;
+  }
+  .footer-legal .fl-sep{
+    display:none;
+  }
+  /* cases-shape: 100%/100%-stretch vervormt op 390 extreem (witte hap rechts)
+     — cover toont het solide linkerdeel met de diagonaal bovenin */
+  .cases:before{
+    background-size:cover;
+    background-position:left top;
+  }
+  /* USP-chips (specs Kulwant): 2 kolommen × 3 rijen, 60px boven, gap 20,
+     boxen 104px hoog, iconen 40×40, labels 17px */
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:10px;
+    margin-top:60px;
+  }
+  :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul li{
+    width:auto;
+    min-width:0;
+    height:104px;
+    justify-content:center;
+    text-align:center;
+  }
+  .feat-icon{
+    width:40px;
+    height:40px;
+  }
+  .feat-icon svg,
+  .feat-icon img{
+    width:40px;
+    height:40px;
+  }
+  .feat-label{
+    font-size:17px;
+    white-space:normal;
+  }
+  /* collectie (specs Kulwant): kop links 32px, 20px kop→kaarten,
+     kaart 75% breed met 25%-peek van de volgende, gap 10 */
+  .collection{
+    padding-top:60px;
+  }
+  .collection:before{
+    top:-24%;
+  }
+  .collection h2{
+    font-size:32px;
+    text-align:left;
+    margin-bottom:20px;
+  }
+  .collection-grid{
+    gap:10px;
+  }
+  .collection-card{
+    flex:0 0 75%;
+  }
+  .collection-cta .cta-light{
+    display:flex;
+    width:100%;
+  }
+  /* process (specs Kulwant): kop 32 gecentreerd; stappen 2 per rij,
+     kolomgap 10 / rijgap 40; icoonvak 213px; h3 17, p 15/22, nummer 15 */
+  .process:not(.conf-works) > .container > h2{
+    font-size:32px;
+    text-align:center;
+  }
+  .process-steps{
+    grid-template-columns:repeat(2, 1fr);
+    gap:40px 10px;
+  }
+  .step-icon{
+    height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+  }
+  .process-step svg{
+    width:auto;
+    height:100%;
+  }
+  .process-step h3{
+    font-size:17px;
+  }
+  .process-step p{
+    font-size:15px;
+    line-height:22px;
+  }
+  .step-num{
+    font-size:15px;
+  }
+  .process-cta{
+    margin-top:35px;
+  }
+  .gift-grid{
+    grid-template-columns:1fr;
+  }
+  .types-grid{
+    grid-template-columns:1fr;
+  }
+
+  /* logo-marquee full-width (universeel besluit Kulwant) */
+  .brands{
+    overflow:hidden;
+  }
+  .brands .brands-swiper{
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+  }
+
+  /* brands-marquee: justify-content:center op de swiper-wrapper (basis)
+     breekt de loop-translate-wiskunde — zichtbare sprong bij het
+     wrap-punt; op mobiel (2 logo's in beeld) extra opvallend */
+  .brands-swiper .swiper-wrapper{
+    justify-content:flex-start;
+  }
+
+  /* slot-CTA-shape (specs Kulwant) */
+  .cta-final-panel{
+    background: url(../media/cta-bg-shape.svg) no-repeat 18% top;
+    background-size: cover;
+  }
+
+  /* topbar verbergen zodra het menu open is (specs Kulwant);
+     sheet schuift mee naar de bovenrand. Body krijgt dezelfde 30px als
+     padding zodat de balk-controls niet omhoog springen, en gaat op
+     overflow:hidden — alleen het menu zelf scrollt nog. */
+  body:has(.navbar.menu-open) .topbar{
+    display:none;
+  }
+  body:has(.navbar.menu-open){
+    padding-top:30px;
+    overflow:hidden;
+  }
+  .navbar.menu-open .menu{
+    top:0;
+    height:100vh;
+  }
+}

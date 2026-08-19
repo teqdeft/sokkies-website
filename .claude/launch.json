@@ -1,0 +1,26 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "sokkies-static",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--bind",
+        "127.0.0.1"
+      ],
+      "port": 8765
+    },
+    {
+      "name": "sokkies-mirror",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "cd '/private/tmp/claude-501/-Users-rankinai-Library-CloudStorage-Dropbox-sokkies-sokkies-sokkies-main/c9a66f1d-5d3f-4337-a7a8-983f2d1587f5/scratchpad/site' && exec python3 -m http.server 8765 --bind 127.0.0.1"
+      ],
+      "port": 8765
+    }
+  ]
+}

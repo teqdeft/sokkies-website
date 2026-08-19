@@ -1,0 +1,2292 @@
+/* ==========================================================================
+   stylen.css — styles for NEW pages (built from XD designs, July 2026 →)
+   Load order on new pages: style.css → stylen.css → responsive.css.
+   Global tokens (:root colors, fonts, type scale), .container/.container-md
+   and the shared chrome (topbar/header/footer) all come from style.css.
+   Only page-specific sections for new pages live here.
+   NB: responsive.css loads after this file — when reusing an existing class
+   on a new page, scope the override (e.g. `.newpage .promises`) so it wins.
+
+   Structure: one commented block per page, sections in page order.
+   Responsive: stylen.css bevat bewust GEEN media queries (opgeschoond
+   2026-07-27) — responsive voor de nieuwe pagina's wordt apart en netjes
+   in responsive.css geschreven.
+   ========================================================================== */
+
+
+/* ===== Toepassingen — hero (coral variant of coll-hero) ===== */
+  .toepassingen .hero-slider-section{
+    background:var(--coral-hero);
+  }
+  .toepassingen .breadcrumb{
+    color:var(--white);
+  }
+  .toepassingen .breadcrumb a{
+    color:var(--white);
+  }
+  .toepassingen .breadcrumb .breadcrumb-link{
+    text-decoration:underline;
+  }
+  .toepassingen .coll-hero-content h1{
+    color:var(--white);
+  }
+  .toepassingen .coll-hero-content h1 .title-accent{
+    color:var(--yellow);
+  }
+  .toepassingen .coll-hero-left p{
+    color:var(--white);
+  }
+
+/* ===== Zwevende promo-card: CSS verhuisd naar style.css (2026-07-27,
+   component wordt nu ook op home.html gebruikt — style.css laadt op ALLE pagina's) ===== */
+
+/* ===== Nieuwsbrief-popup (herbruikbaar op elke pagina, zie popup.html) ===== */
+  .nl-popup{
+    position:fixed;
+    inset:0;
+    z-index:200;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(40,18,27,.45);
+    padding:20px;
+  }
+  .nl-popup.is-open{
+    display:flex;
+  }
+  .nl-popup-card{
+    position:relative;
+    width:850px;
+    max-width:100%;
+    background:var(--white);
+    border-radius:24px;
+    padding:96px 60px 90px;
+    text-align:center;
+  }
+  .nl-popup-close{
+    position:absolute;
+    top:26px;
+    right:30px;
+    background:none;
+    border:0;
+    padding:4px;
+    line-height:0;
+    cursor:pointer;
+    opacity:.8;
+    transition:opacity .2s;
+  }
+  .nl-popup-close:hover{
+    opacity:1;
+  }
+  .nl-popup-card h5{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:40px;
+    line-height:1;
+    color:var(--text);
+  }
+  .nl-popup-card p{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:19px;
+    color:var(--text);
+    margin-top:14px;
+  }
+  .nl-popup-form{
+    width:480px;
+    max-width:100%;
+    margin:34px auto 0;
+    text-align:left;
+  }
+  .nl-popup-form input[type="email"]{
+    width:100%;
+    background:var(--white);
+    border:1px solid var(--text);
+    border-radius:8px;
+    padding:14px 16px;
+    font-size:16px;
+    color:var(--text);
+  }
+  .nl-popup-check{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:16px;
+    font-size:var(--body-font-size);
+    color:var(--text);
+    cursor:pointer;
+  }
+  .nl-popup-check input{
+    width:18px;
+    height:18px;
+    accent-color:var(--dark);
+    flex:0 0 auto;
+  }
+  .nl-popup-actions{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:22px;
+  }
+
+/* ===== Nieuwe pagina's — gedeelde regels (geconsolideerd 2026-07-27) ===== */
+  /* breadcrumb-ruimte: de header (topbar+navbar) hangt absoluut over de hero */
+  .over-ons .breadcrumb,
+  .duurzaamheid .breadcrumb,
+  .downloads .breadcrumb,
+  .contact .breadcrumb,
+  .juridisch .breadcrumb,
+  .waarom-sokkies .breadcrumb{
+    padding:115px 0 0;
+  }
+  /* haak-pijl-tekstlink: basis verhuisd naar style.css (2026-07-27 — .faq-more
+     wordt nu ook op Collectie gebruikt; style.css laadt op alle pagina's) */
+  /* "Image placeholder"-chip (partners- en downloads-kaarten) */
+  .pt-dl-ph,
+  .dl-ph{
+    background:var(--white);
+    border:1px solid var(--text);
+    border-radius:5px;
+    padding:5px 12px;
+    font-size:var(--body-sm-font-size);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--text);
+  }
+  /* formulier-input-basis (afwijkingen blijven per formulier) */
+  .pt-dl-input,
+  .dl-niets-field input,
+  .ct-field input,
+  .ct-field textarea{
+    width:100%;
+    background:var(--white);
+    border:1px solid var(--input-border);
+    border-radius:8px;
+    padding:13px 16px;
+    font-size:16px;
+    color:var(--text);
+  }
+
+
+
+/* ===== Toepassingen — waarom sokken werken ===== */
+  .usecase-why{
+    background:var(--white);
+    padding:100px 0 130px;
+  }
+  .usecase-why h2{
+    margin-bottom:25px;
+  }
+  .usecase-why .container > p{
+    max-width:850px;
+    margin:0 auto 50px;
+    text-align:center;
+    font-size:var(--body-font-size);
+    line-height:24px;
+    color:var(--text);
+  }
+  .usecase-why ul{
+    list-style:none;
+    max-width:1140px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:48px;
+  }
+  .usecase-why ul li{
+    position:relative;
+    padding-left:26px;
+  }
+  .usecase-why ul li::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:3px;
+    width:17px;
+    height:22px;
+    background-repeat:no-repeat;
+    background-size:contain;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10.779' height='14' viewBox='0 0 10.779 14'><g><g><path d='M2.3 7.176.115 11.715a1.652 1.652 0 0 0 .909 2.135 1.613 1.613 0 0 0 2.1-.922l2.683-5.8a.673.673 0 0 0-.007-.51L3.112.4A.652.652 0 0 0 2.251.054L.48.83A.669.669 0 0 0 .138 1.7L2.3 6.665a.673.673 0 0 1 .007.51' transform='translate(4.921 0)' fill='%23fa4a45'/><path d='M2.3 7.176.115 11.715a1.652 1.652 0 0 0 .909 2.135 1.613 1.613 0 0 0 2.1-.922l2.683-5.8a.673.673 0 0 0-.007-.51L3.114.4A.652.652 0 0 0 2.252.054L.481.831a.669.669 0 0 0-.342.874L2.3 6.666a.673.673 0 0 1 .007.51' transform='translate(0 .033)' fill='%23fa4a45'/></g></g></svg>");
+  }
+  .usecase-why li h6{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:22px;
+    line-height:1.2;
+    color:var(--text);
+    margin-bottom:10px;
+  }
+  .usecase-why ul li p{
+    font-size:var(--body-font-size);
+    line-height:1.5;
+    color:var(--text);
+  }
+
+
+/* ===== Toepassingen — usecases grid (vlakke variant van .usecases) ===== */
+  .usecases-flat{
+    background:var(--white);
+    padding:0 0 100px;
+    margin-bottom:0;
+  }
+  .usecases-flat .usecases-head{
+    padding:0;
+  }
+  .usecases-flat .usecases-head h2{
+    text-align:start;
+    margin-bottom:40px;
+  }
+  .usecases-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:26px;
+  }
+  .usecases-flat .usecase-card{
+    width:auto;
+    padding:12px;
+    border:1px solid var(--text);
+    box-shadow:none;
+  }
+  .usecases-flat .usecase-img{
+    height:418px;
+    border-radius:16px;
+  }
+  .usecases-flat .usecase-body{
+    padding:20px 8px 14px;
+  }
+  .usecases-flat .usecase-link{
+    border-top:0;
+    padding:0;
+  }
+
+
+/* ===== Toepassingen — sokken collectie (beige variant met blauwe voet) ===== */
+  .toepassingen .collection-beige{
+    background:var(--light-beige);
+    padding:0px;
+    position: relative;
+    margin-top: 70px;
+  }
+  .toepassingen .collection-beige::before{
+    content:" ";
+    position: absolute;
+    left: 0px;
+    top:-527px;
+    background: url(../media/uc-collection-bg.png) left top no-repeat;
+    background-size:cover;
+    width: 100%;
+    height: 527px;
+  }
+  .toepassingen .collection-beige:after{
+    display:none;
+  }
+
+
+/* ===== Toepassingen — klantcases (egaal blauw, zonder shape-afbeelding) ===== */
+  .toepassingen .cases{
+    background:var(--blue);
+    margin-top: -150px;
+    padding-top: 265px;
+    position: relative;
+    padding-bottom: 110px;
+  }
+  .toepassingen .cases:before{
+    content: " ";
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 712px;
+    background: url(../media/uc-case-top-bg.png) left top no-repeat;
+    background-size: cover;
+    z-index: 1;
+  }
+
+
+ .toepassingen .cases:after {
+    content: url(../media/sock-element-up.svg);
+    width: auto;
+    height: auto;
+    position: absolute;
+    bottom: 0%;
+    background: none;
+    z-index: 1;
+    right: 9%;
+    transform: rotate(80deg);
+}
+/* ===== Toepassingen — prijscalculator (blauwe bovenhelft i.p.v. coral) ===== */
+  .toepassingen .calculator-bg:before{
+    background:var(--blue) url(../media/uc-calc-top.png) left bottom no-repeat;
+    width: 100%;
+    height: 797px;
+    top: -624px;
+  }
+  .toepassingen .uc-bg-yellow-shape{
+    background: url(../media/uc-calc-bottom-bg.png) no-repeat center top;
+    background-size: cover;
+    height: 635px;
+    position: absolute;
+    width: 100%;
+    top: 173px;
+    left: 0;
+    z-index: 0;
+  }
+/* ===== Toepassingen — FAQ: bekijk alle vragen link ===== */
+
+
+  .toepassingen .brand-light .brand-duddle-icons .dubble-left {
+    top: -20px;
+    left: 5%;
+    width: auto;
+}
+.toepassingen .brand-light .brand-duddle-icons .dubble-right {
+    bottom: 0%;
+    right: 4%;
+    width: auto;
+}
+
+/* ==========================================================================
+   FAQ-PAGINA (veelgestelde-vragen.html) — page-scope: .faq-page
+   ========================================================================== */
+
+/* ===== FAQ-pagina — hero met zoekbalk ===== */
+  .faq-search{
+    position:relative;
+    max-width:580px;
+    margin:20px auto 0;
+  }
+  .faq-page .simple-hero-content h1{
+    margin-bottom: 10px;
+  }
+  .faq-search-input{
+    width:100%;
+    height:48px;
+    padding:0 56px 0 20px;
+    background:var(--white);
+    border:1px solid var(--border-light);
+    border-radius:8px;
+    font-family:var(--roc-grotesk);
+    font-size:var(--body-font-size);
+    color:var(--text);
+  }
+  .faq-search-input::placeholder{
+    color:var(--text);
+  }
+  .faq-search-input:focus{
+    outline:none;
+    border-color:var(--text);
+  }
+  .faq-search-btn{
+    position:absolute;
+    right:18px;
+    top:50%;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    padding:0;
+    line-height:0;
+    cursor:pointer;
+  }
+
+/* ===== FAQ-pagina — vragen per categorie ===== */
+  .faq-cats{
+    background:var(--white);
+    padding:60px 0 100px;
+  }
+  .faq-cats-filter{
+    justify-content:center;
+    gap:11px;
+  }
+  .faq-cats-list{
+    max-width:1000px;
+    margin:78px auto 0;
+  }
+  .faq-cat-group{
+    margin-bottom:90px;
+    scroll-margin-top:24px;
+  }
+  .faq-cat-group:last-child{
+    margin-bottom:0;
+  }
+  .faq-cat-group h2{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:var(--h3-font-size);
+    color:var(--text);
+    margin-bottom:12px;
+  }
+  .faq-page .faq-item{
+    border-bottom:1px solid var(--border-light);
+  }
+  .faq-page .faq-a-inner p{
+    max-width:none;
+  }
+  .faq-page .faq-item.is-hidden,
+  .faq-page .faq-cat-group.is-hidden{
+    display:none;
+  }
+  .faq-page .faq-item.is-open .faq-q{
+    border-bottom:1px solid var(--border-light);
+  }
+
+/* ===== FAQ-pagina — slot-CTA met contactregel ===== */
+  .faq-page .cta-final{
+    background:var(--white);
+  }
+  .cta-final-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:30px;
+    flex-wrap:wrap;
+  }
+  .cta-final-row p{
+    color:var(--white);
+    font-size:var(--body-font-size);
+  }
+  .cta-final-row p a{
+    color:var(--white);
+    font-weight:700;
+    text-decoration:none;
+  }
+  .cta-final-row p a:hover{
+    color:var(--yellow);
+  }
+  .cta-contact-sep{
+    margin:0 10px;
+  }
+
+
+
+/* ==========================================================================
+   OVER-ONS-PAGINA (over-ons.html) — page-scope: .over-ons
+   ========================================================================== */
+
+/* ===== Over ons — hero met team-slider ===== */
+  .over-ons .breadcrumb{
+    color:var(--white);
+  }
+  .over-ons .breadcrumb a{
+    color:var(--white);
+  }
+  .over-ons .banner-section{
+    padding:62px 20px 75px;
+  }
+  .over-ons .banner-section p{
+    color:var(--white);
+    font-size:var(--body-lg-font-size);
+    line-height:1.55;
+    max-width:620px;
+    margin:26px auto 0;
+  }
+  .over-ons .gallery{
+    background:linear-gradient(to bottom,var(--coral) 0 41%,#fff 41% 100%);
+  }
+  .over-ons .gallery-swiper .swiper-slide{
+    width:560px;
+    height:420px;
+  }
+  .over-ons .gallery-swiper .swiper-slide:nth-child(3n + 1){
+    transform:translateY(-25px);
+  }
+
+/* ===== Over ons — hoe het begon ===== */
+  .overons-story{
+    background:var(--white);
+    padding:130px 0 0px;
+    position: relative;
+  }
+  .overons-story-inner{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:100px;
+    align-items:start;
+    position: relative;
+    z-index:1 ;
+  }
+  .story-collage{
+    display:flex;
+    align-items:flex-start;
+    gap:28px;
+  }
+  .story-collage img{
+    border-radius:25px;
+    object-fit:cover;
+    display:block;
+  }
+  .story-collage .img-sm{
+    width:325px;
+    height:418px;
+  }
+  .story-collage .img-lg{
+    width:458px;
+    height:620px;
+  }
+  .story-collage-right{
+    margin-top:43px;
+    gap:22px;
+  }
+  .story-collage-right .img-sm{
+    margin-top:100px;
+  }
+  .overons-story-text h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h3-font-size);
+    color:var(--text);
+    margin-bottom:30px;
+  }
+  .overons-story-text{
+    max-width:650px;
+  }
+  .overons-story-text p{
+    font-size:var(--body-font-size);
+    line-height:24px;
+    color:var(--text);
+    margin-bottom:24px;
+  }
+  .overons-story-text p:last-child{
+    margin-bottom:0;
+  }
+
+/* ===== Over ons — door de jaren heen (tijdlijn-slider) ===== */
+  .timeline{
+    background:var(--light-beige);
+    padding:205px 0 205px;
+    overflow:hidden;
+    position: relative;
+    margin-top: -140px;
+  } 
+  .timeline::before{
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 717px;
+    background: url(../media/time-line-bg.png) center top no-repeat;
+    left: 0px;
+    top: 0px;
+  }
+  .timeline-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:35px;
+    position: relative;
+  }
+  .timeline-head h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1;
+    color:var(--text);
+  }
+  .timeline-nav{
+    display:flex;
+    gap:21px;
+  }
+  .timeline-nav button{
+    width:55px;
+    height:40px;
+    border:1.5px solid var(--dark);
+    background:#fff;
+    border-radius:7px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all .2s;
+  }
+  .timeline-nav button:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+  }
+  .timeline-img{
+    height:395px;
+    border-radius:16px;
+    overflow:hidden;
+    margin-bottom:24px;
+  }
+  .timeline-img img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .timeline-year{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:40px;
+    line-height:1;
+    color:var(--coral);
+  }
+  .timeline-year:after{
+    content:"";
+    flex:1;
+    height:2px;
+    background:repeating-linear-gradient(90deg, var(--coral) 0 12px, transparent 12px 22px);
+  }
+  .timeline-swiper h3{
+    font-size:var(--h5-font-size);
+    font-weight:700;
+    color:var(--text);
+    margin:16px 0 10px;
+  }
+  .timeline-swiper p{
+    font-size:var(--body-font-size);
+    line-height:24px;
+    color:var(--text);
+    margin-bottom:24px;
+  }
+  .timeline-swiper p:last-child{
+    margin-bottom:0;
+  }
+
+/* ===== Over ons — impact/stats op egaal geel vlak (hergebruik home .impact) ===== */
+  .over-ons .impact{
+    background:var(--yellow);
+    margin-top:0;
+    padding:115px 0 60px;
+    overflow:hidden;
+    position: relative;
+  }
+  /* egaal geel; Kulwant voegt de shape zelf toe (sokkenpatroon uit style.css uit) */
+  .over-ons .impact:before{
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 198px;
+    background: url(../media/stats-top-bg.png) top left no-repeat;
+    top: 0px;
+    left: 0px;
+  }
+
+/* ===== Over ons — waar we voor staan (egaal coral vlak) ===== */
+  .overons-values{
+    position:relative;
+    background:var(--coral);
+    padding:200px 0 130px;
+    position: relative;
+  }
+  .overons-values::before{
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 520px;
+    background: url(../media/stats-bottom-bg.png) top left no-repeat;
+    top: 0px;
+    left: 0px;
+  }
+  .overons-values .container{
+    position:relative;
+    z-index:1;
+  }
+  .overons-values h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1;
+    color:var(--white);
+    text-align:center;
+    margin-bottom:75px;
+  }
+  .overons-values ul{
+    list-style:none;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:110px;
+  }
+  .values-num{
+    display:block;
+    font-size:15px;
+    font-weight:600;
+    color:var(--white);
+    margin-bottom:30px;
+  }
+  .values-img{
+    width:120px;
+    height:115px;
+    border:1.5px dashed rgba(255,255,255,.85);
+    border-radius:18px;
+    margin-bottom:42px;
+  }
+  .values-img img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:18px;
+    display:block;
+  }
+  .overons-values ul h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:24px;
+    line-height:1.2;
+    color:var(--white);
+    margin-bottom:14px;
+  }
+  .overons-values ul p{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--white);
+  }
+
+/* ===== Over ons — wat klanten zeggen (reviews-slider) ===== */
+  .overons-reviews{
+    background:var(--light-beige);
+    padding:115px 0 95px;
+    overflow:hidden;
+  }
+  .reviews-head{
+    text-align:center;
+    margin-bottom:60px;
+  }
+  .reviews-head h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1;
+    color:var(--text);
+    margin-bottom:20px;
+  }
+  .reviews-head p{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    font-size:var(--body-lg-font-size);
+    color:var(--text);
+  }
+  .reviews-head p .score{
+    font-weight:700;
+  }
+  .reviews-head p .stars{
+    display:flex;
+  }
+  .reviews-head p a{
+    color:var(--text);
+    font-weight:600;
+    text-transform:uppercase;
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+  .reviews-swiper .swiper-slide{
+    height:auto;
+  }
+  .review-card{
+    background:var(--white);
+    border-radius:20px;
+    padding:48px 38px 30px;
+    height:100%;
+    min-height:310px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+  .review-card .stars{
+    display:flex;
+    margin-bottom:24px;
+  }
+  .review-card p{
+    font-weight:700;
+    font-size:20px;
+    line-height:1.4;
+    color:var(--text);
+    max-width:330px;
+  }
+  .review-role{
+    margin-top:auto;
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text);
+    opacity:.62;
+  }
+  .reviews-nav{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    margin-top:50px;
+  }
+  .reviews-nav button{
+    width:55px;
+    height:40px;
+    border:1.5px solid var(--dark);
+    background:#fff;
+    border-radius:7px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all .2s;
+  }
+  .reviews-nav button:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+  }
+
+/* ===== Over ons — met oog voor duurzaamheid ===== */
+  .overons-duurz{
+    position:relative;
+    background:var(--light-beige);
+    padding:110px 0 120px;
+  }
+  .duurz-doodle{
+    position:absolute;
+    top:26px;
+    left:59%;
+    width:260px;
+    pointer-events:none;
+  }
+  .overons-duurz h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1;
+    color:var(--text);
+    margin-bottom:60px;
+  }
+  .duurz-inner{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:100px;
+    align-items:center;
+  }
+  .duurz-collage{
+    display:flex;
+    gap:33px;
+  }
+  .duurz-collage img{
+    border-radius:20px;
+    object-fit:cover;
+    display:block;
+  }
+  .duurz-collage .img-lg{
+    width:400px;
+    height:440px;
+  }
+  .duurz-collage-col{
+    display:flex;
+    flex-direction:column;
+    gap:33px;
+  }
+  .duurz-collage-col .img-sm{
+    width:267px;
+    height:203px;
+  }
+  .duurz-text{
+    max-width:560px;
+  }
+  .duurz-text h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:var(--h3-font-size);
+    line-height:1.3;
+    color:var(--text);
+    margin-bottom:24px;
+  }
+  .duurz-text p{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--text);
+  }
+  .duurz-link{
+    margin-top:32px;
+  }
+
+/* ===== Over ons — slot-CTA: rij met twee knoppen ===== */
+  .cta-final-actions{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  /* voeten rechts (cta-foot.png) i.p.v. standaard links; steekt boven de coral uit */
+  .over-ons .cta-final-panel {
+    z-index: 1;
+  }
+  .over-ons .cta-final-feet,
+  .duurzaamheid .cta-final-feet{
+    top:-500px;
+    left:auto;
+    right:0px;
+    width: auto;
+    height: auto;
+  }
+
+
+/* ==========================================================================
+   DUURZAAMHEID-PAGINA (duurzaamheid.html) — page-scope: .duurzaamheid
+   ========================================================================== */
+
+/* ===== Duurzaamheid — slot-CTA: witte basis (pagina is wit i.p.v. beige) ===== */
+  .duurzaamheid .cta-final{
+    background:var(--white);
+  }
+
+/* ===== Duurzaamheid — hero ===== */
+  .duurzaamheid .breadcrumb{
+    color:var(--white);
+  }
+  .duurzaamheid .breadcrumb a{
+    color:var(--white);
+  }
+  .duurzaamheid .banner-section{
+    padding:62px 20px 60px;
+  }
+  .duurzaamheid .banner-section p{
+    color:var(--white);
+    font-size:var(--body-lg-font-size);
+    line-height:1.55;
+    max-width:880px;
+    margin:26px auto 0;
+  }
+
+/* ===== Duurzaamheid — certificaten-tabs ===== */
+  .dz-certs{
+    background:var(--coral);
+    padding:50px 0 130px;
+    position: relative;
+  }
+  .dz-certs::before{
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 523px;
+    left: 0px;
+    bottom: 0px;
+    background: url(../media/duurzaamheid-hero-bg.png) center center no-repeat;
+  }
+  .dz-certs .container > p{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:26px;
+    line-height:1.3;
+    color:var(--white);
+    margin-bottom:28px;
+  }
+  .dz-certs-inner{
+    display:grid;
+    grid-template-columns:375px 1fr;
+    gap:60px;
+    align-items:start;
+    position: relative;
+  }
+  .dz-certs-menu{
+    list-style:none;
+  }
+  .dz-certs-menu button{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    background:none;
+    border:0;
+    border-top:1px solid rgba(255,255,255,.4);
+    padding:19px 2px 19px 18px;
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:500;
+    font-size:17px;
+    text-transform:uppercase;
+    color:var(--white);
+    text-align:left;
+    cursor:pointer;
+  }
+  .dz-certs-menu li:last-child button{
+    border-bottom:1px solid rgba(255,255,255,.4);
+  }
+  .dz-certs-menu .dz-tab-arrow{
+    display:none;
+    line-height:0;
+  }
+  .dz-certs-menu button.active{
+    font-weight:700;
+    padding-left:2px;
+  }
+  .dz-certs-menu button.active .dz-tab-arrow{
+    display:inline-flex;
+  }
+  .dz-pane{
+    display:none;
+    grid-template-columns:1fr 557px;
+    gap:68px;
+    align-items:start;
+  }
+  .dz-pane.active{
+    display:grid;
+  }
+  .dz-pane-text h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1.05;
+    color:var(--white);
+    margin-bottom:24px;
+  }
+  .dz-pane-text p{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--white);
+    margin-bottom:24px;
+  }
+  .dz-pane-text p:last-child{
+    margin-bottom:0;
+  }
+  .dz-pane-img img{
+    width:100%;
+    height:435px;
+    object-fit:cover;
+    border-radius:14px;
+    display:block;
+  }
+
+/* ===== Duurzaamheid — certificaten en keurmerken (kaarten) ===== */
+  .dz-keur{
+    background:var(--white);
+    padding:40px 0 60px;
+  }
+  .dz-keur h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1;
+    color:var(--text);
+    text-align:center;
+    margin-bottom:45px;
+  }
+  .dz-keur-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
+  }
+  .dz-keur-card{
+    background:var(--light-beige);
+    border-radius:16px;
+    padding:40px 36px 42px;
+  }
+  .dz-keur-card img{
+    height:90px;
+    width:auto;
+    display:block;
+    margin-bottom:28px;
+    /* zelfde witte PNG's als de footer-badges; hier donker (XD) via filter */
+    filter:brightness(0);
+  }
+  .dz-keur-card h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:22px;
+    color:var(--text);
+    margin-bottom:12px;
+  }
+  .dz-keur-card p{
+    font-size:var(--body-font-size);
+    line-height:24px;
+    color:var(--text);
+  }
+
+/* ===== Duurzaamheid — hoe duurzaam is Sokkies nu echt? ===== */
+  .dz-points{
+    background:var(--white);
+    padding:60px 0 140px;
+  }
+  .dz-points-inner{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:100px;
+    align-items:start;
+  }
+  .dz-points-text{
+    max-width:680px;
+  }
+  .dz-points-text h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1;
+    color:var(--text);
+    margin-bottom:22px;
+  }
+  .dz-points-text > p:first-of-type{
+    font-size:var(--body-font-size);
+    line-height:24px;
+    color:var(--text);
+    margin-bottom:30px;
+  }
+  .dz-points-text ol{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    margin-bottom:34px;
+  }
+  .dz-points-text ol li{
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+  }
+  .dz-point-num{
+    flex:0 0 auto;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:var(--dark);
+    color:var(--white);
+    font-size:14px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .dz-points-text ol p{
+    font-weight:700;
+    font-size:var(--body-lg-font-size);
+    line-height:1.35;
+    color:var(--text);
+    padding-top:4px;
+  }
+  .dz-points-text > p:last-of-type{
+    font-size:var(--body-font-size);
+    color:var(--text);
+    margin-bottom:26px;
+  }
+
+
+/* ==========================================================================
+   PARTNERS-PAGINA (partners.html) — page-scope: .partners
+   ========================================================================== */
+
+/* ===== Partners — voordelen voor partners ===== */
+  .pt-perks{
+    background:var(--white);
+    padding:95px 0 110px;
+  }
+  .pt-perks h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1;
+    color:var(--text);
+    margin-bottom:42px;
+  }
+  .pt-perks-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:23px;
+    /* kaarten op inhoudshoogte (XD: derde kaart is hoger), niet gelijk rekken */
+    align-items:start;
+  }
+  .pt-perks-card{
+    background:var(--light-beige);
+    border-radius:24px;
+    padding:38px 40px 42px;
+  }
+  .pt-perks-card h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:22px;
+    color:var(--text);
+    margin-bottom:12px;
+  }
+  .pt-perks-card p{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--text);
+  }
+
+/* ===== Partners — onze partners (logo-grid met filter) ===== */
+  .pt-partners{
+    background:var(--white);
+    padding:25px 0 130px;
+  }
+  .pt-partners h2{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:24px;
+    color:var(--text);
+    text-align:center;
+    margin-bottom:22px;
+  }
+  .pt-partners-chips{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:32px;
+  }
+  .pt-partners-chips button{
+    border:1px solid var(--dark);
+    background:var(--white);
+    color:var(--text);
+    font-size:var(--body-font-size);
+    font-weight:500;
+    border-radius:50px;
+    padding:8px 22px;
+    cursor:pointer;
+    transition:all .2s;
+  }
+  .pt-partners-chips button.active{
+    background:var(--dark);
+    border-color:var(--dark);
+    color:var(--white);
+  }
+  .pt-partners-grid{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:30px 24px;
+  }
+  .pt-partner-card{
+    height:150px;
+    background:var(--white);
+    border:1px solid #ececec;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px 30px;
+  }
+  .pt-partner-card img{
+    max-width:170px;
+    max-height:64px;
+    width:auto;
+    height:auto;
+    object-fit:contain;
+  }
+
+/* ===== Partners — officiële partner van One Tree Planted ===== */
+  .pt-otp{
+    background:var(--coral);
+    padding:500px 0 0px;
+    position: relative;
+  }
+  /* benen met gele sokken rechts, over de witte shape heen (img staat ná de :before) */
+  .pt-otp-legs{
+    position:absolute;
+    top:-120px;
+    right:0;
+    width:632px;
+    pointer-events:none;
+  }
+  /* gele sok-doodles (outline) midden op de witte golf */
+  .pt-otp-doodle{
+    position:absolute;
+    top:200px;
+    left:40%;
+    width:340px;
+    pointer-events:none;
+  }
+.pt-otp:before{
+  content: " ";
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  background: url(../media/official-partner-top-bg.png) center center no-repeat;
+  width: 100%;
+  height: 425px;
+}
+
+  .pt-otp-inner{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:100px;
+    align-items:center;
+    position: relative;
+    z-index: 1;
+  }
+  .pt-otp-imgs{
+    display:flex;
+    gap:22px;
+  }
+
+
+  .pt-otp-imgs img{
+    border-radius:20px;
+    object-fit:cover;
+    display:block;
+  }
+  .pt-otp-imgs .img-sm{
+    width:332px;
+    height:352px;
+  }
+  .pt-otp-imgs .img-lg{
+    width:457px;
+    height:352px;
+  }
+  .pt-otp-text{
+    max-width:500px;
+  }
+  .pt-otp-text h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1.15;
+    color:var(--white);
+    margin-bottom:24px;
+  }
+  .pt-otp-text p{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--white);
+  }
+
+/* ===== Partners — veelgestelde vragen voor partners (geel) ===== */
+  .pt-faq{
+    background:var(--yellow);
+    padding:260px 0 100px;
+    position: relative;
+      margin-top: -110px;
+  }
+  .pt-faq::before{
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 744px;
+    background: url(../media/partner-faqs-top-bg.png) center center no-repeat;
+    left: 0px;
+    top: 0px;
+  }
+  .pt-faq-inner{
+    max-width:1000px;
+    margin:0 auto;
+    position: relative;
+  }
+  .pt-faq-inner h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1;
+    color:var(--text);
+    margin-bottom:26px;
+  }
+  .pt-faq .faq-item{
+    border-color:rgba(40,18,27,.35);
+  }
+  /* eerste item staat in de HTML al open; JS zet max-height pas bij klik */
+  .pt-faq .faq-item.is-open .faq-a{
+    max-height:none;
+  }
+  .pt-faq .faq-a-inner p{
+    max-width:none;
+  }
+
+/* ===== Partners — brochure en inspiratiegids (downloads) ===== */
+  .pt-dl{
+    background:var(--light-beige);
+    padding:100px 0 120px;
+  }
+  .pt-dl h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1;
+    color:var(--text);
+    margin-bottom:14px;
+  }
+  .pt-dl .container-md > p{
+    font-size:var(--body-font-size);
+    line-height:24px;
+    color:var(--text);
+    margin-bottom:40px;
+  }
+  .pt-dl-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
+  }
+  .pt-dl-card{
+    background:var(--white);
+    border:1px solid var(--text);
+    border-radius:20px;
+    padding:14px 14px 24px;
+    display:flex;
+    flex-direction:column;
+  }
+  .pt-dl-img{
+    background:var(--light-beige);
+    border-radius:14px;
+    height:345px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:22px;
+  }
+  .pt-dl-tag{
+    align-self:flex-start;
+    background:var(--light-beige);
+    border-radius:6px;
+    padding:4px 10px;
+    font-size:12px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--text);
+    margin:0 8px 12px;
+  }
+  .pt-dl-card h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:22px;
+    color:var(--text);
+    margin:0 8px 8px;
+  }
+  .pt-dl-card > p{
+    font-size:var(--body-font-size);
+    line-height:24px;
+    color:var(--text);
+    margin:0 8px 16px;
+  }
+  .pt-dl-link{
+    margin:auto 8px 0;
+  }
+  .pt-dl-form-card{
+    position:relative;
+    justify-content:center;
+    padding:40px 44px;
+  }
+  /* NB: overige props kwamen al uit `.pt-dl-card h3` (won vóór de refactor
+     op specificiteit van de oude `.pt-dl-form-title`); alleen line-height
+     was effectief — zo blijft de weergave identiek. */
+  .pt-dl-form-card h3{
+    line-height:1.2;
+  }
+  .pt-dl-label{
+    display:block;
+    font-size:var(--body-font-size);
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:8px;
+  }
+  .pt-dl-input{
+    margin-bottom:18px;
+  }
+  .pt-dl-btn{
+    width:100%;
+    background:var(--dark);
+    color:var(--white);
+    border:0;
+    border-radius:50px;
+    padding:14px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:opacity .2s;
+  }
+  .pt-dl-btn:hover{
+    opacity:.9;
+  }
+  .pt-dl-sticker{
+    position:absolute;
+    right:26px;
+    bottom:26px;
+    color:var(--coral);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:22px;
+    line-height:1.05;
+    text-align:right;
+    transform:rotate(-8deg);
+  }
+
+
+
+/* ==========================================================================
+   DOWNLOADS-PAGINA (downloads.html) — page-scope: .downloads
+   ========================================================================== */
+
+/* ===== Downloads — hero (beige, donkere tekst) ===== */
+  .downloads .hero-section{
+    background:var(--light-beige);
+  }
+  .downloads .banner-section{
+    padding:50px 20px 80px;
+  }
+  .downloads .banner-section h1{
+    color:var(--text);
+  }
+  .downloads .banner-section p{
+    font-size:var(--body-lg-font-size);
+    line-height:1.6;
+    color:var(--text);
+    margin:22px auto 0;
+  }
+
+/* ===== Downloads — download-kaarten ===== */
+  .dl-cards{
+    background:var(--white);
+    padding:80px 0 110px;
+  }
+  .dl-cards-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:43px 45px;
+  }
+  .dl-card{
+    display:flex;
+    align-items:center;
+    gap:45px;
+    background:var(--white);
+    border:1px solid var(--text);
+    border-radius:16px;
+    padding:14px;
+  }
+  .dl-card-img{
+    flex:0 0 195px;
+    height:200px;
+    background:var(--light-beige);
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .dl-card-body{
+    padding-right:24px;
+  }
+  .dl-card-body h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:22px;
+    color:var(--text);
+    margin-bottom:10px;
+  }
+  .dl-card-body p{
+    font-size:var(--body-font-size);
+    line-height:24px;
+    color:var(--text);
+    margin-bottom:16px;
+  }
+
+/* ===== Downloads — slot-CTA "Mis niets" met formulier ===== */
+  .downloads .cta-final{
+    background:var(--white);
+  }
+  .downloads .cta-final-panel{
+    padding-bottom:130px;
+  }
+  .downloads .cta-final-panel > .container > p{
+    max-width:840px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .dl-niets-card{
+    position:relative;
+    width:820px;
+    max-width:100%;
+    margin:0 auto;
+    background:var(--white);
+    border-radius:24px;
+    padding:38px 44px 46px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    text-align:left;
+  }
+  .dl-niets-field label{
+    display:block;
+    font-size:var(--body-font-size);
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:8px;
+  }
+  .dl-niets-btn{
+    position:absolute;
+    right:55px;
+    bottom:-24px;
+    background:var(--dark);
+    color:var(--white);
+    border:0;
+    border-radius:50px;
+    padding:14px 30px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:opacity .2s;
+  }
+  .dl-niets-btn:hover{
+    opacity:.9;
+  }
+
+
+
+/* ==========================================================================
+   CONTACT-PAGINA (contact.html) — page-scope: .contact
+   ========================================================================== */
+
+/* ===== Contact — paginabrede achtergrond (coral + witte diagonaal in één image) ===== */
+  .contact{
+    background:var(--white) url(../media/contact-page-bg.png) no-repeat center top;
+    background-size:100% auto;
+  }
+  .contact .hero-section{
+    background:transparent;
+  }
+
+/* ===== Contact — hero ===== */
+  .contact .breadcrumb{
+    color:var(--white);
+  }
+  .contact .breadcrumb a{
+    color:var(--white);
+  }
+  .contact .banner-section{
+    padding:62px 20px 80px;
+  }
+  .contact .banner-section p{
+    color:var(--white);
+    font-size:var(--body-lg-font-size);
+    line-height:1.55;
+    max-width:880px;
+    margin:24px auto 0;
+  }
+
+/* ===== Contact — formulier + direct contact (kaarten over de hero) ===== */
+main.contact{
+  background: url(../media/contact-page-bg.png) left top no-repeat;
+}
+  .ct-contact{
+    background:transparent;
+    padding:0 0 110px;
+  }
+  .ct-contact-inner{
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr 485px;
+    gap:40px;
+    align-items:start;
+  }
+  .ct-form-card{
+    background:var(--white);
+    border:1px solid var(--text);
+    border-radius:24px;
+    padding:48px 50px 40px;
+  }
+  .ct-form-card h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:22px;
+    color:var(--text);
+    margin-bottom:18px;
+  }
+  .ct-radios{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px 40px;
+    margin-bottom:28px;
+  }
+  .ct-radios label{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-size:var(--body-font-size);
+    color:var(--text);
+    cursor:pointer;
+  }
+  .ct-radios input[type="radio"]{
+    width:18px;
+    height:18px;
+    accent-color:var(--dark);
+  }
+  .ct-form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:26px 40px;
+  }
+  .ct-field label{
+    display:block;
+    font-size:var(--body-font-size);
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:8px;
+  }
+  .ct-field input,
+  .ct-field textarea{
+    font-family:inherit;
+  }
+  .ct-field textarea{
+    min-height:135px;
+    resize:vertical;
+  }
+  .ct-field-full{
+    grid-column:1 / -1;
+  }
+  .ct-form-foot{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    flex-wrap:wrap;
+    margin-top:30px;
+  }
+  .ct-form-foot p{
+    font-size:15px;
+    line-height:1.5;
+    color:var(--text);
+  }
+  .ct-form-foot p a{
+    color:var(--text);
+    text-decoration:underline;
+    text-underline-offset:2px;
+  }
+  .ct-form-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .ct-alt-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    border:1px solid var(--dark);
+    border-radius:50px;
+    padding:12px 24px;
+    font-size:16px;
+    font-weight:600;
+    color:var(--text);
+    text-decoration:none;
+    background:var(--white);
+    transition:background .2s;
+  }
+  .ct-alt-btn:hover{
+    background:var(--light-beige);
+  }
+  .ct-submit{
+    background:var(--dark);
+    color:var(--white);
+    border:0;
+    border-radius:50px;
+    padding:14px 28px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:opacity .2s;
+  }
+  .ct-submit:hover{
+    opacity:.9;
+  }
+  .ct-direct{
+    background:var(--yellow);
+    border-radius:24px;
+    padding:44px 48px;
+  }
+  .ct-direct h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:22px;
+    color:var(--text);
+    margin-bottom:18px;
+  }
+  .ct-direct p{
+    font-size:var(--body-font-size);
+    line-height:1.75;
+    color:var(--text);
+  }
+  .ct-direct a{
+    color:var(--text);
+    text-decoration:none;
+  }
+  .ct-direct p:nth-of-type(4), .ct-direct p:nth-of-type(5){
+    margin-top:22px;
+  }
+  .ct-direct-note{
+    font-size:15px;
+    line-height:1.5;
+    display:inline-block;
+    margin-top:4px;
+  }
+
+
+
+/* ==========================================================================
+   JURIDISCH-TEMPLATE (juridisch.html) — page-scope: .juridisch
+   ========================================================================== */
+
+/* ===== Juridisch — hero (beige, donkere tekst; titel/datum per pagina) ===== */
+  .juridisch .hero-section{
+    background:var(--light-beige);
+  }
+  .juridisch .banner-section{
+    padding:50px 20px 80px;
+  }
+  .juridisch .banner-section h1{
+    color:var(--text);
+  }
+  .juridisch .banner-section p{
+    font-size:var(--body-font-size);
+    color:var(--text);
+    margin:18px auto 0;
+  }
+
+/* ===== Juridisch — inhoud met index ===== */
+  /* print-knop rechtsboven de content (XD) — window.print via custom.js */
+  .jr-inner{
+    position:relative;
+  }
+  .jr-print{
+    position:absolute;
+    top:4px;
+    right:0;
+    width:44px;
+    height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--white);
+    border:1px solid var(--input-border);
+    border-radius:50%;
+    cursor:pointer;
+    transition:border-color .2s;
+  }
+  .jr-print:hover{
+    border-color:var(--text);
+  }
+  .jr-content{
+    background:var(--white);
+    padding:80px 0 130px;
+  }
+  .jr-inner{
+    display:grid;
+    grid-template-columns:390px 1fr;
+    gap:45px;
+    align-items:start;
+  }
+  .jr-index{
+    background:var(--white);
+    border:1px solid var(--text);
+    border-radius:24px;
+    padding:32px 36px;
+  }
+  .jr-index h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:19px;
+    color:var(--text);
+    margin-bottom:16px;
+  }
+  .jr-index ol{
+    padding-left:20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .jr-index li{
+    font-size:var(--body-font-size);
+    line-height:1.4;
+    color:var(--text);
+    padding-left:6px;
+  }
+  .jr-index a{
+    color:var(--text);
+    text-decoration:none;
+  }
+  .jr-index a:hover{
+    color:var(--coral);
+  }
+  .jr-body{
+    max-width:845px;
+  }
+  .jr-body > p{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--text);
+  }
+  .jr-article{
+    margin-top:32px;
+  }
+  .jr-article h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:19px;
+    color:var(--text);
+    margin-bottom:10px;
+  }
+  .jr-article p{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--text);
+  }
+
+
+
+/* ==========================================================================
+   404-PAGINA (404.html) — page-scope: .error-404
+   ========================================================================== */
+
+/* ===== 404 — hero op paginabrede wasmachine-achtergrond ===== */
+  .error-404{
+    background:var(--white) url(../media/error-page-bg.png) no-repeat center top;
+    background-size:100% auto;
+  }
+  .er-hero{
+    padding:290px 0 120px;
+    text-align:center;
+  }
+  .er-num{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:240px;
+    line-height:.8;
+    color:var(--coral);
+  }
+  .er-hero h1{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:24px;
+    line-height:1.3;
+    color:var(--text);
+    margin-top:20px;
+  }
+  .er-hero p{
+    font-size:var(--body-font-size);
+    line-height:1.45;
+    color:var(--text);
+    margin-top:12px;
+  }
+  .er-actions{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-top:16px;
+  }
+
+/* ===== 404 — of ga direct naar ===== */
+  .er-links{
+    padding:100px 0 110px;
+    text-align:center;
+  }
+  .er-links h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:22px;
+    color:var(--text);
+    margin-bottom:26px;
+  }
+  .er-links-row{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:14px;
+  }
+  .er-links-row a{
+    display:inline-flex;
+    border:1px solid var(--dark);
+    border-radius:50px;
+    padding:11px 26px;
+    font-size:var(--body-font-size);
+    font-weight:700;
+    color:var(--text);
+    text-decoration:none;
+    background:var(--white);
+    transition:background .2s;
+  }
+  .er-links-row a:hover{
+    background:var(--light-beige);
+  }
+
+
+
+/* ==========================================================================
+   WAAROM-SOKKIES-PAGINA (waarom-sokkies.html) — page-scope: .waarom-sokkies
+   ========================================================================== */
+
+/* ===== Waarom Sokkies — intro-masonry (titel + 6 kaarten, geen aparte hero) ===== */
+  .ws-intro{
+    background:var(--light-beige);
+    padding:0 0 100px;
+    position: relative;
+  }
+  .ws-intro::before{
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 768px;
+    background: url(../media/ws-hero-bottom-bg.png) left bottom no-repeat;
+    left: 0px;
+    bottom: 0px;
+  }
+  .ws-intro-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:100px;
+    align-items:start;
+    margin-top:55px;
+    position: relative;
+  }
+  .ws-intro-head{
+    text-align:right;
+    margin-bottom:95px;
+  }
+  .ws-intro-head h1{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:70px;
+    line-height:1;
+    color:var(--text);
+  }
+  .ws-intro-head p{
+    font-size:var(--body-lg-font-size);
+    line-height:1.55;
+    color:var(--text);
+    max-width:465px;
+    margin:16px 0 0 auto;
+  }
+  .ws-row{
+    display:grid;
+    gap:22px;
+    align-items:start;
+  }
+  .ws-row-sm-lg{
+    grid-template-columns:327fr 461fr;
+  }
+  .ws-row-lg-sm{
+    grid-template-columns:461fr 327fr;
+  }
+  .ws-row-gap{
+    margin-top:60px;
+  }
+  .ws-card{
+    background:var(--white);
+    border-radius:16px;
+    overflow:hidden;
+  }
+  .ws-card img{
+    width:100%;
+    display:block;
+    object-fit:cover;
+  }
+  .ws-row-sm-lg .ws-card:first-child img,
+  .ws-row-lg-sm .ws-card:last-child img{
+    height:265px;
+  }
+  .ws-row-sm-lg .ws-card:last-child img,
+  .ws-row-lg-sm .ws-card:first-child img{
+    height:372px;
+  }
+  .ws-card-offset{
+    margin-top:130px;
+  }
+  .ws-card-body{
+    padding:22px 22px 26px;
+  }
+  .ws-card-body h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:22px;
+    color:var(--text);
+    margin-bottom:8px;
+  }
+  .ws-card-body p{
+    font-size:var(--body-font-size);
+    line-height:24px;
+    color:var(--text);
+  }
+
+/* ===== Waarom Sokkies — vergelijkingstabel (egaal cyaan; shapes voegt Kulwant toe) ===== */
+  .ws-compare{
+    /* zelfde felle cyaan als home's .designed-band en .design-now */
+    background:#87e1f0;
+    padding:0px;
+    position: relative;
+  }
+  .ws-compare h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1;
+    color:var(--blue);
+    text-align:center;
+    margin-bottom:55px;
+  }
+  .ws-compare-scroll{
+    overflow-x:auto;
+    position: relative;
+    z-index: 1;
+  }
+  .ws-compare-table{
+    width:1140px;
+    max-width:100%;
+    margin:0 auto;
+    border-collapse:separate;
+    border-spacing:0;
+  }
+  .ws-compare-table th,
+  .ws-compare-table td{
+    text-align:center;
+    vertical-align:middle;
+    height:49px;
+    padding:6px 14px;
+    font-size:var(--body-font-size);
+    color:var(--text);
+  }
+  .ws-compare-table thead th{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:19px;
+    color:var(--blue);
+    height:66px;
+  }
+  .ws-compare-table thead th:first-child,
+  .ws-compare-table tbody th{
+    text-align:left;
+    padding-left:22px;
+  }
+  .ws-compare-table tbody th{
+    font-weight:400;
+  }
+  .ws-compare-table th:first-child{
+    width:562px;
+  }
+  .ws-compare-table th:nth-child(2),
+  .ws-compare-table th:last-child{
+    width:289px;
+  }
+  .ws-compare-table svg{
+    display:block;
+    margin:0 auto;
+  }
+  /* om-en-om lichte rij-pillen */
+  .ws-compare-table tbody tr:nth-child(odd) th,
+  .ws-compare-table tbody tr:nth-child(odd) td{
+    background:rgba(255,255,255,.35);
+    border-top:1px solid rgba(255,255,255,.9);
+    border-bottom:1px solid rgba(255,255,255,.9);
+  }
+  .ws-compare-table tbody tr:nth-child(odd) th{
+    border-left:1px solid rgba(255,255,255,.9);
+    border-radius:8px 0 0 8px;
+  }
+  .ws-compare-table tbody tr:nth-child(odd) td:last-child{
+    border-right:1px solid rgba(255,255,255,.9);
+    border-radius:0 8px 8px 0;
+  }
+  /* uitgelichte Sokkies-kolom als doorlopend paneel */
+  .ws-compare-table .ws-cmp-sokkies{
+    background:rgba(255,255,255,.28);
+    border-left:1px solid #fff;
+    border-right:1px solid #fff;
+  }
+  .ws-compare-table thead .ws-cmp-sokkies{
+    border-top:1px solid #fff;
+    border-radius:14px 14px 0 0;
+  }
+  .ws-compare-table tbody tr:last-child .ws-cmp-sokkies{
+    border-bottom:1px solid #fff;
+    border-radius:0 0 14px 14px;
+  }
+  .ws-compare-table tbody tr:nth-child(odd) .ws-cmp-sokkies{
+    background:rgba(255,255,255,.5);
+  }
+  .ws-cmp-logo{
+    width:96px;
+    height:auto;
+    display:block;
+    margin:0 auto;
+  }
+
+/* ===== Waarom Sokkies — wat je bij ons krijgt ===== */
+  .ws-gets{
+    position:relative;
+    background:var(--white) url(../media/ws-get-bg.png) repeat center top;
+    /* extra onderruimte: de standaard cta-final-feet steken hier omhoog */
+    padding:310px 0 220px;
+  }
+   .ws-gets::before{
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 418px;
+    background: url(../media/ws-compare-bottom-bg.png) left top no-repeat;
+    top: -220px;
+    left: 0px;
+  }
+  .ws-gets-inner{
+    display:grid;
+    grid-template-columns:1fr 845px;
+    gap:100px;
+    align-items:start;
+  }
+  .ws-gets-left h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1;
+    color:var(--text);
+    margin-bottom:55px;
+  }
+  .ws-gets-left ol{
+    list-style:none;
+  }
+  .ws-gets-left ol li{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:36px 10px;
+    border-top:1px solid #d9d4cd;
+  }
+  .ws-gets-left ol li:last-child{
+    border-bottom:1px solid #d9d4cd;
+  }
+  .ws-gets-num{
+    flex:0 0 118px;
+    font-size:var(--body-font-size);
+    color:var(--text);
+  }
+  .ws-gets-arrow{
+    display:flex;
+    flex:0 0 auto;
+  }
+  .ws-gets-left ol p{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:19px;
+    color:var(--text);
+  }
+  .ws-gets-imgs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    align-items:start;
+  }
+  .ws-gets-imgcol{
+    display:grid;
+    gap:16px;
+  }
+  .ws-gets-imgcol img{
+    width:100%;
+    height:418px;
+    object-fit:cover;
+    border-radius:24px;
+    display:block;
+  }
+  .ws-gets-imgcol-offset{
+    margin-top:58px;
+  }
+
+/* ===== Waarom Sokkies — slot-CTA (witte basis) ===== */
+  .waarom-sokkies .cta-final{
+    background:var(--white);
+  }
+
+
+

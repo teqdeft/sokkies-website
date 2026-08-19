@@ -1,0 +1,2357 @@
+# Sokkies — front-end
+
+## WORDPRESS-FASE GESTART (2026-08-18) — nieuwe mappenstructuur
+
+- `htmlv/` — de COMPLETE statische site (alle 22 pagina's + assets/), op
+  2026-08-18 verplaatst vanaf de main-root (matcht de dev-serverstructuur
+  dev.studioubique.com/sokkies/htmlv/). Alle padverwijzingen in dit
+  document naar pagina's/assets zijn relatief aan htmlv/.
+  .vscode/livePreview default wijst nu naar /htmlv/collectie.html.
+- `sokkies-local/` — WordPress 7.0.4-installatie (core gestaged; wp-config
+  klaar met db sokkies_local/root/root + eigen salts, prefix `sokkies_`,
+  WP_DEBUG+log aan). LET OP: op deze machine ontbreken php/mysql —
+  draaien vereist een lokale serveromgeving (LocalWP/MAMP/Herd).
+- BESLUITEN (2026-08-18, Kulwant): meertalig via TRANSLATEPRESS,
+  formulieren via GRAVITY FORMS; CMS = custom theme met ACF
+  (Flexible Content section-builder, strategie besproken — layouts 1:1
+  uit de htmlv-secties, CPT's Soktype/Case/FAQ/Testimonial/Partnerlogo/
+  Download, opties-pagina met contactgegevens/TIERS/review-score).
+- THEMA-VOORTGANG (2026-08-18, werkwijze = kleine chunks die Kulwant
+  telkens test): chunks 1-2 GETEST (skelet: functions/enqueues met
+  filemtime-versies, header/footer-chrome 1:1 uit htmlv, pagina's
+  aangemaakt, permalinks werkend — mod_rewrite stond uit in MAMP
+  httpd.conf r179, aangezet + herstart). Chunk 3 GETEST: page.php
+  (secties-loop via ACF Flexible Content 'secties') +
+  template-parts/sections/section-cta_final.php. LES: thema stond nog op
+  twentytwentyfive — verklaarde álle symptomen (geen Secties-box, geen
+  ACF-sync, Gutenberg bleef); na activeren van Sokkies werkte alles.
+  ACF-velden gaan via PHP-REGISTRATIE in inc/acf-fields.php
+  (acf_add_local_field_group op acf/init) — de acf-json/sync-route is
+  VERVALLEN (geen sync-stap, klant kan velddefinities niet slopen).
+  Gutenberg: Classic Editor-PLUGIN actief (door Kulwant geïnstalleerd;
+  de use_block_editor-filters werkten niet in WP 7.0.4) + editor-support
+  voor pages verwijderd → bewerkscherm = titel + Secties-builder.
+  Chunk 4 GEBOUWD (2026-08-18): opties-pagina "Website-instellingen" (menu-label hernoemd van Site-instellingen, 2026-08-18; slug blijft sokkies-instellingen)
+  (menu-positie 25; tabs Contactgegevens / Cijfers & reviews: telefoon
+  weergave + internationaal, e-mail, adres-textarea, review_score,
+  review_aantal, minimale_afname) + chrome gewired: topbar "Vanaf X
+  paar" + reviewregel, mega-USP "Vanaf X paar", footer tel/WhatsApp/
+  e-mail/adres — alles via sokkies_optie($naam,$fallback) in
+  functions.php (fallback = de oude hardcoded waarde zolang de
+  opties-pagina niet is opgeslagen; ACF-defaults gelden pas ná eerste
+  keer opslaan) + sokkies_tel_href()/sokkies_wa_href() (strippen het
+  internationale nummer). Footer-reviewbadges (300+/120+) bewust nog
+  hard — QA #7-klantvraag. Mega-bestsellerprijzen hard tot de
+  Soktype-CPT-chunk. Chunk 5 GEBOUWD (2026-08-18): layout 'hero'
+  (section-hero.php — hero-section > breadcrumb + banner-section 1:1 uit
+  htmlv; velden breadcrumb/titel/subtekst + button_group 'stijl' die
+  alleen de huisje-icoonkleur stuurt: wit op coral, donker op beige — de
+  sectiekleur zelf komt uit de page-scope class). NIEUW patroon:
+  <main> krijgt in page.php automatisch de PAGINA-SLUG als class
+  (sokkies_main_class(), met uitzonderingsmap slug→CSS-class:
+  veelgestelde-vragen→faq-page; oude-pagina-slugs gecheckt = 0
+  CSS-hits, dus onschadelijk) — zo werken alle page-scope-regels uit
+  htmlv vanzelf. NIEUWE helper sokkies_kop(): [woord] in een titelveld
+  wordt <span class="text-yellow">, <br> toegestaan, rest ge-escaped —
+  hét patroon voor alle kop-velden vanaf nu. Chunk 5 GETEST; daarbij
+  sokkies_kop() verbreed: naast [woord] werkt nu óók <span>woord</span>
+  (Kulwant typte de htmlv-notatie — beide worden text-yellow; overige
+  HTML blijft geneutraliseerd), en de Slot-CTA-h2 loopt ook via
+  sokkies_kop (downloads-CTA "Mis niets" heeft geel). BUGFIX chunk 3:
+  ACF-linkvelden geven 'title', geen 'label' — cta-knoplabel gebruikte
+  $knop['label'] en viel dus altijd terug op de default; gefixt (geldt
+  als les voor alle linkvelden). Chunk 6 GEBOUWD (2026-08-18): layout
+  'coll_hero' ("Hero met verticale fotosliders", section-coll_hero.php —
+  hero-section hero-slider-section > coll-hero 1:1 uit collectie.html):
+  breadcrumb/titel/subtekst, optionele knop_1 (.cta) + knop_2
+  (.cta-transparent), usps-repeater (ul class-vrij), en 2
+  GALLERY-velden voor de ch-swiper-1/2-marquees (return_format array;
+  leeg = standaardset slider1/4/7/2 resp. 5/8/3/6 uit thema-assets —
+  custom.js verticalMarquee pakt de markup vanzelf op). Sectie-kiezer-UX
+  (2026-08-18, verzoek Kulwant): ACF EXTENDED (gratis plugin) levert de
+  popup-kiezer — acfe_flexible_modal (full, 3 kolommen, categorieën
+  aan) + acfe_flexible_category/thumbnail per layout in
+  inc/acf-fields.php (keys zijn inert zonder de plugin); thumbnails =
+  ECHTE sectie-screenshots via headless Chrome uit htmlv-minipages
+  (alleen de sectie + site-CSS), 800px breed in
+  theme/assets/acf-previews/{layout}.png — bij elke nieuwe layout ook
+  zo'n screenshot maken. ADMIN-TAAL = SCHOON NEDERLANDS (afspraak
+  2026-08-18, klant is Nederlands): layout-labels hernoemd naar
+  "Paginakop (kruimelpad + titel)" / "Paginakop met fotokolommen" /
+  "Afsluitend actieblok (rood paneel)"; popup-categorieën "Paginakoppen"
+  en "Actieblokken"; veldlabels Kruimelpad-label/Pluspunten — GEEN
+  Engels jargon (hero/CTA/breadcrumb/USP) in admin-labels bij nieuwe
+  chunks; interne name-keys/CSS blijven Engels (hero, coll_hero,
+  cta_final). Chunk 7 GEBOUWD (2026-08-18): CPT
+  'sokkies_faq' (inc/cpt.php — menu "Veelgestelde vragen", titel = vraag,
+  ACF-wysiwyg 'antwoord' (basic toolbar, geen media) via groep
+  group_sokkies_faq) + layout 'faq' ("Veelgestelde vragen (accordeon)",
+  categorie Veelgestelde vragen): titel (leeg = standaard home-titel),
+  intro-wysiwyg (default = home-introtekst met FAQ-/contactlinks),
+  relationship 'vragen' (leeg = 8 nieuwste), toggles eerste_open +
+  link_alle_vragen (faq-more). section-faq.php 1:1 uit home.html;
+  accordeon-JS pakt het vanzelf op. GESEED: de 8 home-vragen als CPT-
+  posts (ID 50-57, datums aflopend zodat de nieuwste-8-fallback de
+  home-volgorde toont; antwoorden 1:1 uit htmlv incl. het bekende
+  "minimum 50 paar" — 30-vs-50 blijft klantvraag). faq.png-thumbnail in
+  acf-previews. FAQ-HERSTRUCTURERING (2026-08-18, n.a.v.
+  veelgestelde-vragen.html): taxonomie 'sokkies_faq_cat' (hiërarchisch,
+  admin-kolom aan; slugs = de data-cat-waarden bestellen/ontwerp/
+  levering/prijs/materiaal/account zodat de latere FAQ-paginachunk 1:1
+  op terms kan renderen) + in de faq-layout een bron-keuze "Zelf
+  kiezen" / "Alles uit één categorie" (conditional: relationship óf
+  taxonomy-select). GESEED: 6 categorieën + de 14 paginavragen (ID
+  63-75; antwoorden = volledige faq-a-inner-HTML; datums aflopend per
+  paginavolgorde zodat date-DESC de originele volgorde geeft). De
+  upload-vraag bestond al uit de home-seed (ID 53) → alleen categorie +
+  datum-slot gekregen, antwoord ongewijzigd. De 7 overige home-vragen
+  zijn bewust ONGECATEGORISEERD (home kiest handmatig; klant kan ze in
+  admin categoriseren). LET OP: de nieuwste-8-fallback toont nu de
+  FAQ-paginavragen; secties horen 'Zelf kiezen' of een categorie te
+  gebruiken. Bekende content-issues reizen mee (min. 30 vs 50;
+  13/14 concept-antwoorden). Chunk 8 GEBOUWD (2026-08-18): CPT
+  'sokkies_soktype' (menu "Soktypes", titel = typenaam, uitgelichte
+  afbeelding = kaartfoto; ACF prijs_vanaf ("€2,99", site rendert "Vanaf
+  … per paar"), badge-select bestseller/nieuw (allow_null),
+  korte_beschrijving (voor de collectiepagina-kaarten, latere chunk),
+  pagina_link (leeg = /product-detail/)) + layout 'collection'
+  ("Sokkencollectie (kaartenrij)", categorie Collectie):
+  titel/stijl standaard|beige (collection-beige-compound)/soktypes-
+  relationship (leeg = 4 nieuwste)/knop_tonen+knop (leeg = "Bekijk
+  collectie" → /collectie/). section-collection.php 1:1 uit home.html
+  incl. collection-nav-pijlen (band-CSS + custom.js). GESEED: de 4
+  home-typen (ID 78/80/82/84) met foto's als featured (FLEUROPP_LARGE_2,
+  CocaCola, Bamboe-gecomprimeerd, APMsok — via media-sideload,
+  hergebruik-guard op slug); Reguliere = bestseller-badge.
+  collection.png-thumbnail in acf-previews. NOG HARD: mega-menu-
+  bestsellers/prijzen (aparte chunk), de 6 overige typen komen bij de
+  Collectie-paginachunk (type-cards). COLLECTIE-LAYOUT-AUDIT + UITBOUW
+  (2026-08-18, verzoek Kulwant "alle collectie-layouts kiesbaar"):
+  inventaris = 4 componenten — (1) kaartenrij .collection (home geel /
+  toepassingen beige / configurator .conf-types = zelfde kaarten met
+  sokkenpatroon+blauwe golf), (2) types-grid (collectie.html), (3)
+  cards-suggestion-slider (PDP), (4) bedankt's "Terwijl je wacht" =
+  GEEN collectie (contentkaarten, aparte chunk t.z.t.). GEBOUWD: stijl
+  'patroon' op layout collection (wrapper conf-types + .conf-bg-div,
+  zelfde inner; stijl-labels eerlijk hernoemd: standaard = "Gele golf
+  (home)"), layout 'types_grid' ("Alle soktypes (grid met beschrijving)"
+  — titel + relationship leeg=alle; teller "N resultaten" telt zelf;
+  kaart = badge/foto/h3/korte_beschrijving (fallback = de bekende
+  placeholder-zin)/prijs-strong/"Vanaf X paar" via minimale_afname-optie/
+  "Bekijken"), layout 'cards_suggestion' ("Soktypes-slider (Bekijk ook
+  deze)" — titel + knop rechtsboven (leeg = "Bekijk alle sokken" →
+  /collectie/) + relationship leeg=8 nieuwste; swiper-init zit al in
+  custom.js). GESEED: de 6 resterende soktypes uit collectie.html (ID
+  90-99: Yoga €4,99, Werk €4,49, Wieler €5,49 (foto = bestaand
+  slider6-attachment #46), Antislip €3,99, Kids €2,99, Zorg €3,99
+  NIEUW-badge) — alle 10 hebben nu de collectie-paginavolgorde als
+  datum-slots (4-nieuwste-fallback van de kaartenrij = R/S/B/Yoga, wijkt
+  af van home's R/S/B/Kerst → home hoort z'n 4 handmatig te kiezen) en
+  de placeholder-beschrijving (klantcopy blijft open). Werk.png/sd.png
+  = 65px-thumbs (bekend, exports pending). Thumbnails types_grid.png +
+  cards_suggestion.png in acf-previews. FAMILIE-AUDIT ACTIEBLOKKEN/HERO'S/
+  FAQ'S (2026-08-18, zelfde verzoek): (1) cta_final UITGEBREID —
+  voetjes_positie achter|over het paneel (DOM-volgorde, over-ons-variant),
+  knop_2 (.cta-final-actions, duurzaamheid/over-ons), contactregel-toggle
+  (.cta-final-row "Of bel … • WhatsApp …" uit Website-instellingen,
+  veelgestelde-vragen-variant); partners-variant = voetjes uit; witte
+  basis komt uit de page-scope class. NIEUW layout 'cta_formulier'
+  ("Actieblok met formulier (Mis niets)", downloads) — formulier is de
+  htmlv-stub #dlMisNietsForm tot de Gravity Forms-fase.
+  reviews-detail's compound .cta-final-detail bewust NIET als optie
+  (komt bij de case-detailchunk). (2) hero UITGEBREID tot de volledige
+  banner-familie: breadcrumb_tonen (uit op home), usps-repeater,
+  rating_tonen (score/aantal uit opties + stars-svg 1:1), knop_1/knop_2,
+  onderregel tekst+link (banner-bottom-info), compact-toggle
+  (offerte-banner-class, funnel) en fotos-gallery → rendert de
+  homepage-fotoslider (section.gallery ín hero-section, slides cyclen
+  tot ≥16 zoals htmlv; gallery-nav 1:1; custom.js-init multi-instance).
+  (3) faq: stijl-toggle standaard|licht (faq-light + link wordt
+  .faq-all, offerte-variant) + NIEUW layout 'faq_geel' ("Veelgestelde
+  vragen (geel, gecentreerd)" = partners' pt-faq; zelfde bron/categorie/
+  vragen-trio, eerste item open). Thumbnails faq_geel.png +
+  cta_formulier.png. De grote gecategoriseerde FAQ-PAGINA (hero+zoek+
+  chips+groepen) is bewust een eigen latere chunk. Chunk 10 GEBOUWD
+  (2026-08-18): CPT 'sokkies_logo' (menu "Merklogo's", titel = merknaam,
+  featured = logo) + layout 'brands' ("Merkenstrip (logo-loop)",
+  categorie Merken): titel (leeg = "Gebruikt door bedrijven in heel
+  Europa"), stijl standaard|beige (brands-beige)|inner (brands-inner,
+  funnel), logos-relationship (leeg = alle). Audit: 3 varianten op 4
+  pagina's (home/reviews-en-cases/offerte+sample), inhoud overal
+  identiek. section-brands.php — custom.js kloont slides tot ≥4x
+  viewport (marquee-fix van 2026-08-06 geldt automatisch). GESEED: de
+  10 logo's in home-volgorde (ID 101-119; Hornbach/Google/Heineken/
+  Pinterest/Heinz/PwC/Fuze Tea/Yakult/Aldi/EU). brands.png-thumbnail. Chunk 11 GEBOUWD (2026-08-18):
+  process-familie — audit: home .process (grid, 4 stappen mét eigen
+  icoon-svg's), collectie/toepassingen .process-split (li-stappen +
+  chevron + knop + uc-process-collage), configurator .process-split
+  .conf-works (3 STAPPEN — niet 4!, titel boven de split, conf-check-
+  contactblok met e-mail/bel/WhatsApp/Chat-knoppen, FLEUROPP-collage);
+  werkwijze .steps-section = eigen component, komt bij de werkwijze-
+  paginachunk. TWEE layouts (categorie Werkwijze): 'process'
+  ("Stappenblok (4 stappen met iconen)": titel/stappen-repeater
+  (icoon-image + titel + tekst, nummers tellen zelf; leeg = de 4
+  home-stappen mét inline svg's)/knop) en 'process_split' ("Stappen met
+  fotocollage": variant standaard|configurator, stappen-repeater +
+  knop (standaard) óf contactblok kop/tekst/sub (conf; knoppen uit
+  Website-instellingen, Chat = #-stub) + collage-gallery (leeg =
+  variant-set)). sokkies_kop() kreeg een $klasse-parameter
+  (default text-yellow; conf-check-kop gebruikt text-coral — [woord]
+  wordt dáár rood). Thumbnails process.png + process_split.png (retina,
+  1600px — alle previews zijn 2026-08-18 op retina herschoten na
+  blur-melding Kulwant). Chunk 12 GEBOUWD (2026-08-18): layout
+  'impact' ("Cijferblok met fotocollage (geel)", categorie Cijfers) —
+  stats-repeater (getal+label; leeg = 5.000+/1.000.000+ met de
+  stat-arrow-svg), beschrijving, fotos-gallery (round-robin over de 3
+  v-swiper-kolommen, elke kolom doorgecycled tot ≥4 slides; leeg = de
+  statische slider-sets), pluspunten_tonen-toggle (uit = de egale
+  over-ons-weergave — het vlak zelf wordt egaal via de page-scope
+  class) + pluspunten-repeater (icoon-image + label; leeg = de 6
+  standaardchips — dat zijn LOSSE svg-bestanden in media:
+  gratis-ontwerp/Snelle-levering/premium-kwaliteit/Lage-min-afname/
+  Tevreden-klanten/Geen-addertjes). .promises (PDP "Onze beloftes"-
+  kaarten) bewust naar de PDP-chunk. impact.png-thumbnail (retina).
+  Chunk 13 GEBOUWD (2026-08-18): CALCULATOR + TIERS NAAR CMS —
+  opties-SUBpagina "Prijzen & staffels" (onder Website-instellingen,
+  slug sokkies-prijzen): repeater 'staffel' (naam + geneste
+  prijzen-repeater vanaf/prijs) = DE prijsbron; GESEED 1:1 uit de
+  statische TIERS (10 typen × 7 regels; naam-veld = de nette
+  dropdownnamen). sokkies_staffel_matrix() (functions.php) bouwt het
+  JS-formaat { sanitize_title(naam): {label: lowercase, rows} } en
+  wp_add_inline_script zet window.SOKKIES_TIERS vóór custom.js;
+  THEMA-custom.js gepatcht: `const TIERS = window.SOKKIES_TIERS || {…}`
+  (htmlv-custom.js ONGEWIJZIGD — statische site blijft op de oude
+  matrix draaien). Layout 'calculator' ("Prijscalculator met
+  staffeltabel", categorie Prijzen): titel, stijl standaard|beige
+  (calculator-bg)|roze (calculator-pink), knop (leeg = proefdesign →
+  /offerte/); partial rendert skelet + dropdown uit de matrix
+  (data-values = nieuwe sleutels bijv. reguliere-sokken — JS is
+  sleutel-agnostisch), #staffelRows leeg (JS vult), range-min =
+  eerste staffelregel (nu 50 — 30-vs-50 blijft klantvraag; bij besluit
+  evt. aan minimale_afname koppelen). LET OP: door de element-id's
+  (qtyRange/sockType/…) max ÉÉN calculator per pagina (comment in
+  partial). calculator.png-thumbnail. Chunk 14 GEBOUWD (2026-08-18): layouts
+  'gift' ("Geschenk-opties (kaartenrij)", categorie Extra's — titel +
+  kaarten-repeater (foto/titel/punten-subrepeater/link; leeg = de 4
+  home-kaarten incl. gift-nav-pijlen)) en 'brand_intro' ("Tekstblok
+  merkverhaal", categorie Tekstblokken — stijl standaard|licht|
+  licht_werkwijze (brand-light + ww-brand-marker)|geel
+  (brand-intro-yellow), titel/tekst_1/tussenkop/tekst_2/link (leeg =
+  home-teksten, link → /over-ons/); duddle-iconen vast). LET OP: de
+  .designed-strip ("Door onze klanten ontworpen") zit IN home's
+  cases-sectie → bewust doorgeschoven naar de cases-chunk (Case-CPT).
+  gift.png + brand_intro.png thumbnails. Chunk 15 GEBOUWD (2026-08-18): CASES —
+  CPT 'sokkies_case' (menu Cases, titel = casetitel; ACF foto_groot/
+  foto_klein_1/foto_klein_2, badge (leeg = Klantcase), probleem/aanpak/
+  resultaat-textareas, link (leeg = /reviews-en-cases/)). Layout 'cases'
+  ("Klantcases (slider)", categorie Cases): stijl blauw|effen
+  (cases-solid)|roze (cases-bg-pink)|pdp (cases-pdp)|reviews
+  (review-cases) — compound-conventie; titel; cases-relationship (leeg =
+  3 nieuwste); voetjes_tonen (Voeten-in-de-lucht; effen/pdp hebben ze
+  ontwerp-technisch niet); fotostrip_tonen + titel/link/fotos
+  (conditional) = de .designed-strip ÍN de sectie (home/werkwijze-
+  compositie). Gedeeld deel template-parts/sections/deel-designed.php
+  (get_template_part met args; slides cyclen tot ≥9) + layout 'designed'
+  ("Fotostrip klantontwerpen (cyaan)", categorie Foto's) = standalone
+  section.cases.conf-designed (strip DIRECT in de sectie — geen
+  case-section-outer, geverifieerd op configurator.html). cases-nav zit
+  per slide (2x per sectie, fade-slider — custom.js sectie-gescoped).
+  GESEED: de 2 home-democases (ID 122/126, slider-grid1-3 naar media,
+  demo-copy = bekende klant-placeholder). Thumbnails cases.png +
+  designed.png. ALLE HOMEPAGE-SECTIES ZIJN NU CMS-BAAR (hero+gallery,
+  brands, impact, collection, process, calculator, gift, cases+strip,
+  brand_intro, faq, cta_final). MEGA-MENU DYNAMISCH (2026-08-18):
+  header.php-mega leest nu de Soktype-CPT — Website-instellingen kreeg
+  tab "Uitklapmenu (Sokkencollectie)" met mega_bestsellers (relationship
+  max 4; foto = featured 'large', prijs = prijs_vanaf, link =
+  pagina_link → /product-detail/), mega_meer_types (relationship;
+  label = NIEUW soktype-veld 'korte_naam' ?: titel, thumb = featured
+  'thumbnail') en mega_usps-repeater (de "Vanaf X paar"-regel staat er
+  altijd automatisch boven); "Bekijk collectie" is nu een <a> naar
+  /collectie/ (was <button>-stub). GESEED: bestsellers R/S/B/Kerst +
+  meer-types in XD-VOLGORDE Yoga/Wieler/Kids/Werk/Antislip/Zorg + korte
+  namen (Yoga & pilates, Kids & baby, Antislip). LES: soktype-titels
+  met & staan als &amp;-entity in de DB (uit de seed) — een
+  WP_Query-'title'-lookup op de decoded titel MIST ze; matchen dus in
+  PHP op html_entity_decode(get_the_title()) (weergave is overal
+  correct). Wieler-menuthumb is nu de betere slider6-featured (was
+  het 65px-Eindhoven-thumbnail). CASE-DETAILPAGINA'S (2026-08-18,
+  verzoek Kulwant "detailpagina's automatisch uit de CPT"): CPT
+  sokkies_case is PUBLIEK (rewrite /cases/{slug}/, has_archive false,
+  exclude_from_search; flush_rewrite_rules via seedscript gedaan) —
+  elke case krijgt automatisch een detailpagina via
+  single-sokkies_case.php (1:1 uit reviews-en-cases-detail.html:
+  simple-hero met breadcrumb Home→Reviews en cases→titel, case-story
+  (impact-hergebruik, 3 v-swiper-kolommen die per kolom een foto
+  verschoven cyclen; leeg = de 3 kaartfoto's), case-specs
+  (label/waarde-repeater), case-result-detail (3 foto's + quote +
+  auteur + doodles), case-video (still + play; url-veld maakt er een
+  link van, anders de statische stub-button) en case-others (AUTO: 4
+  nieuwste andere cases als case-cards met taxonomie-tags +
+  kaart_ondertitel) + vaste slot-CTA cta-final-detail. Secties
+  verschijnen alleen bij gevulde velden. Veldgroep kreeg tabs
+  "Kaart & slider"/"Detailpagina" + kaart_ondertitel; NIEUWE
+  taxonomieën sokkies_case_type + sokkies_case_branche (admin-kolommen;
+  = de filterdimensies van de toekomstige overzichtspagina; terms
+  geseed uit de statische kaart-tags). "Bekijk case" in de
+  cases-slider linkt nu standaard naar de EIGEN permalink. GESEED:
+  case 1 = volledige Sanquin-democontent (sanquin-1/2/3 naar media,
+  intro/aanleiding/resultaat/specs/quote/video-still) + tags
+  Werk/Bedrijf; case 2 ondertitel + tags Regulier/Evenement. Statische
+  detailpagina had GEEN <main> (oude-paginapatroon) — template gebruikt
+  een kale <main>. SOKTYPE-PRODUCTPAGINA'S (2026-08-18, zelfde
+  verzoek): CPT sokkies_soktype PUBLIEK op /collectie/{slug}/ (rewrite
+  slug 'collectie' — de collectie-PAGINA op /collectie/ blijft werken,
+  exacte match wint; geverifieerd 200/200; flush gedaan).
+  single-sokkies_soktype.php (42 KB) = product-detail.html: DYNAMISCH
+  zijn de hero (breadcrumb Home→Sokkencollectie→titel; pdp_titel leeg =
+  "{naam} bedrukken"; pdp_beschrijving + auto Specificaties-anker;
+  pdp_fotos-gallery: eerste = prodMain, rest = thumbs — leeg = alleen
+  featured, GEEN video-thumb in dynamische galerij; rating uit opties;
+  STAFFELTABEL uit de Prijzen & staffels-matrix o.b.v.
+  sanitize_title(titel) — zelfde sleutels als de calculator, badge
+  "Meest gekozen" op de 250-regel, laatste regel krijgt +, 10.000 →
+  offerte), suggestieslider (8 andere typen), cases via deel-cases
+  (pdp-stijl; section-cases.php is GEREFACTORD tot dunne wrapper om het
+  nieuwe deel-cases.php), FAQ (8 nieuwste; titel "Vragen over {naam
+  lowercase} bedrukken"), CTA + prod-cost + pdp-sticky (knoppen →
+  offerte/sample). VERBATIM (met asset-/href-herschrijving) : promises,
+  specs-section, weave, versus, design-now, usecases,
+  testimonial-yellow (Testimonial-CPT later), brand-intro brand-light.
+  Nieuwe soktype-tab "Productpagina" (pdp_titel/pdp_beschrijving/
+  pdp_fotos). Alle type-linkfallbacks (collection/types_grid/
+  cards_suggestion/header-mega 2x) → get_permalink van het type.
+  PDP-GALERIJ + VIDEO (2026-08-18, melding Kulwant): soktype-velden
+  pdp_video (file mp4/webm/mov) + pdp_video_still (leeg = eerste foto) —
+  rendert als laatste prod-thumb-video met play-overlay; THEMA-custom.js
+  uitgebreid (statisch was de play-knop een STUB die alleen de still
+  toonde): klik op de video-thumb vervangt prodMain door een spelende
+  <video controls autoplay> in het vak, fotothumb herstelt de
+  afbeelding. Reguliere sokken kreeg de statische demo-fotoset als
+  pdp_fotos (4 stuks) zodat de miniaturenrij zichtbaar is. PDP VOLLEDIG
+  BEWERKBAAR (2026-08-18, vraag Kulwant "hele pagina dynamisch?"): (1)
+  'pdp_specs'-repeater PER TYPE (titel+tekst; leeg = statische set van
+  6; rendert in 2 kolommen via array_chunk); (2) opties-SUBpagina
+  "Productpagina — vaste secties" (slug sokkies-pdp-secties, tabs Onze
+  beloftes (3 kaarten + 6 pluspunten-chips)/Druktechniek (titel + 2
+  kaarten met punten-subrepeater; kaart 2 krijgt positioneel de
+  sublimation/coral-classes)/Ontwerp-promo (titel/foto/knop → nu een
+  echte <a> naar /configurator/, was stub-button)/Toepassingen (exact 6
+  kaarten, min=max=6 — masonry-skelet met 6 vaste posities behouden,
+  alleen de inhoud is dynamisch; sectietitel volgt het type)) — 1x
+  bewerken geldt voor alle typen; GESEED met de statische inhoud incl.
+  iconen/foto's naar de mediabibliotheek. Template-fallbacks = de
+  geëxtraheerde statische arrays (leeg-opties blijven 1:1 htmlv). NOG
+  BEWUST VAST op de PDP: versus-tabel (marketingtabel), testimonial
+  (wacht op Testimonial-CPT-chunk) en brand-intro (merkverhaal).
+  Weave-kaart 2 heette 'weave-card weave-card-sublimation' —
+  extractieles: variantclasses in de kaart-regex meenemen. Chunk 16
+  GEBOUWD (2026-08-18): REVIEWS — CPT 'sokkies_review' (menu Reviews,
+  ster-icoon; titel = klantnaam, ACF quote (zonder aanhalingstekens,
+  site zet ze erom)/functie ("Naam — Functie")/sterren 1-5) + layout
+  'testimonial' ("Reviews-slider", categorie Reviews): stijl standaard|
+  licht (testimonial-light)|geel (testimonial-yellow)|offerte
+  (testimonial-offer), titel (leeg = "Wat klanten zeggen"),
+  reviews-relationship (leeg = alle). deel-testimonial.php gedeeld
+  (kopscore/aantal uit opties; sets <8 cyclen tot ≥8 slides zoals
+  htmlv); PDP-template's verbatim testimonial-yellow VERVANGEN door het
+  deel. GESEED: de 5 unieke reviews uit collectie's slider (demo-copy,
+  ID 150-154). over-ons' .overons-reviews = ander component
+  (over-ons-chunk). testimonial.png-thumbnail. Chunk 17 GEBOUWD
+  (2026-08-18): layout 'case_grid' ("Cases-overzicht met filters",
+  categorie Cases — de kern van de reviews-en-cases-pagina): titel +
+  cases-relationship (leeg = alle); filterchips worden AUTOMATISCH
+  gegenereerd uit de sokkies_case_type/-branche-termen die op de
+  getoonde cases staan (data-value = termslug, kaarten dragen
+  data-type/data-branche — custom.js' bestaande filter+Meer laden-IIFE
+  (#caseGrid/#caseEmpty/#caseMore, STEP 8) pakt het 1:1 op; kaartlink =
+  eigen detailpagina). Extra branche-terms geseed uit de statische
+  chips (Bouw/Sponsor/Goed doel). De pagina zelf is nu samenstelbaar:
+  hero + case_grid + cases (stijl reviews) + brands (beige) + faq +
+  cta_final. case_grid.png-thumbnail. Chunk 18 GEBOUWD (2026-08-18): layout
+  'faq_pagina' ("FAQ-pagina (zoeken + categorieën)", categorie
+  Veelgestelde vragen) — de complete veelgestelde-vragen-opbouw in één
+  layout: simple-hero met breadcrumb/titel/sub + zoekformulier
+  (#faqSearch), chips + dropdown-variant (.faq-cats-select, eerste term
+  actief) en de faq-cats-list met per FAQ-categorie een groep
+  (id/data-cat = termslug, h2-kop, vragen uit de CPT; allereerste vraag
+  open). Groepvolgorde = term-aanmaakvolgorde (orderby id — de seed
+  volgde de paginavolgorde); hide_empty dus lege categorieën verschijnen
+  niet. Zoekfilter/chips/dropdown-JS was al class-gebaseerd in custom.js
+  — geen JS-wijzigingen. Velden: titel/subtekst/zoekveld-placeholder.
+  Pagina = faq_pagina + cta_final (contactregel aan). faq_pagina.png-
+  thumbnail. PAGINA-ASSEMBLAGE GESTART (2026-08-18, koerswissel
+  Kulwant: "componenten klaar → pagina's vullen"): secties worden
+  PROGRAMMATISCH gevuld via update_field(field_sokkies_secties, rows)
+  met acf_fc_layout + veldkeys. (1) HOMEPAGE (#22) = 11 secties 1:1
+  htmlv-volgorde: hero (breadcrumb uit, [bedrukken]-geel, 3 usps,
+  rating, 2 knoppen, onderregel → /downloads/, gallery slider1-9 —
+  slider9 alsnog naar media), brands, impact, collection (R/S/B/Kerst
+  handmatig), process, calculator, gift, cases (fotostrip AAN), 
+  brand_intro, faq (bron kies: home-vragen ID 50-57, link_alle UIT —
+  home had geen faq-more) en cta_final. (2) NEGEN ONTBREKENDE PAGINA'S
+  AANGEMAAKT (#156-164: veelgestelde-vragen, reviews-en-cases,
+  toepassingen, partners, downloads, waarom-sokkies, offerte,
+  sample-request, bedankt — chunk 2 had er maar 7) + rewrite-flush.
+  (3) veelgestelde-vragen = faq_pagina + cta_final (contactregel,
+  voetjes uit). (4) reviews-en-cases = hero + case_grid + cases
+  (reviews-stijl) + brands (beige) + faq (categorie bestellen) +
+  cta_final; hero-copy 1:1 nagezet na een parafrase-misser (les:
+  eerst extraheren, dan pas invullen). Sectievolgordes geverifieerd
+  via curl op alle drie. WERKWIJZE COMPLEET (2026-08-18): NIEUW
+  layout 'steps' ("Stappenkaarten (slider met foto's)", categorie
+  Werkwijze — steps-swiper + steps-nav uit custom.js; kaart zonder foto
+  toont de "Image placeholder"-chip zoals het ontwerp; leeg = de 4
+  statische stappen) + pagina #16 samengesteld met 7 secties 1:1:
+  coll_hero (standaard fotoset = werkwijze's set), steps, cases (roze +
+  fotostrip), calculator (roze), brand_intro (licht_werkwijze met de
+  eigen "Zo laat je sokken bedrukken bij Sokkies"-teksten), faq (de 8
+  werkwijze-vragen GESEED als ONGECATEGORISEERDE CPT-posts ID 165-171 —
+  bewust zonder categorie zodat ze NIET op de FAQ-pagina verschijnen;
+  datum = gisteren zodat de nieuwste-8-fallback intact blijft; "Wat als
+  ik nog geen ontwerp heb?" bestond al en is hergebruikt) en cta_final.
+  Volgorde server-side geverifieerd. steps.png-thumbnail. COLLECTIE COMPLEET (2026-08-18): NIEUW layout
+  'compare' ("Vergelijkingstabel soktypes", categorie Collectie —
+  kolommen-repeater (naam+badge; kolom 1/3/5 positioneel is-featured) +
+  rijen-repeater met waarden-subrepeater (LEEG veld = groen vinkje);
+  leeg = de statische 5x7-tabel) + cases-stijl 'collectie' via NIEUWE
+  sectie_klasse-override in deel-cases (sectie heet daar
+  case-inner-page, NIET cases; voetjes/strip uit). Pagina #12
+  samengesteld met 9 secties 1:1 (oude TESTsecties van de chunk-rondes
+  vervangen): coll_hero (2 knoppen + 6 usps), types_grid, compare,
+  calculator (beige = calculator-bg), process_split, cases (collectie),
+  testimonial, faq (home-set 50-57 mét Bekijk alle vragen), cta_final.
+  LES scriptedits: bash-quoting verminkte een python-replace 2x
+  (assert! en uiteindelijk sed op regelnummer) — scratch-scripts
+  voortaan met sed/regelnummer patchen of het script opnieuw schrijven.
+  compare.png-thumbnail. TESTRESTEN-SWEEP (2026-08-18, n.a.v. Kulwants
+  "collectie was testdata"): alle 17 pagina's doorlopen — collectie
+  bleek al de echte htmlv-opbouw te dragen (herbouwd in dezelfde
+  chunk); GEWIST: contact (test-cta_final uit chunk 3) en duurzaamheid
+  (test-hero uit chunk 5) — beide nu leeg tot hun eigen
+  assemblage-chunk; WP's standaard Sample Page naar de prullenbak.
+  Status samengesteld: home/collectie/werkwijze/veelgestelde-vragen/
+  reviews-en-cases; leeg wachtend: configurator/over-ons/contact/
+  duurzaamheid/toepassingen/partners/downloads/waarom-sokkies/offerte/
+  sample-request/bedankt. CONFIGURATOR COMPLEET (2026-08-18):
+  hero-veld 'compact' VERVANGEN door 'variant' (standaard|offerte|
+  configurator — banner-class + knoppenwrapper conf-hero-btns; geen
+  data-migratie nodig, compact was nergens 1); NIEUW layout 'conf_demo'
+  ("Configurator-voorbeeld", categorie Extra's: foto + 3 punten, leeg =
+  statisch incl. doodles); NIEUW STICKY-SYSTEEM: paginaveld
+  'mobiele_balk' (geen|knop=conf-sticky|twee_knoppen=uc-sticky|
+  contact=funnel-sticky via deel-funnel-sticky.php met opties-gegevens)
+  gerenderd in page.php ná de secties; single-case kreeg de conf-sticky
+  hard (conform statisch); PDP had pdp-sticky al. Balken gezet:
+  collectie=twee_knoppen, werkwijze/vgv/reviews-en-cases/configurator=
+  knop, home=geen. Pagina #14 samengesteld met 10 secties 1:1: hero
+  (configurator-variant, knop 1 = '#'-stub — configurator-app is latere
+  fase), conf_demo, process_split (configurator), collection (patroon,
+  "Met welk type sok start je?", "Bekijk alle types"), designed, cases
+  (effen, geen voetjes), testimonial (licht), brand_intro (geel), faq
+  (home-set + Bekijk alle vragen), cta_final. LES: veld-insert in de
+  secties-groep brak 1x de arraystructuur (veld belandde buiten
+  'fields') — parse-error direct gefixt; altijd meteen linten.
+  conf_demo.png-thumbnail. Funnel-sticky-extractie: knoppen zijn kale
+  <a>'s met <span>-labels (geen btn-class) — regex daarop aangepast. DOWNLOADS + CONTACT COMPLEET (2026-08-18): (1)
+  layout 'dl_cards' ("Download-kaarten", Extra's): kaarten-repeater met
+  foto (leeg = placeholder-chip zoals ontwerp), titel/tekst, BESTAND
+  (file-veld, wint en krijgt download-attribuut) óf link; leeg = de 4
+  statische kaarten (Aanvragen → #mis-niets). Downloads (#160) = hero
+  (beige) + dl_cards + cta_formulier + conf-sticky. (2) layout
+  'contact_formulier' ("Contactformulier met contactkaart",
+  Actieblokken — alleen een message-veld: formulier = htmlv-stub
+  #contactForm tot de formulierenfase; ct-direct-kaart en legal-links
+  1:1, tel/wa/mail uit opties). NIEUW FOOTER-SYSTEEM: paginaveld
+  'footer_variant' (volledig|mini) — footer.php rendert
+  deel-mini-footer.php (1:1 uit contact.html, opties-gewired) en stopt
+  dan; volledige footer ongemoeid (home geverifieerd). Contact (#20) =
+  hero (coral, "Neem [contact] op") + contact_formulier + contactbalk
+  (funnel-sticky) + MINI-footer; main.contact-slugclass geeft de
+  pagina-achtergrond. 8/16 pagina's samengesteld. TOEPASSINGEN COMPLEET (2026-08-18): layouts
+  'usecase_why' ("Waarom-blok (intro + 4 punten)", Tekstblokken) en
+  'usecases_flat' ("Toepassingen (6 kaarten)", Extra's — usecases-head/
+  usecases-grid-wrappers 1:1); PROMOKAART-SYSTEEM: opties-tab Promokaart
+  (actief/foto/titel/tekst/link, defaults = de kerstkaart met "Bekijk")
+  + paginaveld promo_kaart (aan|uit) — gerenderd in footer.php (alleen
+  volle footer; nooit op soktype-singles conform XD; uit gezet op vgv +
+  downloads); coll_hero-titel gebruikt nu sokkies_kop(…,'title-accent')
+  (toepassingen-conventie) en eigen kolomfoto's cyclen tot ≥4 slides.
+  BUGFIX: de chunk-11 upgrade sokkies_kop($tekst,$klasse) bleek NOOIT
+  geland (eerste build brak vóór de functions.php-edit; de rerun miste
+  die stap — PHP slikt extra argumenten geruisloos, dus conf-checks
+  text-coral was stil kapot) — nu écht toegepast en geverifieerd
+  (title-accent + text-coral live). Pagina #158 = 10 secties 1:1: hero
+  (eigen use-case-hero1-4-marquees), usecase_why, usecases_flat,
+  collection (beige), cases, calculator (beige), process_split,
+  brand_intro (licht), faq (8 pillar-vragen geseed, "Wat is de minimale
+  afname?" hergebruikt), cta_final + uc-sticky + promokaart. 9/16. DUURZAAMHEID COMPLEET (2026-08-18): drie
+  layouts in NIEUWE categorie Duurzaamheid — 'dz_certs'
+  ("Certificaten-tabs (coral)": introregel ([geel]/<br>), tabs-repeater
+  label/titel/tekst/noot/foto, leeg = de 6 statische tabs (tab 1 =
+  echte OEKO-TEX-copy, 2-6 = bekende concepten; pane-foto's 2-6 =
+  slider-placeholders); tabs-JS + 992-dropdown was al class-gebaseerd),
+  'dz_keur' ("Keurmerk-kaarten": titel + kaarten logo/titel/tekst, leeg
+  = OEKO-TEX/GOTS/BSCI) en 'dz_points' ("Puntenblok met fotocollage":
+  story-collage klein+groot (leeg = duur-img2/3), titel/intro/punten-
+  repeater (nummers auto)/slotregel/knop → contact). Pagina #28 = hero
+  ("[Hoe duurzaam] zijn we nu écht?") + dz_certs + dz_keur + dz_points
+  + cta_final ("Sokken met een verhaal?", 2 knoppen, voetjes achter;
+  witte basis via page-scope). LES HERHAALD: CTA-copy eerst 2x fout
+  geparafraseerd, daarna 1:1 uit htmlv gezet ("Vraag gratis
+  proefdesign aan" + sub met <br>) — cta_final-sub kreeg daarvoor
+  nl2br-ondersteuning. conf-sticky aan. 10/16. PARTNERS COMPLEET (2026-08-18): NIEUWE
+  taxonomie sokkies_logo_cat (Partnercategorieën, admin-kolom) op de
+  Merklogo-CPT + vier layouts in NIEUWE categorie Partners —
+  'pt_perks' (titel + 4 kaarten), 'pt_partners' (logo-grid: chips =
+  termen-in-gebruik, wrapper .pt-partners-chips met kale buttons
+  (class 'active' op Alle — NIET chip/is-active, JS-contract
+  geverifieerd), kaart data-cat = termslug; CMS toont elk logo 1x
+  (statisch = 26 herhaalde demo-kaarten voor dichtheid — bewust
+  verschil); round-robin-democategorieën geseed = bekende klantvraag),
+  'pt_otp' (vaste legs/doodle-exports + collage klein/groot leeg =
+  op-img1/2 + titel/tekst) en 'pt_dl' (2 brochure-kaarten met
+  bestand-of-link + placeholder-chips + formulier-kaart
+  #partnerDownloadsForm-stub + sticker-tekst). Pagina #159 = 7 secties
+  1:1: coll_hero (eigen fotoset incl. sock-img-right/slider-grid1 naar
+  media), pt_perks, pt_partners, pt_otp, faq_geel ("Veelgestelde
+  vragen voor partners", 8 vragen geseed ongecategoriseerd, antwoord 1
+  echt/2-8 concept), pt_dl, cta_final (voetjes uit) + conf-sticky +
+  promokaart. 11/16. WAAROM-SOKKIES COMPLEET (2026-08-18): drie
+  layouts in NIEUWE categorie Waarom Sokkies — 'ws_intro'
+  ("Waarom-intro (6 fotokaarten)": breadcrumb + titel/sub + kaarten-
+  repeater min=max=6 in het VASTE masonry-skelet (ws-row-sm-lg/
+  lg-sm/offset/gap — skelet verbatim, inhoud per positie via
+  counter-substitutie zoals de PDP-usecases)), 'ws_compare' ("Sokkies
+  vs. de rest": rijen-repeater label/wij/rest — wij leeg = groene
+  check, rest 'X' = rode X, tekst (Soms/Vaak) = tekst; kop met
+  SOKKIES-logo-svg; leeg = de statische 10 rijen X/X/X/Soms/Vaak/Soms/
+  X/Soms/Soms/X, server-side geverifieerd) en 'ws_gets' ("Wat je
+  krijgt": punten-repeater (nummers auto) + collage-gallery kolom 1 =
+  foto 1+3, kolom 2 = 2+4; wrappers ws-gets-inner/left/imgs/imgcol
+  1:1 — eerste generatie had een fout skelet (extra div + collage in
+  de linkerkolom), herschreven). LES: tbody-rijen hadden
+  <th scope="row"> (regex-mis #1) en de gets-wrappers heetten
+  imgs/imgcol (niet collage/col). Pagina #161 = ws_intro + ws_compare
+  + ws_gets + cta_final ("Benieuwd wat het<br>voor jou kost?", witte
+  basis via page-scope, feet aan) + conf-sticky + promokaart. 12/16 —
+  alleen over-ons en de funnel (offerte/sample/bedankt) resten. OVER-ONS
+  COMPLEET (2026-08-18): vijf layouts — 'overons_story' (categorie Over
+  ons: titel + wysiwyg-tekst (default = de 2 statische alinea's incl.
+  strong) + collage-gallery dambord sm/lg om-en-om, leeg = howit-1..4),
+  'timeline' ("Tijdlijn-slider": slides-repeater foto/jaar/titel/tekst
+  — elke REGEL in het tekstveld wordt een eigen <p>; leeg = de 8
+  statische jaren 2025-2016; t-prev/t-next + timeline-dashes 1:1),
+  'overons_values' (waarden-repeater met optioneel icoon — leeg vak =
+  de bewuste dashed placeholder), 'overons_reviews' (categorie Reviews:
+  volle-breedte carrousel uit de Review-CPT — functie-veld = de
+  rolregel, quotes in ldquo/rdquo, cyclet tot ≥6; kop met score/aantal
+  uit opties + "Uit X reviews" → reviews-pagina) en 'overons_duurz'
+  (titel/tussenkop/tekst (default bevat de bekende "[Korte tekst
+  overnemen.]"-placeholder 1:1)/collage groot+2 klein (leeg =
+  sustain-1..3)/link → duurzaamheid; doodle vast). Pagina #18 = 8
+  secties 1:1: hero ([De mensen]-geel + about-hero-1..7-gallery naar
+  media), story, timeline, impact (pluspunten UIT = egaal geel via
+  page-scope), values, reviews, duurz, cta_final ("Benieuwd wat we
+  voor<br>je kunnen maken?" — br-positie eerst fout, 1:1 nagezet; 2
+  knoppen; voetjes OVER het paneel = de over-ons-variant) +
+  conf-sticky. 13/16 — alleen de funnel (offerte/sample/bedankt) rest. FUNNEL
+  COMPLEET MET STUBS (2026-08-18, besluit Kulwant "static stubs now,
+  Gravity Forms later"): drie VERBATIM layouts in NIEUWE categorie
+  Funnel (elk alleen een message-veld; asset-/href-herschrijving +
+  tel/wa/mail uit opties) — 'offerte_funnel' (quote-section-wizard +
+  application-section; custom.js-wizard werkt incl. stepper),
+  'sample_funnel' (sample-quote + application-sample-request) en
+  'bedankt_inhoud' (thanks-hero + thanks-status + follow).
+  Pagina's: offerte (#162) = hero (offerte-variant, 3 usps, rating,
+  [vrijblijvende<br>offerte]-geel) + wizard + testimonial (offerte) +
+  faq (licht, 6 offerte-vragen geseed ongecategoriseerd, "Vragen
+  over<br>de offerte.") + brands (inner); sample-request (#163) = hero
+  (4 usps) + sample_funnel + testimonial (offerte) + brands (inner);
+  bedankt (#164) = bedankt_inhoud. Alle drie: mini-footer +
+  contactbalk (funnel-sticky). TESTRONDE-KULWANT GESTART (2026-08-19).
+  FIX #1: hero-layout plakte 'hero-slider-section' op de sectie zodra
+  de fotoslider aanstond — die class is van de coll_hero (beige) en
+  maakte de home/over-ons-hero beige i.p.v. coral; conditionele class
+  verwijderd (statisch home r222 = kale hero-section), geverifieerd op
+  home (coral)/collectie (slider-class blijft)/offerte. Kleurmodel
+  blijft bewust page-scope + expliciete stijl-switches — geen vrije
+  kleurvelden. BEWUSTE AFWIJKING #1 (verzoek Kulwant): hero-subtekst
+  op HOME gestyled (het XD heeft daar geen sub) — `.home .banner-section
+  p` in THEMA-style.css (zelfde recept als duurzaamheid: wit/body-lg/
+  880px/26px; gecommentarieerd als WP-toevoeging; htmlv onaangeroerd;
+  geen bandregels nodig — tokens schalen mee). FIX #2: SVG-uploads
+  stonden WP-standaard uit ("cannot be processed") — upload_mimes +
+  wp_check_filetype_and_ext-filters in functions.php, ALLEEN voor
+  manage_options-gebruikers (meer redacteuren later → Safe SVG-plugin);
+  admin-css voor svg-previews; end-to-end getest via sideload (mime
+  image/svg+xml ✓, testbestand opgeruimd). FIX #3: kaartenrij-layout
+  (collection) accepteerde >4 soktypes en brak het grid — relationship
+  'max' => 4 + harde array_slice(0,4) in de partial (geldt voor alle 3
+  stijlen; instructie verwijst naar types_grid voor alle 10); home
+  rendert weer 4 ondanks oude 6-selectie. ALLE 16 PAGINA'S SAMENGESTELD —
+  formulierverzending/wizard-eindpunt = Gravity Forms-fase; daarna
+  TranslatePress + launch-checklist (mediacompressie, DEV-logger uit
+  custom.js, favicon-export, analytics/cookiebanner). Mediabibliotheek: standaardset slider1-8
+  geïmporteerd (ID 41-48) via wp-load-script met MAMP-php
+  (mysqli.default_socket naar /Applications/MAMP/tmp/mysql/mysql.sock).
+
+Static marketing site for Sokkies (sokkies.nl), a Dutch B2B custom-printed-socks company.
+All content is Dutch. No build system, no framework, no backend — plain HTML/CSS/JS.
+This front-end will later be converted into a WordPress theme (CMS integration is a future
+phase); keep markup section-based and self-contained so sections map cleanly to template parts.
+
+## Stack & workflow
+
+- Plain HTML pages in the project root; assets under `assets/`.
+- Swiper 11 loaded from jsDelivr CDN on every page (except `sitemap.html`).
+- Fonts: Roc Grotesk via Adobe Typekit (`use.typekit.net/eru5btu.css`); the self-hosted
+  versions in `assets/fonts/` are currently unused (their `@font-face` rules are commented
+  out in style.css). Juniper Bay (decorative) is the only active self-hosted font.
+- Dev preview: VS Code Live Preview extension (default page is `Collectie.html`,
+  set in `.vscode/settings.json`). No server or install step needed — just open a page.
+- `offerte.zip` is a delivery snapshot of the site; don't edit it, regenerate it when
+  a new handoff package is needed.
+
+## File layout
+
+- Pages (root): `home.html`, `collectie.html` (HERNOEMD 2026-08-13, was
+  Collectie.html met hoofdletter — alle 61 links in 22 bestanden incl.
+  .vscode/settings.json zijn mee; let op op case-sensitive hosting),
+  `product-detail.html`, `configurator.html`, `werkwijze.html`, `offerte.html`,
+  `sample-request.html`, `bedankt.html`, `reviews-en-cases.html`,
+  `reviews-en-cases-detail.html`, `sitemap.html`.
+- New pages (post-handover; hun CSS staat in de "NIEUWE PAGINA'S"-sectie
+  achterin style.css — voorheen stylen.css, samengevoegd 2026-08-12):
+  `toepassingen.html` (Use cases),
+  `veelgestelde-vragen.html` (FAQ, page-scope class `.faq-page`),
+  `over-ons.html` (About us, page-scope class `.over-ons`),
+  `duurzaamheid.html` (Sustainability, page-scope class `.duurzaamheid`),
+  `partners.html` (Partners, page-scope class `.partners`),
+  `downloads.html` (Downloads, page-scope class `.downloads`),
+  `contact.html` (Contact, page-scope class `.contact` — mini-footer i.p.v. volledige footer),
+  `juridisch.html` (Juridisch-TEMPLATE voor voorwaarden/privacy/cookies e.d.,
+  page-scope class `.juridisch`),
+  `404.html` (Pagina niet gevonden, page-scope class `.error-404`),
+  `waarom-sokkies.html` (Why Sokkies, page-scope class `.waarom-sokkies`).
+- `sitemap.html` is the master page inventory — add new pages to it.
+- `assets/css/style.css` — ALL base styles (~8,400 lines). No media queries in here.
+  Achterin staat de sectie "NIEUWE PAGINA'S" (banner-comment): de VOLLEDIGE
+  voormalige stylen.css, samengevoegd op 2026-08-12 (verzoek Kulwant; hij nam
+  zelf vooraf een backup, stylen.css is daarna verwijderd en de `<link>` is van
+  alle 11 nieuwe pagina's af). ALLE pagina's laden nu style.css → responsive.css.
+  Cascade-volgorde is identiek aan vóór de merge (de sectie stond altijd al ná
+  de basis en vóór responsive.css); geverifieerd met golden-master
+  computed-style-diff: 22 pagina's × 1920/390 = 0 verschillen, en een
+  selector-scan (alle 364 ex-stylen-selectors matchen NIETS op de 11 oude
+  pagina's — geen leak). Nieuwe regels voor nieuwe pagina's schrijf je nu in
+  die sectie (zelfde per-pagina-commentaarblokken; bovenin de sectie staat het
+  gedeelde blok "Nieuwe pagina's — gedeelde regels" met breadcrumb-clearance,
+  haak-pijl-links, placeholder-chips en input-basis).
+- `assets/css/responsive.css` — ALL media queries, grouped by breakpoint.
+  Because responsive.css loads last, when a new page reuses an EXISTING class,
+  override it in the "NIEUWE PAGINA'S"-sectie with a page-scoped selector
+  (e.g. `.newpage .promises`) so responsive.css can't win the tie on equal
+  specificity — die regel geldt onveranderd na de merge.
+- `assets/js/custom.js` — ALL JavaScript for every page, one file.
+- `assets/media/` — images/SVGs. `assets/fonts/` — self-hosted fonts (mostly inactive).
+
+## Conventions (follow these — the whole codebase is consistent with them)
+
+### Shared chrome is copy-pasted, not included
+The topbar, header/navbar, mega-menu, and footer are duplicated in every page file.
+Any change to them must be replicated across ALL pages (offerte/sample-request/bedankt
+use a shorter "mini-footer" variant; sitemap.html has no chrome at all).
+Active menu-item (2026-07-24): de `li.menu-link` van de huidige pagina krijgt de class
+`active` (coral via `.menu .menu-link.active > a` in style.css). Gezet op Collectie +
+product-detail (Sokkencollectie), configurator, werkwijze en over-ons; overige pagina's
+hebben (nog) geen eenduidig menu-item.
+
+### CSS
+- GEEN classes op content-elementen (sinds 2026-07-27, CMS/ACF-regel): `h1`–`h6`,
+  `p`, `ul`, `ol` en `li` krijgen NOOIT een class — de WYSIWYG-output van de klant
+  heeft die ook niet. Style ze via de parent: `.sectie h2{...}`, `.kaart p{...}`.
+  Bij twee gelijke tags met verschillende stijl onder één parent: gebruik een
+  extra wrapper-div met class, een child-combinator (`.panel > .container > p`)
+  of structurele selectors (`:first-of-type`, `:nth-of-type(2)` — alleen in
+  template-gecodeerde widgets zoals de staffel/formulieren, nooit in vrije
+  contentgebieden). UITZONDERINGEN (bewust behouden, chrome/JS-gekoppeld):
+  nav/mega/lang/dropdown (`.menu`, `.menu-link`, `.has-mega`, `.lang-list`,
+  `.lang-option`, `.dropdown-list`, `.dropdown-option`, `.nav-burger`,
+  `.mega-back`, `.mega-mob-title`, `.menu-home`, `.menu-prijzen`), stepper
+  (`.stepper`, `.stepper-item`), state-classes (`.active`, `.is-active`,
+  `.is-open`, `.is-done`) en het JS-hook `.dz-certs-menu`.
+- Design tokens live in `:root` at the top of style.css — always use the variables:
+  `--coral` #FA4B46, `--yellow` #FAE16E, `--light-beige` #F0E6DC, `--light-cyan` #AEDEE6,
+  `--dark`, `--text`, `--blue`, `--green`, `--pink`; fonts `--roc-grotesk`,
+  `--roc-grotesk-condensed` (headings/uppercase), `--juniper-bay` (accents).
+- style.css is organized as commented section blocks, with a large block per page near
+  the end. New page or section styles go in a new commented block at the end of style.css.
+- Responsive overrides go in responsive.css under the matching breakpoint block.
+  Breakpoints used: 2000 / 1680 / 1550 / 1300 / 1024 (tablet range 769–1024) / 768 / 520.
+- Class naming: bespoke semantic prefixes per section (`.quote-*`, `.conf-*`, `.case-*`,
+  `.prod-*`, `.thanks-*`, `.calc-*`, `.staffel-*` …). No utility classes, no Tailwind/Bootstrap.
+- Containers: `.container` (1720px) and `.container-md` (1430px).
+
+### JavaScript
+- custom.js is a series of IIFEs, one per feature, each starting with an element-existence
+  guard so the single file safely serves every page. Add new features as new guarded
+  IIFEs — never assume a page. SINDS de code-audit van 2026-07-27 zijn alle inits
+  MULTI-INSTANCE en sectie-gescoped (ACF-klaar): patroon is
+  `document.querySelectorAll('.x-swiper').forEach((el) => { const section =
+  el.closest('.x-section') || document; ... })` met nav-knoppen/tabs/filters via
+  `section.querySelector(...)` — een sectie kan dus vaker op één pagina staan.
+  Volg dit patroon voor nieuwe features (nooit een kaal `document.querySelector`
+  + single `new Swiper` meer).
+- Vanilla JS only — no jQuery. Sliders are Swiper 11; reuse the existing patterns
+  (`verticalMarquee()` helper for vertical marquees, fade + crossFade for case sliders).
+- All form submits are intentionally stubbed (`preventDefault()` + `alert()`); real
+  endpoints arrive with the WordPress phase. Keep the stubs until then.
+- The price calculator's pricing matrix lives in the `TIERS` object in custom.js
+  (10 sock types × 7 quantity tiers) — this is the single source of truth for prices
+  shown on home/Collectie/werkwijze calculators.
+
+## Status new pages (updated 2026-07-24)
+
+- `toepassingen.html` — DONE. All sections built from XD; Kulwant added own bg-shape
+  images (`uc-*.png` in media) and tuned spacing in stylen.css. Floating promo-card
+  (`.promo-float`, reusable) bottom-left with `fleurop_mollie_kerst.png`.
+  LET OP (2026-07-27, homepage-test): de promo-float staat nu OOK op home.html
+  (XD toont hem daar) en de component-CSS is daarom VERHUISD van stylen.css naar
+  style.css (laadt op alle pagina's; stylen heeft een pointer-comment). Nieuwe
+  pagina's met de kaart: gewoon de markup kopiëren — CSS/JS zijn overal geladen.
+- `veelgestelde-vragen.html` — DONE. Hero + live zoekfilter, 6 categoriegroepen met
+  chips (scroll-to), accordion (open item heeft lijn onder de vraag), standaard slot-CTA
+  met contactregel (`.cta-final-row`). LET OP: 13 van de 14 FAQ-antwoorden zijn door
+  Claude geschreven concepten — nog reviewen/vervangen door echte antwoorden.
+- `over-ons.html` — ALLE SECTIES GEBOUWD (2026-07-24); rest is content: foto-exports
+  (slider*-placeholders), conceptteksten reviewen, en de "[Korte tekst overnemen.]"
+  in de duurzaamheid-sectie. Slot-CTA = standaard `.cta-final` met eigen titel
+  ("Benieuwd wat we voor je kunnen maken?"), twee knoppen (`.cta` naar offerte.html +
+  `.cta-light` naar Collectie.html, rij via nieuwe `.cta-final-actions` in stylen.css)
+  en met `cta-final-feet` RECHTS (eigen export `cta-foot.png`, 2026-07-24: img ná het
+  panel in de DOM zodat de benen over de coral vallen; `.over-ons .cta-final-feet`
+  positioneert rechts i.p.v. standaard links — de sok-doodles in de duurzaamheid-sectie
+  heeft Kulwant handmatig herplaatst).
+  Secties: hero (coral, gallery-slider landscape 560x420,
+  stagger -25/0/-100, gradient 41%), "Hoe het begon" (checkerboard collage + tekst),
+  "Door de jaren heen" tijdlijn-slider (full-bleed, eerste slide op container-rand via
+  dynamische slidesOffsetBefore, 4 slides + 15% zichtbaar, 8 slides), impact/stats-sectie
+  (2026-07-24: hergebruik van home's `.impact` incl. v-swiper-marquee — zelfde classes,
+  custom.js pakt ze vanzelf op; zonder `.impact-features`; 2026-07-24: op verzoek
+  EGAAL geel vlak (padding 100px 0, `:before` display:none — sokkenpatroon uit
+  style.css uit), Kulwant voegt de shape zelf handmatig toe), en
+  "Waar we voor staan" (2026-07-24: `.overons-values` + `.values-*` in stylen.css;
+  op verzoek EGAAL coral vlak (padding 100px 0), shape voegt Kulwant handmatig toe
+  (de tijdelijke `overons-values-shape.svg` is verwijderd);
+  de `.values-img` dashed boxes zijn bewuste placeholders
+  tot de icoon/foto-exports er zijn — `.values-img img`-styling staat klaar), en
+  "Wat klanten zeggen" (2026-07-24: `.overons-reviews` reviews-slider op beige;
+  zelfde full-bleed patroon als de tijdlijn (fractionele slidesPerView + dynamische
+  slidesOffsetBefore, eigen IIFE in custom.js), sterren-SVG hergebruikt uit de topbar,
+  nav-knoppen als timeline-nav; "Uit 450+ reviews" linkt naar reviews-en-cases.html;
+  3 unieke quotes uit XD, 2x herhaald — checken of dit echte reviews worden), en
+  "Met oog voor duurzaamheid" (2026-07-24: `.overons-duurz` — collage groot+2 klein
+  (slider*-placeholders), tekstkolom met h3 + `.duurz-link` (zelfde haak-pijl als
+  `.faq-more`), blauwe sok-doodles = hergebruik `sock-duddle-l.png`; de bodytekst
+  eindigt in XD letterlijk op "[Korte tekst overnemen.]" — placeholder-copy; de
+  link "Lees over onze duurzaamheid" wijst sinds 2026-07-24 naar duurzaamheid.html).
+  Tijdlijn heeft sinds 2026-07-24 de ECHTE teksten uit XD (jaren 2025/2024/2023/2022/
+  2021/2020/2019/2016 — 2019 verving concept-2018) en echte foto's
+  (`timeline-img1..8.png`, in kaartvolgorde). Hero-gallery (`about-hero-img1..7.png`)
+  en story-collage (`howit-img1..4.png`) hebben ook echte exports; duurzaamheid-collage
+  ook (`sustain-img1..3.png`, 2026-07-24) — geen placeholder-foto's meer op de pagina
+  (impact-marquee gebruikt bewust dezelfde slider*-set als home).
+  Copy-check klant: 2020-kaart begint met "In 2020 zijn écht gaan knallen" —
+  letterlijk uit XD overgenomen, mogelijk mist er "we" (typefout in design?).
+- `duurzaamheid.html` — hero GEBOUWD (2026-07-24): breadcrumb (wit, 115px clearance),
+  h1 "Hoe duurzaam (geel) zijn we nu écht?", `.dz-hero-sub` (880px, 2 regels) —
+  sectieprefix voor deze pagina is `dz-*` (`duurz-*` is al van de over-ons-sectie);
+  promo-float (kerst) overgenomen van toepassingen. Topbar is standaard al donker
+  (geen override nodig). Certificaten-tabs GEBOUWD (2026-07-24): `.dz-certs` met
+  6-taps menu links (actieve tab krijgt witte »-chevron, eigen IIFE in custom.js),
+  panes met tekst + foto. LET OP: alleen tab 1 (OEKO-TEX) heeft de echte XD-tekst;
+  tabs 2-6 zijn door Claude geschreven conceptteksten — reviewen/vervangen. Foto's
+  in alle panes zijn slider*-placeholders (wachten op export). De witte golf-shape
+  onder de sectie uit het XD voegt Kulwant handmatig toe (sectie is nu egaal coral,
+  padding 0 0 130px). Daarna (2026-07-24, beide op wit): "Certificaten en keurmerken"
+  (`.dz-keur`, 3 beige kaarten op `.container-md`, logo's `OEKO-TEX.png`/`GOTS.png`/
+  `BSCI.png` uit media, teksten 1:1 uit XD) en "Hoe duurzaam is Sokkies nu echt?"
+  (`.dz-points`: hergebruik `.story-collage` links (foto's nog slider*-placeholders),
+  rechts titel + 3 genummerde punten (donkere cirkelbadges) + "Neem contact op" als
+  `.cta-light` met href="#" — contactpagina bestaat nog niet).
+  Slot-CTA is een eigen variant (2026-07-24): titel "Sokken met een verhaal?",
+  sub "Vraag een offerte aan…", knoppen `.cta` → offerte.html + `.cta-light`
+  "Neem contact op" (href="#", contactpagina bestaat nog niet); witte sectie-basis
+  (`.duurzaamheid .cta-final`) en `cta-foot.png` VÓÓR het panel in de DOM zodat de
+  benen achter de coral shape verdwijnen (over-ons heeft ze juist erover heen;
+  de feet-CSS in stylen.css is gegroepeerd naar `.over-ons, .duurzaamheid`). `<main class="duurzaamheid">` is
+  verder leeg; secties volgen uit XD. Geen actief menu-item (bestaat niet in het menu).
+  Staat in sitemap.html; over-ons' "Lees over onze duurzaamheid" linkt ernaartoe.
+- `partners.html` — AANGEMAAKT 2026-07-24: chrome (1:1 uit duurzaamheid.html) +
+  volledige footer + hero (2026-07-24, 1:1 werkwijze-patroon: `.coll-hero` met
+  donkere breadcrumb "Partner", titel "Partners en samenwerkingen" (wrapt vanzelf
+  op 2 regels), partnertekst, en `ch-swiper-1/2` verticale marquees rechts —
+  custom.js pakt ze vanzelf op; marquee-foto's sinds 2026-07-25 gematcht op het XD
+  vanuit bestaande media: Sokkies_FleurBoerdonk_1/2/3 (1 en 3 zijn EXACT de
+  XD-foto's), Voeten-in-de-lucht, sock-img-right (zelfde VELORETTI-sok als in XD,
+  andere compositie), Fleuropp_Sokkies_CocaCola, FLEUROPP_LARGE_2, slider-grid1.
+  NOG EXPORTEREN uit XD: (1) VELORETTI-sok op rood racket (compositie bestaat niet
+  in media), (2) antislip-zolen-foto — `anti-slip-sokken-bedrukken-2.png` bestaat
+  alleen als 65x65-thumbnail, (3) teal-sokken-benen helemaal bovenin het XD.
+  OTP-foto's zijn sinds 2026-07-25 echt: `op-img1/op-img2.png` (boom + boompje).
+  Promo-float (kerst) staat ook op deze pagina (2026-07-24).
+  "Voordelen voor partners" GEBOUWD (2026-07-24): `.pt-perks` op wit — linkse
+  condensed titel + 4 beige kaarten (repeat(4,1fr), `align-items:start` zodat
+  kaarten op inhoudshoogte blijven zoals in XD; teksten 1:1 uit XD);
+  ≤1300 2 kolommen, ≤768 gestapeld.
+  "Onze partners" GEBOUWD (2026-07-24): `.pt-partners` logo-grid (6 kolommen,
+  kaarten 267x150 met lichte rand, 26 kaarten = de 10 standaard brand-logo's
+  uit `media/logos/` in XD-volgorde herhaald) + filterchips (Alle/Wederverkoper/
+  Evenementenbureau/Merchandisepartner/Kerstpakkettensamensteller, eigen IIFE in
+  custom.js). LET OP: de categorie-toewijzing per kaart is round-robin DEMO-data —
+  echte partner→categorie-mapping moet van de klant komen. De coral wig linksonder
+  en gele sok rechtsonder uit het XD zijn decor voor Kulwant/volgende sectie.
+  "One Tree Planted" GEBOUWD (2026-07-24): `.pt-otp` — op verzoek EGAAL coral
+  (padding 100px 0; gele wig, benen-foto en sok-doodle uit XD bewust weggelaten,
+  shapes voegt Kulwant toe); 2 foto's links (332/457x352 — nog slider*-placeholders,
+  boom-foto's moeten nog geëxporteerd) + witte titel/tekst rechts (1:1 uit XD).
+  OTP-sectie 2026-07-25: Kulwant verbouwde `.pt-otp` handmatig (padding 500px boven,
+  `:before` met `official-partner-top-bg.png` = witte golf + doodles, 425px hoog);
+  benen-export `off-partner-socks.png` staat er nu in als `.pt-otp-legs`
+  (absoluut, right:0, natuurlijke 632px breed, ná de :before zodat de benen óver
+  de witte shape vallen; pointer-events:none — top door Kulwant op -120px gezet)
+  en de gele outline-doodles `off-partner-socks-2.png` als `.pt-otp-doodle`
+  (top:-5px, left:40%, 340px, 2026-07-25). LET OP: de ≤1550-regel
+  `.pt-otp{padding:80px 0}` stamt van vóór de shape-verbouwing en botst met de
+  500px-opzet — Kulwant checkt de tablet-weergave van zijn shape zelf.
+  "Veelgestelde vragen voor partners" GEBOUWD (2026-07-25): `.pt-faq` — op verzoek
+  EGAAL geel (padding 100px 0; rode hoek-shape uit XD voegt Kulwant toe); 1000px
+  gecentreerde kolom, hergebruik van het bestaande `.faq-item`-accordion (JS uit
+  custom.js pakt het vanzelf op; eerste item staat open via `.pt-faq
+  .faq-item.is-open .faq-a{max-height:none}`). LET OP: alleen vraag 1 heeft het
+  echte XD-antwoord; antwoorden 2-8 zijn door Claude geschreven conceptteksten —
+  reviewen/vervangen.
+  "Brochure en inspiratiegids" + slot-CTA GEBOUWD (2026-07-25) — PAGINA COMPLEET.
+  Downloads: `.pt-dl` op beige, `.container-md`, 2 brochure-kaarten (met bewuste
+  "Image placeholder"-chips — óók zo in het XD; Download-links zijn href="#",
+  er zijn nog geen PDF's) + formulier-kaart (`#partnerDownloadsForm`, stub-IIFE
+  in custom.js zoals alle formulieren; coral sticker "We mailen ze meteen toe!"
+  geroteerd rechtsonder). Slot-CTA = de standaard oude-pagina-variant ("Klaar om
+  jouw eigen sokken te ontwerpen?", 1 gele knop naar offerte.html, beige basis,
+  zonder feet — conform XD). Geen menu-item, geen actieve nav-state.
+  Staat in sitemap.html. Sectieprefix t.z.t. bepalen (bijv. `pt-*`).
+  LET OP: het partner-XD toont een menu ZONDER "Sokkencollectie" — waarschijnlijk
+  een versimpeld artboard; wij houden de standaard chrome (checken bij twijfel).
+- `downloads.html` — AANGEMAAKT 2026-07-25: chrome (1:1 uit partners.html) +
+  volledige footer + hero (beige met DONKERE tekst — `.downloads`-overrides op
+  `.hero-section`/`.banner-section h1`; donkere breadcrumb "Downloads" met 115px
+  clearance; `.dl-hero-sub` 2 regels met bewuste <br>).
+  "Download-kaarten" GEBOUWD (2026-07-25): `.dl-cards` op wit — 2x2 horizontale
+  kaarten (rand var(--text), beige image-box 195px met "Image placeholder"-chip
+  — óók placeholders in het XD) voor Productbrochure 2026 (Aanvragen),
+  Ontwerpsjablonen (Download), Prijslijst en staffels (Bekijk meer) en Garenboek
+  (Download). LET OP: alle 4 links zijn href="#" — er zijn nog geen PDF's/
+  bestanden. ≤1300 1 kolom.
+  Slot-CTA "Mis niets" GEBOUWD (2026-07-25) — PAGINA COMPLEET: standaard
+  `.cta-final`(-panel/shape) op witte basis, titel "Mis niets" (niets geel),
+  witte formulier-kaart `#dlMisNietsForm` (Naam + E-mail naast elkaar, donkere
+  "Aanvragen"-knop die 24px onder de kaart uitsteekt via absolute positionering;
+  stub-IIFE in custom.js). De "Aanvragen"-link van de Productbrochure-kaart
+  scrollt naar `#mis-niets`; Ontwerpsjablonen/Garenboek-downloads en
+  "Bekijk meer" (prijslijst) blijven `#`-stubs tot er bestanden/prijzenpagina zijn.
+  NB: het XD toont "Inspiratie" onderstreept in het menu — waarschijnlijk
+  hover-state in de mockup, geen active-state gezet. Staat in sitemap.html. De footer-link "Downloads & templates"
+  wijst sinds 2026-07-25 op ALLE pagina's naar downloads.html (was `#`-stub).
+  Sectieprefix t.z.t. bepalen (bijv. `dl-*` — let op: `.pt-dl-*` bestaat al voor
+  de partners-downloadsectie).
+- `contact.html` — AANGEMAAKT 2026-07-25: chrome/header + sinds 2026-07-25 de
+  standaard MINI-FOOTER (1:1 uit offerte.html — zelfde variant als
+  offerte/sample-request/bedankt; WhatsApp-knop daarin is een `#`-stub zoals
+  op die pagina's). Hero GEBOUWD (2026-07-25): coral, witte
+  breadcrumb "Contact" (115px clearance), h1 "Neem contact (geel) op",
+  `.ct-hero-sub` 1 regel — sectieprefix voor deze pagina is `ct-*`.
+  2026-07-25: de HELE pagina heeft één achtergrond-image (`contact-page-bg.png`,
+  1920x665, coral + witte diagonaal) op `main.contact` (witte basis, center top,
+  100% auto); hero-section en `.ct-contact` zijn transparant — geen losse
+  sectiekleuren meer. De eerdere -90px kaart-overlap is verwijderd (verstopte de
+  hero-sub); gat sub→kaart is nu 80px zoals in XD.
+  Formulier-sectie GEBOUWD (2026-07-25): `.ct-contact` — witte
+  formulier-kaart (1195px, rand var(--text)) met radio's (native, accent-color),
+  6 velden (2 kolommen, bericht-textarea full-width), legal-regel + outline-knop
+  "Liever een aanvraag?" → offerte.html + donkere submit "Stuur mijn bericht"
+  (`#contactForm`, stub-IIFE in custom.js); rechts gele `.ct-direct`-kaart
+  (485px) met echte tel:/wa.me/mailto-links (zelfde gegevens als de footer).
+  LET OP: "voorwaarden"/"privacybeleid" in de legal-regel zijn href="#" —
+  net als de footer-legal (pagina's bestaan nog niet). Witte diagonaal rechts
+  uit het XD is decor/shape voor Kulwant. "Contact" heeft de `active`-state in het menu. Sinds 2026-07-25 wijzen
+  ALLE Contact-links naar contact.html: nav + footer op alle pagina's én de twee
+  "Neem contact op"-knoppen op duurzaamheid.html (waren `#`-stubs). Staat in
+  sitemap.html. Laatste `#`-stub in het hoofdmenu is nu alleen nog "Inspiratie"
+  (en "Prijzen").
+- `juridisch.html` — AANGEMAAKT 2026-07-25: gedeeld TEMPLATE voor juridische
+  pagina's (algemene voorwaarden, privacybeleid, cookieverklaring, …). Alleen
+  chrome (1:1 uit downloads.html) + volledige footer. Hero GEBOUWD (2026-07-25,
+  zelfde beige/donker-patroon als downloads): breadcrumb + h1 + `.jr-hero-date`
+  ("Laatst bijgewerkt: …") — breadcrumb-label, titel en datum zijn de
+  template-variabelen (nu demo: "Algemene voorwaarden" / 25 juni 2026, conform XD).
+  Content-sectie GEBOUWD (2026-07-25) — TEMPLATE COMPLEET: `.jr-content` op wit,
+  `.container-md` met grid 390px index-kaart (rand var(--text), "Op deze pagina:"
+  ol met ankerlinks #jr-1..#jr-15, werkend) + `.jr-body` 845px (intro +
+  `.jr-article`-blokken: h6 "N. Titel" + p). Inhoud = de volledige
+  voorwaarden-tekst 1:1 uit XD (15 artikelen). Bij dupliceren per juridische
+  pagina: index-items + artikelen vervangen. ≤1300 index boven de tekst.
+  COPY-CHECK KLANT: artikel 1 noemt adres "Bijlshoek 6B, 5473 HK
+  Heeswijk-Dinther" maar footer/contactpagina zeggen "De Morgenstond 45, 5473 HE"
+  — welk adres klopt? Artikel 3 zegt "minimale afname van 30 paar" (relevant voor
+  de bekende 30-vs-50 vraag; voorwaarden ondersteunen 30). Werkwijze t.z.t.: per
+  juridische pagina dit bestand dupliceren (titel/breadcrumb/inhoud aanpassen) en
+  dan de footer-legal-links ("Algemene voorwaarden"/"Cookieverklaring", nu `#`) en
+  de contact-legal-regel naar de echte bestanden laten wijzen. Staat in
+  sitemap.html als "Legal template".
+- `404.html` — COMPLEET (2026-07-25): chrome + volledige footer + inhoud.
+  `error-page-bg.png` (1920x916, wasmachine + sokken + witte curve) staat op
+  `main.error-404` (witte basis, 100% auto, zelfde patroon als contact);
+  `.er-hero` (transparant): coral "404" (240px), boldregel, 2 subregels,
+  knoppen `.cta` → home.html + `.cta-light` → Collectie.html; `.er-links`:
+  "Of ga direct naar:" met 4 outline-chips (Collectie/werkwijze/offerte/contact —
+  allemaal echte links). Posities op ±10px t.o.v. XD gemeten. Geen actief
+  menu-item. Staat in sitemap.html.
+  NB: serverconfig (404-route) is voor de WordPress-fase.
+- `waarom-sokkies.html` — AANGEMAAKT 2026-07-27: chrome (1:1 uit 404.html) +
+  volledige footer + promo-float (kerst). GEEN aparte hero: de pagina opent met
+  `.ws-intro` (GEBOUWD 2026-07-27) — breadcrumb + rechts-uitgelijnde h1+sub in de
+  linkerhelft, 6 witte foto-kaarten in masonry (grid 1fr/1fr gap 100; rijen met
+  327fr/461fr-verhoudingen, `.ws-card-offset` 130px, `.ws-row-gap` 110px —
+  gemeten: titel-rechterrand = kaart-B-rand, kaart-C-top = titel-top, exact XD).
+  Foto's (ALLEMAAL ECHT sinds 2026-07-27 — Kulwants exports `ws-hero-img2/3/4`):
+  fabriek=timeline-img2, meisje-in-doos=ws-hero-img2 (Proefontwerp),
+  teal medische sokken=ws-hero-img3 (Persoonlijk contact), boompje=op-img2,
+  waslijn=ws-hero-img4 (Staffelprijzen — verving timeline-img8-hergebruik),
+  teamfoto=about-hero-img4. De CYAAN onderkant + blauwe sok-doodle uit het XD zijn shape/decor
+  voor Kulwant — sectie is nu egaal beige. ≤1300 1 kolom (head links uitgelijnd),
+  ≤768 kaarten gestapeld.
+  "Hoe verhoudt Sokkies zich?" GEBOUWD (2026-07-27): `.ws-compare` — op verzoek
+  EGAAL cyaan (2026-07-27 gecorrigeerd naar #7CE7F1 = home's .designed/.design-now
+  felle cyaan, NIET --light-cyan — door Kulwant daarna op #87e1f0 gezet).
+  SHAPES ZIJN ER (2026-07-27, door Kulwant zelf gewired): `ws-hero-bottom-bg.png`
+  (cyaan golf onder de intro, `.ws-intro::before`), `ws-compare-bottom-bg.png`
+  (witte wiggen, via `.ws-gets::before` top:-220px over de compare-onderkant) en
+  `ws-get-bg.png` (herhalende sokkenpatroon-tegel op `.ws-gets` — verving
+  bg-element.png). Compare-padding staat op 0 (golf boven + wiggen onder geven
+  de ruimte); gets-padding 310px boven. Gecheckt: tabelrijen blijven boven de
+  wig-overlap klikbaar. Echte `<table>` (1140px, kolommen 562/289/289) met
+  blauwe titel/koppen, coral SOKKIES-logo-svg boven de uitgelichte middenkolom
+  (doorlopend wit paneel met rand), om-en-om lichte rij-pillen, groene checks
+  (svg hergebruikt uit Collectie-compare) + rode X-variant; "De rest"-kolom:
+  X/X/X/Soms/Vaak/Soms/X/Soms/Soms/X — 1:1 uit XD. Mobiel scrollt de tabel
+  horizontaal via `.ws-compare-scroll` (zelfde patroon als .compare-scroll).
+  "Wat je bij ons krijgt" + slot-CTA GEBOUWD (2026-07-27) — PAGINA COMPLEET.
+  `.ws-gets`: wit met `bg-element.png`-sokkenpatroon (bestaand asset, zelfde als
+  home's impact), links genummerde lijst 01-06 (coral »-chevrons, scheidingslijnen,
+  rijritme ~100px), rechts 2x2 collage (410px-kolommen, rechterkolom 58px offset).
+  De medische-sokken-voeten op de sectiegrens komen NIET van een eigen element maar
+  van de standaard `cta-final-feet` van de slot-CTA (2026-07-27: structuur 1:1 uit
+  configurator.html overgenomen op verzoek; een eerdere eigen `.ws-gets-feet` is
+  verwijderd). Collage-foto's ECHT sinds 2026-07-27 (Kulwants exports, alle
+  stand-ins vervangen; nummering = visuele volgorde LB/RB/LO/RO):
+  ws-get-img1 = koe-Wolvega kerstcadeau (linksboven), ws-get-img2 = pastel-trio
+  op paars (rechtsboven), ws-get-img3 = gestipte sokken op blauw (linksonder),
+  ws-get-img4 = oranje Hornbach-sok (rechtsonder) — er zijn GEEN openstaande
+  foto-exports meer voor deze pagina. Slot-CTA = 1:1 de
+  configurator-structuur (incl. `cta-final-feet` vóór het panel) met eigen
+  content: titel "Benieuwd wat het voor jou kost?" + 1 gele knop naar
+  offerte.html; witte sectie-basis via `.waarom-sokkies .cta-final`
+  (pagina is wit i.p.v. beige — zelfde page-scope-patroon als duurzaamheid). Geen menu-item, geen actieve nav-state. Staat in sitemap.html.
+  Sectieprefix t.z.t. `ws-*` (vrij; de "ws-"-hits in stylen zijn substrings van
+  `.reviews-*`).
+- Nieuwsbrief-POPUP (2026-07-27) — herbruikbare component: markup staat als demo op
+  `popup.html` (kopie van 404.html, in sitemap als "Nieuwsbrief-popup demo");
+  CSS = `.nl-popup*`-blok in de "NIEUWE PAGINA'S"-sectie van style.css (sinds
+  de merge van 2026-08-12; daarvóór stylen.css), gedrag = guarded IIFE in custom.js. Gedrag: opent vanzelf ~1s na
+  laden op elke pagina die de markup bevat; sluiten via X, overlay-klik en Escape;
+  submit is een stub (alert) zoals alle formulieren. Extra triggers kunnen met
+  `data-nl-popup-open` op een link/knop. Popup op meer pagina's = alleen de
+  `.nl-popup`-markup kopiëren.
+- Copy-inconsistenties uit XD om met klant te checken: fabriek "in China" (tijdlijn 2024)
+  vs "Portugal en Italië" (brand-intro/FAQ); "Sinds 2016" (over-ons hero) vs "sinds 2014"
+  (home). FAQ- en "Over ons"-links wijzen sinds 2026-07-24 overal naar de echte pagina's.
+- Nieuwe exports van Kulwant komen als PNG in `assets/media/` (soms 1-2 MB — voor
+  oplevering nog comprimeren; zie ook usecase-foto's ~9,6 MB totaal).
+- Dev-preview voor Claude: `.claude/launch.json` start `python3 -m http.server 8765`.
+
+## Responsive-testronde (gestart 2026-07-28 — fase 1: tussenbreakpoints ZONDER
+## XD, alleen breuk zoeken; 1440-designs volgen later. 1920 dekt ≥2000.)
+
+- **1301-1550-BAND = FINAL (2026-07-30, door Kulwant zelf getest incl.
+  eigen handmatige tweaks in responsive.css).** Bandinhoud: chrome
+  (navbar 10px, navbar-inner calc(100%-140px) space-between), home-hero
+  176/60, brands pt 60, collection-card-foot auto (knop stak uit),
+  brand-doodles 140px met eigen posities, footer-pay 40/40 — plus
+  Kulwants handmatige aanpassingen. LET OP bij scripts: anchors kunnen
+  door zijn edits afwijken — altijd eerst vers greppen.
+
+- **SCROLL-RIJ-PIJLEN (2026-07-31, tabletronde): nieuw component —
+  `.gift-nav` (home) en `.collection-nav` (home/configurator/
+  toepassingen) met dezelfde pijl-svg's/styling als de gallery-nav;
+  één generieke guarded IIFE in custom.js scrollt de rij per kaart
+  (scrollBy smooth, kaartbreedte+16). Basis-CSS in style.css =
+  display:none; per band aanzetten met display:flex (nu aan in
+  768-991). Gift- en collectierij zijn daar scroll-rijen: 2 kaarten
+  + 25%-peek, scrollbar verborgen.**
+
+- **992-1279-BAND = GETEST/FINAL (2026-07-30, Kulwant): incl. drawer-menu
+  met subpaneel-layout (bestsellers 50% / types 50% met 2 per rij /
+  usps-16px onder types + pijl bij Sokkencollectie), cases-gallery
+  gestapeld met 45/55-kolommen, hero-usps gap 20, stats 46px, brands
+  full-width. Full-width brands daarna UNIVERSEEL gemaakt (alle banden
+  t/m 1680; alleen basis 1681+ blijft container-gebonden).
+  Ronde 769-991 gestart: topbar li 15px.**
+
+- **UPDATE: hamburger-zone daarna verbreed naar ≤1279 (besluit Kulwant —
+  onder de 1280 nooit genoeg ruimte voor het volle menu); drawer-band is
+  nu 769-1279 en de custom.js-mega-drempel staat op 1280. Desktopmenu
+  bestaat alleen nog op 1280+. Geverifieerd: 1215 drawer / 1300 desktop.**
+
+- **HAMBURGER-ZONE VERBREED NAAR ≤1040 (2026-07-30, besluit Kulwant) +
+  992-VLOER.** De 992-1279-band (gevloerd op 992 i.p.v. 1025, tablet nu
+  769-991) kreeg de 1280-styling gekopieerd + eigen tuning (menu 12/nowrap,
+  navbar-inner −120, padding-left 20, mega-breedte gecapt, calculator
+  1fr+360 met gestapelde mid — calc paste onder ~1140 nooit, latente bug).
+  Omdat de navbar-mincontent ~1040px is: NIEUW drawer-band 769-1040 met
+  het complete menuchrome uit de 521-768-band (burger + drawer + mega-
+  subpaneel; horizontale menu weg) — custom.js-drempel voor de mega staat
+  nu op 1041 (was 769). Het eerdere 992-1040 nav-compact-subblok is
+  daarmee vervallen. Tablet-band (769-991): footer-grid gestapeld
+  (3-koloms grid overliep op ~900; zone was alleen op 1024 getest).
+  Geverifieerd: 900/1000 burger+drawer zonder h-scroll, 1100/1270
+  desktopmenu één regel zonder h-scroll.**
+
+- **RESPONSIVE.CSS v2 — FLOOR-ANCHORED BANDEN (2026-07-30, schema
+  Kulwant): elk design staat aan de ONDERKANT van zijn band en schaalt
+  omhoog. Banden: basis style.css = 1920-design (1681+ via de
+  60px-gutter-guard; 1681-1919 heeft een leeg scaffold-blok voor latere
+  tuning) / 1440-1680 = 1440-design (Kulwant-final) / 1280-1439 én
+  1025-1279 = de 1280-opmaak (twee identieke banden, apart tunebaar;
+  ondergrens 1025 i.p.v. 992 zodat 992-1024 tablet blijft — compacte
+  navbar) / 769-1024 tablet / 521-768 hamburger (768-XD) / ≤520 mobiel
+  (final). De oude 1551-1680-inhoud en de 1301-1400-menupatch zijn
+  bewust VERVALLEN: 1551-1680 draait nu het 1440-design en 1301-1439 de
+  1280-opmaak (floor-model lost de menu-breuk structureel op —
+  gecheckt op 1350: menu één regel, geen h-scroll; en 1600: container
+  1320, alles netjes). Golden-master 0-diff op media-breedtes
+  1920/1500/1290/1100/1000/700/390. LET OP: media queries meten INCL.
+  scrollbar (innerWidth), clientWidth is ±15px smaller — bandgrenzen
+  dus checken op innerWidth (de console-logger toont die als eerste).
+  Backup v1: `_BACKUP-responsive-banden-v1-2026-07-30.css`.**
+
+- **RESPONSIVE.CSS GEHERSTRUCTUREERD (2026-07-30, stijl Kulwant): alle
+  breakpoints zijn nu RANGE-FENCED (min én max) — banden zijn volledig
+  geïsoleerd, een wijziging in de ene band raakt nooit een andere
+  resolutie. Banden: min-2000 / 1551-1680 / 1301-1550 / 1025-1300 /
+  769-1024 / 521-768 / ≤520; basis style.css = 1681-1999 (1920-design).
+  Regels die meerdere banden nodig hebben staan bewust GEDUPLICEERD per
+  band (mechanisch gekopieerd uit de oude cascade, herkomst-kopjes
+  "uit oud ≤X" per deel). NIEUWE REGELS: schrijf ALTIJD in de band van
+  de resolutie die je aanpast; een regel die overal moet gelden moet in
+  ELKE band (of in style.css-basis als hij ook desktop geldt).
+  Oude cascade-versie: `_ARCHIEF`-stijl backup
+  `assets/css/_BACKUP-responsive-cascade-2026-07-30.css` (nergens
+  gelinkt). GEVERIFIEERD met golden-master computed-style-diff op 7
+  breedtes (1920/1600/1440/1200/900/715/390 — één per band): 0
+  verschillen op 853 elementen per breedte.**
+
+- **1680px — home.html AFGEVINKT.** Volledige sweep: geen h-overflow, geen
+  elementen buiten beeld, container 1440 ✓, alle secties proportioneel intact.
+  TWEE CHROME-FIXES in het 1680-blok van responsive.css (gelden site-breed):
+  (1) `.footer-pay{gap:20px 20px}` — de betaal/verzend-strip paste nét niet
+  meer op één regel (852+1+533 + 2×30 gap = 1446 > 1440-container) en
+  wikkelde lelijk; (2) `footer a[href^="tel:"]{white-space:nowrap}` — het
+  telefoonnummer brak midden in het nummer af in de smallere contactkolom.
+  NB voor de 1550-pass: onder ±1470 (container 1320) past de strip alsnog
+  niet op één regel — daar nette wrap/centrering regelen.
+
+- **1440px (≤1550-blok) — GLOBALE KALIBRATIE gedaan o.b.v. de 1440-XD van
+  home (2026-07-28).** De globale schaal op 1440 is: container 1320 (header
+  95,9%), tokens h1 58 / h2 38 / h3 26 / h4 28 / h5 17 / h6 20 / body 15 /
+  body-lg 17 / body-sm 12, knoppen 15px met 12×25-padding; CTA-titel heeft een
+  eigen stap (60→48). ÉÉN token-escape gevonden en GLOBAAL gefixt in
+  style.css: `.banner-section h1` had `clamp(40px,6vw,70px)` (bleef dus 70 op
+  1440 waar de XD ±58 toont) → nu `clamp(40px, 6vw, var(--h1-font-size))` —
+  identiek op 1920 (70), volgt het token op ≤1550 (58) en blijft onder ±967px
+  vloeiend; geldt voor ALLE banner-section-hero's site-breed. Heading-audit
+  op 1440 verder schoon (alle koppen volgen tokens of bewuste eigen stappen).
+  Sectie-ritme/compositie visueel consistent met de 1440-XD (export te klein
+  voor px-precieze padding-metingen — bij hi-res design evt. verfijnen).
+
+- **1280px — home.html AFGEVINKT (zonder design, op projectinzicht).** Sweep:
+  geen h-overflow, containers houden gutters (container 1190 in het
+  ≤1300-blok), alle secties (hero/chips/kaarten/calculator/gift/cases/FAQ)
+  netjes. TWEE chrome-fixes: (1) ≤1550-blok: `.footer-pay` krijgt
+  `justify-content:center` + `row-gap:16px` en `.border-v` gaat uit — onder
+  de 1320-container past de betaal/verzend-strip nooit op één regel, dus
+  vanaf 1550 een nette gecentreerde wrap (1551-1680 blijft één regel
+  space-between); (2) ≤1300-blok: `.footer-contact-row` stapelt
+  (flex-direction:column) — het adresblok naast de contactlijst werd een
+  smalle kolom van 6 regels, nu 2 nette regels onder de lijst.
+  OPGELOST 2026-07-30: `.container-md` raakt de rand niet meer — zie de
+  min()-gutterfix hieronder.
+
+- **1024px — home.html AFGEVINKT (zonder design).** De pagina had ECHTE breuk:
+  h-overflow tot 1141px (navbar/mega/lang buiten beeld, logo over het menu,
+  "Over ons" wikkelde, CTA afgekapt; impact-gallery met vaste 890px duwde de
+  sectie uit beeld; calc-kolommen 560/440 pasten niet; container zonder
+  gutters). GEFIXT in het tabletblok (769-1024) van responsive.css —
+  chrome-fixes gelden site-breed: container 94% (header 98%); navbar compact
+  (logo 80+8, menu gap 7 / links 14px nowrap, cta 13px, icon-btns 34,
+  navbar-padding-inline 14, nav-wrap gap 8, globe 52) — alles past op één
+  regel binnen beeld; `.mega{width:calc(100vw - 48px)}` (stak óók verborgen
+  buiten de viewport → h-scroll); impact: gallery 575px + 3e marqueekolom uit
+  + inner-gap 30/height auto; USP-chips: `display:grid` toegevoegd — het
+  bestaande repeat(3,1fr) deed niets omdat de basis flex is → nu nette 3×2;
+  calculator gestapeld (calc-grid 1fr, calc-mid 1fr 1fr); faq-grid 300px+50
+  gap. Geverifieerd: geen h-scroll meer, nav/impact/chips/calc/faq/footer
+  allemaal netjes. NB: mega-menu OPEN-state op tablet is nu begrensd maar de
+  binnenkant is nog niet ontworpen/getest; hamburger-vraag hoort bij de
+  ≤768-pass (daar ligt ook de bekende topbar-wrap-bug).
+
+- **768px — home.html AFGEVINKT (MET 768-XD van Kulwant, 2026-07-28).**
+  GROOTSTE STUK: het HAMBURGER-MENU + MOBIEL MEGA-SUBPANEEL, site-breed
+  (het ≤768-blok verborg de menu-items voorheen gewoon; Kulwant leverde na de
+  eerste versie ook het menu-XD — implementatie daarop bijgesteld).
+  (1) Markup op ALLE 21 navbar-pagina's: `button.nav-burger` (3 spans) vlak
+  vóór `<div class="navbar-inner">` én bovenin de `.mega` een mobiele kop
+  `button.mega-back` ("Terug", inline pijl-svg) + `div.mega-mob-title`
+  ("Sokkencollectie") — beide desktop verborgen via style.css;
+  (2) style.css: `.nav-burger`-basis = DONKERE cirkel 62px (bg var(--text),
+  witte streepjes, X-animatie via `.navbar.menu-open`), conform menu-XD;
+  (3) custom.js: burger-toggle-IIFE (reset óók `sub-open`), en de
+  mega-trigger doet nu ALTIJD preventDefault — desktop toggelt `.open`
+  (hover blijft de echte opener, ongewijzigd), mobiel zet `sub-open` op de
+  navbar; `.mega-back` haalt hem weg (terug naar de hoofdlijst);
+  (4) ≤768-blok: iconen/globe BLIJVEN zichtbaar (menu-XD toont ze: pill =
+  logo+zoek+account+CTA, globe 56 los, burger als losse donkere cirkel
+  RECHTS BUITEN de pill — `.navbar{position:static}` + `.nav-wrap
+  {position:relative;padding-right:72px}` + burger absoluut rechts, zodat
+  burger én drawer op nav-wrap ankeren); drawer = bestaande `.menu` als wit
+  afgerond paneel (absolute onder nav-wrap, z-80, max-height + scroll);
+  SUBPANEEL: `.navbar.sub-open` verbergt de hoofdlijst-links en toont de
+  `.mega` als grid ín de drawer (Terug + titel + bestsellers 2×2 (img 150px)
+  + types 1-kolom (thumb 50) + USP's + Bekijk collectie — 1:1 het menu-XD).
+  TEGELIJK SITE-BREED: "Meer types" HERSORTEERD naar de XD-volgorde
+  (Yoga/Wieler/Kids/Werk/Antislip/Zorg — was Yoga/Werk/Wieler/Antislip/
+  Kids/Zorg) op alle 21 pagina's; desktop-mega-layout geverifieerd intact
+  op 1920 (types-grid leest rijgewijs in XD-volgorde, kop-elementen
+  onzichtbaar). De topbar-wrap-bug uit Known issues bleek al opgelost
+  (4 items op één regel; XD toont rechts een afgeknipte 5e ✓ — mogelijk
+  scrollt/loopt de strip door in het mobiele ontwerp, checken bij de
+  mobiele pass).
+  SECTIE-FIXES in het ≤768-blok: GLOBALE GUTTERS `.container,.container-md
+  {max-width:94%}` — er was hier GEEN container-regel, alles raakte de
+  viewportrand (geldt site-breed, scheelt straks per pagina werk); USP-chips
+  `display:grid` + repeat(3,1fr) (zelfde latente flex-bug als op tablet);
+  `.collection-grid` en `.gift-grid` zijn nu horizontale scroll-rijen
+  (flex + overflow-x, kaarten `flex:0 0 46%`) conform de slider-look in de
+  XD; cases GESTAPELD (`.case-inner` column, hoofdfoto 58%/280px, kolommetje
+  127px) — de desktoplayout knipte de tekst buiten beeld af; de blauwe
+  bg-shape (PNG 1920×1074, no-repeat) groeide niet mee met de hogere slide →
+  `background-size:100% 100%` + `.cases` padding-top 160 (h2 uit de witte
+  diagonaal) + `.cases-nav{top:0;margin-top:22px}` (knoppen staken door
+  overflow:hidden half uit beeld); `.cases-feet` uit; `.faq-right
+  {padding-top:0}` (desktop-uitlijnoffset van 100px werd dode ruimte boven
+  het accordion); `.cta-final-feet` uit (benen lagen óver de laatste twee
+  FAQ-vragen heen); `.process` top-padding 90→130 (h2 kroop in de gele golf).
+  Geverifieerd: geen h-scroll, burger open/dicht, hero/brands/impact/
+  collectie/process/calculator/gift/cases/gallery/brand-intro/FAQ/CTA/footer
+  allemaal netjes. NB: promo-float en nl-popup dekken op 768 veel beeld af —
+  bij de mobiele pass (520/375, mobiel-XD) beoordelen.
+
+- **MOBIEL (≤520-blok, getest op 390×844) — home.html AFGEVINKT (MET
+  mobiel-XD's van Kulwant: volledige homepage-thumb + 2 menu-artboards,
+  2026-07-28).** MENU (het grote stuk, alles in het ≤520-blok + kleine
+  markup-/JS-aanvullingen site-breed):
+  (1) Topbar = swipebare éénregel-strip (nowrap, overflow-x:auto, scrollbar
+  verborgen — het XD toont rechts afgeknipte items).
+  (2) Navbar: CTA "Gratis proefdesign" VERVALT op mobiel (XD), logo 100 +
+  zoek/account (40) + globe (42) + burger (52, donker) — de globe-svg bleek
+  hier tot 2px te krimpen (flex-shrink ergens in de keten): GEFIXT met
+  expliciete `.globe svg{21.5px; flex-shrink:0}` in style.css (gold ook al
+  op 768, daar leek de globe leeg).
+  (3) Open menu = witte sheet over de VOLLE breedte (position:fixed onder de
+  topbar, z-index:-1 binnen de nav-wrap-context zodat de logo/icon-rij erop
+  zweeft; pill-look uit via `.navbar.menu-open{background:transparent}`);
+  lijst gecentreerd condensed uppercase 24px met scheidingslijnen; actieve
+  item GEEL (`.menu .menu-link.active > a{color:var(--yellow)}` — desktop
+  blijft coral); Sokkencollectie krijgt een →-pijl (data-uri ::after).
+  (4) NIEUW "Home"-menu-item als eerste li op ALLE 21 pagina's
+  (`li.menu-link.menu-home`, op home.html mét `active` — het mobiel-XD toont
+  HOME geel bovenaan); base `display:none` in style.css, alleen ≤520
+  zichtbaar. "Prijzen" VERBORGEN op mobiel (`li.menu-link.menu-prijzen`,
+  class toegevoegd op alle pagina's) — het mobiel-XD toont geen Prijzen;
+  NB klantvraag: bewust weggelaten of vergeten in het design?
+  (5) Subpaneel = volledig scherm (XD 2): logo/iconen/globe verdwijnen
+  (alleen Terug + X bovenin), hoofdlijst-li's helemaal display:none (anders
+  bleven de scheidingslijnen staan), mega 1-kolom: titel, bestsellers 2×2
+  (img 170), types 2-KOLOMS met `grid-auto-flow:column` + rows repeat(3)
+  (kolomsgewijs = XD-volgorde Yoga/Wieler/Kids links, Werk/Antislip/Zorg
+  rechts), USP-spans verborgen (staan niet in het mobiel-XD), "Bekijk
+  collectie" als ZWEVENDE pill (`position:fixed; bottom:24px`, gecentreerd —
+  de sticky-variant kon niet: sticky ontsnapt niet aan z'n parent).
+  SECTIE-FIXES ≤520 (homepage-thumb als referentie): USP-chips
+  `repeat(3,minmax(0,1fr))` + feat-label 11px/wrap (230px-chips pasten niet
+  in 122px-cellen); `.collection-card-foot{height:auto}` in het ≤768-blok —
+  de BASIS-foot is hard 70px (desktop één rij) en knipte naam/prijs/knop af
+  in de gestapelde mobiele kaarten; cases-shape op `cover` + `left top`
+  (de 100%/100%-stretch uit de 768-pass vervormde op 390 extreem — witte hap
+  rechts); betaal/verzendstrip: `.footer-pay-group` kolom + inners
+  `flex-wrap:wrap` én `height:auto` (basis-inner is hard 29px — zelfde soort
+  bug als de card-foot: gewrapte rij werd afgeknipt/overlapte het
+  verzendpartners-label). GEVERIFIEERD op 390: 0 h-overflow buiten de
+  bewuste scroll-rijen, menuflow (open → subpaneel → Terug → X), hero,
+  chips, collectie-scrollrij, staffel/calculator, gift, cases, FAQ, CTA,
+  footer + legal allemaal netjes. LET OP testomgeving: de file://-pane
+  weigerde elke navigatie (nieuwe test-kopieën laadden niet meer) — de
+  verificatie is gedaan door home.html in een bestaande tab via JS te
+  patchen (zelfde markup-wijzigingen + CSS-cachebust); de echte bestanden
+  op schijf zijn de bron en staan allemaal juist.
+
+- **DEV-HULP in custom.js (2026-07-30, verzoek Kulwant): console.log van de
+  viewportbreedte bij laden + resizen (voor de resolutie-testronde) —
+  staat onderin custom.js met "DEV-HULP (verwijderen vóór oplevering)".**
+
+- **GUTTER-GARANTIE SITE-BREED (2026-07-30, melding Kulwant op 1730px:
+  secties raakten de viewportrand).** Alle vaste containerbreedtes hebben
+  nu een minimum-gutter via `min()`: style.css-basis
+  `.container{max-width:min(1720px, 100% - 120px)}` (= 60px per kant
+  tussen 1680-1920, spec Kulwant; overige blokken 20px per kant) en `.container-md
+  {min(1430px, ...)}` (lost ook het bekende container-md-issue op), plus de
+  breakpoint-waardes 1440 (≤1680), 1320 (≤1550) en 1190 (≤1300) in
+  responsive.css. De dode zones waren: 1681-1760 (basis 1720), 1301-1360
+  (1320-container — onder de 1320 was de gutter zelfs 0px) en 1191-1230
+  (1190). Tablet (94%) en mobiel (20px-padding) waren al veilig.
+  GEVERIFIEERD op vw 1715/1310/1200 (20/20 gutters) én 1920 (container
+  1720, gutters 100/100 — ongewijzigd). Geldt automatisch voor alle
+  pagina's (gedeelde CSS).**
+
+- **MOBIEL HOME = AFGEROND (2026-07-30, sectie-voor-sectie op Kulwants
+  exacte specs — topbar t/m footer-legal; Kulwant checkt zelf nog het
+  menu tegen de PSD, daarna volgt pixel-to-pixel voor de andere
+  resoluties).**
+
+- **MOBIELE KALIBRATIE (2026-07-28, na Kulwants XD-vs-live vergelijking —
+  "100en verschillen in font-sizes/margins/paddings").** Oorzaak: het
+  ≤520-blok had GEEN eigen typografie/ritme — mobiel erfde de 1440-tokens
+  (h1-clamp-floor 40px, body 15, sectiepaddings 90-160px), het mobiel-XD is
+  veel compacter. GLOBAAL gefixt bovenin het ≤520-blok ("MOBIELE
+  KALIBRATIE"): :root-tokens h1 34 / h2 26 / h3 20 / h4 18 / h5 15 / h6 16 /
+  body 14 / body-lg 15 / body-sm 11 (geankerd op de leesbare menu-artboards:
+  menu-items 24 condensed, mega-h4 18, prod-naam 17, type-label 15, topbar
+  12 — die maten zijn in de sub-open-regels expliciet GEPIND zodat de
+  tokenverkleining het menu niet raakt); knoppen 14px/10×20; hero (EXACTE
+  specs van Kulwant 2026-07-28): h1 44px/lh 38px op TWEE regels (de
+  desktop-`<br>` staat op display:none en de banner-zijpadding is 0 —
+  anders wrapte hij naar 3 regels; de oude clamp-floor was 40), usps
+  17px/lh 23px als kolom gap 10 (de 40px-flexgap werd verticale ruimte),
+  hero-knoppen ELK 100% breed gestapeld (geel boven wit, globale
+  14px/10×20), banner 150/0/50, rating/link
+  compact; HERO-SLIDER (mobiel-XD, 2026-07-28): actieve PAAR gecentreerd
+  met 5%-slivers links/rechts — swiper-container `calc(90% - 28px)` +
+  `overflow:visible` (sectie knipt op de rand; loste ook de vlak
+  afgeknipte topjes van de gestaggerde slides op), slides `calc(50% - 7px)`
+  ×260, 30px marge tot de knoppen (padding-bottom 54 = 30 + 24 stagger,
+  gallery-nav margin-top 0); stagger op RUNTIME-klassen (prev/next +24,
+  active en next+sibling −24, transition .6s) omdat de loop de DOM husselt
+  en nth-child-offsets na een wrap omdraaiden — de drie desktop-nth-regels
+  (3n+1/3n+2/3n) staan ≤520 op transform:none; custom.js doet ≤520 een
+  instant `slidePrev(0)+slideNext(0)`-wrap na init omdat Swiper anders
+  bij start géén buurslide links rendert (startfoto blijft gelijk;
+  desktop bewust ongemoeid). Stabiliteit geverifieerd over 6 wraps.
+  BRANDS-strip (specs Kulwant, 2026-07-28): 60px vanaf de slider
+  (gallery pb 0 + brands pt 60), kop 17px, 25px kop→logo's; de marquee
+  bestond al (Swiper autoplay/linear) — logo-gap ≤520 naar 40 via een
+  0-breakpoint in custom.js (521+ blijft 70, tablet/desktop ongewijzigd).
+  STATS-sectie (specs Kulwant, 2026-07-28): beide stats op ÉÉN regel
+  (ul flex-direction:row — basis is column voor desktop; li's flex:0 1
+  auto, stat-num 26, stat-label 13/nowrap zodat "1.000.000+ paar
+  geproduceerd" past zonder clippen), alles links uitgelijnd (impact-left
+  text-align:left, li's flex-start), 20px stats→beschrijving (ul mb 20 +
+  `.impact .impact-left p{margin:0}` — de basis-p had margin-top:32 op
+  0-3-0 specificiteit), sectie margin-top 40 t.o.v. brands
+  (brands margin-bottom 0) en padding-top 60, padding-bottom 40
+  (2e ronde). Pijl-chevrons verkleind naar 15px svg en met margin-top 2
+  uitgelijnd op de cijferregel (XD-crop); sokkenpatroon-achtergrond
+  `.impact:before` op background-size 950px (de 1980px-tegel rendert op
+  auto enorme sokken op 390; via 450→700→950 op Kulwants feedback).
+  Body-token ≤520 naar 15px (correctie Kulwant, was 14). Beschrijving
+  uitgelijnd op de cijfers: basis-p heeft padding-left:36 (desktop-pijl),
+  mobiel 29 (pijl 15 + gap 14) — tekst start exact op de nummer-x.
+  IMPACT-GALLERY (specs Kulwant): rotatie eruit (basis −4°), breedte
+  120vw gecentreerd — geen margin-hack: .impact-inner centreert al
+  (align-items:center), wel de basis padding-right:20 op de gallery
+  genuld (trok de foto's uit het midden); overhang 39/39px symmetrisch
+  gemeten, sectie-overflow knipt af (geen h-scroll); .impact-inner kreeg
+  ≤520 óók overflow:visible (verzoek Kulwant — basis-hidden zou de bleed
+  in echte browsers op de container knippen) én height:auto (1550-blok
+  fixeert 465px terwijl de mobiele content 478px is — de ul-marge meette
+  daardoor 47 i.p.v. 60). USP-CHIPS (specs Kulwant): 2 kolommen × 3 rijen
+  (was 3×2), 60px boven, gap 20, boxen 104px hoog met justify-center,
+  iconen 40×40, labels 17px, gap na 2x bijstellen op 10. COLLECTIE
+  (specs): kop links 32px, 20px kop→kaarten, kaart 75%/gap 10 (2e kaart
+  ~25% zichtbaar), sectie padding-top 60 + `.collection:before{top:-24%}`,
+  "Bekijk collectie"-knop 100% breed. KNOPPEN globaal ≤520 (specs): ALLE
+  .cta/.cta-light/.cta-dark = 100% breed, 44px hoog, 15px, inline-flex
+  gecentreerd (uitzondering: de zwevende menu-pill houdt width:auto).
+  PROCESS (specs): kop 32 gecentreerd, stappen 2 per rij (rijgap 40,
+  kolomgap 10), icoonvak 80px (eerst 213, gecorrigeerd), h3 17, p 15/22,
+  nummers 15 + process pb 90, iconen links uitgelijnd, .process-cta mt 35.
+  CALCULATOR (specs): kop 32/center/mb 25, sectie 40/20, sectie-container
+  10px gutters, calc-box zonder zijpadding, panel-h3 22, labels 17,
+  range+aantal op één regel ("paar" onder het veld, input 90px),
+  hint padding 10 + pijl boven, calc-result pt 20. FAQ: vragen 17px.
+  CTA-FINAL (specs): titel 44/38 (br op mobiel uit, wrapt naar 3 regels),
+  sub 17, knop 15/44, panel 100/60. FOOTER (specs, 3 delen): logo 102 +
+  20px naar intro; certs op één regel (badges 48px); 50/lijn/50 naar de
+  links; links-cols 40%/60%, koppen (class-vrije h5's → :is-selector) 17
+  + mb 20, links 15/22, GEEN verticale borders (border-v weg + de 1px
+  zijranden op .footer-col zelf); 40/lijn/40 rond contact-kol;
+  contact-row = 2 kolommen (info|adres), 30px naar socials, 50px naar
+  footer-news, 40/lijn/40 naar partners; partners gecentreerd, label
+  mb 20+10gap=30, beide logo's op één regel (flex-basis én max-width
+  calc(50% - 5px) — natuurlijke svg-breedte deed de rij anders wrappen);
+  footer-bottom 40/40, betaalgroepen LINKS uitgelijnd (kolom, label→
+  logo's 20), 30/lijn/30 tussen pay/ship/reviews (basis-border op
+  .footer-pay uit), reviews 2 rijen gap 20 — "uit 300+ reviews" wrapte
+  BINNEN de span (nowrap moest op de span, niet de a) + review-logo's
+  22px. FOOTER-LEGAL: MARKUP-wijziging op alle 17 volledige-footer-
+  pagina's — de regel is opgeknipt in 3 spans + 2 `span.fl-sep`-
+  separators (desktop rendert teken-identiek op één regel; ≤520 worden
+  de spans block met mt 12 en gaan de seps uit → de 3 XD-regels).
+  CONTAINERS ≤520 (specs Kulwant): .container/.container-md
+  = 100% breed met VASTE 20px padding links/rechts (i.p.v. 94%-max-width
+  die per breedte andere gutters gaf); geneste containers padden niet
+  dubbel (`.container .container{padding-inline:0}` — hero heeft
+  container-in-container, h1 zakte anders naar 3 regels); header-container
+  houdt padding 0 (balk blijft full-bleed); hero-slider-breedte omgezet
+  naar 90vw−28 (was 90%−28, container-onafhankelijk zelfde 5%-slivers);
+  stats-ul-gap 16→12 (row paste anders niet meer). Alles nagemeten op 390.
+  LET OP pane: CSS-transities zijn er óók bevroren — eindstanden getest
+  met transition tijdelijk uit; de brands-marquee raakt daardoor in de
+  pane visueel desynced (lege strip) — met setTranslate(0) geverifieerd
+  dat de rij gezond is; op echte browsers loopt hij gewoon
+  (was 314×440), stagger ±24; sectieritme: brands 28/32, impact 8/60,
+  process 120/50 (wave 50, stap-iconen 64 + strakkere marges), calculator
+  70/50, gift 60/50 + gift-img 180 (was 295 → extreme portretcrop), cases
+  110/44 (main-img 240, kolom-imgs 110, h3 22), designed margin 56 +
+  slides 200×200, brand-intro 48/60 + inner max-width 100% (60%-kolom),
+  faq 70/60, cta-panel 64/50 + h2 26, footer-grid 30 + footer-col 28px 0
+  (50px zijpadding at de kolom op); impact v-swiper-slides 100%×150 (276px-
+  slides in ~115px-kolommen gaven zoom-crops); USP-chips minmax(0,1fr) +
+  feat-label 11/wrap. RESULTAAT: paginahoogte 12.586 → ~10.500px, 0
+  h-overflow, alle secties geverifieerd op 390×844. LET OP: de aangeleverde
+  vergelijking is een lage-resolutie composiet — de kalibratie is
+  proportioneel + menu-artboard-geankerd; voor de laatste px-check per
+  sectie zijn leesbare 390-exports per sectie/pagina nodig (zoals de
+  menu-artboards). De zwevende promo-float (kerstkaart) staat op mobiel
+  UIT (`.promo-float{display:none}` in het ≤520-blok, besluit Kulwant
+  2026-07-28; site-breed — de kaart zit in de markup van vrijwel alle
+  pagina's maar verschijnt ≤520 nergens meer). De nl-popup staat op
+  mobiel nog gewoon aan. TOPBAR = MARQUEE op mobiel (verzoek Kulwant):
+  guarded IIFE onderin custom.js dupliceert de li's (alleen bij load ≤520)
+  en zet `.topbar-marquee`; CSS in het ≤520-blok animeert de ul naar
+  translateX(-50%) in 18s (li-gap via margin-right 34 i.p.v. flex-gap
+  zodat de -50%-loop naadloos is) met een 56px donkere fade rechts
+  (`.topbar:after`). Zonder JS valt hij terug op de swipebare strip.
+  NB testomgeving: de browser-pane bevriest
+  CSS-animatieklokken (currentTime blijft 0) — de marquee is geverifieerd
+  via het Web Animations API (playState running) én een negatieve
+  animation-delay (frame op -6s = exact -277,9px = 6/18 × halve breedte);
+  in echte browsers loopt hij gewoon. HEADER ≤520 (mobiel-XD, 2026-07-28):
+  geen zwevende pill meer maar een VOLLE-BREEDTE witte balk direct onder
+  de topbar — `header .container{max-width:100%}`, `header .nav-wrap
+  {top:0}`, wit/schaduw/onderhoeken-16px op `.nav-wrap` (navbar zelf
+  transparant, padding 0); iconen als outline-cirkels 38px (globe verliest
+  z'n schaduw en krijgt de icon-btn-rand), burger 44px op right:14 binnen
+  de gereserveerde 66px padding-right. Open menu sluit naadloos aan
+  (sheet + balk zijn beide wit); 768 houdt de pill-look.
+
+## XD-test per pagina (gestart 2026-07-27, 1920px, volgorde home → Collectie → …)
+
+- **home.html — AFGEVINKT.** Alles 1:1 met XD; gefixt: promo-float toegevoegd
+  (XD toont hem; component-CSS daarom van stylen.css naar style.css verhuisd),
+  dode `img.faq-feet` verwijderd, FAQ-intro contact-link `#` → contact.html.
+- **Collectie.html — AFGEVINKT (op 3 foto-exports na).** Gefixt: promo-float
+  toegevoegd; dode `img.faq-feet` weg; contact-link → contact.html; badges
+  toegevoegd (Bestseller-chip op Reguliere + coral NIEUW-chip op Zorgsokken —
+  nieuwe variant `.collection-badge.nieuw` in style.css, `.type-card-img` kreeg
+  `position:relative`); "→ Bekijk alle vragen"-link onder het FAQ-accordion
+  (hergebruik `.faq-more` — de haak-pijl-linkgroep is daarom OOK van stylen.css
+  naar style.css verhuisd, marges bleven per component); proces-collage vervangen
+  door de echte XD-set `uc-process-1..4` (zelfde als toepassingen — was
+  slider7/3/5/1); type-kaartfoto's: Wieler = slider6 (was 65px-thumb Eindhoven),
+  Antislip = Sokkies_FleurBoerdonk_5 (gripzolen, was 65px-thumb),
+  Zorg = ws-hero-img3 + NIEUW (was slider6-fietsfoto). NOG 65×65-THUMBS
+  (geen groter bestand in media, export nodig): yoga-pilates-sokken-bedrukken-1
+  (Yoga & pilates), Werk.png (Werksokken), sd.png (Kids & baby). XD toont
+  mogelijk ~6 FAQ-items i.p.v. onze 8 — onleesbaar op de aangeleverde PNG,
+  check bij gelegenheid in XD.
+
+- **product-detail.html — AFGEVINKT (op exports na).** Gefixt: dode `img.faq-feet`
+  weg; contact-link → contact.html; "→ Bekijk alle vragen"-link onder het
+  accordion; use-case-grid had 6× de titel "Promotionele giveaways" en tegels
+  5/6 waren foto-duplicaten → nu 6 unieke titels (Relatiegeschenken/Corporate
+  gifts/Promotionele giveaways/Personeelsgeschenken/Sportclubs & teams/
+  Evenementen, gekoppeld op foto-inhoud — CHECK de titel-per-foto-koppeling
+  t.z.t. tegen het leesbare XD) met sportclubs-teams.png + evenementen.png op
+  tegel 5/6; beschrijvingen blijven placeholder (klant-copy). Geen promo-float
+  (XD toont er ook geen). Weave-kaarten sinds Kulwants exports van 2026-07-27
+  ECHT: `pdp-compare-1.png` (geweven, handen rekken teal sok) +
+  `pdp-compare-2.png` (sublimatie, luipaardprint) — 1:1 XD. Yoga-foto ook echt:
+  `yoga-pilates-sokken-bedrukken-1.png` is OVERSCHREVEN met de full-res export
+  (zelfde bestandsnaam → Collectie én product-detail meteen goed; het door
+  macOS aangemaakte " 2"-duplicaat is verwijderd). LAATSTE 65×65-thumbs die
+  nog een export nodig hebben: `Werk.png` (Werksokken, Collectie + PDP-suggesties)
+  en `sd.png` (Kids & baby, Collectie).
+
+- **404.html — AFGEVINKT (2026-07-28), nul fixes nodig.** Alles 1:1 met het
+  hi-res XD: bg, 240px coral 404, exacte copy, knoppen (home/Collectie), alle
+  4 chips met echte links, footer. NB: het XD toont in de footer-partnerstrip
+  4 GESTIPPELDE lege blokjes naast One Tree Planted — dat zijn designer-
+  placeholders voor toekomstige partnerlogo's; live staat de echte set
+  (OTP + Voedselbanken), bewust niet nagebouwd.
+
+- **bedankt.html — GETEST 2026-07-28.** Klopt met XD: confetti-hero + gele
+  "Bedankt", ref-chip en stappen-copy zijn 1:1 de XD-demowaarden (dynamisch
+  maken = WordPress-fase), volg/nieuwsbrief-sectie, mini-footer, en de
+  sok-masker-foto (`.follow-outer-main`) rendert CORRECT in Chrome/macOS
+  (bekende mask-risk niet opgetreden). GEFIXT: wait-kaarten gelinkt
+  (Brochure → downloads.html, Case → reviews-en-cases-detail.html,
+  Inspiratie → reviews-en-cases.html — waren `#`) en de Inspiratie-kaartfoto
+  is nu timeline-img6 (XD's flatlay; was slider-grid1/hooray-dozen).
+  OPEN (Kulwant besliste 2026-07-28: "voorlopig zo laten"): (1) het XD toont
+  op bedankt (en vermoedelijk offerte/sample-request) een MINIMALE
+  funnel-header (logo + "↩ Naar de collectie" + globe, géén menu) — live
+  hebben alle drie de volledige navbar; bewust uitgesteld. (2) Foto-exports:
+  Sokkies-dozentoren (Case-kaart, nu FleurBoerdonk_2-stand-in) en
+  gripzolen-benen-op-blauw (Brochure-kaart, nu Voeten-in-de-lucht).
+  Social-knoppen + nieuwsbrief blijven stubs (site-breed, klant-content).
+
+- **configurator.html — AFGEVINKT 2026-07-28.** Klopt met XD (hero, demo-card,
+  ZO WERKT HET-stappen + groene contactbox, collage = exact de XD-set
+  FLEUROPP_LARGE_2/13/8/3, type-cards mét Bestseller-badge, gallery/cases/
+  reviews/brand-intro/FAQ/CTA). GEFIXT: promo-float toegevoegd (XD toont hem);
+  dode `img.faq-feet` weg; contact-link → contact.html; "→ Bekijk alle vragen"
+  onder het accordion; USP-2-titel "Save in DGL" (brabbel) → "Save en deel"
+  (consistent met PDP-configurator-bullet — CHECK copy bij leesbaar XD);
+  "Bekijk voorbeelden" (hero) + "Bekijk volledige gallery" → reviews-en-cases.html
+  (waren `#`); conf-check WhatsApp-chip → wa.me. SITE-BREED tegelijk: ALLE
+  footer/mini-footer-WhatsApp-links (16 volledige footers + 4 funnel-strips +
+  offerte/sample-tekstregel) wijzen nu naar https://wa.me/31413410411 (waren
+  `#`-stubs). Blijven bewust `#`: "Open de configurator" (app = latere fase)
+  en de Chat-chip (geen chattool).
+
+- **contact.html — AFGEVINKT 2026-07-28, nul fixes nodig.** Alles 1:1 met het
+  hi-res XD: hero + bg-diagonaal, formulierkaart (titel "Wat wil je laten
+  bedrukken?" — ietwat vreemde copy voor een contactpagina maar letterlijk zo
+  in het XD; radio 1 default-checked; alle 6 velden + placeholders exact),
+  legal-regel, beide knoppen, gele Direct contact-kaart (echte tel/wa.me/mailto;
+  adres zonder postcode = conform XD), actieve Contact-nav, mini-footer.
+  Enige open punt = bekend: voorwaarden/privacybeleid-links zijn `#` tot de
+  juridisch-template per pagina gedupliceerd wordt.
+
+- **downloads.html — AFGEVINKT 2026-07-28, één fix.** Alles 1:1 met het hi-res
+  XD: hero-titel/sub, 4 dl-kaarten (titels/teksten/linklabels exact; placeholder-
+  chips óók in XD), "Mis niets"-CTA (niets geel, formulier + overhangende knop),
+  footer. GEFIXT: "Inspiratie" heeft nu de `active`-state in het menu — het
+  hi-res XD toont hem onmiskenbaar actief (zelfde stijl als Contact-actief op
+  de contact-XD), dus de eerdere aanname "waarschijnlijk hover-state" is
+  geschrapt; Downloads valt kennelijk onder Inspiratie. NB: het Inspiratie-item
+  zelf is nog een `#`-stub (bestemming onduidelijk: toepassingen of
+  reviews-en-cases — klantvraag). Download-links blijven `#` tot er
+  PDF's/prijzenpagina zijn (bekend).
+
+- **duurzaamheid.html — AFGEVINKT 2026-07-28, nul fixes nodig.** Alles 1:1 met
+  het hi-res XD: hero ("Hoe duurzaam" geel), 6 tablabels exact, pane-1-tekst +
+  certificaatregel letterlijk XD, pane-1-foto = duur-img1 (jungle) ✓,
+  keur-kaarten, dz-points met duur-img2/3-collage (exact de XD-foto's, door
+  Kulwant al gewired), 3 punten + contactregel + contact.html-knop, CTA
+  "Sokken met een verhaal?" met beide knoppen en cta-foot.png = de
+  groente/tomaat-sokken uit het XD; witte golf-shape van Kulwant aanwezig.
+  Blijft bekend: pane-foto's tab 2-6 = slider*-placeholders (tab-states staan
+  niet in dit XD) en de concept-teksten van tab 2-6 wachten op review.
+
+- **veelgestelde-vragen.html — AFGEVINKT 2026-07-28, twee linkfixes.** Alles
+  1:1 met het hi-res XD: hero + zoekveld ("Zoek in vragen..."), 6 categoriechips
+  (eerste actief), 6 groepen, ALLE 14 vraagteksten woordelijk gelijk, eerste
+  antwoord open ("Het minimum is 30 paar…" — deze pagina zegt dus 30, conform
+  haar XD; het 30-vs-50-conflict zit in de FAQ-blokken van home/Collectie/PDP +
+  calculator-floor 50, blijft klantvraag). Zoekfilter regressie-getest
+  ("account" → 1 item, wissen → 14). GEFIXT: CTA-knop "Stuur ons een bericht"
+  → contact.html (was `#`) en het WhatsApp-nummer in de contactregel →
+  wa.me/31413410411 (was `#`). Bekend blijft: 13/14 antwoorden zijn
+  Claude-concepten, reviewen/vervangen door de klant.
+
+- **juridisch.html — AFGEVINKT 2026-07-28, één toevoeging.** Alles 1:1 met het
+  hi-res XD: hero + datum, 15 index-items (ankers werken), intro + alle 15
+  artikelteksten woordelijk (incl. het bekende "Bijlshoek 6B" in art. 1 — staat
+  óók zo in het XD; adresvraag blijft bij de klant; art. 3 zegt 30 paar ✓).
+  TOEGEVOEGD: de ronde PRINT-KNOP rechtsboven de content die het XD toont —
+  `.jr-print` (44px cirkel, absoluut in `.jr-inner`), CSS in het
+  juridisch-blok van stylen.css, `window.print()` via nieuwe guarded
+  multi-instance IIFE in custom.js. Gewired + geverifieerd (klik → print,
+  0 console errors). Template-dupliceer-werkwijze ongewijzigd.
+
+- **offerte.html — AFGEVINKT 2026-07-28 (alle 3 wizard-stappen).** Wizard 1:1
+  met de drie XD's en interactief doorlopen: stepper-labels, 10 soktype-tegels,
+  aantal-default 250, upload-dropzone-copy, wensen-placeholder, aside "Wat
+  krijg je?" (4 checks + directe contactgegevens), stap 2 (5 optie-tegels incl.
+  "Geen extra's", Jouw input, Terug/Overslaan/Volgende), stap 3 (postcode-
+  velden + "Gevonden adres"-chip "Voorbeeldstraat 12..." + Handmatig invullen +
+  alle labels/placeholders + "Vraag offerte aan"), stepper-states kloppen per
+  stap. Roze "Wat gebeurt er na je aanvraag?" + reviews + logostrip + FAQ-
+  vragen exact. Live FAQ-antwoord 1 is écht (XD bevat daar designer-
+  placeholdertekst — live is vóór op het XD). GEFIXT: hero had per abuis
+  home's h1+USP's → nu XD-copy "Vraag een vrijblijvende offerte aan" (geel
+  over de regelval) + Antwoord binnen 24 uur / Gratis digitaal ontwerp / Geen
+  verplichtingen; "→ Bekijk alle vragen" toegevoegd; FAQ-contact-link →
+  contact.html. Funnel-header blijft volledige navbar (Kulwants "voorlopig zo
+  laten" van bedankt geldt ook hier — de offerte-XD's tonen wél de minimale
+  variant).
+
+- **over-ons.html — AFGEVINKT 2026-07-28, nul fixes nodig.** Alles 1:1 met XD:
+  hero ("De mensen" geel + gallery-slider met echte foto's), "Hoe het begon",
+  tijdlijn (8 kaarten, echte titels/volgorde), impact, "Waar we voor staan"
+  (4 waarden), reviews, "Met oog voor duurzaamheid" (echte bodytekst — de
+  "[Korte tekst overnemen.]"-placeholder is weg; link → duurzaamheid.html),
+  CTA met beide knoppen ("Bekijk de collectie" ✓) en veggie-feet rechts;
+  actieve Over ons-nav; alle 6 sliders draaien; 0 kapotte afbeeldingen.
+  Klant-items ongewijzigd: "Sinds 2016" (XD zegt het hier zelf; home zegt
+  2014), values-icoontjes (dashed placeholders tot exports), 3 review-quotes
+  ×2 herhaald, 2020-tijdlijnkaart-copy ("zijn écht gaan knallen").
+
+- **partners.html — AFGEVINKT 2026-07-28, nul fixes nodig.** Alles 1:1 met XD:
+  hero (titel/tekst/2 marquees), 4 perks-kaarten exact, "Onze partners" + 5
+  filterchips + 26 logokaarten, OTP-sectie (op-img1/2 + off-partner-socks +
+  doodles + Kulwants golf), partner-FAQ (8 items, antwoord 1 = echte XD-tekst),
+  Brochure en inspiratiegids (kaarten + placeholder-chips conform XD, formulier
+  + sticker), standaard CTA, promo-float. 0 kapotte afbeeldingen.
+  MICRO-COPY-CHECK: live herotekst "...hoe hoger je marge, en wij regelen..." —
+  het XD lijkt "...hoe hoger je marge. Wij regelen..." te tonen (punt i.p.v.
+  komma+en); op deze exportresolutie niet zeker leesbaar → check bij leesbaar
+  XD. Bekende opens ongewijzigd: 3 marquee-foto-exports (VELORETTI-racket,
+  antislip-zolen, teal-benen), partner-categorieën = round-robin-demo,
+  FAQ 2-8 concepten, Download-links wachten op PDF's, XD-menu zonder
+  Sokkencollectie = versimpeld artboard (standaard chrome gehandhaafd).
+
+- **reviews-en-cases-detail.html — AFGEVINKT 2026-07-28, drie fixes.** Klopt
+  met XD: hero (titel/sub/breadcrumb → reviews-en-cases), "Hoe het ging"
+  (Aanleiding/Resultaat), specs-strip (Bamboesokken/25.000/Wit/2,5 week),
+  "Het resultaat in beeld" = sanquin-1/2/3 ✓, quote-sectie (Claudia van der
+  Pijl), "Bekijk de samenwerking"-video, "Andere samenwerkingen" (4 kaarten —
+  "Klantnaam / [X] paar" staat OOK zo in het XD = designer-placeholder,
+  klant-content). GEFIXT: (1) story-gallery-marquees draaien nu de
+  Sanquin-fotoset (3 per kolom, per kolom geroteerd — waren generieke
+  slider1-9), (2) "Inspiratie" actief in het menu (XD toont het, net als op
+  downloads — cases vallen onder Inspiratie), (3) promo-float toegevoegd
+  (XD toont hem). 0 kapotte afbeeldingen.
+
+- **reviews-en-cases.html — AFGEVINKT 2026-07-28, zes fixes.** Klopt met XD:
+  hero ("Zo pakte het uit voor anderen", sub met 250+ reviews — conform dit
+  XD), Cases met TWEE filtergroepen (Type sok + Branche incl. "Bouw"), 8
+  kaarten (XD-designer-placeholders "Klantnaam / [X] paar" = klant-content),
+  Meer laden, blauwe case-sectie, gallery, logostrip, CTA. GEFIXT: (1) de FAQ
+  had de standaard-vragenset → nu de 8 REVIEWS-specifieke XD-vragen; antwoord 1
+  = letterlijk XD, antwoorden 2-8 = Claude-concepten (REVIEWEN — zelfde
+  conventie als FAQ/partners; vraag 6 als "terug voor een herhaalorder"
+  gelezen, XD-scan was onscherp); (2) dode `img.faq-feet` weg; (3) FAQ-contact
+  → contact.html; (4) "→ Bekijk alle vragen" toegevoegd; (5) "Inspiratie"
+  actief (XD, consistent met downloads/case-detail); (6) promo-float
+  toegevoegd + "Bekijk volledige gallery" → `#cases`-anker (was `#`; de grid
+  op deze pagina ís de gallery). Filters regressie-getest (2↔8 kaarten).
+
+- **sample-request.html — AFGEVINKT 2026-07-28, één fix.** Klopt met het hi-res
+  XD: h1 "Vraag een gratis sample aan" (gratis sample geel), formulier ("Wat wil
+  je laten bedrukken?" + Max. 2 selecteerbaar — max-2 werkt, regressie-getest),
+  10 tegels, "Waar sturen we het heen?" (postcode-velden + Gevonden adres-chip),
+  legal-regel, outline #wantProof "Ik wil toch een proefontwerp" (toont de
+  verborgen sample-proof-sectie — rijker dan de statische XD-state) + submit,
+  aside "Wat krijg je?" (3 checks BeNeLux), roze "Wat er daarna gebeurt?"
+  (incl. "[X] werkdagen / Placeholder tot Rick" — staat óók zo in het XD;
+  NB de hero-USP zegt "Binnen 2 werkdagen in huis" — mogelijk is Ricks
+  antwoord dus 2), reviews, logostrip, mini-footer. GEFIXT: hero-USP's waren
+  home's set → nu de vier XD-USP's (Voel de kwaliteit voor je beslist /
+  Gratis opgestuurd / Binnen 2 werkdagen in huis / Géén verplichtingen).
+  Funnel-header blijft volledige navbar (bewust uitgesteld).
+  STATE 2 ("proefontwerp", eigen XD) OOK AFGEVINKT: #wantProof toont de
+  sample-proof-sectie 1:1 (Aantal paar "Bijv. 100" min 30, Opmerkingen
+  "Vertel kort wat je wilt.", upload-dropzone, "Vraag offerte aan") en de
+  originele submit-rij verdwijnt — exact de XD-state. EXTRA FIX (beide
+  funnel-pagina's): de submit/Volgende-knoppen waren deels geel (.cta) waar
+  ALLE XD-states donker tonen → offerte "Volgende" (stap 2) + "Vraag offerte
+  aan" en sample "Vraag gratis sample aan" + "Vraag offerte aan" nu `.cta-dark`
+  (stap-1-Volgende had die al). In browser geverifieerd (donker/wit).
+
+- **toepassingen.html — AFGEVINKT 2026-07-28, twee fixes.** De "use case
+  pillars"-XD bleek deze bestaande pagina te zijn (een eerder per abuis
+  aangemaakte `toepassing-detail.html` + bijbehorende stylen-CSS/sitemap-entry
+  is volledig verwijderd/teruggedraaid). Alles al 1:1 met het XD: h1 "Sokken
+  als relatiegeschenk dat blijft hangen", hero-sub, hero-marquees met eigen
+  `use-case-hero1..4`-exports, exact de XD-sectievolgorde (usecase-why →
+  usecases-flat 6 kaarten → collection → cases → calculator → process-split →
+  brand-intro → faq → cta), alle h2's woordelijk (incl. "Voor welke bedrijven
+  werken reguliere sokken?"), 8 pillar-FAQ-vragen ("Werkt dit ook voor een
+  klein team?" …), promo-float; sliders + calculator draaien; 0 kapot.
+  GEFIXT: FAQ-contact-link → contact.html (was `#`) en "Inspiratie" actief in
+  het menu (consistent met downloads/reviews-cluster).
+
+- **waarom-sokkies.html — AFGEVINKT 2026-07-28, nul fixes nodig.** Alles 1:1
+  met XD: intro-masonry (6 kaarten, titels + exact de geplaatste fotoset incl.
+  ws-hero-img2/3/4), kaartteksten woordelijk, compare-tabel (10 rijen, De
+  rest-kolom X/X/X/Soms/Vaak/Soms/X/Soms/Soms/X exact), "Wat je bij ons
+  krijgt" (6 punten + ws-get-img1..4-collage in XD-volgorde), CTA "Benieuwd
+  wat het voor jou kost?", Kulwants shapes (cyaan golf + witte wiggen +
+  sokkenpatroon-tegel) renderen correct, promo-float aan, geen actief
+  menu-item (conform XD), 0 kapotte afbeeldingen.
+
+- **werkwijze.html — AFGEVINKT 2026-07-28, vijf fixes (LAATSTE pagina van de
+  XD-testronde — alle 22 pagina's zijn nu getest).** Klopt met XD: hero
+  ("Geen gedoe, geen verrassingen." + sub + ch-marquees), "Zo werkt het, stap
+  voor stap" (stap-kaarten met Image placeholder-chips = óók zo in het XD,
+  bekend), USP-chips, cases, gallery, ROZE calculator, "Zo laat je sokken
+  bedrukken bij Sokkies"-tekstblok, CTA; actieve Werkwijze-nav; alle 5 sliders
+  + 7 staffelrijen. GEFIXT: (1) FAQ had de standaardset → nu de 8
+  werkwijze-vragen uit het XD ("Hoe lang duurt het hele traject…" antwoord 1 =
+  letterlijk XD; 2-8 Claude-concepten — REVIEWEN); (2) dode `img.faq-feet`
+  weg; (3) FAQ-contact → contact.html; (4) "→ Bekijk alle vragen" toegevoegd;
+  (5) promo-float toegevoegd (XD toont hem). 0 kapotte afbeeldingen.
+
+## Code-audit fixes (2026-07-27, front-end ongewijzigd — in browser geverifieerd)
+
+Alle punten uitgevoerd met de eis "nothing should be disturbed in front-end";
+computed styles en gedrag per pagina gecontroleerd in de preview (0 console errors).
+
+- **custom.js multi-instance refactor**: alle Swiper-inits en componenten
+  (dz-certs-tabs, pt-partners-filter, faq-accordion, promo-float-close, nl-popup)
+  element-gebaseerd (`querySelectorAll().forEach`) met sectie-gescoped nav via
+  `el.closest(...)`. `verticalMarquee(el, reverse)` neemt nu een element.
+  Geverifieerd: home (7 sliders), over-ons (gallery/timeline/reviews/2 marquees +
+  nav), partners (2 hero-marquees, filter 26→7→26, accordion), duurzaamheid (tabs),
+  popup (auto-open + sessionStorage-cap `nlPopupShown` + close).
+- **stylen.css geconsolideerd**: nieuw blok "Nieuwe pagina's — gedeelde regels"
+  bovenin (na nl-popup) met (1) breadcrumb-clearance `padding:115px 0 0` voor
+  over-ons/duurzaamheid/downloads/contact/juridisch/waarom-sokkies, (2) haak-pijl-
+  linkbasis `.faq-more/.duurz-link/.dl-link/.pt-dl-link` (+ gezamenlijke hover),
+  (3) placeholder-chip `.pt-dl-ph/.dl-ph`, (4) input-basis `.pt-dl-input/
+  .dl-niets-field input/.ct-field input+textarea`. Per-page rules houden alleen
+  hun unieke declaraties (marges; `.ct-field` houdt `font-family:inherit`);
+  volledig gedekte rules (.dl-link, .dl-ph, .dl-niets-field input, .pt-dl-ph)
+  zijn verwijderd.
+- **Nieuwe tokens in style.css :root**: `--cyan-bright:#7CE7F1` (gebruikt door
+  home's `.designed:before` + `.brand-intro` — identieke waarde, computed
+  rgb(124,231,241) geverifieerd) en `--input-border:#c9c2ba` (alle drie de
+  `#c9c2ba`-literals in stylen vervangen via de gedeelde input-rule).
+  Kulwants `#87e1f0` op `.ws-compare` bewust NIET vertokenized.
+- **Heading-hiërarchie nieuwe pagina's**: alle `h5`/`h6` binnen `<main>` van
+  over-ons, duurzaamheid, partners, downloads, contact, juridisch, 404, popup en
+  waarom-sokkies zijn nu `h3` (semantisch juist onder de h2-sectietitels; ACF/SEO).
+  stylen-selectors in lockstep hernoemd; `.timeline-swiper h3` kreeg expliciet
+  `font-size:var(--h5-font-size)` (had geen eigen size — de var wordt óók door
+  responsive.css per breakpoint geschaald, dus identiek op elke breedte).
+  UITZONDERINGEN (blijven h5, gedeelde componenten identiek op elke pagina):
+  `.footer-heading` (buiten main), `.promo-float-title`, `.nl-popup-title`.
+  NB pre-existing (niet aangeraakt): `.pt-dl-form-title{font-size:26px}` verliest
+  van `.pt-dl-card h3{22px}` (hogere specificiteit; was met h5 al zo) — de
+  form-titel rendert 22px, net als vóór de audit.
+- Zie ook de OPGELOST-regels bij Known issues: `lang="nl"`, favicon,
+  configurator-demo-rename.
+- **Class-vrije content-elementen (2026-07-27, tweede refactor-ronde)**: alle
+  ±120 classes op `h1`–`h6`/`p`/`ul`/`ol`/`li` (400 HTML-tokens, 228
+  CSS-selectors over style/stylen/responsive/sitemap-inline) omgezet naar
+  parent-gebaseerde selectors — zie de nieuwe CSS-conventie hierboven.
+  Aanpak per conflict: child-combinators (o.a. `.cta-final-panel > .container >
+  p` voor de CTA-sub vs `.cta-final-row p` voor de contactregel), structurele
+  selectors (`.staffel-head h5:first/last-of-type`, `.sample-card >
+  h3:nth-of-type(2)`, `.ct-direct p:nth-of-type(4/5)`, `.dz-points-text >
+  p:first/last-of-type`, `.quote-aside ul:first/last-of-type`) en `:is()`-groepen
+  (`:is(.footer-col,.footer-news) :is(h4,h5)`, `:is(.gift-body,.weave-body) ul`,
+  `:is(.impact,.promises,.steps-section) > :is(.container,.container-md) > ul`).
+  Home's process-h2 is `.process:not(.conf-works)`-gescoped (configurator-versie
+  heet `.conf-works`). Dode regels die vóór de refactor al door
+  `.banner-section h1` werden overschreven zijn verwijderd (alleen
+  `.thanks-hero h1{margin-bottom:6px}` bleef effectief); de 26px van de oude
+  `.pt-dl-form-title` was al dood → nieuw `.pt-dl-form-card h3` zet alleen
+  `line-height:1.2`. GEVERIFIEERD met een golden-master diff: computed styles +
+  posities van ALLE h/p/ul/ol/li-elementen op alle 22 pagina's, vóór vs ná, op
+  1920px — 0 verschillen; sliders/tabs/filters/accordions/calculator/popup
+  functioneel herbeproefd (0 console errors). Valkuil voor later: bij een
+  compound-selector waar beide classes op HETZELFDE element staan (bijv.
+  `.brands.brands-inner`, `.quote-card.sample-card`) wordt `.a .b tag` een
+  dode self-descendant — plat schrijven naar `.a tag`.
+- **Bewust uitgesteld naar de WordPress-fase** (niet vergeten): (1) de ±669
+  gedupliceerde inline-SVG's → sprite/partials (externe `<use>` breekt over
+  file:// en zou Kulwants lokale testen breken), (2) form-stubs consolideren
+  (WordPress vervangt ze toch; alerts verschillen per formulier), (3) h5/h6 op de
+  OUDE pagina's (delen componenten/chrome met elkaar — bij de theme-port doen),
+  (4) beeldcompressie (~35 MB media, 41 bestanden >300 KB; geen pngquant/optipng
+  op deze machine — vóór oplevering comprimeren).
+
+## Responsive per pagina — status (2026-08-04)
+
+- **Collectie.html — KLAAR in alle banden** (1440-1679 → 1280-1439 → 992-1279 →
+  768-991 → 521-767 → ≤520; specs Kulwant per band, floor-anchored kopieerflow
+  met dedup per band + home-gedeelde selectors beschermd (calc-panel h3,
+  case-text h3 op mobiel). Testimonial-slider per band in custom.js:
+  basis 1.23/gap 12 (mobiel), 521: 1.33, 768: 2.1, 992: 3.5, 1680: 4 (gap 20).
+  Compare-tabel: vaste breedte + horizontale scroll met eigen scrollbar-design
+  vanaf tablet (1320px) en mobiel (860px, labelkolom 180px, td's 13px).
+  Mobiel-bijzonderheden: hero gecentreerd met 100%-CTA's (knoppen-onder-gallery
+  uit het XD is TERUGGEDRAAID — Kulwant bespreekt met designer; bij akkoord
+  waarschijnlijk markup-wijziging nodig), case-:after = 400px blauw kleurvlak
+  (sok-doodle vervalt alleen mobiel), 13px-microtekst = calc(body−2)
+  (buiten PDF-inventaris, bewust; overweeg 13 als mobiele body-sm).
+- **product-detail.html — KLAAR in alle banden (2026-08-05).** Zelfde flow als
+  Collectie (kopieerblokken + specs Kulwant per band). Mobiel-bijzonderheden:
+  NIEUWE component `.pdp-sticky` (fixed CTA-balk onderin, markup vóór de footer,
+  base verbergt hem — alleen ≤520; footer krijgt 115px padding via
+  `.pdp-sticky ~ footer`); hero volledig gecentreerd met prodMain full-width en
+  thumbs als horizontale scroll-rij (90×90, gap 6, rechts uitlopend);
+  prod-actions + prod-cost verborgen (sticky balk vervangt ze); staffel-mb was
+  al 35 (gedeeld met tablet-restack); versus-tabel past nu IN de viewport
+  (container zonder zijpadding, thead 45/26/29 — let op: tbody-th-breedtes
+  doen niks door table-layout:fixed, altijd via thead sturen), rij-pillen
+  zonder buitenranden, ticks 24px, SOKKIES-logo-svg 60px; weave full-bleed
+  scroll-rij + shape op 350%; suggestion-slider base 1.325 (= 1 kaart + 35%
+  zichtbaar t.o.v. de VIEWPORT — swiper heeft overflow:visible!) met knop
+  onder de slider (display:contents + order, swiper kreeg width:100%/
+  min-width:0 tegen flex-blowout); usecases = uniforme 2-koloms grid
+  (wrappers via display:contents, head grid-column 1/-1, expliciete orders
+  1-6 in mock-leesvolgorde, imgs 145px, bodytekst verborgen — regels
+  masonry-gescoped zodat toepassingen's .usecase-* niet meeverandert);
+  cases-pdp: gele :after-strip 350px onderin (Collectie-patroon).
+  CONTENT-FIX site-breed (leesbare mobiel-XD, lost het open item van
+  2026-07-28 op): usecase-titels hergekoppeld — Van Stapele=Promotionele
+  giveaways, Chunky=Sportclubs & teams, McDonald's=Corporate gifts,
+  Oral-B=Personeelsgeschenken (was al goed). NOG 2 EXPORTS NODIG: het XD
+  toont bij Evenementen een Garden Gourmet-plankfoto en bij
+  Relatiegeschenken een Lotus-koekjesfoto — media heeft ze niet;
+  sportclubs-teams.png (XXX-voetbal) en evenementen.png (SLAM-runner) staan
+  er als stand-ins met de juiste titels. NB: `.prod-info h1` volgt bewust
+  var(--h2-font-size) (base-regel, origineel design).
+- Code-audit 3 pagina's (2026-08-05): braces/fences/tags/parens 0 fouten,
+  9 banden intact, geen h-scroll op 390/640/900/1100/1350/1600/1920 (PDP)
+  en 390/1920 (home+Collectie), goedgekeurde waardes home/Collectie
+  ongewijzigd, 0 console errors. Pane-artefact: swiper herberekent
+  breakpoints niet bij pane-resize (verse load is correct).
+- **configurator.html — KLAAR in alle banden (2026-08-06).** Zelfde flow
+  (kopieerblokken + specs Kulwant per band; 521-767 goedgekeurd zonder eigen
+  specs = 768-state). Bijzonderheden: `.conf-bg` is een WRAPPER-DIV geworden
+  (was <img>, zelfde patroon als design-bg-union) met de svg op NATUURLIJKE
+  schaal in base (height 1355px, top center, snijdt zijkanten af op smaller);
+  banden overriden met cover + eigen height/top/position. NIEUWE mobiele
+  component `.conf-sticky` (fixed "Gratis proefdesign"-knop, gecentreerd
+  niet-full-width, witte strook = HALVE knophoogte via ::before 30px;
+  base verbergt, footer-pb 65). Scoping-conventie toegepast: conf-works voor
+  process-regels (o.a. override van Collectie's tablet `.process-left{66%}`),
+  `.testimonial.testimonial-light`, `.cases.cases-solid`,
+  `.configurator-section .conf-preview-card{350px}` (PDP houdt 600);
+  `.conf-preview-card img{border-radius:25px}` is bewust COMPONENT-niveau
+  (geldt ook op PDP, 768↓). Mobiele pijlen in de USP-lijst: content:url kan
+  niet schalen → als background 9×11 met top 5. Token-afwijkingen (gemeld):
+  conf-check h5+8/body+2/body+4, ul-li-h5 +2. FIX onderweg: hero-h1 had
+  "sokken"+"in" aan elkaar op mobiel (br display:none) → spatie vóór de <br>
+  in de markup (desktop-neutraal).
+- **CASE-VARIANT REFACTOR — OPTIE A (2026-08-06, besluit Kulwant):**
+  `.cases:before` en variant-:before's hadden gelijke specificiteit (volgorde
+  besliste — botste in de banden). ALLE case-variantselectors zijn nu
+  COMPOUND: `.cases.conf-designed`, `.cases.cases-solid`, `.cases.cases-pdp`,
+  `.cases.cases-bg-pink` (style.css 16 selectors; testimonial-delen in
+  gegroepeerde selectors bewust NIET aangeraakt). LOCKSTEP in responsive.css:
+  de 6 PDP-band `.dubble-left`-regels + mobiele h2-regel óók compound (waren
+  anders door base overruled). Geverifieerd: conf-designed toont weer z'n
+  eigen shape, PDP-bandwaardes intact, werkwijze/home/reviews ongewijzigd.
+  CONVENTIE VOORTAAN: case-variantregels ALTIJD compound schrijven.
+  OPEN: de testimonial-familie (.testimonial-light/-yellow/-offer vs base)
+  heeft dezelfde tie-ziekte — zelfde behandeling t.z.t. op verzoek.
+- Sweep configurator (2026-08-06): 390/640/900/1100/1350/1600/1920 — 0
+  h-scroll, bandwaardes correct, 0 console errors; guards Collectie
+  (process-split-inner 42.2%/145, testimonial), PDP (card 600, doodles),
+  werkwijze (cases-bg-pink) gecheckt.
+- **werkwijze.html — KLAAR in alle banden (2026-08-06).** 1440- en
+  1280-band: GEEN eigen regels nodig (pagina draait volledig op gedeelde
+  patronen: coll-hero, home-calculator, chips, PDP's brand-light-waardes —
+  door Kulwant goedgekeurd). 992: eerste blok (steps-section 90/0/70,
+  step-card-img 380/r25, body 50/0-30, pink-shape 85%/-50). 768: body
+  40/0-20, pink-sectie 90/0, calculator-pink pt 80 (compound-conventie).
+  521: pink-shape 95%/-150 + BANDBREDE `.cta-final-feet`-override
+  (-65%/20px/41% — vierde globale feet-regel in die band, zelfde rolling
+  patroon als eerdere rondes; bij klachten per pagina scopen). MOBIEL:
+  sticky-knop = gedeelde `.conf-sticky` (alleen markup gekopieerd; base-
+  comment zegt nu "gedeelde component"); feet-override bewust NIET
+  meegekopieerd (mobiel heeft goedgekeurde home/Collectie-feetregels);
+  steps-h2 210px gecentreerd (token 32); designed-regels
+  `.cases-bg-pink`-gescoped (home's designed-sectie beschermd); NIEUWE
+  marker-class **`ww-brand`** op de brand-intro-sectie (regel 661) omdat
+  `.brand-intro.brand-light` gedeeld is met PDP — PDP houdt mobiel
+  110/150 + doodle bottom 10% (guard-gecheckt), werkwijze 100/130 + 5%.
+- **reviews-en-cases.html — KLAAR in alle banden (2026-08-06).** 1680+
+  zonder regels; 1440: case-card-img 320 (kaartcomponent gedeeld met de
+  detail-pagina — bewust mee); 1280: grid 3-up + sectie 70/0/50; 992:
+  img 280 + beige-strip pb 0; 768: hero-p 60%, chips 8/14, grid 2-up;
+  521: hero-p 90% + NIEUWE variant-class **`review-cases`** op de blauwe
+  cases-sectie (regel 416, compound-conventie) met shape-tuning; MOBIEL:
+  hero-br verborgen (mét spatie-fix in markup), filterrijen = label+chips
+  op één regel met INTERNE h-scroll (let op: de oude stackregel
+  `align-items:flex-start` liet de groep naar content-breedte groeien —
+  width:100% pint hem, anders pagina-overflow), kaarten 160/r15,
+  shape -60px/80% top + pt 160, sticky-knop-markup (gedeelde component,
+  nu op 3 pagina's). OPGERUIMD in deze ronde: dubbele `.cases`-regels in
+  de 1280- én 992-band (Kulwants keuze: `padding:95px 0 50px` wint —
+  geldt bandbreed, dus óók home; 76/40-oneliners verwijderd) en de oude
+  cascade `.case-grid`-regels in 768/521.
+- **SITE-BREED (2026-08-06): brands-marquee.** (1) Full-width in BASE:
+  `.brands .brands-swiper{100vw + calc-marge}` — de `.brands`-prefix is
+  VERPLICHT want swiper-bundle.min.css laadt NA style.css en zijn
+  `.swiper{margin-left:auto}` wint anders de tie. (2) custom.js kloont de
+  logo-set tot de strip ≥4× viewport (cap 80 slides; schatting met gap
+  40) — Swiper 11's "Loop Warning" (te weinig slides, naad
+  haperde/stond stil) is daarmee overal weg.
+- **reviews-en-cases-detail.html — KLAAR in alle banden (2026-08-07).**
+  1440: sock-duddle 180/18%, story-gallery 720 (compound
+  `.impact-inner.case-story-inner` — home-impact beschermd), video
+  180/0/130, `case-bg-union` = WRAPPER-DIV (was <img>; Union-bg-g.png
+  1921×1392 op natuurlijke schaal + vaste hoogte, zelfde patroon als
+  conf-bg) met band-overrides, result-imgs 490 (NB: base
+  `rotate(-3.5deg)` op de grid — offsetHeight is de maat, recten lezen
+  groter). 1280: video-inner 480, union -34%/1150; de eerdere
+  case-grid-3-up-regel is hier VERWIJDERD (keuze Kulwant — geldt óók
+  voor de grid-pagina, terug naar 4-up; 992 hield 3-up). 992: gallery
+  580, specs-strip 0/0/40 + case-spec r15, imgs 410, duddle 140/30%,
+  video-doodle-r, union 1103. 768: spec-cards 15/20/h80/gap6 (grid 10),
+  imgs 340 + gap 12, duddle uit, quote 100%, result-bg 75%, union
+  1019/46%-left/184%. 521: result-grid = full-bleed scroll-rij (geen
+  rotatie), marker-class **`case-result-detail`** (regel 314; bg none +
+  rotatie-clip), duddle terug 110/36%/45°, video bg none + rel/z-1,
+  union -45%/1060/245%. MOBIEL: scroll-rij mét rotatie terug +
+  snap-center 1 vol + 15%/15% (LET OP: `min-width:0` op de img was
+  nodig — de automatische replaced-minimum (ratio × 340px) won anders
+  van flex-basis), quote h5+2/body+2 (gemeld), video-inner 190, union
+  -50%/1010/20%-left/243%, others-container 10px zijpadding, duddle
+  90/46%/45°/left 38%, `.case-story{overflow:hidden}` (gallery-bleed,
+  zelfde patroon als home-impact), sticky-knop-markup (4e pagina).
+- **BUGFIX site-breed (2026-08-06): topbar-marquee-guard** stond in
+  custom.js op 991 waar besluit/comment ≤520 zegt — elke load op
+  521-991 kreeg gedupliceerde topbar-items zónder marquee-CSS =
+  h-scroll op alle pagina's. Nu ≤520 mét teardown/re-init via
+  mql-change (draai/resize-proof; klonen netjes verwijderd bij >520).
+- **offerte.html — KLAAR in alle banden (2026-08-07).** quote-*/
+  application-*/stepper-regels bewust ONGESCOPED (gedeeld met
+  sample-request als baseline). 1440: quote-wrap 1fr/382 gap 20,
+  aside/card-paddings, type-picker 10/10, `application-bg-shape` =
+  WRAPPER-DIV (was <img> op BEIDE funnelpagina's; bg-pink-shape.svg
+  1920×776 natuurlijke schaal + vaste hoogte; LET OP: `left:0` was
+  nodig — zonder pin schoof de statische positie mee met
+  sectie-padding), sok-doodle `:after` = BACKGROUND i.p.v. content:url
+  (schaalt nu wél via width; base 347.5px + aspect-ratio). 1280:
+  doodle 192/-27%, shape 560/bottom-left. 992: quote-wrap gestapeld,
+  aside 2-KOLOMS met verticale divider (structurele selectors,
+  divider hergebruikt), picker 20/10, steps 82%. 768: card/aside 20,
+  picker 4-up, MARKER-CLASS **`offerte-banner`** op de banner (regel
+  223, patroon configurator-banner) voor usps-één-regel +
+  paddings; faq-light-override (bandgeneriek .faq had pb 220).
+  521: stepper-labels verborgen + dots één regel strak (15px gap,
+  flex-basis-reset), picker 3-up, aside terug gestapeld, steps
+  num-links (auto/1fr-grid), mini-footer-left uit. MOBIEL: usps
+  kolom, picker 2-up + pick-img 150, quote-card kaal (padding 0,
+  geen rand), aside verborgen, dropzone = PILL-KNOP "Upload je
+  bestand" (span-paar `.dz-desktop`/`.dz-mobile` in markup regel 388;
+  rand = .cta-light-hairline; label display:block tegen
+  shrink-wrap), application: pt 110 + roze ::before-strip 450px
+  (svg-fill #ff8ce6 = --pink) + shape top center/150%, steps
+  1-koloms met num-links, NIEUWE component **`.funnel-sticky`**
+  (contactbalk Bel ons/WhatsApp/E-mail, eigen outline-icons,
+  markup vóór de mini-footer; base verbergt).
+  BUGFIX: wizard-`render()` gooide élke load een uncaught TypeError
+  (`form.closest('.quote')` bestaat niet — sectie heet
+  .quote-section) waardoor ALLE IIFEs erna stierven op deze pagina
+  (FAQ-accordion, filters, topbar-marquee…) — nu guarded fallback in
+  custom.js (±regel 327). LET OP kopieerfout-les: bij het mobiele
+  samenvoegen is éénmalig een bandoverschrijdend segment geplakt
+  (nested @media, +2890 regels) — gedetecteerd via de fence-telling
+  (9→10) en volledig hersteld; segment-grenzen ALTIJD checken.
+- **sample-request.html — KLAAR in alle banden (2026-08-07).**
+  Offerte-tweeling: alle gedeelde quote-*/application-*/stepper-regels
+  golden al (bewust ongescoped als funnel-baseline); alleen de
+  markup-delen gespiegeld: `application-bg-shape`-wrapper (r482),
+  `offerte-banner`-marker (r223 — zelfde naam op beide funnelpagina's),
+  dz-desktop/dz-mobile-spans (r432) en funnel-sticky vóór de
+  mini-footer (r554).
+- **bedankt.html — KLAAR in alle banden (2026-08-10).** Vooraf: de
+  onzichtbare follow-sectie op 1920 was de laatste CSS-mask — fix staat
+  bij Known issues. Banden: 1440 follow-outer-main 860; 1280 +
+  thanks-status 80/0/0, thanks-steps mb 80, follow-inner nowrap/gap 40,
+  newsletter-card 35; 992 + steps gap 40, wait-img 280; 768
+  follow-inner wrap, status 60/0/0, steps mb 60; 521 status:before uit,
+  steps gecentreerd als blok met dot+info INLINE (step = grid auto/auto,
+  justify start na bijstelling, text-left; dot grid-row 1/3
+  align-center, mb 0), follow padding 0. LET OP: 521 én ≤520 hebben nog
+  het oude cascade-"Bedankt page"-blok — het nieuwe blok wint elke
+  overlap (bewust gemerged; niet-botsende oude regels doen mee: steps
+  1-kol, wait-grid 1-kol, follow-inner column, newsletter-row column,
+  hero pt 50). MOBIEL: follow mt -190 + hele sectie gecentreerd
+  (inner align/text-center, socials justify-center); funnel-sticky-
+  markup toegevoegd (component nu op offerte + sample-request +
+  bedankt; CSS was al gedeeld).
+- **Code-audit 10 responsive-pagina's (2026-08-10, alles schoon):**
+  braces/fences/tags/assets/form-stubs 0 fouten; de 402 geschaduwde
+  declaraties uit de property-scan zijn de BEWUSTE copy-down-lagen
+  (later-wint = de goedgekeurde bandstaat; laten staan tot de WP-port).
+  Enige echte vondst: de mirror-TESTSERVER serveerde die ochtend een
+  stale pre-wizardfix custom.js (uncaught scrollIntoView r428) — de
+  Dropbox-bron was altijd correct, eerste rsync verving hem; sindsdien
+  0 errors. Sweep 10 pagina's × 1920+390 + bedankt-middenbreedtes:
+  0 h-scroll, stickies/varianten/filters allemaal correct.
+- **toepassingen.html — KLAAR in alle banden (2026-08-10; eerste
+  stylen-pagina in de rondes).** Gedeelde secties draaien op bestaande
+  bandregels (coll-hero, collection, cases, calculator, process-split,
+  brand-light, faq, cta). PDP-lek gedocumenteerd en bewust gehouden:
+  kale `.usecases{padding-top:100px}` (1440/1280/992-banden) en
+  `.usecase-body h5{h5−3px}` (992) bestonden al en gelden ook hier.
+  `.toepassingen .cases:after` in stylen-BASE geconverteerd van
+  content:url naar background+aspect-ratio (347.5px natuurlijk, zelfde
+  patroon als offerte-doodle) zodat bandbreedtes het sok-icoon écht
+  schalen. 1440: why pb 40, cases pt 230/after 220, calc-bg center
+  bottom, uc-bg-yellow-shape 520, doodles 140 (page-scoped). 1280:
+  kopie ongewijzigd goedgekeurd. 992: why pb 0, flat-img 320,
+  collection-beige mt 20/:before -460, `.toepassingen
+  .process-split-inner{50px/47.2%}` en `.toepassingen
+  .brand-intro.brand-light{90/100}` (beide page-scoped — kaal zou
+  Collectie resp. PDP/werkwijze raken; guards browser-gecheckt). 768:
+  de process-split-override is VERWIJDERD → pagina volgt de generieke
+  gestapelde tabletlayout (mobiele stijl, band-fonts; verzoek Kulwant
+  "voor alle oude pagina's zelfde stijl" — Collectie/configurator
+  stonden er al op), why-ul 2-kolom, flat-img 240/card-pad 8/grid-gap
+  10, doodles 80 (left ook top -50), cases:before `left 80% top -120px`
+  (4-value edge-syntax — "80% top -120px" alleen is invalide CSS),
+  calc 33% bottom. 521: usecase-cards 2-up, after 130, cta-final-feet
+  48% BANDBREED (rolling patroon van die band). MOBIEL: why pt 80 +
+  alles links (intro-p had center + margin:auto), why-ul 1-kol/gap 20,
+  cards 2-up via `repeat(2, minmax(0,1fr))` (kaart-mincontent maakte
+  1fr-kolommen ongelijk — huisfix), img 124/radius 15, collection-beige
+  -140px/140%, `.toepassingen .collection-img{200}` (page-scoped, home
+  houdt 295), cases 150/mt 0, calc 28% bottom/top -600, li-h6 mb 0,
+  flat mt 0/pt 60. NIEUWE component **`.uc-sticky`** (mock 2026-08-10):
+  witte fixed strook onderin met de TWEE hero-CTA's gestapeld (cta →
+  offerte, cta-light → Collectie), radius 15 boven, gap 10, footer-
+  clearance 130; markup vóór de footer, base-hide in style.css naast
+  funnel-sticky, regels alleen ≤520.
+- **veelgestelde-vragen.html — KLAAR in alle banden (2026-08-10).**
+  1440: faq-cat-group mb 70. 1280: mb 60, faq-cats-filter gap 5 en
+  `.faq-page .chip{10px 18px}` (page-scoped — .chip is gedeeld met
+  reviews-en-cases). 992: kopie ongewijzigd goedgekeurd. 768: cat-group
+  40, faq-cats pt 40, open-item vraaglijn uit (`.faq-page
+  .faq-item.is-open .faq-q{border-bottom:none}`). 521 + MOBIEL: chips →
+  DROPDOWN — huis-dropdownpatroon (zelfde component als de calculator,
+  opent altijd omlaag): markup `.dropdown.faq-cats-select` naast de
+  chips, base-hide in stylen, wiring in de FAQ-IIFE (option →
+  chip.click(), tweerichtingssync). Eerst native `<select>` geprobeerd —
+  de OS-popup tekende over de hero (niet stuurbaar) → vervangen.
+  LESSEN: (1) de `.case-filter`-scrollrij (reviews-regel) knipte het
+  dropdown-paneel binnen de rij af → `.faq-cats-filter{overflow:visible}`
+  in beide dropdown-banden; (2) dropdown/select als flex-item heeft
+  `min-width:0` nodig (flex-minimum = breedste optie → rij liep uit
+  beeld). Trigger-tune beide banden: padding 12/15/14, radius 8 (open
+  8/8/0/0). Mobiel verder: cats-list mt 40, cat-group 60, en de
+  conf-sticky ("Gratis ontwerp binnen 24 uur" → offerte.html).
+- **over-ons.html — KLAAR in alle banden (2026-08-10; tweede
+  stylen-pagina).** STRUCTUREEL VOORAF: de story-grid liep onder
+  ±1876px viewport uit beeld (kolommen bottomden op de vaste
+  collage-breedtes 811+100+805=1716) → BASE-fix in stylen:
+  `minmax(0,1fr)`-kolommen + collage-imgs op flex-ratio 325:458 met
+  aspect-ratio en min-width:0 (op 1920 render-identiek).
+  `.timeline-year` (h2−6) en `.values-num` (body-sm+2) van harde px
+  naar token-calc. Timeline-JS-breakpoints op de bandenkaart: 992→2.81
+  ("2 vol + 60%", offset-gecompenseerd), 1280→3.5/20, 1440→3.5/40,
+  1680→4.45 (basis); mobiel 0→1.72/20 (1 vol + 60%); reviews-slider
+  0→1.35 (1 vol + 25%). SITE-JS-FIX: slider-gutter-offset = container-
+  left + PADDING-left — banden met 100%-container leveren de gutter via
+  padding en rect.left gaf daar 0 (timeline + reviews). Hero-gallery
+  per band: 1440/1280/992 "2 vol + 2 half" (W=(100vw−60)/3, strip
+  −(W/2+G), verbrede swiper-box, .gallery knipt); 768 idem + h 340 +
+  pt 0 → STAGGER OMLAAG GEDRAAID (met pt 0 knipte de .gallery-box de
+  −25-slides onvermijdelijk; zelfde compositie: 3n+1 op 0, rest +25);
+  521 "2 vol + 2×5%-slivers" (gap 14; shift 0.95W ZONDER gap —
+  fase-les); mobiel "1 vol + 40%" h 158, gutter via swiper
+  padding-left 20. 521: story gestapeld à la PDP-usecases —
+  minmax(0,1fr), want kale 1fr floort op de intrinsieke paarbreedte;
+  duurz-collage 100%. MOBIEL: story = masonry-mock (tekst boven mb 30,
+  rij 1 sm+lg, rij 2 lg+sm via row-reverse, desktop-offsets genuld,
+  gap 10; replaced elements stretchen niet vanzelf in grid-cellen →
+  width:100%); timeline-nav = ONDERBALK met voortgangsstreepjes
+  (nieuwe `.timeline-dashes`-markup + Swiper-pagination; knoppen
+  flex:0 0 auto, dashes flex 8-26px; `.timeline-head{position:static}`
+  als nav-anker en dáárom `.timeline:before{z-index:-1}` — de shape
+  bedekte anders de headings), timeline 160/-90 + :before 300/cover,
+  values 130/0/80 + :before 320/cover + h3 = h6-token + num mb 10,
+  duurz 0/220 + doodle 84/-34 met left-cap (h-scroll), impact-shape
+  right 6% top + p-br-hide (page-scoped), feet 150/-243/10, banner
+  50/0/50, conf-sticky (component nu op 6 pagina's: configurator,
+  werkwijze, beide reviews, over-ons, veelgestelde-vragen).
+- **duurzaamheid.html — KLAAR in alle banden (2026-08-10).** 1440:
+  feet gegroepeerd met over-ons (`.over-ons, .duurzaamheid` 260/-330),
+  certs:before cover + right 30% top, certs-inner 300px/gap 50, pane
+  1fr/460 gap 40. dz-points volgt overons-duurz/cases in ALLE banden
+  (verzoek): 992-seed 45%-kolom met groot beeld eerst (order:-1 +
+  `flex:0 0 auto` — in kolomrichting kaapt de base-flexratio anders de
+  hoogtes), 768 260/120, 521 gestapeld, mobiel = mock (tekst boven,
+  sm+lg-paar naast elkaar op eigen ratio's, collage relative/z-1).
+  1280: certs 260/gap 40, pane 390, points 620px/1fr, feet 210/-270;
+  LES: de pane-fotokolom was vast 557px → overflow onder de
+  1920-container (zelfde klasse als de story-grid-les). 992:
+  CERTS-MENU ALS DROPDOWN (mock 2026-08-10) — intro centraal over de
+  volle breedte, inner 1-kolom met 60px gereserveerde triggerruimte,
+  menu ABSOLUUT (coral bg, wit kader r12, padding-left 30, draaiende
+  chevron-:after): de open lijst OVERLAPT de panes dus geen
+  pagina-sprong; dichte staat via `li:has(button.active)`; JS-toggle in
+  de dz-certs-IIFE (klik op actieve rij opent, keuze sluit,
+  buiten-klik sluit; ≤1279-gate, desktop ongemoeid); panes pt 50, keur
+  pt 0, certs pt 0 + :before right 18% top, feet 160/-201. 768: pane
+  300, keur-kaarten 1 per rij, points gap 40; LES kopieerfout: de
+  dz-pane-regel ontbrak eerst in de kopie → base 557 lekte terug
+  (altijd het VOLLEDIGE bovenblok meenemen). 521: panes in 2 rijen
+  (pane 1fr, foto vol breed onder de tekst), certs pb 100, points pt 0.
+  MOBIEL: certs pb 80 + intro-br-hide, points-mock, conf-sticky
+  (8e sticky-pagina... 7 pagina's met conf-sticky).
+- **waarom-sokkies.html — KLAAR in alle banden (2026-08-10).** Twee
+  familie-kopieën op verzoek: (1) ws-intro-grid volgt de
+  usecases-masonry van de PDP in ALLE banden — kleine kaart per
+  rijvariant (`.ws-row-sm-lg` eerste / `.ws-row-lg-sm` laatste kind),
+  beeldmaten 353/253 → 290/210 → 290/180 (47%) → 318/222 (1-kolom,
+  head centraal) → idem 521 → mobiel de OPGELOSTE grid die daarna op
+  verzoek 1-KOLOM werd (kaarten vol breed, gap 20, teksten weer aan,
+  imgs 280, kaart+img r15); eigen offsets (ws-card-offset/ws-row-gap)
+  per band geneutraliseerd; LES: de mobiele img-regel moest de
+  base-selectorvorm (0,3,1) spiegelen — kale `.ws-card img` verloor de
+  tie. (2) ws-gets volgt de VOLLEDIGE process-split-familie (eerst
+  alleen de inner gekopieerd — correctie Kulwant: álle regels): sectie-
+  paddings, h2-stappen (h2+8 op 1440), 66%/100%-linkerkolom, lijstritme
+  20/0/25, collagebeelden 317/280/280/vierkant/vierkant/170.
+  Wedge-clearance daarna per band terug: pt 280/280/260/260/220/190.
+  `.ws-card-body h3` HERIJKT in stylen-base: h5−1 i.p.v. h3−12
+  (identiek 22px op 1920, proportioneel in de banden — de vaste −12
+  werd daar 14px); zelfde anti-patroon staat nog op dz-keur-card,
+  pt-perks-card, pt-dl-card en dl-card-body (GEFLAGD, nog niet
+  omgezet). 992: ws-gets-num flex 70 + bandbrede rolling feet
+  -56%/69/28% (over-ons/duurzaamheid behouden hun scoped feet).
+  768: intro-head mb 20 / h1 mb 16 / p 0 auto. MOBIEL verder:
+  intro-golf right 20% top/250/bottom -40 (spec kwam binnen als
+  ".ws-card-body p" — shape-trio herkend en zo toegepast),
+  compare-tabel min-width 580 in de scroll-wrapper + logo-svg 77,
+  koppen links, compare-h2 mb 30, gets-shape left 32% top/200/-80,
+  nums 20, li 10/0/15 gap 20, pijl top-uitgelijnd (align-self).
+  Conf-sticky alsnog toegevoegd (2026-08-10, zelfde als duurzaamheid;
+  9e vermelding — component nu op 8 pagina's).
+- **partners.html — KLAAR in alle banden (2026-08-10).** 1440:
+  band-scoped tokenfixes `.pt-perks-card h3` (h5−1 — base's −12 blijft;
+  per band herhaald, afspraak Kulwant) en `.pt-partners h2` (h5+1 ≈ de
+  24px-ratio i.p.v. −22 die 16 werd), OTP-inner 672px/1fr gap 70
+  center, legs 580, doodle 260/230. BASE-fix stylen: `.pt-otp-imgs
+  .img-sm/.img-lg` van vaste px (332/457×352) naar flex-ratio +
+  aspect-ratio + min-width:0 (1920 identiek; schaalt met de wrapper —
+  zelfde patroon als de story-collage). 1280: legs 510, OTP pt 400 +
+  :before 330/right top/cover. 992: `.pt-partners-grid` minmax-fix
+  (kaart-mincontent duwde de 6-koloms grid uit beeld) daarna 5 kolommen
+  gap 15/10, perks-grid 15 + kaarten 25/r15, perks 80/0, OTP-shape
+  right 44%, inner 510/1fr gap 50, legs 440/-180, faq-shape right 30%.
+  768: perks 2-up, chips = SCROLL-RIJ (nowrap + verborgen scrollbar +
+  flex-start — gecentreerd maakte de eerste chips onbereikbaar in de
+  scroll-container), logo's 3-up, OTP GESTAPELD (tekst boven via
+  order:-1, beide vol breed), OTP-shape 300/right 56%, faq pt 230 +
+  shape right 25%/top -100, dl-grid 2 boven (50/50) + formulier-kaart
+  vol breed. 521: kopie ongewijzigd goedgekeurd. MOBIEL: perks 1-up
+  gap 10 pb 50, partners-h2 links + chips 13px (= body−2,
+  Collectie-microtekststap), logo's 2-up, OTP pt 200 + shape 100 +
+  legs 245/-130 + doodle 102/48/20% (eerst gecapt met min() tegen
+  h-scroll op left 40%), inner gap 30 + fotopaar gap 10, faq pt 200 +
+  shape right 20%/400/top 0, dl 1 per rij r15 + formulier-kaart
+  20/20/60 r15 + sticker 192, perks-h3 17 (h6-token) + dl-h3 19 (h3−1).
+  `.pt-dl-card h3` BASE-herijkt naar h5−1 (alle banden in één keer,
+  verzoek). SITE-BREDE JS-FIX: het FAQ-accordeon pinde een inline
+  max-height (scrollHeight bij load) — na reflow (resize/fonts) clipte
+  het open antwoord op de scheidingslijn; nu wordt de pin na het openen
+  losgelaten ('none'; startitem direct, klik-opens na transitionend)
+  en bij sluiten even teruggepind voor de animatie — geldt voor ALLE
+  FAQ-pagina's. Conf-sticky toegevoegd (9e pagina). Nog open uit de
+  oude flag: alleen `dl-card-body h3` (downloads) en `dz-keur-card h3`
+  dragen nog het −12-patroon.
+- **downloads.html — KLAAR in alle banden (2026-08-10).**
+  `.dl-card-body h3` BASE-herijkt naar h5−1 (laatste −12 op de nieuwe
+  pagina's op dz-keur na — die flag blijft staan). 1440: alleen die
+  base-fix nodig. 1280: dl-cards-grid gap 25. 992: dl-card gap 20 +
+  body-p lh 21. 768: grid-minmax-fix (kaart-mincontent → h-scroll),
+  kaarten VERTICAAL (kolom, beeld vol breed boven, radius 15, padding
+  15, gaps 20/15). 521: Mis niets-velden onder elkaar (niets-card 1
+  kolom). MOBIEL: hero-br hide, dl-cards 60/0/80 (gelezen als
+  60-boven/80-onder — zelfde correctiepatroon als de values-130/80),
+  grid 15/10, kaart 7px/r10, h3 15(h5)/600/22, p 13(body−2)/20,
+  placeholder-chips 9px(body-sm−2)/4×6, niets-card padding 20 en de
+  Aanvragen-knop IN de kaart (position:static + justify-self:end —
+  de absolute overhang -24px is mobiel uit; 20px rondom conform mock),
+  cta-panel pb 90. Conf-sticky toegevoegd (10e pagina).
+- **contact.html — KLAAR in alle banden (2026-08-10).** BASE-herijking
+  `.ct-direct h3` én `.ct-form-card h3` naar h5−1 (zelfde −12-recept;
+  rest van de familie: jr-index/jr-article h3−15 (juridisch), er-links
+  (404), dz-keur-card en overons-values ul h3−10 blijven geflagd).
+  1440: ct-form-grid gap 20/26. 1280: form-card r20/40-35-35,
+  ct-contact-inner 1fr/450 gap 30. 992: inner 1fr/360. 768: inner
+  GESTAPELD (minmax(0,1fr), beide vol breed). 521: banner 62/20/60.
+  MOBIEL: banner 62/20/40, form-card r15/30-25-30, ALLE velden vol
+  breed (grid 1fr), inputs 40, textarea 187 (eerst 310, bijgesteld),
+  knoppen `.ct-alt-btn`/`.ct-submit` (LET OP: niet .cta-*) 46px hoog
+  en vol breed, direct-kaart 30/r15 + h3 23 (h3+3), ct-contact pb 55.
+  FUNNEL-STICKY toegevoegd (zelfde balk als bedankt — Bel ons/
+  WhatsApp/E-mail; component nu op offerte + sample-request + bedankt
+  + contact).
+- **juridisch.html — KLAAR in alle banden (2026-08-12).**
+  BASE-herijking `.jr-index h3` + `.jr-article h3` naar het
+  body-lg-TOKEN (h3−15 werd 11px in de banden; 1920 identiek 19) —
+  geldt voor de hele juridische template. 1440: alleen die base-fix.
+  1280: jr-index padding 25, jr-inner 360px/1fr, en de PRINT-KNOP
+  STICKY BINNEN DE SECTIE via de body-cel-overlap (knop expliciet in
+  grid-kolom/rij van de body geplaatst + position:sticky top 130,
+  justify-self:end — eerst position:fixed geprobeerd, teruggedraaid
+  op verzoek: hij moet met de sectie meescrollen). 992: GESTAPELD
+  (inner minmax(0,1fr), body vol breed rij 2) én de index als
+  ZWEVENDE BALK onderin (mock): fixed bottom 20/links-rechts 20,
+  dicht alleen "Op deze pagina:" + chevron-omhoog (:after, draait bij
+  open), klik op de kop toggelt de lijst (max-height 50vh + scroll;
+  keuze sluit) — nieuwe guarded IIFE in custom.js met ≤1279-gate;
+  jr-content pt 40(eerst 80)/pb 70 + body-p lh 22. 768/521: kopieën
+  goedgekeurd. MOBIEL: banner pb 40, inner gap 0. De sticky-print
+  reist mee in alle gestapelde banden (grid-rij 2).
+- **404.html — KLAAR in alle banden (2026-08-12).** Pagina is
+  grotendeels VIEWPORT-PROPORTIONEEL gemaakt in de stylen-BASE (verzoek
+  Kulwant): bg 120% auto, `min-height:100vh` (eerst height — spill van
+  er-links gemeld en op verzoek naar min-height), er-hero 22vh/6vh
+  (eerst 25/14), er-links 6vh/6vh (eerst 8/8). TOKENFIXES base:
+  `.er-hero h1` h5+1 i.p.v. h1−46 (die werd 12px in de 1440-band en
+  6px daaronder — ergste exemplaar van het minus-patroon) en
+  `.er-links h3` h5−1 i.p.v. h3−12. `.er-num` per band −10%:
+  240 (base) → 216 → 194 → 175 → 157 → 141 → 127. Vanaf de 1440-band
+  in ALLE banden de cover-variant: `background left 20% top / cover +
+  height:100vh` (base-120% geldt alleen nog 1680+). LAATSTE
+  −12-restant site-breed: alleen `dz-keur-card h3` (bewust — pagina
+  is door z'n rondes heen).
+- **popup.html / nl-popup — KLAAR (2026-08-12).** De component bleek
+  in de base al vloeiend (kaart 850 desktop / 350×490 binnen de
+  viewport op 390); enige bandregel: `.nl-popup-check
+  {align-items:flex-start}` in ≤520 (checkbox op de eerste tekstregel).
+  NB testen: de popup opent 1x per browsersessie (sessionStorage
+  `nlPopupShown`) — cap wissen of privévenster voor een hertest.
+- **ALLE 22 PAGINA'S + POPUP RESPONSIVE (2026-08-12).** Testronde 2
+  gestart: consistentie-pass (font-sizes, marges, paddings,
+  line-heights) per pagina vanaf home; vooraf een volledige
+  code-audit gedraaid.
+- **QA-FEEDBACK STUDIO UBIQUE VERWERKT (2026-08-13, PDF d.d. 7 aug, 27
+  punten):** 12 al opgelost door testronde 2 (o.a. stickies #20/#8/#23,
+  stat-font #6, union #26a, staffelknop #21, FAQ-1024 #14, weave-clip #24);
+  13 nieuw gefixt: Prijzen uit het menu (21 pagina's, CSS-lagen blijven als
+  schaduw), "Bekijken"-knoplabel, bedankt-nieuwsbriefcopy, lang-dropdown op
+  hover (hover:hover-gate), pijl-nav-hover (donker+witte pijl, 7 families),
+  gift-link-underline, marquees langzamer (v-swiper 8000), hero-gallery +
+  designed-swiper continue trage autoscroll (speed 8000 + linear in
+  style.css), gift/collection-sliders met pijlen op 992-1279 (+gift pt 110),
+  calc-result pt 20 + prijs 3px omlaag (992-band), process-mobiel pt 150,
+  kaartfoot min-height (QA #26b), roze specs-doodles PDP (GEBOUWD en op
+  verzoek Kulwant 2026-08-13 volledig TERUGGEDRAAID — #25 blijft open
+  tot er een besluit/echte export is), coll-hero-usps kolomgap 40, stats-collage 768-991
+  als edge-to-edge blok (marquee-breakpoint spaceBetween 6 + kolommen 306).
+  NAGEKOMEN (2026-08-13): #7 footer-legal = body−2-token (15 op 1920,
+  13 in banden; gepind op rij én a's), #14-vervolg eerste faq-vraagknop
+  padding-top 0 (faq-right-scope), #15-vervolg alle kaart-scrollrijen op
+  992 = 2 vol + 30% (gift/collection/beige/conf-types incl. nav/case-others),
+  #18 GEPROBEERD als 768-kopie en op verzoek TERUGGEDRAAID — 992 blijft
+  de 2-koloms testronde-2-layout (definitief). OPEN/klantvragen: #3
+  hover-fotoswap (CMS/WP-fase), #7-badge-conflict (klant), #2-teksten +
+  #4-checkbox (klantcopy). QA-paginarenders in scratchpad/qa-pages/.
+- **TESTRONDE 2 AFGEROND (2026-08-13):** alle 22 pagina's per band
+  doorlopen (1920 → 1680 → 1440 → 1280 → 992 → 768 → 521 → mobiel) met
+  specs van Kulwant per band; sluitende sweep 22 pagina's × 7 breedtes
+  (1700/1500/1350/1100/900/640/390) = 0 h-overflow. Openstaand daarna:
+  QA-feedback Studio Ubique d.d. 7 aug (PDF in ../feedback/, 27 punten —
+  deels al opgelost door testronde 2; per punt verifiëren bij oppakken).
+- **521-767-BAND KRIJGT DE MOBIELE HEADER (2026-08-13, besluit Kulwant
+  tijdens testronde 2: "better fit"):** de volle-breedte witte balk +
+  sheet-menu + subpaneel van ≤520 geldt nu ook in de 521-767-band — alle
+  85 chrome-regels 1:1 uit het ≤520-blok gekopieerd naar het EINDE van de
+  521-band (wint van de oude pill/drawer-lagen, die als geschaduwde
+  copy-down-lagen blijven staan). Topbar-marquee ging bewust NIET mee
+  (JS-gate blijft ≤520; de band houdt de swipe-strip); de navbar-CTA is in
+  de band nu verborgen zoals op mobiel. Sweep 21 chrome-pagina's × 640px:
+  balk/sheet/subpaneel overal correct, 0 h-scroll.
+- **STICKY CHROME SITE-BREED (2026-08-12, XD dev):** topbar + header
+  blijven staan bij scrollen op alle pagina's. Basis (style.css):
+  `.topbar{position:sticky; top:0; z-index:130}` en `header
+  {position:sticky; top:30px; z-index:120}` (header is 0 hoog, de
+  pill hangt er absoluut onder — geen layout-shift; z tussen
+  promo-float 99 en nl-popup 200). LET OP: de marquee-banden
+  (768-991 / 521-767 / ≤520) pinden `.topbar{position:relative}` als
+  anker voor de :after-fade — die 4 regels staan nu op `position:
+  sticky` (sticky ankert absolute children net zo goed; overflow:
+  hidden op het sticky element zélf is onschadelijk, alleen
+  overflow op ANCESTORS breekt sticky). Geverifieerd op
+  390/640/900/1100/1350/1500 + 1920 (home/over-ons/offerte): topbar
+  top 0, pill 40 (mobiel 30) bij scroll, sheet/drawer/mega werken.
+- **CODE-AUDIT VÓÓR TESTRONDE 2 — SCHOON (2026-08-12).** Statisch: braces
+  0-diff ×3 CSS, 9 fences, 22 pagina's tag-gebalanceerd, custom.js
+  gebalanceerd, alle asset-refs bestaan. Conflictscan nieuwe blokken: 10
+  dode declaraties opgeruimd (bedankt-oud-cascade 521+≤520 teruggebracht
+  tot de bijdragende regels; over-ons dode `.timeline{padding-bottom:0}`
+  weg). Browser-sweep 21 pagina's × 1920/390 (iframe-harnas): ÉÉN vondst —
+  toepassingen 390 had +7px h-scroll door TEKSTOVERLOOP (element-rects
+  tonen dat nooit): "Personeelsgeschenken" (172px nodig, 129px kolom) en
+  "Relatiegeschenken" in de 2-up usecase-kaarten. FIX in het
+  ≤520-toepassingen-blok: `.usecases-flat .usecase-body h5
+  {overflow-wrap:break-word; hyphens:auto}` (lang="nl" staat overal, dus
+  nette koppeltekens; .usecases-flat-scope — PDP-masonry deelt
+  `.usecase-body h5` en blijft ongemoeid). Geverifieerd: overflow 0,
+  titel op 2 regels met afbreekstreepje. LES voor sweeps: h-scroll
+  zonder uitstekende rects = tekstoverloop (scrollWidth vs clientWidth
+  op tekst-elementen checken) of pseudo-elementen.
+- **STYLEN.CSS SAMENGEVOEGD IN STYLE.CSS (2026-08-12, verzoek Kulwant; hij
+  nam vooraf zelf een backup).** De volledige stylen.css (2340 regels, 370
+  rules) is als sectie "NIEUWE PAGINA'S" achterin style.css geplakt (na de
+  basis, vóór responsive.css — cascade identiek), stylen.css verwijderd en
+  de `<link>` van alle 11 nieuwe pagina's gehaald (popup.html had óók een
+  markup-comment die naar stylen verwees — bijgewerkt). ALLE pagina's laden
+  nu style.css → responsive.css. VERIFICATIE: (1) selector-scan — alle 364
+  unieke ex-stylen-selectors matchen niets op de 11 oude pagina's (0 leaks);
+  (2) golden-master computed-style-diff 22 pagina's × 1920/390 (~26.400
+  element-metingen) = 0 verschillen. Meet-lessen daarbij: python-http.server
+  stuurt geen Cache-Control → Chrome's heuristische cache serveerde de OUDE
+  style.css in de eerste na-meting (altijd cache-busten op de mirror!);
+  brands-marquee-kloonaantal is image-load-timing-afhankelijk (829 vs 789
+  elementen tussen identieke runs op reviews-en-cases — hermeten tot de
+  aantallen matchen); één koude-run beeldnoise op reviews-en-cases-detail
+  (pre-staat gereconstrueerd uit de merged file → definitief 0 diffs).
+
+## Typografie-tokensysteem — DEFINITIEF (PDF Kulwant 2026-08-03; VOLG DIT)
+
+Alle content-typografie (h1-h6, p, li/span-tekst) is token-gedreven; per band
+staat bovenin één ":root"-INVENTARIS-blok (gemarkeerd "DEFINITIEVE
+TYPOGRAFIE-INVENTARIS") — maten wijzig je DAAR, nooit als harde px in
+sectieregels. De definitieve waarden (bron: sokkies_font_sizes_breakpoints.pdf,
+Desktop Kulwant):
+
+| Token    | 1920 (1681-1999, 2000+) | 1440-1679 | 1280-1439 | 992-1279 | 768-991 | 521-767 | ≤520 |
+|----------|--------------------------|-----------|-----------|----------|---------|---------|------|
+| h1       | 70                       | 58        | 52        | 52       | 52      | 43      | 34   |
+| h1 lh    | 1 (auto)                 | 1         | 48px      | 48px     | 48px    | 1       | 1*   |
+| h2       | 46                       | 38        | 38        | 38       | 38      | 35      | 32   |
+| h3       | 34                       | 26        | 26        | 26       | 26      | 23      | 20   |
+| h4       | 28                       | 23        | 23        | 23       | 23      | 21      | 18   |
+| h5       | 23                       | 19        | 19        | 19       | 19      | 17      | 15   |
+| h6       | 20                       | 17        | 17        | 17       | 17      | 17      | 17   |
+| body (p) | 17                       | 15        | 15        | 15       | 15      | 15      | 15   |
+| body-lg  | 19                       | 17        | 17        | 17       | 17      | 17      | 16   |
+| body-sm  | 13                       | 12        | 12        | 12       | 12      | 12      | 11   |
+
+*) mobiel-hero pint 44/38 hard (goedgekeurde mobiele kalibratie).
+h1-line-height is óók een token (--h1-line-height; basis 1, 48px in de drie
+52px-banden); de content-h1-regels verwijzen ernaar.
+
+STAANDE AFSPRAAK 2 (verzoek Kulwant 2026-08-03, n.a.v. calc-grid-incident):
+bestaat er voor een sectie AL een CSS-regel (in de band of gedeeld via de
+homepage-rondes), dan EERST flaggen vóór er een nieuwe/overschrijvende regel
+wordt geschreven — gedeelde secties (calculator, process, faq, cta, …)
+hergebruiken de bestaande regels; niet stilzwijgend per pagina overschrijven.
+(Incident: de 992-ronde overschreef home's `.calc-grid{1fr 360px}` met 60%/40%
+— teruggedraaid, homepage-regel is weer leidend.)
+
+STAANDE AFSPRAAK (verzoek Kulwant): vraagt een toekomstige spec een font-size
+die van deze inventaris afwijkt, dan DIRECT flaggen vóór het bouwen; afwijking
+alleen bewust en als calc(var(--x-font-size) ± Npx). Bewuste afwijkingen die
+blijven (renderen identiek aan vóór de herijking): 1440-band compare-/
+process-h2 = h2+8 (46), coll-hero-li = body+4 (19); type-card-h3 volgt sinds
+2026-08-03 in ALLE banden var(--h5-font-size) (rol = h5, besluit Kulwant);
+sitebreed de gepinde chrome (menu/topbar/footer/promo/nl-popup), brands-kop
+17, process-step-h3 17, en de goedgekeurde ≤520-sectiematen (o.a. hero-h1
+44/38, case-h3 h3+2). Alle overige afwijkingen zijn te vinden met
+`grep "calc(var(--h" responsive.css`. UITVOERING herijking: banden
+1280/992/768 kregen h1 52/lh 48 + h2 38/h3 26 (was 46/30/21 resp. 58-diverse);
+521-767 is volledig op standaard gesnapt (21 artefact-calcs uit de
+kopieerlagen → var(); sectiekoppen renderen nu 35/23, hero-h1 43 — band had
+nooit een designpass, PDF-middenwaarden zijn het ontwerp); ≤520 alleen h6
+16→17 en body-lg 15→16; 1920 ongewijzigd. Zes bewuste px-constanten in
+style.css-basis blijven (o.a. .qty-input span 12px — basisregels gelden op
+alle breedtes). Browser-geverifieerd op 1920/1500/1350/880/640/390.
+Backups: `_BACKUP-pre-tokenrefactor-2026-08-03-*.css`.
+
+## Structuur-audit (2026-07-31, alles schoon)
+
+Volledige structuurcontrole na de responsive-rondes: (1) CSS — brace-balans style/
+stylen/responsive 0 fouten; de 4 depth-3-punten zijn de bewuste marquee-@keyframes
+per band; bandenkaart compleet en sluitend (1920-1999 = bewust basis). (2) HTML —
+alle 22 pagina's tag-gebalanceerd; dubbele id's zijn uitsluitend de bekende
+inline-SVG-export-id's (sprite-consolidatie blijft WordPress-fase). (3) Chrome-
+vergelijk (genormaliseerd op de active-class): topbar en header/mega byte-identiek
+op alle 21 chrome-pagina's (één whitespace-byte in Collecties lang-dropdown
+geharmoniseerd), volledige footer incl. legal-3-spans identiek op alle 17,
+mini-footer structureel identiek op de 4 funnel-pagina's (alleen SVG-export-id-
+attributen verschillen — onschadelijk), promo-float identiek op zijn 10 pagina's,
+collection-nav aanwezig op alle 3 collection-grid-pagina's + gift-nav op home,
+burger/mega-back/mega-mob-title/menu-home/menu-prijzen overal. (4) Head — CSS-
+volgorde (style → [stylen] → responsive), Swiper vóór custom.js, lang="nl",
+favicon en viewport correct op alle pagina's ("custom.js vóór swiper" op popup
+bleek een comment-false-positive). (5) Assets — ALLE src/href naar assets/ in de
+22 pagina's en alle url()'s in de 3 actieve CSS-bestanden bestaan op schijf.
+custom.js haakjes-gebalanceerd, 0 console errors. Mega's "Bekijk collectie"-
+button staat consistent op alle 21 pagina's en is mobiel verborgen via
+`.navbar.sub-open .mega-usps{display:none}` (≤520) — conform verzoek.
+
+## Known issues / open TODOs (verified 2026-07-21)
+
+- Placeholder copy: Collectie type-card descriptions; product-detail use-case cards;
+  all case cards in reviews-en-cases(.detail) say "Klantnaam / [X] paar"; werkwijze
+  step cards show literal "Image placeholder"; sample-request has
+  "Placeholder tot Rick het bevestigt" (delivery-days number pending confirmation from Rick).
+- bedankt.html has a hardcoded reference number and timestamp (demo values), and its
+  status-step copy looks pasted from the sample flow.
+- Min-order inconsistency: topbar says "Vanaf 30 paar", FAQ/body say 50, calculator
+  floor is 50, quote form allows min 30. Needs one canonical answer from the client.
+- OPGELOST 2026-07-27: alle pagina's declareren nu `lang="nl"`.
+- OPGELOST 2026-07-27: favicon-tags genormaliseerd naar
+  `<link rel="icon" type="image/png" href="assets/media/favicon.png">` op alle 22
+  pagina's; `assets/media/favicon.png` (64×64, coral tegel + witte sok, gele boord)
+  is door Claude gegenereerd als tijdelijke placeholder — vervangen zodra er een
+  echt favicon-export uit XD is.
+- OPGELOST 2026-07-27 (homepage-test): de dode `img.faq-feet` (faq-feet.png
+  bestond niet, rendere 0px hoog) is uit home.html verwijderd — de zichtbare
+  tenen op de FAQ/CTA-grens komen van de standaard `cta-final-feet`, conform XD.
+  Tegelijk gefixt: de "Neem contact op"-link in home's FAQ-intro was nog een
+  `#`-stub → wijst nu naar contact.html.
+- OPGELOST 2026-07-27: `configrator-demo.png` hernoemd naar `configurator-demo.png`
+  (enige referentie in configurator.html mee-geüpdatet).
+- Nav/footer links: sinds 2026-07-24 echt gelinkt op alle pagina's — logo → home.html,
+  Sokkencollectie → Collectie.html (LET OP: klik op het nav-item toggelt de mega
+  (preventDefault in custom.js); de href geldt voor SEO/middenklik), Configurator,
+  Werkwijze, Over ons, Veelgestelde vragen (footer) en inline "FAQ-pagina"-links.
+  NOG `#`-stubs: "Inspiratie" (onduidelijk: toepassingen.html of reviews-en-cases.html?),
+  "Prijzen" en "Contact" (pagina's bestaan nog niet), plus footer-items
+  Downloads & templates / Projecten / Blogs / Sokkies geeft terug en de mega-inhoud
+  (o.a. "Bekijk collectie" is een <button> zonder link).
+- The configurator app itself is not implemented — configurator.html is a promo page.
+- No analytics, no cookie banner yet (will matter before launch).
+- Topbar-wrap: op exact 768px passen de 4 topbaritems inmiddels op één regel
+  (geverifieerd home, 768-pass 2026-07-28). Onder de 768 (520/375) kan de strip
+  alsnog wikkelen over de hero — beoordelen bij de mobiele pass met het
+  mobiel-XD (oorspronkelijk gemeld op werkwijze + toepassingen).
+- OPGELOST 2026-07-24: "Prijzen" nav-item toegevoegd op alle pagina's (nog wel `#`-stub).
+- Do NOT use CSS `mask` for solid-color shape sections — it renders unreliably in
+  Chrome on macOS. All solid-fill SVG shape masks were converted (2026-07-21) to plain
+  `background:url(...svg) / background-size:cover` (the SVGs carry their own fill):
+  `.cta-final-panel`, `.compare-inner-main`, `.bg-yellow-shape`,
+  `.case-inner-page .case-section-outer`, `.case-result-bg`, `.specs-section`.
+  OPGELOST 2026-08-07: de LAATSTE mask (`.follow-outer-main`, bedankt.html) is
+  geconverteerd — het mask-risico trad op (sectie onzichtbaar op 1920 in
+  Chrome/macOS, melding Kulwant); `large-sock-element.svg` (1920×1093, bevat de
+  foto) is nu het directe background zoals gepland. Er zijn geen CSS-masks meer
+  op de site. Framing gecheckt door Kulwant na de fix.

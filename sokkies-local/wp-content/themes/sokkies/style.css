@@ -1,0 +1,10 @@
+/*
+Theme Name: Sokkies
+Theme URI: https://sokkies.nl
+Author: Studio Ubique
+Description: Custom theme voor Sokkies — 1:1 port van de statische htmlv-build; secties via ACF Flexible Content.
+Version: 0.1.0
+Requires PHP: 7.4
+Text Domain: sokkies
+*/
+/* De echte styles staan in assets/css/style.css → responsive.css (enqueue-volgorde is heilig). */

@@ -1,0 +1,12 @@
+# Lokale WordPress-config (geheimen + lokale DB-gegevens) — zie wp-config.example.php
+sokkies-local/wp-config.php
+
+# Media-uploads = content, geen code (gaat via aparte sync naar de server)
+sokkies-local/wp-content/uploads/
+
+# Logs & systeembestanden
+*.log
+sokkies-local/wp-content/debug.log
+.DS_Store
+Thumbs.db
+.dropbox*
