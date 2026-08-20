@@ -20,7 +20,7 @@ if ( $fotos ) {
 }
 $doel = max( 9, count( $urls ) );
 ?>
-<div class="designed">
+<div class="designed<?php echo esc_attr( $args['extra_klasse'] ?? '' ); ?>">
   <div class="designed-head">
     <h3><?php echo sokkies_kop( $titel ); ?></h3>
     <a href="<?php echo esc_url( $link_url ); ?>" class="designed-link">

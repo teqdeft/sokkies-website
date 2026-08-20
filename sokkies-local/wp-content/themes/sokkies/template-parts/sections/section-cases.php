@@ -20,6 +20,8 @@ get_template_part( 'template-parts/sections/deel', 'cases', array(
 	'case_ids'     => $case_ids,
 	'feet'         => $feet,
 	'strip'        => (bool) get_sub_field( 'fotostrip_tonen' ),
+	// reviews-en-cases.html toont de strip in de beige variant (designed-beige)
+	'strip_klasse' => ( 'reviews' === $stijl ) ? ' designed-beige' : '',
 	'strip_titel'  => get_sub_field( 'fotostrip_titel' ),
 	'strip_link'   => get_sub_field( 'fotostrip_link' ),
 	'strip_fotos'  => get_sub_field( 'fotostrip_fotos' ),

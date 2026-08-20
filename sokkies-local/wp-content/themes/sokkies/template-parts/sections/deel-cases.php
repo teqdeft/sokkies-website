@@ -83,9 +83,10 @@ $assets = get_template_directory_uri() . '/assets/media/';
 
       <?php if ( $strip ) :
         get_template_part( 'template-parts/sections/deel', 'designed', array(
-          'titel' => $args['strip_titel'] ?? '',
-          'link'  => $args['strip_link'] ?? null,
-          'fotos' => $args['strip_fotos'] ?? null,
+          'titel'        => $args['strip_titel'] ?? '',
+          'link'         => $args['strip_link'] ?? null,
+          'fotos'        => $args['strip_fotos'] ?? null,
+          'extra_klasse' => $args['strip_klasse'] ?? '',
         ) );
       endif; ?>
     </div>
