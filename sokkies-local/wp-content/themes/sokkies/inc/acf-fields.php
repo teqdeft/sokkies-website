@@ -1878,6 +1878,10 @@ add_action( 'acf/init', function () {
 				'type'          => 'button_group',
 				'choices'       => array( 'aan' => 'Tonen', 'uit' => 'Verbergen' ),
 				'default_value' => 'aan',
+				'instructions'  => 'De zwevende kaart linksonder (inhoud via Website-instellingen → Promokaart). Niet op mobiel en niet bij de mini-footer — conform het ontwerp.',
+				// Bij de mini-footer (funnel/contact) rendert de kaart nooit (ontwerp);
+				// veld verbergen zodat de keuze daar niet ten onrechte wordt aangeboden.
+				'conditional_logic' => array( array( array( 'field' => 'field_sokkies_footer_variant', 'operator' => '!=', 'value' => 'mini' ) ) ),
 			),
 		),
 		'location' => array(
