@@ -12002,7 +12002,8 @@
     align-items:center;
     justify-content:flex-start;
   }
-  .process-step svg{
+  .process-step svg,
+  .process-step img{ /* WP: geuploade PNG-iconen volgen dezelfde maat als de svg's */
     width:auto;
     height:100%;
   }

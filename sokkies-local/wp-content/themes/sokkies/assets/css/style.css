@@ -1291,8 +1291,10 @@ font-weight: 600;
     display:block;
     margin-bottom:26px;
   }
-  .step-icon svg {
+  .step-icon svg,
+  .step-icon img { /* WP-toevoeging 2026-08-20: geuploade PNG-iconen even groot als de statische svg's */
     height: 100px;
+    width: auto;
     display: block;
 }
   .process-step h3{
