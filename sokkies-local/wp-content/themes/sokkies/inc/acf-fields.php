@@ -248,6 +248,40 @@ add_action( 'acf/init', function () {
 						),
 					),
 
+					'layout_simple_hero' => array(
+						'key'        => 'layout_simple_hero',
+						'name'       => 'simple_hero',
+						'label'      => 'Paginakop licht (beige, gecentreerd)',
+						'display'    => 'block',
+						'acfe_flexible_category'  => array( 'Paginakoppen' ),
+						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/simple_hero.png',
+						'sub_fields' => array(
+							array(
+								'key'          => 'field_sh_breadcrumb',
+								'label'        => 'Kruimelpad-label',
+								'name'         => 'breadcrumb',
+								'type'         => 'text',
+								'instructions' => 'Leeg = "Reviews en cases".',
+							),
+							array(
+								'key'          => 'field_sh_titel',
+								'label'        => 'Titel',
+								'name'         => 'titel',
+								'type'         => 'text',
+								'instructions' => 'Zet [woord] om een woord geel te maken. Leeg = "Zo pakte het uit voor anderen".',
+							),
+							array(
+								'key'          => 'field_sh_subtekst',
+								'label'        => 'Subtekst',
+								'name'         => 'subtekst',
+								'type'         => 'textarea',
+								'rows'         => 2,
+								'new_lines'    => '',
+								'instructions' => 'Elke regel wordt een eigen regel op de site. Leeg = de standaardtekst.',
+							),
+						),
+					),
+
 					'layout_faq' => array(
 						'key'        => 'layout_faq',
 						'name'       => 'faq',
