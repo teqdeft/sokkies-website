@@ -49,11 +49,15 @@ $render_kolom = function ( $fotos, $standaard ) use ( $assets ) {
                 <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" width="15.211" height="16" viewBox="0 0 15.211 16">
                     <g id="home" transform="translate(-1.28)">
-                        <path id="Path_3800" data-name="Path 3800" d="M16.14,7.5,9.4,1.3a1.154,1.154,0,0,0-1.6.033L1.6,7.53l-.318.318v9.142H7.256v-5.7h3.26v5.7h5.976V7.822ZM8.615,2.077c.01,0,0,0,0,.006S8.606,2.077,8.615,2.077ZM15.4,15.9H11.6V11.287A1.087,1.087,0,0,0,10.515,10.2H7.256a1.087,1.087,0,0,0-1.087,1.087V15.9h-3.8V8.3L8.615,2.1h0L15.4,8.3Z" transform="translate(0 -0.991)" fill="#28121b"/>
+                        <path id="Path_3800" data-name="Path 3800" d="M16.14,7.5,9.4,1.3a1.154,1.154,0,0,0-1.6.033L1.6,7.53l-.318.318v9.142H7.256v-5.7h3.26v5.7h5.976V7.822ZM8.615,2.077c.01,0,0,0,0,.006S8.606,2.077,8.615,2.077ZM15.4,15.9H11.6V11.287A1.087,1.087,0,0,0,10.515,10.2H7.256a1.087,1.087,0,0,0-1.087,1.087V15.9h-3.8V8.3L8.615,2.1h0L15.4,8.3Z" transform="translate(0 -0.991)" fill="currentColor"/>
                     </g>
                     </svg>
                 </a>
                 <span>&nbsp;&bull;&nbsp;</span>
+                <?php if ( $breadcrumb !== get_the_title() ) : // htmlv toepassingen: tussenniveau = de pagina zelf (gelinkt), veld = het huidige niveau ?>
+                <a href="<?php echo esc_url( get_permalink() ); ?>" class="breadcrumb-link"><?php echo esc_html( get_the_title() ); ?></a>
+                <span>&nbsp;&bull;&nbsp;</span>
+                <?php endif; ?>
                 <span><?php echo esc_html( $breadcrumb ); ?></span>
             </nav>
             <div class="coll-hero-content">
