@@ -1403,6 +1403,7 @@ add_action( 'acf/init', function () {
 									array( 'key' => 'field_uf_kaart_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_uf_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_uf_kaart_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
+									array( 'key' => 'field_uf_kaart_link', 'label' => 'Link', 'name' => 'link', 'type' => 'link', 'instructions' => 'Leeg = de vaste "Bekijk"-regel zonder doel (zoals het ontwerp).' ),
 								),
 							),
 						),
