@@ -46,5 +46,41 @@ if ( ! $rijen ) { $rijen = $standaard; }
             <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39"><g transform="translate(0.5 0.683)"><path d="M1289.087,547h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/><path d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/></g></svg>
           </button>
         </div>
+
+    <?php
+    // Pluspunten-chips onder de stappen (1:1 werkwijze.html; class-vrije ul —
+    // .steps-section > .container > ul). Null = veld bestond nog niet bij
+    // opslaan → standaard AAN, net als de impact-chips.
+    $chips_tonen = get_sub_field( 'pluspunten_tonen' );
+    $chips_tonen = ( null === $chips_tonen || '' === $chips_tonen ) ? true : (bool) $chips_tonen;
+    $chips       = get_sub_field( 'pluspunten' );
+    $assets      = get_template_directory_uri() . '/assets/media/';
+    $standaard_chips = array(
+    	array( 'bestand' => 'gratis-ontwerp.svg', 'label' => 'Gratis ontwerp' ),
+    	array( 'bestand' => 'Snelle-levering.svg', 'label' => 'Snelle levering' ),
+    	array( 'bestand' => 'premium-kwaliteit.svg', 'label' => 'Premium kwaliteit' ),
+    	array( 'bestand' => 'Lage-min-afname.svg', 'label' => 'Lage min. afname' ),
+    	array( 'bestand' => 'Tevreden-klanten.svg', 'label' => 'Tevreden klanten' ),
+    	array( 'bestand' => 'Geen-addertjes.svg', 'label' => 'Geen addertjes' ),
+    );
+    if ( $chips_tonen ) : ?>
+    <ul>
+      <?php if ( $chips ) : foreach ( $chips as $chip ) : ?>
+      <li>
+        <span class="feat-icon">
+          <?php if ( ! empty( $chip['icoon'] ) ) : ?><img src="<?php echo esc_url( $chip['icoon']['url'] ); ?>" alt=""><?php endif; ?>
+        </span>
+        <span class="feat-label"><?php echo esc_html( $chip['label'] ); ?></span>
+      </li>
+      <?php endforeach; else : foreach ( $standaard_chips as $chip ) : ?>
+      <li>
+        <span class="feat-icon">
+          <img src="<?php echo esc_url( $assets . $chip['bestand'] ); ?>" alt="">
+        </span>
+        <span class="feat-label"><?php echo esc_html( $chip['label'] ); ?></span>
+      </li>
+      <?php endforeach; endif; ?>
+    </ul>
+    <?php endif; ?>
   </div>
 </section>
