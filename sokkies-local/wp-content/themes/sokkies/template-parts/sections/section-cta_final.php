@@ -16,7 +16,9 @@ $feet       = ( null === $feet ) ? true : (bool) $feet;
 $positie    = get_sub_field( 'voetjes_positie' ) ?: 'achter';
 $contact    = (bool) get_sub_field( 'contactregel' );
 
-$feet_img = '<img class="cta-final-feet" src="' . esc_url( get_template_directory_uri() ) . '/assets/media/socks-transparent.png" alt="" aria-hidden="true">';
+$feet_foto = get_sub_field( 'voetjes_foto' );
+$feet_src  = ! empty( $feet_foto['url'] ) ? $feet_foto['url'] : get_template_directory_uri() . '/assets/media/socks-transparent.png';
+$feet_img  = '<img class="cta-final-feet" src="' . esc_url( $feet_src ) . '" alt="" aria-hidden="true">';
 $tel_weergave = sokkies_optie( 'telefoon_weergave', '+31 (0)413 410 411' );
 ?>
 <section class="cta-final">

@@ -1757,6 +1757,16 @@ add_action( 'acf/init', function () {
 								'conditional_logic' => array( array( array( 'field' => 'field_cta_feet', 'operator' => '==', 'value' => '1' ) ) ),
 							),
 							array(
+								'key'               => 'field_cta_feet_foto',
+								'label'             => 'Voetjes-foto',
+								'name'              => 'voetjes_foto',
+								'type'              => 'image',
+								'return_format'     => 'array',
+								'preview_size'      => 'medium',
+								'instructions'      => 'Leeg = de standaardfoto (sokkenbenen). Een PNG met transparante achtergrond werkt het mooist.',
+								'conditional_logic' => array( array( array( 'field' => 'field_cta_feet', 'operator' => '==', 'value' => '1' ) ) ),
+							),
+							array(
 								'key'          => 'field_cta_knop_2',
 								'label'        => 'Knop 2 (wit, optioneel)',
 								'name'         => 'knop_2',
