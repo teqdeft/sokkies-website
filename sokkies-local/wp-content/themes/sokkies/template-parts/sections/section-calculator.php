@@ -22,6 +22,11 @@ $klassen     = array( 'standaard' => '', 'beige' => ' calculator-bg', 'roze' => 
 $staffel_min = $matrix[ $eerste ]['rows'][0][0];
 ?>
 <section class="calculator<?php echo esc_attr( $klassen[ $stijl ] ?? '' ); ?>">
+  <?php if ( 'beige' === $stijl ) : ?>
+    <?php // htmlv: beige calculators dragen een decor-shape — collectie de globale, toepassingen de page-scoped variant (elders inert) ?>
+    <?php if ( is_page( 'collectie' ) ) : ?><div class="bg-yellow-shape"> </div><?php endif; ?>
+    <div class="uc-bg-yellow-shape"> </div>
+  <?php endif; ?>
   <div class="container">
     <div class="calc-box">
       <h2><?php echo sokkies_kop( $titel ); ?></h2>
