@@ -13,4 +13,6 @@ get_template_part( 'template-parts/sections/deel', 'testimonial', array(
 	'stijl_klasse' => $klassen[ $stijl ] ?? '',
 	'titel'        => get_sub_field( 'titel' ),
 	'review_ids'   => $review_ids,
+	// htmlv: funnelpagina's (offerte-stijl) scheiden naam/functie met · , overige met —
+	'scheiding'    => ( 'offerte' === $stijl ) ? ' · ' : ' — ',
 ) );

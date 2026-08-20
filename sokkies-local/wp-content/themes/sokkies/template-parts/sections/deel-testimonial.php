@@ -10,6 +10,7 @@ $titel        = $args['titel'] ?: 'Wat klanten zeggen';
 $review_ids   = $args['review_ids'];
 if ( ! $review_ids ) { return; }
 $doel = max( 8, count( $review_ids ) );
+$scheiding = $args['scheiding'] ?? ' — ';
 ?>
 <section class="testimonial<?php echo esc_attr( $stijl_klasse ); ?>">
   <div class="container">
@@ -33,7 +34,7 @@ $doel = max( 8, count( $review_ids ) );
           <div class="testimonial-card">
             <span class="testimonial-card-stars"><?php echo esc_html( str_repeat( '★', max( 1, min( 5, $sterren ) ) ) ); ?></span>
             <p>"<?php echo esc_html( get_field( 'quote', $review_id ) ); ?>"</p>
-            <span class="testimonial-author"><?php echo esc_html( get_the_title( $review_id ) . ( $functie ? ' — ' . $functie : '' ) ); ?></span>
+            <span class="testimonial-author"><?php echo esc_html( get_the_title( $review_id ) . ( $functie ? $scheiding . $functie : '' ) ); ?></span>
           </div>
         </div>
         <?php endfor; ?>
