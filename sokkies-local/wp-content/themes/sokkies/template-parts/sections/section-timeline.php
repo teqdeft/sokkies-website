@@ -27,6 +27,9 @@ $slides = $eigen ?: $standaard;
         <button class="t-prev" aria-label="Vorige">
           <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">                 <g id="arrow_3" data-name="arrow 3" transform="translate(11.699 8.707) rotate(180)">                   <path id="Path_3670" data-name="Path 3670" d="M1289.087,547h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                   <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                 </g>               </svg>
         </button>
+        <!-- voortgangsstreepjes (mobiel; base verbergt ze) — moet IN .timeline-nav
+             tussen de knoppen staan, anders matcht .timeline-nav .timeline-dashes niet -->
+        <div class="timeline-dashes"></div>
         <button class="t-next" aria-label="Volgende">
           <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">                 <g id="arrow_3" data-name="arrow 3" transform="translate(0.5 0.683)">                   <path id="Path_3670" data-name="Path 3670" d="M1289.087,547h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                   <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                 </g>               </svg>
         </button>
@@ -42,12 +45,12 @@ $slides = $eigen ?: $standaard;
         <div class="timeline-img"><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( $slide['jaar'] ); ?>"><?php endif; ?></div>
         <div class="timeline-year"><?php echo esc_html( $slide['jaar'] ); ?></div>
         <h3><?php echo esc_html( $slide['titel'] ); ?></h3>
-        <?php foreach ( array_filter( array_map( 'trim', explode( "\n", (string) $slide['tekst'] ) ) ) as $alinea ) : ?>
+        <?php // str_replace: de standaardset noteert regelafbraak als letterlijke \n
+        foreach ( array_filter( array_map( 'trim', explode( "\n", str_replace( '\n', "\n", (string) $slide['tekst'] ) ) ) ) as $alinea ) : ?>
         <p><?php echo esc_html( $alinea ); ?></p>
         <?php endforeach; ?>
       </div>
       <?php endforeach; ?>
     </div>
   </div>
-  <div class="timeline-dashes"></div>
 </section>
