@@ -13546,7 +13546,10 @@
   /* nav als onderbalk met voortgangsstreepjes (mock 2026-08-10) */
   .timeline{
     position:relative;
-    padding-bottom:70px;
+    /* WP 2026-08-20: was 70px — CMS-teksten kunnen langer zijn dan de statische
+       kaarten; 120px houdt de onderbalk (40px knopzone + 60px marge) altijd
+       vrij van de slides, hoe lang de tekst ook wordt */
+    padding-bottom:120px;
     margin-top:-90px;
     padding-top:160px;
   }
@@ -13572,6 +13575,7 @@
     align-items:center;
     gap:14px;
     padding-bottom:60px;
+    z-index:2; /* WP 2026-08-20: swiper-wrapper staat later in de DOM en ving de kliks */
   }
   /* knoppen shrink-vast; streepjes flexibel — 8 vaste van 26px pasten niet
      in de 350px-balk en drukten de knoppen plat */
