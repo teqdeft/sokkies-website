@@ -7,8 +7,16 @@
 $stijl    = get_sub_field( 'stijl' ) ?: 'standaard';
 $titel    = get_sub_field( 'titel' ) ?: 'Sokken bedrukken voor elk bedrijf';
 $tekst_1  = get_sub_field( 'tekst_1' ) ?: 'Custom sokken zijn een opvallend en blijvend relatiegeschenk. Bij Sokkies werk je vanaf 50 paar, krijg je binnen 24 uur een digitaal proefontwerp, en produceren we in Portugal en Italië. Bij Sokkies hebben we onze eigen productie: van ontwerp tot levering beheren we het proces zelf. Zo garanderen we kwaliteit en snelle doorlooptijden.';
-$tussen   = get_sub_field( 'tussenkop' ) ?: 'Bekend van reguliere sokken, sportsokken en bamboesokken — en duurzaam dankzij onze One Tree Planted samenwerking.';
-$tekst_2  = get_sub_field( 'tekst_2' ) ?: 'Voor sportclubs, bedrijven en sponsoren werkt het hetzelfde. Vanaf 50 paar in jouw eigen ontwerp, kleur en formaat. Met of zonder geschenkdoosje. Wat ooit een gimmick was, is inmiddels een serieuze marketingtool.';
+$tussen   = get_sub_field( 'tussenkop' );
+$tekst_2  = get_sub_field( 'tekst_2' );
+if ( 'licht' !== $stijl ) {
+	// De home-teksten als fallback horen bij de varianten die ze statisch óók
+	// hebben (home/configurator/werkwijze); de lichte variant (toepassingen)
+	// heeft statisch GEEN tussenkop/tweede alinea — leeg blijft daar leeg
+	// (teamfeedback Rakesh: fallback verscheen op toepassingen ongevraagd).
+	$tussen  = $tussen ?: 'Bekend van reguliere sokken, sportsokken en bamboesokken — en duurzaam dankzij onze One Tree Planted samenwerking.';
+	$tekst_2 = $tekst_2 ?: 'Voor sportclubs, bedrijven en sponsoren werkt het hetzelfde. Vanaf 50 paar in jouw eigen ontwerp, kleur en formaat. Met of zonder geschenkdoosje. Wat ooit een gimmick was, is inmiddels een serieuze marketingtool.';
+}
 $link     = get_sub_field( 'link' );
 $link_url   = ! empty( $link['url'] ) ? $link['url'] : home_url( '/over-ons/' );
 $link_label = ! empty( $link['title'] ) ? $link['title'] : 'Lees meer';
