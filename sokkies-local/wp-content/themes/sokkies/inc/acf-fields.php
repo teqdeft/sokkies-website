@@ -794,7 +794,8 @@ add_action( 'acf/init', function () {
 								'type'              => 'repeater',
 								'layout'            => 'table',
 								'button_label'      => 'Pluspunt toevoegen',
-								'instructions'      => 'Leeg = de zes standaardchips met hun iconen.',
+								'max'               => 6,
+								'instructions'      => 'Maximaal 6 (het ontwerp is één rij). Leeg = de zes standaardchips met hun iconen.',
 								'conditional_logic' => array( array( array( 'field' => 'field_im_chips_tonen', 'operator' => '==', 'value' => '1' ) ) ),
 								'sub_fields'        => array(
 									array( 'key' => 'field_im_chip_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
@@ -1213,7 +1214,8 @@ add_action( 'acf/init', function () {
 								'type'              => 'repeater',
 								'layout'            => 'table',
 								'button_label'      => 'Pluspunt toevoegen',
-								'instructions'      => 'Leeg = de zes standaardchips.',
+								'max'               => 6,
+								'instructions'      => 'Maximaal 6 (het ontwerp is één rij). Leeg = de zes standaardchips.',
 								'conditional_logic' => array( array( array( 'field' => 'field_st2_chips_tonen', 'operator' => '==', 'value' => '1' ) ) ),
 								'sub_fields'        => array(
 									array( 'key' => 'field_st2_chip_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),

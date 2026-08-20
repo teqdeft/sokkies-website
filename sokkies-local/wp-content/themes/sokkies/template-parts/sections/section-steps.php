@@ -54,6 +54,13 @@ if ( ! $rijen ) { $rijen = $standaard; }
     $chips_tonen = get_sub_field( 'pluspunten_tonen' );
     $chips_tonen = ( null === $chips_tonen || '' === $chips_tonen ) ? true : (bool) $chips_tonen;
     $chips       = get_sub_field( 'pluspunten' );
+    if ( $chips ) {
+    	// Lege rijen niet renderen (blanco chip); max 6 — de rij wrapt niet.
+    	$chips = array_filter( $chips, function ( $chip ) {
+    		return ! empty( $chip['icoon'] ) || '' !== trim( (string) $chip['label'] );
+    	} );
+    	$chips = array_slice( $chips, 0, 6 );
+    }
     $assets      = get_template_directory_uri() . '/assets/media/';
     $standaard_chips = array(
     	array( 'bestand' => 'gratis-ontwerp.svg', 'label' => 'Gratis ontwerp' ),
