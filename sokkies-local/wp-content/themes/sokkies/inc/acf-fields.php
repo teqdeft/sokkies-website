@@ -1166,6 +1166,22 @@ add_action( 'acf/init', function () {
 								'type'         => 'text',
 								'instructions' => 'Leeg = "Zoek in vragen...".',
 							),
+							array(
+								'key'           => 'field_fp_kruimel_tonen',
+								'label'         => 'Kruimelpad tonen',
+								'name'          => 'kruimelpad_tonen',
+								'type'          => 'true_false',
+								'ui'            => 1,
+								'default_value' => 1,
+							),
+							array(
+								'key'               => 'field_fp_kruimel',
+								'label'             => 'Kruimelpad-label',
+								'name'              => 'kruimelpad',
+								'type'              => 'text',
+								'instructions'      => 'Leeg = de sectietitel.',
+								'conditional_logic' => array( array( array( 'field' => 'field_fp_kruimel_tonen', 'operator' => '==', 'value' => '1' ) ) ),
+							),
 						),
 					),
 

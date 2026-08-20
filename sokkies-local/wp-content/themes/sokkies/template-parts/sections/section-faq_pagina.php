@@ -8,6 +8,9 @@
 $titel       = get_sub_field( 'titel' ) ?: 'Veelgestelde vragen';
 $subtekst    = get_sub_field( 'subtekst' ) ?: 'Vind snel antwoord, of stel je vraag rechtstreeks.';
 $placeholder = get_sub_field( 'zoek_placeholder' ) ?: 'Zoek in vragen...';
+$kruimel_tonen = get_sub_field( 'kruimelpad_tonen' );
+$kruimel_tonen = ( null === $kruimel_tonen || '' === $kruimel_tonen ) ? true : (bool) $kruimel_tonen;
+$kruimel       = get_sub_field( 'kruimelpad' ) ?: $titel;
 
 $termen = get_terms( array( 'taxonomy' => 'sokkies_faq_cat', 'hide_empty' => true, 'orderby' => 'id', 'order' => 'ASC' ) );
 if ( is_wp_error( $termen ) || ! $termen ) { return; }
@@ -25,7 +28,8 @@ if ( ! $groepen ) { return; }
 ?>
      <div class="hero-section simple-hero">
        <div class="container">
-         <nav class="breadcrumb" aria-label="Kruimelpad">
+         <?php if ( $kruimel_tonen ) : ?>
+     <nav class="breadcrumb" aria-label="Kruimelpad">
            <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
              <svg xmlns="http://www.w3.org/2000/svg" width="15.211" height="16" viewBox="0 0 15.211 16">
                <g transform="translate(-1.28)">
@@ -34,8 +38,9 @@ if ( ! $groepen ) { return; }
              </svg>
            </a>
            <span>&nbsp;&bull;&nbsp;</span>
-           <span><?php echo esc_html( $titel ); ?></span>
+           <span><?php echo esc_html( $kruimel ); ?></span>
          </nav>
+     <?php endif; ?>
          <div class="simple-hero-content">
            <h1><?php echo sokkies_kop( $titel ); ?></h1>
            <p><?php echo esc_html( $subtekst ); ?></p>
@@ -54,6 +59,7 @@ if ( ! $groepen ) { return; }
     <section class="faq-cats">
       <div class="container">
         <div class="case-filter faq-cats-filter">
+          <span class="case-filter-label">Categorie:</span>
           <div class="dropdown faq-cats-select" data-value="<?php echo esc_attr( $groepen[0]['term']->slug ); ?>">
             <button type="button" class="dropdown-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Categorie">
               <span class="dropdown-value"><?php echo esc_html( $groepen[0]['term']->name ); ?></span>
