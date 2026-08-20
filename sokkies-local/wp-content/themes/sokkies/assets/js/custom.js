@@ -377,6 +377,7 @@
 
       items.forEach(item => {
         const btn = item.querySelector('.faq-q');
+        if (!btn) return; // content kan een item zonder vraagknop opleveren — nooit de hele init laten sterven
         btn.addEventListener('click', () => {
           const willOpen = !item.classList.contains('is-open');
           items.forEach(other => setOpen(other, false)); // one open at a time

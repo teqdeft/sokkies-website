@@ -86,7 +86,7 @@ if ( ! $groepen ) { return; }
               </button>
               <div class="faq-a">
                 <div class="faq-a-inner">
-                  <?php echo wp_kses_post( get_field( 'antwoord', $vraag_id ) ); ?>
+                  <?php echo sokkies_faq_antwoord( $vraag_id ); ?>
                 </div>
               </div>
             </div>

@@ -177,3 +177,19 @@ add_filter( 'wp_check_filetype_and_ext', function ( $data, $file, $filename, $mi
 add_action( 'admin_head', function () {
 	echo '<style>.media-icon img[src$=".svg"], .attachment-preview img[src$=".svg"] { width: 100%; height: auto; }</style>' . "\n";
 } );
+
+/**
+ * FAQ-antwoord veilig renderen: alleen eenvoudige opmaak. Geplakte
+ * layout-HTML (divs/classes, bijv. een gekopieerd accordeon-item uit de
+ * statische site) wordt gestript — structuurtags in een antwoord braken
+ * het accordeon-JS (teamfeedback 2026-08-20).
+ */
+function sokkies_faq_antwoord( $vraag_id ) {
+	$toegestaan = array(
+		'p' => array(), 'br' => array(), 'strong' => array(), 'em' => array(),
+		'b' => array(), 'i' => array(), 'u' => array(),
+		'a' => array( 'href' => true, 'target' => true, 'rel' => true ),
+		'ul' => array(), 'ol' => array(), 'li' => array(),
+	);
+	return wp_kses( (string) get_field( 'antwoord', $vraag_id ), $toegestaan );
+}
