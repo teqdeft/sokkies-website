@@ -1067,6 +1067,10 @@ font-weight: 600;
     align-items:center;
     justify-content:center;
   }
+  .feat-icon img{ /* WP-toevoeging 2026-08-20: geuploade (vaak @2x-) PNG-iconen op ontwerphoogte; de statische svg's zijn zelf al ±40px */
+    max-height:41px;
+    width:auto;
+  }
   .feat-label{
     font-family:var(--roc-grotesk-condensed);
     font-weight: 500;
