@@ -12,6 +12,12 @@ $standaard = array(
 	array( 'titel' => 'Finetunen', 'tekst' => 'Niet helemaal goed? We passen het ontwerp aan tot het 100% naar wens is. Zoveel rondes als nodig.' ),
 	array( 'titel' => 'Oplevering', 'tekst' => 'Na akkoord starten we de productie. Levering binnen ongeveer vier weken, met tracking tot aan de deur.' ),
 );
+if ( $rijen ) {
+	// Lege rijen niet renderen als blanco kaart; herindexeren zodat de nummers kloppen.
+	$rijen = array_values( array_filter( $rijen, function ( $rij ) {
+		return ! empty( $rij['foto'] ) || ! empty( $rij['icoon'] ) || '' !== trim( (string) ( $rij['titel'] ?? '' ) ) || '' !== trim( (string) ( $rij['tekst'] ?? '' ) );
+	} ) );
+}
 if ( ! $rijen ) { $rijen = $standaard; }
 ?>
 <section class="steps-section">

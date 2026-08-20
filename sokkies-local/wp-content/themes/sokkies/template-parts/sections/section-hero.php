@@ -13,6 +13,9 @@ $subtekst    = get_sub_field( 'subtekst' );
 $stijl       = get_sub_field( 'stijl' ) ?: 'coral';
 $icoon_kleur = ( 'beige' === $stijl ) ? '#28121b' : '#fff';
 $usps        = get_sub_field( 'usps' );
+if ( $usps ) {
+	$usps = array_filter( $usps, function ( $u ) { return '' !== trim( (string) $u['tekst'] ); } ); // lege rijen = geen leeg vinkje
+}
 $rating      = (bool) get_sub_field( 'rating_tonen' );
 $knop_1      = get_sub_field( 'knop_1' );
 $knop_2      = get_sub_field( 'knop_2' );

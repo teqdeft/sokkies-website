@@ -8,6 +8,12 @@ $stijl  = get_sub_field( 'stijl' ) ?: 'standaard';
 $is_conf = ( 'configurator' === $stijl );
 $titel  = get_sub_field( 'titel' ) ?: ( $is_conf ? 'Zo werkt het' : 'Hoe wij tot de perfecte sokken komen' );
 $rijen  = get_sub_field( 'stappen' );
+if ( $rijen ) {
+	// Lege rijen niet renderen als blanco kaart; herindexeren zodat de nummers kloppen.
+	$rijen = array_values( array_filter( $rijen, function ( $rij ) {
+		return ! empty( $rij['foto'] ) || ! empty( $rij['icoon'] ) || '' !== trim( (string) ( $rij['titel'] ?? '' ) ) || '' !== trim( (string) ( $rij['tekst'] ?? '' ) );
+	} ) );
+}
 $knop   = get_sub_field( 'knop' );
 $knop_url   = ! empty( $knop['url'] ) ? $knop['url'] : home_url( '/offerte/' );
 $knop_label = ! empty( $knop['title'] ) ? $knop['title'] : 'Vraag gratis proefdesign aan';

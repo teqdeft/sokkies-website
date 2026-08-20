@@ -10,6 +10,9 @@ $subtekst   = get_sub_field( 'subtekst' );
 $knop_1     = get_sub_field( 'knop_1' );
 $knop_2     = get_sub_field( 'knop_2' );
 $usps       = get_sub_field( 'usps' );
+if ( $usps ) {
+	$usps = array_filter( $usps, function ( $u ) { return '' !== trim( (string) $u['tekst'] ); } ); // lege rijen = geen leeg bolletje
+}
 $kolom_1    = get_sub_field( 'fotos_kolom_1' );
 $kolom_2    = get_sub_field( 'fotos_kolom_2' );
 
