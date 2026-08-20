@@ -754,6 +754,12 @@ font-weight: 600;
     margin-bottom: 4px;
   }
   
+  /* WP-toevoeging 2026-08-20: rating direct ná een subtekst (CMS-compositie
+     die htmlv niet kent, bijv. duurzaamheid) — zelfde 30px-ritme als home's
+     usps->rating; op home/offerte staan usps ertussen en doet deze niks. */
+  .banner-section p + .rating-outer{
+    margin-top:30px;
+  }
   .rating-outer {
     display: flex;
     justify-content: center;
