@@ -54,7 +54,14 @@ $render_kolom = function ( $fotos, $standaard ) use ( $assets ) {
                     </svg>
                 </a>
                 <span>&nbsp;&bull;&nbsp;</span>
-                <?php if ( $breadcrumb !== get_the_title() ) : // htmlv toepassingen: tussenniveau = de pagina zelf (gelinkt), veld = het huidige niveau ?>
+                <?php
+                // htmlv toepassingen: tussenniveau = de pagina zelf (gelinkt), veld = het
+                // huidige niveau. Alleen bij een ECHT ander label — een variant van de
+                // paginatitel (bijv. "Partner" op de pagina "Partners") blijft één niveau.
+                $bc_norm  = mb_strtolower( trim( $breadcrumb ) );
+                $tit_norm = mb_strtolower( trim( get_the_title() ) );
+                $is_variant = ( '' === $bc_norm || 0 === mb_strpos( $tit_norm, $bc_norm ) || 0 === mb_strpos( $bc_norm, $tit_norm ) );
+                if ( ! $is_variant ) : ?>
                 <a href="<?php echo esc_url( get_permalink() ); ?>" class="breadcrumb-link"><?php echo esc_html( get_the_title() ); ?></a>
                 <span>&nbsp;&bull;&nbsp;</span>
                 <?php endif; ?>
