@@ -291,6 +291,19 @@ body{
     color:var(--text);
     font-weight: 500;
 }
+  /* WP-toevoeging 2026-08-20: 'Bekijk collectie' in de mega is in WP een <a>
+     (statisch een <button>-stub) — de menu-link-tekstregels (0-2-1) wonnen
+     anders van .cta-light:hover (0-2-0): donkere tekst op donkere hover. */
+  .menu .menu-link .mega a.cta-light{
+    color:var(--dark);
+    font-weight:inherit;
+  }
+  .menu .menu-link .mega a.cta-light:hover{
+    color:var(--white);
+  }
+  .mega-usps .cta-light{ /* statisch stond de 6px op .mega-usps button */
+    margin-top:6px;
+  }
   /* actieve pagina in het menu (li krijgt per pagina de class "active") */
   .menu .menu-link.active > a{
     color:var(--coral);
