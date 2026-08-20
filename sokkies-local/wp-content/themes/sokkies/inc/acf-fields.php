@@ -1276,7 +1276,7 @@ add_action( 'acf/init', function () {
 								'type'         => 'repeater',
 								'layout'       => 'block',
 								'button_label' => 'Rij toevoegen',
-								'instructions' => 'Per rij één waarde per kolom; een LEEG waardeveld wordt een groen vinkje.',
+								'instructions' => 'Per rij één waarde per kolom. Leeg = groen vinkje, "X" = rood kruis, andere tekst toont als tekst.',
 								'sub_fields'   => array(
 									array( 'key' => 'field_cmp_rij_label', 'label' => 'Label', 'name' => 'label', 'type' => 'text' ),
 									array(
