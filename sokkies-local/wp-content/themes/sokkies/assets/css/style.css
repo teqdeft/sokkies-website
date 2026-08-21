@@ -2278,6 +2278,13 @@ font-weight: 600;
     overflow:hidden;
     transition:max-height .3s ease;
   }
+  /* WP-toevoeging 2026-08-21 (verzoek team, conform sokkies.com): links die
+   redacteuren in FAQ-antwoorden/spec-teksten zetten — roze + semi-bold. */
+  .faq-a-inner a,
+  .spec-a-inner a{
+    color:var(--pink);
+    font-weight:600;
+  }
   .faq-a-inner{
     padding:0 4px 20px;
   }
