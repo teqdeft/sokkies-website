@@ -2107,7 +2107,7 @@ add_action( 'acf/init', function () {
 				'name'         => 'antwoord',
 				'type'         => 'wysiwyg',
 				'tabs'         => 'all',
-				'toolbar'      => 'basic',
+				'toolbar'      => 'sokkies_eenvoudig',
 				'media_upload' => 0,
 				'instructions' => 'Het antwoord op de vraag (de vraag zelf is de titel hierboven).',
 			),

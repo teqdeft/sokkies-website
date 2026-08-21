@@ -193,3 +193,13 @@ function sokkies_faq_antwoord( $vraag_id ) {
 	);
 	return wp_kses( (string) get_field( 'antwoord', $vraag_id ), $toegestaan );
 }
+
+/**
+ * Compacte wysiwyg-toolbar mét linkknop voor de FAQ-antwoorden
+ * (teamfeedback: woorden in een antwoord moeten linkbaar zijn; de
+ * output-whitelist in sokkies_faq_antwoord() staat <a> al toe).
+ */
+add_filter( 'acf/fields/wysiwyg/toolbars', function ( $toolbars ) {
+	$toolbars['Sokkies eenvoudig'] = array( 1 => array( 'bold', 'italic', 'link', 'unlink', 'bullist', 'numlist', 'undo', 'redo' ) );
+	return $toolbars;
+} );
