@@ -70,7 +70,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
 ?>
 <main>
 
-     <div class="prod-section">
+     <div class="hero-section simple-hero prod-hero">
        <div class="container">
          <nav class="breadcrumb" aria-label="Kruimelpad">
            <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
