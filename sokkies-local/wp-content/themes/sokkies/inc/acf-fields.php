@@ -2162,6 +2162,48 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				'instructions' => 'Leeg = de offertepagina.',
 			),
 
+			array( 'key' => 'field_si_tab_footermenu', 'label' => 'Footermenu', 'type' => 'tab' ),
+			array(
+				'key'          => 'field_si_footer_titel',
+				'label'        => 'Kop boven de kolommen',
+				'name'         => 'footer_titel',
+				'type'         => 'text',
+				'instructions' => 'Leeg = "Sokkies".',
+			),
+			array(
+				'key'          => 'field_si_footermenu',
+				'label'        => 'Links',
+				'name'         => 'footermenu',
+				'type'         => 'repeater',
+				'layout'       => 'table',
+				'button_label' => 'Link toevoegen',
+				'instructions' => 'De linklijst in de footer, verdeeld over twee kolommen — sleep om de volgorde te wijzigen. Helemaal leeg = de standaardlijst uit het ontwerp.',
+				'sub_fields'   => array(
+					array(
+						'key'          => 'field_si_fm_label',
+						'label'        => 'Label',
+						'name'         => 'label',
+						'type'         => 'text',
+						'instructions' => 'Leeg = de titel van de link.',
+					),
+					array(
+						'key'          => 'field_si_fm_link',
+						'label'        => 'Link',
+						'name'         => 'link',
+						'type'         => 'link',
+					),
+					array(
+						'key'           => 'field_si_fm_kolom',
+						'label'         => 'Kolom',
+						'name'          => 'kolom',
+						'type'          => 'button_group',
+						'choices'       => array( '1' => 'Links', '2' => 'Rechts' ),
+						'default_value' => '1',
+						'instructions'  => 'In welke van de twee kolommen het item staat.',
+					),
+				),
+			),
+
 			array( 'key' => 'field_si_tab_mega', 'label' => 'Uitklapmenu (Sokkencollectie)', 'type' => 'tab' ),
 			array(
 				'key'           => 'field_si_mega_bestsellers',

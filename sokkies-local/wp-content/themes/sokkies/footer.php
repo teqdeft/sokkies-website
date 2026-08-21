@@ -51,23 +51,16 @@ if ( $promo_aan ) {
 
             <!-- Sitemap -->
             <div class="footer-col footer-links">
-              <h5>Sokkies</h5>
+              <h5><?php echo esc_html( sokkies_optie( 'footer_titel', 'Sokkies' ) ); ?></h5>
               <div class="footer-links-cols">
+                <?php foreach ( sokkies_footermenu() as $kolom ) : ?>
+                <?php if ( ! $kolom ) { continue; } ?>
                 <ul>
-                  <li><a href="<?php echo esc_url( home_url( '/collectie/' ) ); ?>">Sokkencollectie</a></li>
-                  <li><a href="<?php echo esc_url( home_url( '/configurator/' ) ); ?>">Configurator</a></li>
-                  <li><a href="#">Inspiratie</a></li>
-                  <li><a href="<?php echo esc_url( home_url( '/werkwijze/' ) ); ?>">Werkwijze</a></li>
-                  <li><a href="<?php echo esc_url( home_url( '/over-ons/' ) ); ?>">Over ons</a></li>
+                  <?php foreach ( $kolom as $item ) : ?>
+                  <li><a href="<?php echo esc_url( $item['url'] ); ?>"<?php echo $item['target'] ? ' target="' . esc_attr( $item['target'] ) . '"' : ''; ?>><?php echo esc_html( $item['label'] ); ?></a></li>
+                  <?php endforeach; ?>
                 </ul>
-                <ul>
-                  <li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Contact</a></li>
-                  <li><a href="<?php echo esc_url( home_url( '/downloads/' ) ); ?>">Downloads &amp; templates</a></li>
-                  <li><a href="<?php echo esc_url( home_url( '/veelgestelde-vragen/' ) ); ?>">Veelgestelde vragen</a></li>
-                  <li><a href="#">Projecten</a></li>
-                  <li><a href="#">Blogs</a></li>
-                  <li><a href="#">Sokkies geeft terug</a></li>
-                </ul>
+                <?php endforeach; ?>
               </div>
             </div>
 

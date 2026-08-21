@@ -682,7 +682,31 @@
   huisstijl in plaats van de Arial-toevalligheid van de stub — terug te
   draaien met één regel als het XD de smallere knop wil.
   Getest: standaard/aangepast label+link+target/uit-toggle, 10 routes
-  200, 0 console-errors. ALLE 16 PAGINA'S SAMENGESTELD —
+  200, 0 console-errors. FOOTERMENU CMS-BAAR (2026-08-21, verzoek
+  Kulwant): Website-instellingen kreeg het tabblad Footermenu — veld
+  footer_titel (leeg = "Sokkies") en de repeater 'footermenu' met per
+  link label, link (ACF-linkveld) en KOLOM (button_group Links/Rechts,
+  want .footer-links-cols is een grid van twee <ul>'s: statisch 5 + 6).
+  Slepen = volgorde; lege rijen worden overgeslagen; een kolom zonder
+  items rendert geen <ul>. Gerenderd via sokkies_footermenu() in
+  functions.php, dat array(1 => [...], 2 => [...]) teruggeeft. Leeg =
+  de statische lijst 1:1 (zelfde fallbackregel als secties/hoofdmenu),
+  en de 11 links zijn geseed zodat ze in de admin zichtbaar zijn.
+  VERIFICATIE: .footer-links genormaliseerd BYTE-IDENTIEK aan
+  htmlv/home.html (541 bytes) op zowel de fallback als de geseede data;
+  grid blijft 2 kolommen 5+6, gap 24px, 0 h-scroll, 0 console-errors;
+  los getest met hernoemen, een andere link, een item naar de andere
+  kolom en een extra item — daarna teruggezet. De mini-footer
+  (contact/offerte/sample/bedankt) heeft géén linkkolommen en is dus
+  ongemoeid. NOG HARDCODED IN DE FOOTER (bewust buiten scope, zijn geen
+  menu): de socials (3x #-stub), de reviewregels "uit 300+/120+
+  reviews" (#-stub, QA #7-klantvraag) en de legal-regel met Algemene
+  voorwaarden/Cookieverklaring — die laatste staan nog op # terwijl de
+  Juridisch-pagina inmiddels bestaat. LOSSE VONDST: in
+  deel-mini-footer.php staat het telefoonnummer als ZICHTBARE TEKST
+  hardcoded (+31 (0)413 410 411) terwijl de href wél
+  sokkies_tel_href() gebruikt — wijzigt iemand het nummer in
+  Website-instellingen, dan verspringt de link maar niet de tekst. ALLE 16 PAGINA'S SAMENGESTELD —
   formulierverzending/wizard-eindpunt = Gravity Forms-fase; daarna
   TranslatePress + launch-checklist (mediacompressie, DEV-logger uit
   custom.js, favicon-export, analytics/cookiebanner). Mediabibliotheek: standaardset slider1-8

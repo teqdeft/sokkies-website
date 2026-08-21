@@ -322,3 +322,58 @@ function sokkies_header_cta() {
 		'target' => is_array( $link ) && ! empty( $link['target'] ) ? $link['target'] : '',
 	);
 }
+
+/**
+ * Footermenu — de linklijst onder de kop "Sokkies", verdeeld over de twee
+ * kolommen van .footer-links-cols.
+ *
+ * Bron = de repeater 'footermenu' op Website-instellingen; leeg = de
+ * statische lijst uit htmlv, 1:1 (zelfde fallbackregel als de secties en
+ * het hoofdmenu). Geeft array( 1 => [...], 2 => [...] ) terug; alleen
+ * kolommen met items worden gerenderd.
+ */
+function sokkies_footermenu() {
+	$rijen = function_exists( 'get_field' ) ? get_field( 'footermenu', 'option' ) : null;
+
+	if ( empty( $rijen ) || ! is_array( $rijen ) ) {
+		return array(
+			1 => array(
+				array( 'label' => 'Sokkencollectie', 'url' => home_url( '/collectie/' ),    'target' => '' ),
+				array( 'label' => 'Configurator',    'url' => home_url( '/configurator/' ), 'target' => '' ),
+				array( 'label' => 'Inspiratie',      'url' => '#',                          'target' => '' ),
+				array( 'label' => 'Werkwijze',       'url' => home_url( '/werkwijze/' ),    'target' => '' ),
+				array( 'label' => 'Over ons',        'url' => home_url( '/over-ons/' ),     'target' => '' ),
+			),
+			2 => array(
+				array( 'label' => 'Contact',                'url' => home_url( '/contact/' ),              'target' => '' ),
+				array( 'label' => 'Downloads & templates',  'url' => home_url( '/downloads/' ),            'target' => '' ),
+				array( 'label' => 'Veelgestelde vragen',    'url' => home_url( '/veelgestelde-vragen/' ),  'target' => '' ),
+				array( 'label' => 'Projecten',              'url' => '#',                                  'target' => '' ),
+				array( 'label' => 'Blogs',                  'url' => '#',                                  'target' => '' ),
+				array( 'label' => 'Sokkies geeft terug',    'url' => '#',                                  'target' => '' ),
+			),
+		);
+	}
+
+	$kolommen = array( 1 => array(), 2 => array() );
+
+	foreach ( $rijen as $rij ) {
+		$link  = isset( $rij['link'] ) ? $rij['link'] : array();
+		$label = trim( (string) ( isset( $rij['label'] ) ? $rij['label'] : '' ) );
+		if ( '' === $label && is_array( $link ) && ! empty( $link['title'] ) ) {
+			$label = $link['title'];
+		}
+		if ( '' === $label ) {
+			continue; // lege rij overslaan
+		}
+		$kolom = ( isset( $rij['kolom'] ) && '2' === (string) $rij['kolom'] ) ? 2 : 1;
+
+		$kolommen[ $kolom ][] = array(
+			'label'  => $label,
+			'url'    => is_array( $link ) && ! empty( $link['url'] ) ? $link['url'] : '#',
+			'target' => is_array( $link ) && ! empty( $link['target'] ) ? $link['target'] : '',
+		);
+	}
+
+	return $kolommen;
+}
