@@ -207,7 +207,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                 </button>
                 <div class="spec-a">
                   <div class="spec-a-inner">
-                    <p><?php echo esc_html( $rij['tekst'] ); ?></p>
+                    <?php echo sokkies_rijke_tekst( wpautop( (string) $rij['tekst'] ) ); ?>
                   </div>
                 </div>
               </div>

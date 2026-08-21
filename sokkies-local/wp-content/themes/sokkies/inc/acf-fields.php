@@ -2363,7 +2363,7 @@ add_action( 'acf/init', function () {
 				'instructions' => 'Per type, bijv. materiaal/maten/wasadvies. Leeg = de standaardset.',
 				'sub_fields'   => array(
 					array( 'key' => 'field_soktype_spec_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
-					array( 'key' => 'field_soktype_spec_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
+					array( 'key' => 'field_soktype_spec_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual', 'instructions' => 'Selecteer woorden en gebruik de linkknop om ze te linken.' ),
 				),
 			),
 		),

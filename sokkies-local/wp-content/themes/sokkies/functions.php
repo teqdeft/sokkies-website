@@ -184,14 +184,18 @@ add_action( 'admin_head', function () {
  * statische site) wordt gestript — structuurtags in een antwoord braken
  * het accordeon-JS (teamfeedback 2026-08-20).
  */
-function sokkies_faq_antwoord( $vraag_id ) {
+function sokkies_rijke_tekst( $html ) {
 	$toegestaan = array(
 		'p' => array(), 'br' => array(), 'strong' => array(), 'em' => array(),
 		'b' => array(), 'i' => array(), 'u' => array(),
 		'a' => array( 'href' => true, 'target' => true, 'rel' => true ),
 		'ul' => array(), 'ol' => array(), 'li' => array(),
 	);
-	return wp_kses( (string) get_field( 'antwoord', $vraag_id ), $toegestaan );
+	return wp_kses( (string) $html, $toegestaan );
+}
+
+function sokkies_faq_antwoord( $vraag_id ) {
+	return sokkies_rijke_tekst( get_field( 'antwoord', $vraag_id ) );
 }
 
 /**
