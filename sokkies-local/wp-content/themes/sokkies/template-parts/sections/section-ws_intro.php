@@ -39,17 +39,17 @@ $kaarten = $rijen ?: $standaard;
             </div>
             <div class="ws-row ws-row-sm-lg">
               <article class="ws-card">
-                <?php $k = $kaarten[0] ?? null; $foto = $k ? ( is_array( $k['foto'] ?? null ) ? $k['foto']['url'] : $assets . $k['bestand'] ) : ''; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( $k['titel'] ?? '' ); ?>"><?php endif; ?>
+                <?php $k = $kaarten[0] ?? null; $foto = ''; if ( $k ) { if ( is_array( $k['foto'] ?? null ) ) { $foto = $k['foto']['url']; } elseif ( ! empty( $k['bestand'] ) ) { $foto = $assets . $k['bestand']; } } ?><img src="<?php echo esc_url( $foto ?: $assets . 'placeholder-kaart.svg' ); ?>" alt="<?php echo esc_attr( $k['titel'] ?? '' ); ?>">
                 <div class="ws-card-body">
-                  <h3><?php echo esc_html( $k['titel'] ?? '' ); ?></h3>
-                  <p><?php echo esc_html( $k['tekst'] ?? '' ); ?></p>
+                  <?php if ( '' !== trim( (string) ( $k['titel'] ?? '' ) ) ) : ?><h3><?php echo esc_html( $k['titel'] ); ?></h3><?php endif; ?>
+                  <?php if ( '' !== trim( (string) ( $k['tekst'] ?? '' ) ) ) : ?><p><?php echo esc_html( $k['tekst'] ); ?></p><?php endif; ?>
                 </div>
               </article>
               <article class="ws-card">
-                <?php $k = $kaarten[1] ?? null; $foto = $k ? ( is_array( $k['foto'] ?? null ) ? $k['foto']['url'] : $assets . $k['bestand'] ) : ''; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( $k['titel'] ?? '' ); ?>"><?php endif; ?>
+                <?php $k = $kaarten[1] ?? null; $foto = ''; if ( $k ) { if ( is_array( $k['foto'] ?? null ) ) { $foto = $k['foto']['url']; } elseif ( ! empty( $k['bestand'] ) ) { $foto = $assets . $k['bestand']; } } ?><img src="<?php echo esc_url( $foto ?: $assets . 'placeholder-kaart.svg' ); ?>" alt="<?php echo esc_attr( $k['titel'] ?? '' ); ?>">
                 <div class="ws-card-body">
-                  <h3><?php echo esc_html( $k['titel'] ?? '' ); ?></h3>
-                  <p><?php echo esc_html( $k['tekst'] ?? '' ); ?></p>
+                  <?php if ( '' !== trim( (string) ( $k['titel'] ?? '' ) ) ) : ?><h3><?php echo esc_html( $k['titel'] ); ?></h3><?php endif; ?>
+                  <?php if ( '' !== trim( (string) ( $k['tekst'] ?? '' ) ) ) : ?><p><?php echo esc_html( $k['tekst'] ); ?></p><?php endif; ?>
                 </div>
               </article>
             </div>
@@ -58,33 +58,33 @@ $kaarten = $rijen ?: $standaard;
           <div class="ws-col">
             <div class="ws-row ws-row-lg-sm">
               <article class="ws-card">
-                <?php $k = $kaarten[2] ?? null; $foto = $k ? ( is_array( $k['foto'] ?? null ) ? $k['foto']['url'] : $assets . $k['bestand'] ) : ''; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( $k['titel'] ?? '' ); ?>"><?php endif; ?>
+                <?php $k = $kaarten[2] ?? null; $foto = ''; if ( $k ) { if ( is_array( $k['foto'] ?? null ) ) { $foto = $k['foto']['url']; } elseif ( ! empty( $k['bestand'] ) ) { $foto = $assets . $k['bestand']; } } ?><img src="<?php echo esc_url( $foto ?: $assets . 'placeholder-kaart.svg' ); ?>" alt="<?php echo esc_attr( $k['titel'] ?? '' ); ?>">
                 <div class="ws-card-body">
-                  <h3><?php echo esc_html( $k['titel'] ?? '' ); ?></h3>
-                  <p><?php echo esc_html( $k['tekst'] ?? '' ); ?></p>
+                  <?php if ( '' !== trim( (string) ( $k['titel'] ?? '' ) ) ) : ?><h3><?php echo esc_html( $k['titel'] ); ?></h3><?php endif; ?>
+                  <?php if ( '' !== trim( (string) ( $k['tekst'] ?? '' ) ) ) : ?><p><?php echo esc_html( $k['tekst'] ); ?></p><?php endif; ?>
                 </div>
               </article>
               <article class="ws-card ws-card-offset">
-                <?php $k = $kaarten[3] ?? null; $foto = $k ? ( is_array( $k['foto'] ?? null ) ? $k['foto']['url'] : $assets . $k['bestand'] ) : ''; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( $k['titel'] ?? '' ); ?>"><?php endif; ?>
+                <?php $k = $kaarten[3] ?? null; $foto = ''; if ( $k ) { if ( is_array( $k['foto'] ?? null ) ) { $foto = $k['foto']['url']; } elseif ( ! empty( $k['bestand'] ) ) { $foto = $assets . $k['bestand']; } } ?><img src="<?php echo esc_url( $foto ?: $assets . 'placeholder-kaart.svg' ); ?>" alt="<?php echo esc_attr( $k['titel'] ?? '' ); ?>">
                 <div class="ws-card-body">
-                  <h3><?php echo esc_html( $k['titel'] ?? '' ); ?></h3>
-                  <p><?php echo esc_html( $k['tekst'] ?? '' ); ?></p>
+                  <?php if ( '' !== trim( (string) ( $k['titel'] ?? '' ) ) ) : ?><h3><?php echo esc_html( $k['titel'] ); ?></h3><?php endif; ?>
+                  <?php if ( '' !== trim( (string) ( $k['tekst'] ?? '' ) ) ) : ?><p><?php echo esc_html( $k['tekst'] ); ?></p><?php endif; ?>
                 </div>
               </article>
             </div>
             <div class="ws-row ws-row-sm-lg ws-row-gap">
               <article class="ws-card">
-                <?php $k = $kaarten[4] ?? null; $foto = $k ? ( is_array( $k['foto'] ?? null ) ? $k['foto']['url'] : $assets . $k['bestand'] ) : ''; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( $k['titel'] ?? '' ); ?>"><?php endif; ?>
+                <?php $k = $kaarten[4] ?? null; $foto = ''; if ( $k ) { if ( is_array( $k['foto'] ?? null ) ) { $foto = $k['foto']['url']; } elseif ( ! empty( $k['bestand'] ) ) { $foto = $assets . $k['bestand']; } } ?><img src="<?php echo esc_url( $foto ?: $assets . 'placeholder-kaart.svg' ); ?>" alt="<?php echo esc_attr( $k['titel'] ?? '' ); ?>">
                 <div class="ws-card-body">
-                  <h3><?php echo esc_html( $k['titel'] ?? '' ); ?></h3>
-                  <p><?php echo esc_html( $k['tekst'] ?? '' ); ?></p>
+                  <?php if ( '' !== trim( (string) ( $k['titel'] ?? '' ) ) ) : ?><h3><?php echo esc_html( $k['titel'] ); ?></h3><?php endif; ?>
+                  <?php if ( '' !== trim( (string) ( $k['tekst'] ?? '' ) ) ) : ?><p><?php echo esc_html( $k['tekst'] ); ?></p><?php endif; ?>
                 </div>
               </article>
               <article class="ws-card">
-                <?php $k = $kaarten[5] ?? null; $foto = $k ? ( is_array( $k['foto'] ?? null ) ? $k['foto']['url'] : $assets . $k['bestand'] ) : ''; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( $k['titel'] ?? '' ); ?>"><?php endif; ?>
+                <?php $k = $kaarten[5] ?? null; $foto = ''; if ( $k ) { if ( is_array( $k['foto'] ?? null ) ) { $foto = $k['foto']['url']; } elseif ( ! empty( $k['bestand'] ) ) { $foto = $assets . $k['bestand']; } } ?><img src="<?php echo esc_url( $foto ?: $assets . 'placeholder-kaart.svg' ); ?>" alt="<?php echo esc_attr( $k['titel'] ?? '' ); ?>">
                 <div class="ws-card-body">
-                  <h3><?php echo esc_html( $k['titel'] ?? '' ); ?></h3>
-                  <p><?php echo esc_html( $k['tekst'] ?? '' ); ?></p>
+                  <?php if ( '' !== trim( (string) ( $k['titel'] ?? '' ) ) ) : ?><h3><?php echo esc_html( $k['titel'] ); ?></h3><?php endif; ?>
+                  <?php if ( '' !== trim( (string) ( $k['tekst'] ?? '' ) ) ) : ?><p><?php echo esc_html( $k['tekst'] ); ?></p><?php endif; ?>
                 </div>
               </article>
             </div>
