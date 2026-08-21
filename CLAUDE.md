@@ -629,7 +629,41 @@
   footer-legal-links (Algemene voorwaarden / Cookieverklaring /
   Privacy) zijn nog #-stubs, dus de pagina is voorlopig alleen via
   /juridisch/ bereikbaar; privacy- en cookiepagina wachten op echte
-  klantteksten. ALLE 16 PAGINA'S SAMENGESTELD —
+  klantteksten. HOOFDMENU CMS-BAAR (2026-08-21,
+  verzoek Kulwant): Website-instellingen kreeg het tabblad Hoofdmenu met
+  de repeater 'hoofdmenu' — per item label, link (ACF-linkveld, dus
+  paginakiezer óf eigen adres), toggle "Uitklapmenu tonen" (hangt de
+  mega eronder), toggle "Alleen in het mobiele menu" (= de menu-home-
+  class, waarmee Home op desktop verborgen blijft zoals in het XD) en
+  'actief_bij' (post_object, meerdere pagina's) voor verzamelitems.
+  Slepen = volgorde. header.php loopt nu over sokkies_hoofdmenu()
+  (functions.php); de mega is losgetrokken naar
+  template-parts/deel-mega.php zodat de loop leesbaar blijft.
+  ACTIEF-STATE WORDT ZELF BEPAALD: url_to_postid() op de link + de
+  pagina's uit actief_bij — Inspiratie licht zo nog steeds op bij
+  toepassingen/reviews-en-cases/downloads. BUGFIX daarbij: het
+  Home-item had 'active' HARDCODED in de markup, dus élke WP-pagina
+  markeerde Home als huidige pagina (statisch verspringt 'active' netjes
+  per pagina — geverifieerd op home/contact/over-ons/werkwijze). Dat is
+  nu data-gestuurd en klopt weer. Leeg = de statische nav 1:1 uit htmlv
+  (zelfde fallbackregel als de secties), en de 7 items zijn geseed zodat
+  ze in de admin zichtbaar en sleepbaar zijn. OPGERUIMD:
+  register_nav_menus('hoofdmenu') stond sinds chunk 1 in sokkies_setup()
+  maar werd nergens gerenderd (geen wp_nav_menu in het thema, 0 menu's
+  in de DB) — weg, anders bouwt de klant straks een menu onder
+  Weergave → Menu's dat niets doet. VERIFICATIE: de <ul class="menu">
+  is genormaliseerd BYTE-IDENTIEK aan htmlv/home.html (742 bytes, mega
+  eruit gefilterd omdat die CMS-gestuurd is), zowel op de fallback als
+  op de geseede CMS-data; active-state gecontroleerd op 9 pagina's;
+  mega opent/sluit met 4 bestsellers, 6 types, 3 usps, mega-back en
+  mob-title; op 390 opent de burger alle 7 items incl. Home, submenu +
+  terugknop werken, 0 h-scroll; 18 routes 200, 0 console-errors.
+  Los getest met een hernoemd item + een extra item (Juridisch kreeg
+  vanzelf 'active' op zijn eigen pagina), daarna teruggezet.
+  LET OP: de optiewaarde staat in de DB, dus LIVE draait op de
+  code-fallback tot iemand het tabblad één keer opslaat — dat rendert
+  exact hetzelfde menu, dus de site is meteen goed; pas bij wijzigen
+  moeten de items daar worden ingevuld. ALLE 16 PAGINA'S SAMENGESTELD —
   formulierverzending/wizard-eindpunt = Gravity Forms-fase; daarna
   TranslatePress + launch-checklist (mediacompressie, DEV-logger uit
   custom.js, favicon-export, analytics/cookiebanner). Mediabibliotheek: standaardset slider1-8

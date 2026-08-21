@@ -10,9 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 function sokkies_setup() {
 	add_theme_support( 'title-tag' );
 	add_theme_support( 'post-thumbnails' );
-	register_nav_menus( array(
-		'hoofdmenu' => 'Hoofdmenu',
-	) );
 }
 add_action( 'after_setup_theme', 'sokkies_setup' );
 
@@ -218,3 +215,75 @@ add_filter( 'acf/fields/wysiwyg/toolbars', function ( $toolbars ) {
 	$toolbars['Sokkies eenvoudig'] = array( 1 => array( 'bold', 'italic', 'link', 'unlink', 'bullist', 'numlist', 'undo', 'redo' ) );
 	return $toolbars;
 } );
+
+/**
+ * Hoofdmenu-items voor de header.
+ *
+ * Bron = de repeater 'hoofdmenu' op de opties-pagina Website-instellingen.
+ * Zolang die leeg is (of ACF niet actief), valt het menu terug op de
+ * statische opbouw uit htmlv — zelfde regel als bij de secties.
+ *
+ * Elke rij levert: label, url, mega (bool), alleen_mobiel (bool) en
+ * actief (bool). "Actief" wordt zelf bepaald: de gekoppelde pagina, plus
+ * de eventuele extra pagina's uit 'actief_bij' (zo blijft bijv. Inspiratie
+ * oplichten op toepassingen/reviews-en-cases/downloads).
+ */
+function sokkies_hoofdmenu() {
+	$rijen = function_exists( 'get_field' ) ? get_field( 'hoofdmenu', 'option' ) : null;
+
+	if ( empty( $rijen ) || ! is_array( $rijen ) ) {
+		// Fallback = de statische nav uit htmlv, 1:1.
+		return array(
+			array( 'label' => 'Home',            'url' => home_url( '/' ),               'mega' => false, 'alleen_mobiel' => true,  'actief' => is_front_page() ),
+			array( 'label' => 'Sokkencollectie', 'url' => home_url( '/collectie/' ),     'mega' => true,  'alleen_mobiel' => false, 'actief' => is_page( 'collectie' ) ),
+			array( 'label' => 'Configurator',    'url' => home_url( '/configurator/' ),  'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( 'configurator' ) ),
+			array( 'label' => 'Inspiratie',      'url' => '#',                           'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( array( 'toepassingen', 'reviews-en-cases', 'downloads' ) ) ),
+			array( 'label' => 'Werkwijze',       'url' => home_url( '/werkwijze/' ),     'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( 'werkwijze' ) ),
+			array( 'label' => 'Over ons',        'url' => home_url( '/over-ons/' ),      'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( 'over-ons' ) ),
+			array( 'label' => 'Contact',         'url' => home_url( '/contact/' ),       'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( 'contact' ) ),
+		);
+	}
+
+	$huidig = ( is_page() || is_singular() ) ? get_queried_object_id() : 0;
+	$items  = array();
+
+	foreach ( $rijen as $rij ) {
+		$link  = isset( $rij['link'] ) ? $rij['link'] : array();
+		$url   = is_array( $link ) && ! empty( $link['url'] ) ? $link['url'] : '';
+		$label = trim( (string) ( isset( $rij['label'] ) ? $rij['label'] : '' ) );
+		if ( '' === $label && is_array( $link ) && ! empty( $link['title'] ) ) {
+			$label = $link['title'];
+		}
+		if ( '' === $label ) {
+			continue; // lege rij overslaan
+		}
+
+		// Actief: de pagina waar de link heen wijst, of een van de extra's.
+		$actief = false;
+		if ( $huidig ) {
+			$doel = $url ? url_to_postid( $url ) : 0;
+			if ( $doel && $doel === $huidig ) {
+				$actief = true;
+			}
+			foreach ( (array) ( isset( $rij['actief_bij'] ) ? $rij['actief_bij'] : array() ) as $extra ) {
+				$extra_id = is_object( $extra ) ? $extra->ID : (int) $extra;
+				if ( $extra_id === $huidig ) {
+					$actief = true;
+				}
+			}
+		} elseif ( is_front_page() && $url && untrailingslashit( $url ) === untrailingslashit( home_url( '/' ) ) ) {
+			$actief = true;
+		}
+
+		$items[] = array(
+			'label'         => $label,
+			'url'           => $url ? $url : '#',
+			'target'        => is_array( $link ) && ! empty( $link['target'] ) ? $link['target'] : '',
+			'mega'          => ! empty( $rij['mega'] ),
+			'alleen_mobiel' => ! empty( $rij['alleen_mobiel'] ),
+			'actief'        => $actief,
+		);
+	}
+
+	return $items;
+}

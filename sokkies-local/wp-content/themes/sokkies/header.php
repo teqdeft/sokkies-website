@@ -41,81 +41,20 @@
             </button>
             <div class="navbar-inner">
                 <ul class="menu">
-                    <li class="menu-link menu-home active"><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li>
-                    <li class="menu-link has-mega<?php echo sokkies_actief( array( 'collectie' ) ); ?>"><a href="<?php echo esc_url( home_url( '/collectie/' ) ); ?>">Sokkencollectie <span class="caret"><svg xmlns="http://www.w3.org/2000/svg" width="11.414" height="6.414" viewBox="0 0 11.414 6.414">
+                <?php foreach ( sokkies_hoofdmenu() as $item ) :
+                    $klassen = 'menu-link';
+                    if ( ! empty( $item['alleen_mobiel'] ) ) { $klassen .= ' menu-home'; }
+                    if ( ! empty( $item['mega'] ) )          { $klassen .= ' has-mega'; }
+                    if ( ! empty( $item['actief'] ) )        { $klassen .= ' active'; }
+                ?>
+                    <li class="<?php echo esc_attr( $klassen ); ?>"><a href="<?php echo esc_url( $item['url'] ); ?>"<?php echo ! empty( $item['target'] ) ? ' target="' . esc_attr( $item['target'] ) . '"' : ''; ?>><?php echo esc_html( $item['label'] ); ?><?php if ( ! empty( $item['mega'] ) ) : ?> <span class="caret"><svg xmlns="http://www.w3.org/2000/svg" width="11.414" height="6.414" viewBox="0 0 11.414 6.414">
                         <path id="Path_218" data-name="Path 218" d="M482.224,63.112l5,5,5-5" transform="translate(-481.517 -62.405)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
                         </svg>
                         </span>
-                        </a>
-                        <div class="mega">
-                        <button class="mega-back" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="10" viewBox="0 0 15 10"><path d="M5.2 1 1 5l4.2 4M1 5h13" fill="none" stroke="#28121b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Terug</button>
-                        <div class="mega-mob-title">Sokkencollectie</div>
-                        <div class="bestsellers-col">
-                            <h4>Bestsellers</h4>
-                            <div class="bestsellers">
-                            <?php
-                            $mega_best = function_exists( 'get_field' ) ? get_field( 'mega_bestsellers', 'option' ) : null;
-                            if ( ! $mega_best ) { $mega_best = get_posts( array( 'post_type' => 'sokkies_soktype', 'posts_per_page' => 4, 'fields' => 'ids' ) ); }
-                            foreach ( $mega_best as $type_id ) :
-                              $link  = get_field( 'pagina_link', $type_id );
-                              $href  = ! empty( $link['url'] ) ? $link['url'] : get_permalink( $type_id );
-                              $foto  = get_the_post_thumbnail_url( $type_id, 'large' );
-                              $prijs = get_field( 'prijs_vanaf', $type_id );
-                            ?>
-                            <a href="<?php echo esc_url( $href ); ?>" class="prod-card">
-                              <div class="prod-img-card">
-                                <?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( get_the_title( $type_id ) ); ?>"><?php endif; ?>
-                              </div>
-                                <div class="prod-name"><?php echo esc_html( get_the_title( $type_id ) ); ?></div>
-                                <?php if ( $prijs ) : ?><div class="prod-price">Vanaf <?php echo esc_html( $prijs ); ?> per paar</div><?php endif; ?>
-                            </a>
-                            <?php endforeach; ?>
-                            </div>
-                        </div>
-    
-                        <div class="types-col">
-                            <h4>Meer types</h4>
-                            <div class="types">
-                            <?php
-                            $mega_types = function_exists( 'get_field' ) ? get_field( 'mega_meer_types', 'option' ) : null;
-                            if ( ! $mega_types ) {
-                              $alle       = get_posts( array( 'post_type' => 'sokkies_soktype', 'posts_per_page' => -1, 'fields' => 'ids' ) );
-                              $mega_types = array_values( array_diff( $alle, (array) $mega_best ) );
-                            }
-                            foreach ( $mega_types as $type_id ) :
-                              $link  = get_field( 'pagina_link', $type_id );
-                              $href  = ! empty( $link['url'] ) ? $link['url'] : get_permalink( $type_id );
-                              $foto  = get_the_post_thumbnail_url( $type_id, 'thumbnail' );
-                              $naam  = get_field( 'korte_naam', $type_id ) ?: get_the_title( $type_id );
-                            ?>
-                            <a href="<?php echo esc_url( $href ); ?>" class="type-item">
-                              <div class="type-img">
-                                <?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt=""><?php endif; ?>
-                              </div>
-                              <?php echo esc_html( $naam ); ?>
-                            </a>
-                            <?php endforeach; ?>
-                            </div>
-                        </div>
-    
-                        <div class="mega-usps">
-                          <h4></h4>
-                            <span>Vanaf <?php echo esc_html( sokkies_optie( 'minimale_afname', '30' ) ); ?> paar</span>
-                            <?php
-                            $mega_usps = function_exists( 'get_field' ) ? get_field( 'mega_usps', 'option' ) : null;
-                            if ( ! $mega_usps ) { $mega_usps = array( array( 'tekst' => 'Gratis ontwerp binnen 24u' ), array( 'tekst' => 'Gratis verzending' ) ); }
-                            foreach ( $mega_usps as $usp ) : ?>
-                            <span><?php echo esc_html( $usp['tekst'] ); ?></span>
-                            <?php endforeach; ?>
-                            <a class="cta-light" href="<?php echo esc_url( home_url( '/collectie/' ) ); ?>">Bekijk collectie</a>
-                        </div>
-                        </div>
+                        <?php endif; ?></a>
+                        <?php if ( ! empty( $item['mega'] ) ) { get_template_part( 'template-parts/deel', 'mega' ); } ?>
                     </li>
-                    <li class="menu-link<?php echo sokkies_actief( array( 'configurator' ) ); ?>"><a href="<?php echo esc_url( home_url( '/configurator/' ) ); ?>">Configurator</a></li>
-                    <li class="menu-link<?php echo sokkies_actief( array( 'toepassingen', 'reviews-en-cases', 'downloads' ) ); ?>"><a href="#">Inspiratie</a></li>
-                    <li class="menu-link<?php echo sokkies_actief( array( 'werkwijze' ) ); ?>"><a href="<?php echo esc_url( home_url( '/werkwijze/' ) ); ?>">Werkwijze</a></li>
-                    <li class="menu-link<?php echo sokkies_actief( array( 'over-ons' ) ); ?>"><a href="<?php echo esc_url( home_url( '/over-ons/' ) ); ?>">Over ons</a></li>
-                    <li class="menu-link<?php echo sokkies_actief( array( 'contact' ) ); ?>"><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Contact</a></li>
+                <?php endforeach; ?>
                 </ul>
                 <div class="actions">
                   <div class="search-header-icon">
