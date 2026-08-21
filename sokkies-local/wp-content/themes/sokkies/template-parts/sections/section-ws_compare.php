@@ -1,8 +1,8 @@
 <?php
 /**
  * Sectie: Sokkies vs. de rest (.ws-compare) — 1:1 uit waarom-sokkies.html.
- * Leeg 'wij'-veld = groene check; 'X' in het rest-veld = rode X; andere
- * tekst (Soms/Vaak) toont als tekst.
+ * Leeg 'wij'-veld = groene check; leeg óf 'X' in het rest-veld = rode X;
+ * andere tekst (Soms/Vaak) toont als tekst.
  */
 $titel = get_sub_field( 'titel' ) ?: 'Hoe verhoudt Sokkies zich?';
 $eigen = get_sub_field( 'rijen' );
@@ -39,7 +39,7 @@ $rijen = $eigen ?: $standaard;
           <tr>
             <th scope="row"><?php echo esc_html( $rij['label'] ); ?></th>
             <td class="ws-cmp-sokkies"><?php if ( '' === trim( (string) $rij['wij'] ) ) : ?><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img" aria-label="Ja"><circle cx="15" cy="15" r="15" fill="#1dd665"/><g transform="translate(9 11)"><path d="M110.16,670.539l3.6,3.6,8-8" transform="translate(-110.16 -666.138)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.5"/></g></svg><?php else : echo esc_html( $rij['wij'] ); endif; ?></td>
-            <td><?php if ( 'X' === strtoupper( trim( (string) $rij['rest'] ) ) ) : ?><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img" aria-label="Nee"><circle cx="15" cy="15" r="15" fill="#fa4b46"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.5"><line x1="10.5" y1="10.5" x2="19.5" y2="19.5"/><line x1="19.5" y1="10.5" x2="10.5" y2="19.5"/></g></svg><?php else : echo esc_html( $rij['rest'] ); endif; ?></td>
+            <td><?php $rest_w = trim( (string) $rij['rest'] ); if ( '' === $rest_w || 'X' === strtoupper( $rest_w ) ) : // leeg óf X = rode X (teamfeedback: leeg veld hoort het standaard-kruis te tonen) ?><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img" aria-label="Nee"><circle cx="15" cy="15" r="15" fill="#fa4b46"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.5"><line x1="10.5" y1="10.5" x2="19.5" y2="19.5"/><line x1="19.5" y1="10.5" x2="10.5" y2="19.5"/></g></svg><?php else : echo esc_html( $rest_w ); endif; ?></td>
           </tr>
           <?php endforeach; ?>
         </tbody>
