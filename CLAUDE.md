@@ -589,7 +589,47 @@
   (collection) accepteerde >4 soktypes en brak het grid — relationship
   'max' => 4 + harde array_slice(0,4) in de partial (geldt voor alle 3
   stijlen; instructie verwijst naar types_grid voor alle 10); home
-  rendert weer 4 ondanks oude 6-selectie. ALLE 16 PAGINA'S SAMENGESTELD —
+  rendert weer 4 ondanks oude 6-selectie. JURIDISCHE PAGINA CMS-BAAR (2026-08-21, verzoek Kulwant): NIEUWE
+  categorie Juridisch met layout 'juridisch' ("Juridische pagina (index +
+  artikelen)"). juridisch.html is in htmlv expliciet een TEMPLATE ("titel
+  en datum per juridische pagina aanpassen"), dus ÉÉN layout voor álle
+  juridische pagina's (voorwaarden/privacy/cookies). Velden: kruimelpad
+  (leeg = titel), titel (leeg = paginatitel), datum, intro (wysiwyg),
+  index_titel (leeg = "Op deze pagina:"), artikelen-repeater (kop +
+  wysiwyg-tekst) en print_knop (default aan); rijke tekst loopt via
+  sokkies_rijke_tekst() — zelfde guard als de FAQ-antwoorden.
+  NUMMERING + ANKERS TELLEN ZELF: artikel N krijgt id="jr-N", de kop
+  wordt "N. Titel" en het index-item linkt naar #jr-N — index en
+  artikelen kunnen niet meer uit de pas lopen (statisch stonden ze los
+  van elkaar onderhouden). BEWUSTE AFWIJKING #3 van de "leeg = statische
+  inhoud"-regel: de juridische INHOUD (titel/datum/intro/artikelen) valt
+  NIET terug op de statische tekst — een lege privacyverklaring zou
+  anders de volledige algemene voorwaarden tonen, en een overgeërfde
+  "laatst bijgewerkt"-datum is op een juridische pagina misleidend;
+  alleen de chrome (index-kop, printknop) heeft een fallback.
+  PAGE-SCOPE NIEUW PATROON: .juridisch hangt in htmlv aan de slug, maar
+  sokkies_main_class() zet die class nu op basis van de SECTIE (de
+  secties-meta bevat 'juridisch') — zo krijgt elke nieuwe juridische
+  pagina de beige kop zonder dat de uitzonderingsmap moet meegroeien.
+  Pagina #813 'Juridisch' (slug juridisch) aangemaakt en 1:1 geseed uit
+  juridisch.html via DOM-EXTRACTIE i.p.v. overtypen (de bekende
+  parafrase-les): 15 artikelen, index-labels bleken exact gelijk aan de
+  artikelkoppen en de ids liepen sequentieel jr-1..jr-15, dus de
+  auto-nummering is een getrouwe reproductie. Geen mobiele balk,
+  volledige footer, promokaart uit — conform de statische pagina.
+  VERIFICATIE: .jr-content genormaliseerd BYTE-IDENTIEK aan htmlv (5680
+  bytes), de kop identiek op twee bewuste verschillen na (home-link →
+  home_url(), svg-fill → currentColor conform de kruimelpad-teamfeedback
+  van 2026-08-20, en de svg-export-id's eruit zoals in simple_hero); op
+  390 gemeten tégen de statische pagina = identiek (bodyTop 407,
+  indexTop 770, index position:fixed onderbalk, 0 h-scroll); accordeon
+  toggelt, alle 15 ankers resolven, printknop aanwezig, 0 console-errors.
+  Thumbnail juridisch.png (1600px) via een tijdelijke minipagina —
+  htmlv daarna weer opgeruimd (0 wijzigingen in htmlv/). LET OP: de
+  footer-legal-links (Algemene voorwaarden / Cookieverklaring /
+  Privacy) zijn nog #-stubs, dus de pagina is voorlopig alleen via
+  /juridisch/ bereikbaar; privacy- en cookiepagina wachten op echte
+  klantteksten. ALLE 16 PAGINA'S SAMENGESTELD —
   formulierverzending/wizard-eindpunt = Gravity Forms-fase; daarna
   TranslatePress + launch-checklist (mediacompressie, DEV-logger uit
   custom.js, favicon-export, analytics/cookiebanner). Mediabibliotheek: standaardset slider1-8

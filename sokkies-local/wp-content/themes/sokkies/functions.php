@@ -119,7 +119,18 @@ function sokkies_main_class() {
 	$map  = array(
 		'veelgestelde-vragen' => 'faq-page',
 	);
-	return isset( $map[ $slug ] ) ? $map[ $slug ] : $slug;
+	$klasse = isset( $map[ $slug ] ) ? $map[ $slug ] : $slug;
+
+	// De juridische opmaak (beige kop, donkere tekst) hangt in htmlv aan
+	// .juridisch. Die scope volgt hier de SECTIE, niet de slug — zo werkt
+	// elke nieuwe juridische pagina (privacy, cookies, …) meteen goed,
+	// zonder dat de uitzonderingsmap hierboven moet meegroeien.
+	$layouts = get_post_meta( get_the_ID(), 'secties', true );
+	if ( is_array( $layouts ) && in_array( 'juridisch', $layouts, true ) && 'juridisch' !== $klasse ) {
+		$klasse .= ' juridisch';
+	}
+
+	return $klasse;
 }
 
 /**
