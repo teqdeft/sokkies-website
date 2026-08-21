@@ -287,3 +287,38 @@ function sokkies_hoofdmenu() {
 
 	return $items;
 }
+
+/**
+ * De gele knop rechts in de headerbalk.
+ *
+ * In htmlv is dit op alle 21 pagina's een <button class="cta"> ZONDER
+ * link — een stub, net als "Bekijk collectie" in de mega was. Elders in
+ * dezelfde build staat dezelfde tekst wél als <a href="offerte.html">,
+ * dus dat is de bedoelde bestemming en tevens de fallback hier.
+ *
+ * Geeft array(label, url, target) of null wanneer de knop uit staat.
+ */
+function sokkies_header_cta() {
+	$tonen = function_exists( 'get_field' ) ? get_field( 'cta_tonen', 'option' ) : null;
+	if ( false === $tonen ) {
+		return null;
+	}
+
+	$link  = function_exists( 'get_field' ) ? get_field( 'cta_link', 'option' ) : null;
+	$label = trim( (string) sokkies_optie( 'cta_label', '' ) );
+
+	if ( '' === $label && is_array( $link ) && ! empty( $link['title'] ) ) {
+		$label = $link['title'];
+	}
+	if ( '' === $label ) {
+		$label = 'Gratis proefdesign';
+	}
+
+	$url = is_array( $link ) && ! empty( $link['url'] ) ? $link['url'] : home_url( '/offerte/' );
+
+	return array(
+		'label'  => $label,
+		'url'    => $url,
+		'target' => is_array( $link ) && ! empty( $link['target'] ) ? $link['target'] : '',
+	);
+}

@@ -100,7 +100,10 @@
                         </g>
                     </svg>
                   </button>
-                  <button class="cta">Gratis proefdesign</button>
+                  <?php $sokkies_cta = sokkies_header_cta(); ?>
+                  <?php if ( $sokkies_cta ) : ?>
+                  <a class="cta" href="<?php echo esc_url( $sokkies_cta['url'] ); ?>"<?php echo $sokkies_cta['target'] ? ' target="' . esc_attr( $sokkies_cta['target'] ) . '"' : ''; ?>><?php echo esc_html( $sokkies_cta['label'] ); ?></a>
+                  <?php endif; ?>
                 </div>
             </div>
 

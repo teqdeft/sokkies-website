@@ -2132,6 +2132,36 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				),
 			),
 
+			array(
+				'key'     => 'field_si_cta_uitleg',
+				'label'   => '',
+				'type'    => 'message',
+				'message' => 'De gele knop rechts in de bovenbalk. In het ontwerp was dit een knop zonder link; hier stel je label en bestemming in.',
+			),
+			array(
+				'key'           => 'field_si_cta_tonen',
+				'label'         => 'Knop tonen',
+				'name'          => 'cta_tonen',
+				'type'          => 'true_false',
+				'ui'            => 1,
+				'default_value' => 1,
+			),
+			array(
+				'key'          => 'field_si_cta_label',
+				'label'        => 'Knoptekst',
+				'name'         => 'cta_label',
+				'type'         => 'text',
+				'instructions' => 'Leeg = "Gratis proefdesign".',
+				'placeholder'  => 'Gratis proefdesign',
+			),
+			array(
+				'key'          => 'field_si_cta_link',
+				'label'        => 'Knoplink',
+				'name'         => 'cta_link',
+				'type'         => 'link',
+				'instructions' => 'Leeg = de offertepagina.',
+			),
+
 			array( 'key' => 'field_si_tab_mega', 'label' => 'Uitklapmenu (Sokkencollectie)', 'type' => 'tab' ),
 			array(
 				'key'           => 'field_si_mega_bestsellers',

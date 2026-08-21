@@ -663,7 +663,26 @@
   LET OP: de optiewaarde staat in de DB, dus LIVE draait op de
   code-fallback tot iemand het tabblad één keer opslaat — dat rendert
   exact hetzelfde menu, dus de site is meteen goed; pas bij wijzigen
-  moeten de items daar worden ingevuld. ALLE 16 PAGINA'S SAMENGESTELD —
+  moeten de items daar worden ingevuld. HEADERKNOP "GRATIS PROEFDESIGN" DYNAMISCH
+  (2026-08-21, melding Kulwant: knop had geen link): in htmlv is dit op
+  alle 21 pagina's een <button class="cta"> ZONDER href — een stub, net
+  als "Bekijk collectie" in de mega was. Dezelfde knoptekst staat elders
+  in dezelfde build wél als <a href="offerte.html">, dus /offerte/ is de
+  bedoelde bestemming en nu ook de fallback. Website-instellingen →
+  Hoofdmenu kreeg onderaan: cta_tonen (default aan), cta_label (leeg =
+  "Gratis proefdesign") en cta_link (leeg = /offerte/, target
+  ondersteund) — gerenderd via sokkies_header_cta() in functions.php.
+  BEWUSTE AFWIJKING #4 (pixels): een <button> erft géén font-family, dus
+  de statische knop rendert in ARIAL terwijl élke andere .cta op de site
+  roc-grotesk is. Als <a> erft hij wel, waardoor de knop 43→45px hoog en
+  185,9→189,8px breed wordt op 1920/1600/1440/1280 (768: 35→36 en
+  145,6→148,9). Font-size blijft 15px, padding/kleur/radius identiek, de
+  .nav-wrap blijft 68px hoog (geen layoutverschuiving) en ≤520 is de
+  knop in beide varianten display:none. De knop volgt nu dus de
+  huisstijl in plaats van de Arial-toevalligheid van de stub — terug te
+  draaien met één regel als het XD de smallere knop wil.
+  Getest: standaard/aangepast label+link+target/uit-toggle, 10 routes
+  200, 0 console-errors. ALLE 16 PAGINA'S SAMENGESTELD —
   formulierverzending/wizard-eindpunt = Gravity Forms-fase; daarna
   TranslatePress + launch-checklist (mediacompressie, DEV-logger uit
   custom.js, favicon-export, analytics/cookiebanner). Mediabibliotheek: standaardset slider1-8
