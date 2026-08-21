@@ -706,12 +706,106 @@
   deel-mini-footer.php staat het telefoonnummer als ZICHTBARE TEKST
   hardcoded (+31 (0)413 410 411) terwijl de href wél
   sokkies_tel_href() gebruikt — wijzigt iemand het nummer in
-  Website-instellingen, dan verspringt de link maar niet de tekst. ALLE 16 PAGINA'S SAMENGESTELD —
+  Website-instellingen, dan verspringt de link maar niet de tekst.
+  FIX #4 (2026-08-19,
+  gift-sectie home): volledig lege repeater-rijen renderden als blanco
+  kaart → array_filter in de partial (leeg = geen foto/titel/punten/
+  link); kaarten-repeater 'max' => 4 + harde array_slice; en de
+  "Meer informatie"-link rendert alleen nog bij gevuld linkveld (eigen
+  titel + target ondersteund; divider zit op .gift-link en verdwijnt
+  mee) — statische fallback ongewijzigd; getest via tijdelijke pagina
+  met 5 rijen (3 gevuld/1 leeg/1 extra → 4 kaarten, 1 link), commit
+  8732806. FIX #5 (2026-08-19, cases-slider home): slider stopte na
+  één stap — (a) de cases-nav-pijlen zitten IN elke slide (crossfade
+  stapelt ze) maar alleen de eerste set was gewired → nu arrays van
+  álle .case-prev/.case-next naar Swiper (thema-custom.js; htmlv
+  bewust ongewijzigd, zelfde latente bug zit daar nog); (b) Swiper
+  11-loop hapert op precies 2 slides (andere slide is tegelijk
+  prev+next) → bij exact 2 cases verdubbelt deel-cases.php de set
+  (zelfde truc als testimonial ≥8/hero ≥16, crossfade maakt het
+  onzichtbaar). Geldt voor alle cases-secties. Browser-geverifieerd
+  (wrapt beide richtingen oneindig; LET OP pane-testles: bevroren
+  transitieklok laat sw.animating vast op true hangen — bij
+  slidertests animating resetten + speed 0). Autoplay blijft bewust
+  uit (staat óók in htmlv uitgecommentarieerd — designkeuze), commit
+  370609a. BEWUSTE AFWIJKING #2 (2026-08-19, verzoek Kulwant):
+  .case-text h3 max-width:560px in THEMA-style.css-basis — lange
+  CMS-casetitels liepen desktop de blauwe shape in; banden zetten
+  alleen font-size (geen conflict), smallere kolommen al <560 dus
+  inert; htmlv onaangeroerd (commit 2c7aac6). FIX #6 (2026-08-19,
+  verzoek Kulwant): designed-strip navigatiepijlen (.designed-nav
+  d-prev/d-next) verwijderd uit deel-designed.php — de strip
+  autoscrollt sinds QA #11 continu, pijlen overbodig; JS-wiring is
+  null-guarded en bleef staan (commit 5353d37). CI/CD DOOR TEAM
+  (2026-08-19, commit 4baaad2): .github/workflows/deploy.yml —
+  elke push naar main die sokkies-local/** raakt deployt automatisch
+  via FTPS (SamKirkland/FTP-Deploy-Action) naar
+  /public_html/sokkies-website/sokkies-local/ op dev.studioubique.com
+  (secrets FTP_* in GitHub; wp-config.php/.env/.git uitgesloten;
+  clean-slate uit). HANDMATIG git pull OP DE SERVER IS VERVALLEN —
+  pushen = live; na push even wachten en live curl-verifiëren. LET OP:
+  de CI synct alléén sokkies-local/** — documentation/ (staat live via
+  de eerdere handmatige pull) vergt bij updates een handmatige pull.
+  TEAM (Teqdeft, feedback via Slack #lennart-sokkies-feedback):
+  Rakesh = projectmanager, Devinder + Sham Lal (nieuw, 2026-08-20) =
+  testen/content vullen; feedbackloop-workflow staat in het
+  scratchpad-statusbestand slack-feedback-state.md. TEAMFEEDBACK-FIXES
+  (2026-08-20): timeline-dashes verplaatst naar ín .timeline-nav
+  (mobiele onderbalk rendert nu; 1a177da), steps-layout kreeg de 6
+  pluspunten-chips die de statische werkwijze onderin de sectie heeft
+  (toggle null-default aan; 8fd911f), .step-icon svg-maatregels
+  verbreed naar svg+img (geuploade PNG-iconen waren natuurlijke
+  grootte; 35e9b9b), en NIEUW layout 'simple_hero' ("Paginakop licht
+  (beige, gecentreerd)", categorie Paginakoppen — reviews-en-cases
+  bleek statisch de lichte simple-hero te gebruiken, de pagina was met
+  de coral banner-hero samengesteld; veldnamen breadcrumb/titel/
+  subtekst matchen de hero-layout, leeg = statische copy; 65d9412 —
+  LET OP: de LIVE pagina moet door het team in het CMS geswapt worden,
+  lokaal is de swap via meta-script gedaan; team heeft de swap
+  2026-08-20 uitgevoerd en bevestigd). Verder: reviews-slider kreeg de
+  ontbrekende t-prev/t-next-pijlen in deel-testimonial (9d4b3d3), de
+  chips-repeaters (steps+impact) max 6 + lege-rijenfilter (112c8c2),
+  .feat-icon img max-height 41px basis (7fbb188) en de mobiele
+  tijdlijn-onderbalk padding 70→120 + z-index:2 (57f8091 — LES:
+  statisch goedgekeurde spacing ging uit van korte demo-teksten; lange
+  CMS-teksten schoven de swiper-wrapper over de balk waardoor kliks
+  stierven; bij vaste zones altijd rekenen op variabele contentlengte).
+  STAANDE REGEL (Kulwant 2026-08-20): elke fix vóór push ook op mobiel
+  (390) verifiëren + grep welke banden de geraakte selector zetten.
+  GIT + GITHUB OPGEZET
+  (2026-08-19): repo op main/ (initial commit 8e9a791, branch main) —
+  .gitignore sluit wp-config.php/uploads/logs uit;
+  wp-config.example.php + SETUP.md (Engels, team-onboarding) erbij;
+  ACF Pro zit IN de private repo (agency-praktijk). Remote:
+  git@github.com:teqdeft/sokkies-website.git (PRIVATE; via Kulwants
+  Chrome-sessie aangemaakt — teqdeft is een gedeeld agency-account,
+  er stond al een "Vishal MacBook Key"). Push via NIEUWE ssh-sleutel
+  ~/.ssh/id_ed25519 ("Kulwant MacBook — sokkies dev" in GitHub-keys);
+  git-identity gezet (Kulwant/onlykulwantjee@gmail.com, initial commit
+  ge-amend met --reset-author). LES: '/' typen in GitHub-formulieren
+  opent de zoek-overlay — velden via form_input zetten. VOLGENDE:
+  live-server (URL/SSH/DB van Kulwant) → dump met serialized-safe
+  URL-replace + uploads-sync + .htaccess/RewriteBase + flush. ALLE 16 PAGINA'S SAMENGESTELD —
   formulierverzending/wizard-eindpunt = Gravity Forms-fase; daarna
   TranslatePress + launch-checklist (mediacompressie, DEV-logger uit
   custom.js, favicon-export, analytics/cookiebanner). Mediabibliotheek: standaardset slider1-8
   geïmporteerd (ID 41-48) via wp-load-script met MAMP-php
   (mysqli.default_socket naar /Applications/MAMP/tmp/mysql/mysql.sock).
+
+## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
+## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
+## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
+## (Kulwants-MacBook-Pro.local = root/root, anders root zonder
+## wachtwoord) — NIET terugzetten naar een vaste waarde.
+## (2) Content leeft in de LIVE database (dev.studioubique.com);
+## lokale databases zijn wegwerp-sandboxen per machine. NOOIT een
+## lokale DB naar live pushen.
+## (3) Dropbox + git = risico: lege .git/rebase-merge-husks (leeg =
+## weggooien vóór pull) en conflict-copies bij gelijktijdige edits —
+## coördineer wie wanneer themabestanden bewerkt; aanbevolen eindstand:
+## collega werkt vanuit een eigen git-clone buiten Dropbox (SETUP.md).
+## (4) Fixes: reproduceren → fixen → band+mobiel (390) verifiëren →
+## commit/push (CI deployt automatisch) → live verifiëren.
 
 Static marketing site for Sokkies (sokkies.nl), a Dutch B2B custom-printed-socks company.
 All content is Dutch. No build system, no framework, no backend — plain HTML/CSS/JS.
