@@ -788,7 +788,24 @@
   FAQ-antwoorden zijn nog ongestyled (staat op lichte achtergrond, dus
   leesbaar, maar zonder marges/markeropmaak). LOKAAL: de 9 spec-rijen van
   Bamboesokken zijn uit LIVE overgenomen om dit te kunnen testen; lokaal
-  stonden er 0. 
+  stonden er 0.  SPECS-SECTIE GROEIT NU MEE (2026-08-24, vervolgmelding): met een lang
+  spec-antwoord liep de tekst ONDER het blauwe vlak door en stond hij op
+  wit. Oorzaak: .specs-section gebruikt bg_sock_dark-blue.svg met
+  background-size:cover, en die vorm loopt onderin taps toe — de onderrand
+  van het blauw zit op 62-82% van de SVG-hoogte (rechts ~67%). Zolang de
+  sectie kort is valt die rand buiten beeld en oogt het vlak recht; groeit
+  de sectie (accordeon open, CMS-tekst), dan schuift de punt mee omhoog en
+  valt de tekst eronder. Een simpele background-color kon niet: de
+  BOVENkant van de vorm is gebogen (de vorm begint op y=104 tot y=233,
+  vandaar padding-top 234px) en zou dan dichtgesmeerd worden.
+  OPLOSSING: nieuw asset bg_sock_dark-blue-tall.svg — identieke bovenrand,
+  plus een rect vanaf y=260 (daar is de vorm sowieso schermbreed, gemeten:
+  100% dekking van y=260 t/m y=1000) tot de onderkant van het canvas. Zo
+  vult het blauw altijd door tot onder de tekst, ongeacht de hoogte.
+  Geverifieerd door de SVG op canvas te sampelen: bovenrand exact gelijk
+  (104/152/233 per kolom) en 100% dekking t/m y=1644. Alleen de
+  THEMA-css wijst naar het nieuwe bestand; het origineel blijft staan en
+  htmlv is onaangeroerd. 
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

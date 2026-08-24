@@ -5464,7 +5464,7 @@ font-weight: 600;
   }
   /* De specs (indigo, accordions) */
   .specs-section{
-    background:url(../media/bg_sock_dark-blue.svg) no-repeat center top;
+    background:url(../media/bg_sock_dark-blue-tall.svg) no-repeat center top;
     background-size:cover;
     padding: 234px 0 50px;
   }
