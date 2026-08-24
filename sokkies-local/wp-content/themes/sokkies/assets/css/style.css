@@ -8600,3 +8600,25 @@ main.contact{
     max-width:880px;
     margin:26px auto 0;
   }
+
+/* ===== Inklapbaar merkverhaal (WP-toevoeging, staat niet in htmlv) =====
+   De sectie kan per pagina worden ingeklapt; 'Lees meer' klapt uit.
+   Geen mask/gradient-fade: die zijn op dit project verboden (zie CLAUDE.md,
+   mask rendert onbetrouwbaar in Chrome op macOS). Gewoon een nette clip. */
+  .brand-collapse{
+    overflow:hidden;
+    transition:max-height .35s ease;
+  }
+  .brand-intro-toggle{
+    cursor:pointer;
+  }
+  /* pijl wijst omlaag bij ingeklapt, omhoog zodra de tekst openstaat */
+  .brand-intro-toggle svg{
+    transition:transform .25s ease;
+  }
+  .brand-intro-toggle[aria-expanded="true"] svg{
+    transform:rotate(180deg);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .brand-collapse,.brand-intro-toggle svg{transition:none;}
+  }

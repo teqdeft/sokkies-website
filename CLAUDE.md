@@ -706,7 +706,35 @@
   deel-mini-footer.php staat het telefoonnummer als ZICHTBARE TEKST
   hardcoded (+31 (0)413 410 411) terwijl de href wél
   sokkies_tel_href() gebruikt — wijzigt iemand het nummer in
-  Website-instellingen, dan verspringt de link maar niet de tekst.
+  Website-instellingen, dan verspringt de link maar niet de tekst. MERKVERHAAL INKLAPBAAR (2026-08-24, verzoek Kulwant +
+  referentievideo uit het XD): layout brand_intro kreeg twee velden —
+  'inklappen' (true_false, default UIT) en 'inklap_hoogte' (number,
+  default 340px, conditional). Staat inklappen aan, dan wordt de tekst
+  (tekst_1 + tussenkop + tekst_2) in .brand-collapse gewikkeld en wordt
+  de Lees meer-link een UITKLAPKNOP (href="#", data-brand-toggle,
+  aria-expanded) in plaats van een doorlink — precies wat de XD-video
+  toont: ingeklapt "Lees meer" met pijl omlaag, uitgeklapt dezelfde
+  tekst met de pijl 180° gedraaid. JS in THEMA-custom.js, CSS in
+  THEMA-style.css (htmlv onaangeroerd). BEWUST GEEN gradient-fade over
+  de afknip: masks zijn op dit project verboden (Chrome/macOS-incident),
+  dus een nette clip. De ingeklapte hoogte wordt in JS AFGEROND OP HELE
+  TEKSTREGELS (lineHeight van de eerste <p>) — een kale px-waarde knipt
+  anders willekeurig dwars door een regel; 340 wordt zo 336 = 14 regels.
+  Past de tekst al binnen de hoogte, dan verdwijnt de knop en gaat de
+  clip eraf (geen dode "Lees meer"). <noscript> zet de max-height uit,
+  zodat de tekst zonder JS volledig staat; de content zit sowieso altijd
+  in de DOM (SEO/screenreaders ongemoeid). AAN op HOME sectie 9;
+  werkwijze/configurator/toepassingen staan UIT en houden hun gewone
+  doorlink (geverifieerd: wrapper 0, href /over-ons/ resp.
+  /toepassingen/). Getest 1600 + 390: ingeklapt 336px, uitgeklapt 946
+  resp. 1471px, alle tekst zichtbaar, 0 h-scroll, 0 console-errors; ook
+  de "past-al"-situatie getest met hoogte 5000. LES bij testen in een
+  VERBORGEN browserpaneel: CSS-transities lopen daar niet door, dus meet
+  met transition:none — anders lijkt de hoogte onveranderd. LOKALE DB:
+  home's titel/tekst_1 zijn uit de LIVE site overgenomen (het team had
+  daar SEO-tekst toegevoegd die lokaal ontbrak) — anders viel er niets
+  in te klappen; dat betekent ook dat lokaal en live NIET overal gelijk
+  zijn, live loopt op content voor. 
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

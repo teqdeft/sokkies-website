@@ -1335,3 +1335,59 @@
     });
   });
 })();
+
+  /* ===== Inklapbaar merkverhaal: 'Lees meer' klapt de tekst uit =====
+     WP-toevoeging (htmlv kent deze sectie alleen als doorlink). De
+     ingeklapte hoogte staat inline op het element, uit het CMS-veld. */
+  (function () {
+    document.querySelectorAll('[data-brand-collapse]').forEach(function (vak) {
+      var inner = vak.closest('.brand-intro-inner');
+      var knop  = inner && inner.querySelector('[data-brand-toggle]');
+      if (!knop) { return; }
+
+      var dicht = parseInt(vak.style.maxHeight, 10) || 340;
+
+      // Op hele tekstregels afronden, zodat de afknip nooit door een
+      // regel heen valt (een kale px-waarde doet dat willekeurig wel).
+      var eerste = vak.querySelector('p');
+      if (eerste) {
+        var regel = parseFloat(getComputedStyle(eerste).lineHeight);
+        if (regel > 0) {
+          var regels = Math.max(1, Math.floor(dicht / regel));
+          dicht = Math.round(regels * regel);
+          vak.style.maxHeight = dicht + 'px';
+        }
+      }
+
+      // Past alles al binnen de ingeklapte hoogte? Dan is inklappen zinloos.
+      if (vak.scrollHeight <= dicht + 8) {
+        vak.classList.remove('is-collapsed');
+        vak.style.maxHeight = '';
+        knop.style.display = 'none';
+        return;
+      }
+
+      var open = false;
+      var zet = function (nieuw) {
+        open = nieuw;
+        knop.setAttribute('aria-expanded', String(open));
+        vak.classList.toggle('is-collapsed', !open);
+        vak.style.maxHeight = open ? vak.scrollHeight + 'px' : dicht + 'px';
+      };
+
+      knop.addEventListener('click', function (e) {
+        e.preventDefault();
+        zet(!open);
+      });
+
+      // Na het uitklappen de vaste hoogte loslaten, zodat herschalen
+      // of lettertypes-die-later-laden de tekst niet afknijpen.
+      vak.addEventListener('transitionend', function (e) {
+        if (e.propertyName === 'max-height' && open) { vak.style.maxHeight = 'none'; }
+      });
+
+      window.addEventListener('resize', function () {
+        if (!open) { vak.style.maxHeight = dicht + 'px'; }
+      });
+    });
+  })();
