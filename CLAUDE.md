@@ -860,7 +860,31 @@
   het via ::-webkit-scrollbar op 4px zetten werkt NIET, Chrome laat
   scrollbar-width voorgaan en het werd zelfs 125px). Bewuste keuze: liever
   10px smaller met een zichtbare scrollhint dan een onzichtbare scrollbar.
-  Bij 5 of minder foto's verandert er niets. 
+  Bij 5 of minder foto's verandert er niets.  ZOEKEN WERKT (2026-08-24, melding Kulwant): het zoekveld in de
+  header was een stub — geen action, geen name="s" — en er was geen
+  search.php. Drie dingen gedaan. (1) FORMULIER: method=get, action
+  home_url en name="s"; de term komt terug in het veld via
+  get_search_query(). (2) SEARCH.PHP: nieuwe template, opgebouwd uit
+  bestaande componenten (simple-hero + eigen resultatenlijst .zr-*),
+  met resultaatteller, herhaald zoekveld, paginering en een lege staat
+  met suggestielinks. (3) WAT er doorzocht wordt — dit was de kern:
+  pagina's zijn gebouwd met de ACF-sectiebuilder, dus post_content is
+  LEEG en standaard WordPress-zoeken vindt alleen titels. Daarom een
+  posts_join/posts_where/posts_distinct-set die ook in de postmeta zoekt,
+  met meta_key NOT LIKE '_%' zodat ACF's veldsleutel-rijen (field_xxx)
+  buiten beeld blijven, en DISTINCT omdat de join anders één pagina per
+  match teruggeeft. Via pre_get_posts blijft het zoekbereik beperkt tot
+  page + sokkies_soktype + sokkies_case: alleen types met een eigen
+  klikbare URL. FAQ/reviews/logo's zijn hulp-CPT's zonder permalink,
+  een treffer daarop zou nergens heen leiden. exclude_from_search in
+  cpt.php is NIET aangepast — met een expliciete post_type-lijst is dat
+  niet nodig. Getest: "hypoallergeen" (staat alleen in de pdp_specs van
+  bamboesokken) vindt Bamboesokken, "Sanquin" (alleen in een case-veld)
+  vindt die case, "One Tree Planted" 7 pagina's — alle drie zouden met
+  standaardzoeken 0 opleveren. Alle resultaatlinks 200, geen duplicaten,
+  lege zoekopdracht en 0-resultaten netjes afgevangen. LET OP mobiel:
+  .cta is ≤520 sitebreed width:100%, dus veld+knop pasten niet naast
+  elkaar (39px h-scroll); .zr-form stapelt daar nu. 
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

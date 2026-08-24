@@ -8695,3 +8695,107 @@ main.contact{
   @media (prefers-reduced-motion: reduce){
     .brand-collapse,.brand-intro-toggle svg{transition:none;}
   }
+
+/* ===== Zoekresultaten (WP-toevoeging; htmlv had een zoekveld zonder
+   werking, dus er bestond geen opmaak voor deze pagina) ===== */
+  .zoekresultaten .zr-section{
+    background:var(--light-beige);
+    padding:60px 0 110px;
+  }
+  .zr-form{
+    display:flex;
+    gap:12px;
+    margin-bottom:40px;
+  }
+  .zr-form input[type="search"]{
+    flex:1 1 auto;
+    min-width:0;
+    padding:14px 22px;
+    border:1px solid rgb(40 18 27 / 25%);
+    border-radius:50px;
+    background:#fff;
+    font-family:var(--roc-grotesk);
+    font-size:var(--body-font-size);
+    color:var(--text);
+  }
+  .zr-form input[type="search"]:focus{
+    outline:none;
+    border-color:var(--coral);
+  }
+  .zr-form .cta{ flex:0 0 auto; }
+  .zr-list{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .zr-item a{
+    display:block;
+    background:#fff;
+    border:1px solid rgb(40 18 27 / 12%);
+    border-radius:25px;
+    padding:26px 30px;
+    text-decoration:none;
+    color:var(--text);
+    transition:border-color .2s, transform .2s;
+  }
+  .zr-item a:hover{
+    border-color:var(--coral);
+    transform:translateY(-2px);
+  }
+  .zr-type{
+    display:inline-block;
+    font-size:var(--body-sm-font-size);
+    font-weight:600;
+    color:var(--coral);
+    margin-bottom:6px;
+  }
+  .zr-item h2{
+    font-size:var(--h5-font-size);
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  .zr-item p{
+    font-size:var(--body-font-size);
+    line-height:1.6;
+    margin-bottom:10px;
+  }
+  .zr-link{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-weight:600;
+    font-size:var(--body-font-size);
+    transition:gap .2s;
+  }
+  .zr-item a:hover .zr-link{ gap:12px; }
+  .zr-leeg p{ font-size:var(--body-lg-font-size); margin-bottom:18px; }
+  .zr-suggesties{ display:flex; flex-wrap:wrap; gap:12px; }
+  .zr-suggesties a{
+    background:#fff;
+    border:1px solid rgb(40 18 27 / 20%);
+    border-radius:50px;
+    padding:10px 20px;
+    text-decoration:none;
+    color:var(--text);
+    font-weight:600;
+    font-size:var(--body-font-size);
+  }
+  .zr-suggesties a:hover{ border-color:var(--coral); }
+  .zoekresultaten .pagination{ margin-top:36px; }
+  .zoekresultaten .page-numbers{
+    display:inline-block;
+    padding:8px 14px;
+    margin-right:6px;
+    border-radius:50px;
+    text-decoration:none;
+    color:var(--text);
+    font-weight:600;
+  }
+  .zoekresultaten .page-numbers.current{ background:var(--coral); color:#fff; }
+  /* ≤520 is .cta sitebreed width:100% (mobiele knopconventie), dus het
+     zoekveld en de knop passen daar niet naast elkaar — onder elkaar. */
+  @media (max-width:520px){
+    .zr-form{ flex-direction:column; }
+    .zr-form input[type="search"]{ width:100%; }
+  }

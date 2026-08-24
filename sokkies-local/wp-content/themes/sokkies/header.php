@@ -66,7 +66,7 @@
                         </g>
                     </svg>
                   </button>
-                    <form class="nav-search" role="search">
+                    <form class="nav-search" role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>">
                       <span class="nav-search-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="21.28" height="21.28" viewBox="0 0 21.28 21.28">
                           <g transform="translate(-13.612 -19.25)">
@@ -75,7 +75,7 @@
                           </g>
                         </svg>
                       </span>
-                      <input type="search" class="nav-search-input" placeholder="Zoek collecties, downloads, pagina's…" aria-label="Zoeken">
+                      <input type="search" name="s" value="<?php echo esc_attr( get_search_query() ); ?>" class="nav-search-input" placeholder="Zoek collecties, downloads, pagina's…" aria-label="Zoeken">
                       <button type="button" class="nav-search-close" aria-label="Sluiten">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#28121b" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
                       </button>

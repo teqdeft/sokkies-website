@@ -377,3 +377,64 @@ function sokkies_footermenu() {
 
 	return $kolommen;
 }
+
+/**
+ * ===== Zoeken =====
+ *
+ * Twee dingen moeten hier geregeld worden:
+ *
+ * 1. WELKE inhoud. Alleen types die een eigen, klikbare pagina hebben:
+ *    pagina's, soktypes (/collectie/{slug}/) en cases (/cases/{slug}/).
+ *    FAQ-vragen, reviews en merklogo's zijn hulp-CPT's zonder permalink —
+ *    een treffer daarop zou nergens heen leiden.
+ *
+ * 2. WAAR gezocht wordt. De pagina's zijn opgebouwd met de ACF-
+ *    sectiebuilder, dus post_content is leeg: standaard WordPress-zoeken
+ *    vindt dan alleen titels. Daarom zoeken we ook in de postmeta, waar de
+ *    sectieteksten staan. Meta-sleutels met een underscore vallen af: dat
+ *    zijn ACF's verwijzingen naar veldsleutels (field_xxx), geen inhoud.
+ */
+function sokkies_zoek_types( $query ) {
+	if ( is_admin() || ! $query->is_main_query() || ! $query->is_search() ) {
+		return;
+	}
+	$query->set( 'post_type', array( 'page', 'sokkies_soktype', 'sokkies_case' ) );
+	$query->set( 'posts_per_page', 12 );
+}
+add_action( 'pre_get_posts', 'sokkies_zoek_types' );
+
+function sokkies_zoek_join( $join, $query ) {
+	global $wpdb;
+	if ( ! is_admin() && $query->is_main_query() && $query->is_search() ) {
+		$join .= " LEFT JOIN {$wpdb->postmeta} AS sokkies_zm ON {$wpdb->posts}.ID = sokkies_zm.post_id"
+			. " AND sokkies_zm.meta_key NOT LIKE '\_%' ";
+	}
+	return $join;
+}
+add_filter( 'posts_join', 'sokkies_zoek_join', 10, 2 );
+
+function sokkies_zoek_where( $where, $query ) {
+	global $wpdb;
+	if ( ! is_admin() && $query->is_main_query() && $query->is_search() ) {
+		// WordPress bouwt per zoekwoord een (post_title LIKE '…') — daar hangen
+		// we de metawaarde naast. Regex i.p.v. losse LIKE zodat meerdere
+		// woorden elk hun eigen OR krijgen.
+		$where = preg_replace(
+			"/\(\s*{$wpdb->posts}\.post_title\s+LIKE\s*(\'[^\']+\')\s*\)/",
+			"({$wpdb->posts}.post_title LIKE $1) OR (sokkies_zm.meta_value LIKE $1)",
+			$where
+		);
+	}
+	return $where;
+}
+add_filter( 'posts_where', 'sokkies_zoek_where', 10, 2 );
+
+// De join levert één rij per metaveld; zonder DISTINCT komt een pagina
+// net zo vaak terug als er velden matchen.
+function sokkies_zoek_distinct( $distinct, $query ) {
+	if ( ! is_admin() && $query->is_main_query() && $query->is_search() ) {
+		return 'DISTINCT';
+	}
+	return $distinct;
+}
+add_filter( 'posts_distinct', 'sokkies_zoek_distinct', 10, 2 );
