@@ -14383,3 +14383,30 @@
     order:3;
   }
 }
+
+/* ===================================================================
+   Zoekveld in de header — mobiel/tablet (WP-fix 2026-08-24)
+   -------------------------------------------------------------------
+   De banden ≤520 en 521-767 openen het veld met width:calc(100% - 120px).
+   Die 100% rekent tegen .search-header-icon, en dat wrappertje is maar
+   38px breed — calc wordt dus negatief en het veld bleef 0px. Gevolg:
+   op mobiel kon er niet gezocht worden (ook in htmlv al zo).
+   Oplossing: het wrappertje is daar geen positioneringsanker meer, zodat
+   het veld tegen .nav-wrap (absoluut, schermbreed) uitlijnt en met
+   left/right over de headerregel valt. Breedte-transitie wordt een
+   opacity-transitie, want de breedte is nu auto.
+   =================================================================== */
+@media (max-width:767px){
+  .search-header-icon{
+    position:static;
+  }
+  .nav-search{
+    left:16px;
+    right:16px;
+    width:auto;
+    transition:opacity .2s ease;
+  }
+  .navbar.search-open .nav-search{
+    width:auto;
+  }
+}
