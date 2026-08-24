@@ -824,7 +824,26 @@
   console-errors, pijlen werken nog. LET OP bij het patchen: str_replace op
   "loop: true, grabCursor: true" raakte OOK verticalMarquee en de
   designed-strip — die twee draaien prima en zijn teruggedraaid;
-  loopAdditionalSlides staat nu alleen op de hero-galerij. 
+  loopAdditionalSlides staat nu alleen op de hero-galerij.  VOETJES OVER DE FAQ-TEKST (2026-08-24, melding Kulwant): met alle
+  accordeons dicht viel het sokkenbeeld over de introtekst links. Het beeld
+  is .cta-final-feet uit het VOLGENDE actieblok, absoluut op top:-90% (per
+  band -79%/-70%), dus het steekt ~400px omhoog de FAQ in. In htmlv stonden
+  er altijd 8 vragen en was links ruimte zat; via het CMS koos het team er
+  6, waardoor de rechterkolom en dus de sectie krimpt en het beeld over de
+  tekst schuift. Lokaal niet te reproduceren tot ik het aantal vragen naar 6
+  bracht — toen 27px overlap op 1920. FIX: de linkerkolom reserveert de
+  ruimte zelf via padding-bottom min(20vw, 380px), gescoped met :has() op
+  .faq:has(+ .cta-final .cta-final-feet) en pas vanaf 992px (daaronder
+  stapelt de grid en is er geen overlap). Omdat de grid align-items:start
+  heeft, zet die padding een ONDERGRENS onder de sectiehoogte: is de
+  rechterkolom lang genoeg, dan verandert er niets. Gemeten 1920: 8 vragen
+  881px (was 875), 6 en 3 vragen 842px, overal 86-126px lucht; 1440: met 8
+  vragen 769px = exact als voorheen, met 3 vragen 64px lucht; 390: regel
+  slaat niet aan, 0 h-scroll. Geldt ook voor collectie/werkwijze, die
+  dezelfde combinatie hebben; partners (faq_geel) en de FAQ-pagina
+  (faq_pagina) matchen niet en blijven ongemoeid. LET OP bij testen:
+  resizen herlaadt de pagina NIET, dus een eerder weggeknipt item blijft
+  weg — meting leek daardoor drie keer hetzelfde. 
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

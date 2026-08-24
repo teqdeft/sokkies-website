@@ -2211,6 +2211,19 @@ font-weight: 600;
   .faq-left{
     position:relative;
   }
+
+  /* De voetjes van het volgende actieblok steken omhoog de FAQ in
+     (.cta-final-feet, top:-90%). In htmlv stonden er altijd 8 vragen, dus
+     was er links ruimte zat; via het CMS kan dat er 6 of minder zijn,
+     waardoor de sectie krimpt en het beeld over de introtekst valt.
+     Daarom reserveert de linkerkolom die ruimte zelf — alleen wanneer er
+     ook echt voetjes onder staan (:has), en alleen zolang de grid twee
+     kolommen heeft; mobiel stapelt en dan is er geen overlap. */
+  @media (min-width:992px){
+    .faq:has(+ .cta-final .cta-final-feet) .faq-left{
+      padding-bottom:min(20vw, 380px);
+    }
+  }
   .faq-left h2{
     font-family:var(--roc-grotesk-condensed);
     font-weight: 700;
