@@ -773,7 +773,22 @@
   webfonts veranderen de afbreking, en debounced bij resize. LES: meten
   in het VERBORGEN browserpaneel misleidt dubbel — innerWidth is 0 en
   CSS-transities lopen niet door, dus max-height stond al op 333 terwijl
-  offsetHeight nog 340 gaf. Zet transition:none of meet headless. 
+  offsetHeight nog 340 gaf. Zet transition:none of meet headless.  LIJSTEN IN SPEC-ANTWOORDEN (2026-08-24, melding Kulwant op
+  /collectie/bamboesokken/): het team zette in de wysiwyg van pdp_specs
+  een <ul>, maar htmlv kende daar geen lijsten, dus er was GEEN styling —
+  <li> viel terug op de donkere basiskleur (onleesbaar op het blauwe
+  vlak), met browser-bullets en 40px inspring, terwijl .spec-a-inner p wel
+  wit is. Toegevoegd in THEMA-style.css: .spec-a-inner ul/ol/li krijgen
+  dezelfde kleur, fontgrootte en regelhoogte als de alinea, 24px inspring
+  en 10px tussenruimte. Op verzoek GENUMMERD: list-style decimal op zowel
+  ul als ol, zodat een bullet-lijst uit de editor toch 1. 2. 3. toont —
+  semantisch netter is de nummerlijst-knop in de editor (ol), die krijgt
+  identieke opmaak. Alleen binnen .spec-a-inner, dus lijsten elders
+  veranderen niet. LET OP: .faq-a-inner heeft hetzelfde gat — lijsten in
+  FAQ-antwoorden zijn nog ongestyled (staat op lichte achtergrond, dus
+  leesbaar, maar zonder marges/markeropmaak). LOKAAL: de 9 spec-rijen van
+  Bamboesokken zijn uit LIVE overgenomen om dit te kunnen testen; lokaal
+  stonden er 0. 
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

@@ -5520,6 +5520,31 @@ font-weight: 600;
     opacity:.9;
   }
 
+  /* Lijsten in spec-antwoorden (WP-toevoeging). Redacteuren kunnen ze via
+     de wysiwyg plaatsen; htmlv kende ze niet, dus er was geen styling en
+     viel <li> terug op de donkere basiskleur — onleesbaar op het blauwe
+     vlak, met browser-bullets en 40px inspring. Genummerd op verzoek van
+     de klant: ook een <ul> uit de editor toont 1. 2. 3. */
+  .spec-a-inner ul,
+  .spec-a-inner ol{
+    list-style:decimal outside;
+    margin:12px 0 0;
+    padding-left:24px;
+    color:#fff;
+    opacity:.9;
+  }
+  .spec-a-inner li{
+    font-size:var(--body-font-size);
+    line-height:1.6;
+    margin-bottom:10px;
+  }
+  .spec-a-inner li:last-child{
+    margin-bottom:0;
+  }
+  .spec-a-inner li::marker{
+    font-weight:600;
+  }
+
   /* Geweven vs. sublimatiedruk (roze) */
   .weave{
     background: linear-gradient(
