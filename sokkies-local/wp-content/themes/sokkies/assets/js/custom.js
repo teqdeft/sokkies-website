@@ -131,11 +131,31 @@
     // op één pagina kunnen staan zonder elkaars sliders/knoppen te kapen)
     document.querySelectorAll('.gallery-swiper').forEach((el) => {
       const scope = el.closest('.gallery') || document;
+      // Slides klonen tot de strip ruim 4x de EIGEN breedte vult (de strip is
+      // full-bleed: 2640px op een 1920-scherm). Anders annuleert Swiper's
+      // loopFix de lopende transition op de naad en STOPT de drift — hetzelfde
+      // euvel als bij de merkenstrip (fix 2026-08-12/13); de 16 slides uit PHP
+      // zijn daarvoor te weinig.
+      const gWrap = el.querySelector('.swiper-wrapper');
+      const gOrigineel = Array.from(gWrap.children);
+      // vloer van 200px per slide: op een koude load meten nog niet geladen
+      // foto's 0px breed (zie de logo-vloer bij brands, 2026-08-13)
+      const gStrip = () =>
+        Array.from(gWrap.children).reduce((w, s) => w + Math.max(s.getBoundingClientRect().width, 200) + 20, 0);
+      const gVak = () => el.getBoundingClientRect().width || window.innerWidth;
+      while (gStrip() < gVak() * 4 && gWrap.children.length < 80) {
+        gOrigineel.forEach((s) => gWrap.appendChild(s.cloneNode(true)));
+      }
       const sw = new Swiper(el, {
         slidesPerView: 'auto',
         spaceBetween: 20,
         // centeredSlides: true,
         loop: true,
+        /* Zonder dit houdt Swiper met slidesPerView:'auto' maar ÉÉN slide
+           buffer aan (loopedSlides 1). De strip is breder dan het venster,
+           dus de drift liep de buffer voorbij, kwam op isEnd en STOPTE.
+           Met 8 extra slides staat loopedSlides op 9 en wrapt hij door. */
+        loopAdditionalSlides: 8,
         grabCursor: true,
         /* QA #10 (2026-08-13): langzame continue auto-scroll van rechts
            naar links (linear timing staat in style.css); pijlen blijven werken */
@@ -146,6 +166,11 @@
           768:  { spaceBetween: 20 },
         },
       });
+      // Naijken met ECHTE maten zodra de foto's hun breedte hebben; appendSlide
+      // herbouwt de loop zelf. Zelfde nazorg als bij de merkenstrip.
+      while (gStrip() < gVak() * 4 && gWrap.children.length < 120) {
+        sw.appendSlide(gOrigineel.map((s) => s.cloneNode(true)));
+      }
       // Pijlen (fix 2026-08-13 v2): de continue drift maskeerde een kale
       // slideNext (de strip was al onderweg naar de volgende slide) — dus:
       // drift stoppen, zichtbaar één kaart springen, drift hervatten

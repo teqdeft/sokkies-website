@@ -805,7 +805,26 @@
   Geverifieerd door de SVG op canvas te sampelen: bovenrand exact gelijk
   (104/152/233 per kolom) en 100% dekking t/m y=1644. Alleen de
   THEMA-css wijst naar het nieuwe bestand; het origineel blijft staan en
-  htmlv is onaangeroerd. 
+  htmlv is onaangeroerd.  HERO-GALERIJ LIEP VAST (2026-08-24, melding Kulwant): de
+  fotostrip onder de hero draaide tot het eind en STOPTE i.p.v. door te
+  lussen. Zelfde familie als het merkenstrip-euvel van 2026-08-12/13, maar
+  een andere oorzaak: met slidesPerView:'auto' houdt Swiper 11 standaard
+  maar ÉÉN slide buffer aan (loopedSlides 1, loopAdditionalSlides 0). De
+  strip is full-bleed en dus BREDER dan het venster (2640px op een
+  1920-scherm), waardoor de continue drift die ene buffer voorbijliep, op
+  isEnd kwam en bleef staan. Gemeten: doorklikken met slideNext liep op
+  1920 vast bij stap 26; op 1440 viel het niet op, vandaar dat het eerder
+  niet opviel. FIX: loopAdditionalSlides: 8 (loopedSlides wordt dan 9) +
+  slides klonen tot de strip 4x de EIGEN containerbreedte vult — de
+  drempel stond eerst op window.innerWidth, wat bij een full-bleed strip
+  te laag is. Vloer van 200px per slide bij het meten, want op een koude
+  load meten nog niet geladen foto's 0px (zelfde truc als de logo-vloer
+  bij brands). Geverifieerd op 1920/1440/390: 90-100 stappen vooruit zonder
+  vastlopen (3/2/6 volledige wraps), achteruit ook niet, 0 h-scroll, 0
+  console-errors, pijlen werken nog. LET OP bij het patchen: str_replace op
+  "loop: true, grabCursor: true" raakte OOK verticalMarquee en de
+  designed-strip — die twee draaien prima en zijn teruggedraaid;
+  loopAdditionalSlides staat nu alleen op de hero-galerij. 
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
