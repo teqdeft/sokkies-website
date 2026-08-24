@@ -884,26 +884,7 @@
   standaardzoeken 0 opleveren. Alle resultaatlinks 200, geen duplicaten,
   lege zoekopdracht en 0-resultaten netjes afgevangen. LET OP mobiel:
   .cta is ≤520 sitebreed width:100%, dus veld+knop pasten niet naast
-  elkaar (39px h-scroll); .zr-form stapelt daar nu.  ZOEKVELD IN DE HEADER OPENDE NIET OP MOBIEL (2026-08-24, bij het
-  natrekken van bovenstaande gevonden): ≤767 bleef het veld 0px, dus er
-  viel op telefoon/tablet niet te zoeken. Al zo in htmlv, dus niet door de
-  zoekbouw veroorzaakt. Oorzaak: de banden ≤520 en 521-767 openen met
-  width:calc(100% - 120px), en die 100% rekent tegen .search-header-icon —
-  dat wrappertje is 38px breed, dus calc wordt negatief en klapt naar 0.
-  Boven 768 gold de basisregel (457px) en werkte het wel. FIX achteraan
-  responsive.css (wint van de bestaande banden, geen band-edit nodig):
-  ≤767 krijgt .search-header-icon position:static, zodat het veld tegen
-  .nav-wrap uitlijnt (absoluut en schermbreed) en met left/right:16px over
-  de headerregel valt; breedte-transitie wordt opacity-transitie omdat de
-  breedte nu auto is. Gemeten: 390 → veld 358px breed (input 241), 600 →
-  568px (input 451), 1440 ongewijzigd 457px en wrapper weer relative.
-  Dicht blijft opacity 0 + pointer-events none, logo en burger blijven
-  klikbaar (elementFromPoint gecheckt), 0 h-scroll. End-to-end getest op
-  390: icoon → typen → verzenden → /?s=kerst met Kerstsokken bovenaan.
-  LES (alwéér): in het verborgen browserpaneel lopen transities niet, dus
-  een dichtgeklapt veld MEET altijd als 0/opacity 0 — ik concludeerde
-  eerst ten onrechte dat het óók op 900px stuk was. Zet transition:none
-  voor je meet. 
+  elkaar (39px h-scroll); .zr-form stapelt daar nu. 
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
