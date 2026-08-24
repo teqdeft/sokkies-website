@@ -5536,12 +5536,19 @@ font-weight: 600;
   .spec-a-inner li{
     font-size:var(--body-font-size);
     line-height:1.6;
-    margin-bottom:10px;
+    margin-bottom:6px;
   }
   .spec-a-inner li:last-child{
     margin-bottom:0;
   }
   .spec-a-inner li::marker{
+    font-weight:600;
+  }
+  /* Nummer en de vetgedrukte aanhef even zwaar: 600, de semibold die de
+     site elders ook gebruikt (o.a. .spec-q). <strong> stond op de
+     browserstandaard 700 en oogde daardoor zwaarder dan de rest. */
+  .spec-a-inner li strong,
+  .spec-a-inner li b{
     font-weight:600;
   }
 
