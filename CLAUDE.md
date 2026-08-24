@@ -734,7 +734,30 @@
   home's titel/tekst_1 zijn uit de LIVE site overgenomen (het team had
   daar SEO-tekst toegevoegd die lokaal ontbrak) — anders viel er niets
   in te klappen; dat betekent ook dat lokaal en live NIET overal gelijk
-  zijn, live loopt op content voor. 
+  zijn, live loopt op content voor.  MERKVERHAAL — VERVOLG (2026-08-24, teamfeedback na
+  livegang van het inklappen): (1) STATISCHE FALLBACK ERUIT op de hele
+  brand_intro-layout — titel/tekst_1/tussenkop/tekst_2 tonen niets meer
+  als het veld leeg is. Op de homepage stonden Tussenkop en Tekst (onder)
+  leeg in de admin terwijl de frontend tóch tekst liet zien; dat kwam uit
+  de `?:`-fallbacks in de partial, die bovendien de tekst van werkwijze/
+  configurator dupliceerden. Ook <h2>, de eerste <p> en de Lees meer-link
+  staan nu achter een guard: geen lege tags meer, en zonder link én zonder
+  inklappen verdwijnt de link helemaal. LET OP: werkwijze/configurator
+  hadden die teksten als ECHTE veldwaarden (geseed), dus die pagina's
+  veranderen niet. (2) LUCHT boven de knop: .brand-intro-toggle krijgt
+  margin-top 22px — alleen op de inklap-variant, zodat de gewone doorlink
+  op de andere pagina's niet verspringt. (3) SOEPEL INKLAPPEN: na het
+  uitklappen zet de transitionend-handler max-height op `none`, en van
+  `none` naar een px-waarde animeert niet — vandaar de sprong bij sluiten.
+  Nu wordt eerst de huidige hoogte vastgepind, een reflow geforceerd en
+  dan pas ingeklapt. Geverifieerd op 1440: 336px dicht (14 regels), 769px
+  open, weer 336px dicht, marge 22px, geen h6/tweede alinea bij lege
+  velden. LES bij meten in het browserpaneel: is het paneel verborgen dan
+  is innerWidth 0 en wordt élke hoogte onzin (een alinea werd 5976px) —
+  altijd eerst een echte viewport zetten. (4) COPY voor tussenkop/
+  tekst_2 is als VOORSTEL aangeleverd, niet zelf op live gezet: het is
+  klantcopy. Bewust geen minimale afname genoemd zolang 30-vs-50 open
+  staat. 
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

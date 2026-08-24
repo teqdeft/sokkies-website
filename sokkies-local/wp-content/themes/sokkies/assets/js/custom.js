@@ -1372,7 +1372,19 @@
         open = nieuw;
         knop.setAttribute('aria-expanded', String(open));
         vak.classList.toggle('is-collapsed', !open);
-        vak.style.maxHeight = open ? vak.scrollHeight + 'px' : dicht + 'px';
+
+        if (open) {
+          vak.style.maxHeight = vak.scrollHeight + 'px';
+          return;
+        }
+
+        // Inklappen: na het uitklappen staat max-height op 'none', en van
+        // 'none' naar een px-waarde animeert niet — dat gaf de sprong bij
+        // het sluiten. Eerst de huidige hoogte vastpinnen, reflow forceren,
+        // daarna pas terug naar de ingeklapte hoogte.
+        vak.style.maxHeight = vak.scrollHeight + 'px';
+        void vak.offsetHeight;
+        vak.style.maxHeight = dicht + 'px';
       };
 
       knop.addEventListener('click', function (e) {

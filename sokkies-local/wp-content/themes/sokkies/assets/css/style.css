@@ -8611,6 +8611,9 @@ main.contact{
   }
   .brand-intro-toggle{
     cursor:pointer;
+    /* lucht tussen de afgeknipte tekst en de knop; alleen op de
+       inklap-variant, zodat de gewone doorlink niet verspringt */
+    margin-top:22px;
   }
   /* pijl wijst omlaag bij ingeklapt, omhoog zodra de tekst openstaat */
   .brand-intro-toggle svg{
