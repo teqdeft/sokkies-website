@@ -860,7 +860,21 @@
   het via ::-webkit-scrollbar op 4px zetten werkt NIET, Chrome laat
   scrollbar-width voorgaan en het werd zelfs 125px). Bewuste keuze: liever
   10px smaller met een zichtbare scrollhint dan een onzichtbare scrollbar.
-  Bij 5 of minder foto's verandert er niets. 
+  Bij 5 of minder foto's verandert er niets.  ZOEKEN TERUGGEDRAAID (2026-08-24, verzoek Kulwant: "werkt niet goed").
+  De twee zoek-commits zijn met git revert ongedaan gemaakt (13ab738 en
+  3225375 → reverts 2a47328 en 15aca30), dus: search.php weg, de
+  zoekfilters uit functions.php weg, de .zr-*-opmaak uit style.css weg, de
+  mobiele veldfix uit responsive.css weg en het headerformulier terug naar
+  de stub zonder action/name. De site draait verder ongewijzigd
+  (steekproef home/collectie/werkwijze/juridisch/PDP/FAQ allemaal 200).
+  LET OP voor wie dit oppakt: /?s=… geeft nu weer 200 via index.php — dat
+  is de kale thema-placeholder, niet iets bruikbaars; het formulier
+  verzendt echter niets meer, dus bezoekers komen er niet. Wat er wél
+  werkte staat in de teruggedraaide commits: doorzoeken van de
+  ACF-sectievelden (post_content is leeg bij de sectiebuilder, dus
+  standaardzoeken vindt alleen titels) plus een bereik van page/soktype/
+  case. Het concrete gebrek dat tot terugdraaien leidde is NIET vastgelegd
+  — navragen voordat dit opnieuw wordt gebouwd. 
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
