@@ -843,7 +843,24 @@
   dezelfde combinatie hebben; partners (faq_geel) en de FAQ-pagina
   (faq_pagina) matchen niet en blijven ongemoeid. LET OP bij testen:
   resizen herlaadt de pagina NIET, dus een eerder weggeknipt item blijft
-  weg — meting leek daardoor drie keer hetzelfde. 
+  weg — meting leek daardoor drie keer hetzelfde.  PDP-THUMBNAILKOLOM SCROLLT (2026-08-24, melding Kulwant op
+  /collectie/kerstsokken/): meer dan 5 productfoto's brak de layout. De
+  kolom is een flex-column van thumbs van 140px met gap 10 — 5 x 140 +
+  4 x 10 = 740, precies de hoogte van .prod-main. Bij 6+ rekte de grid-rij
+  mee (gemeten 1490px bij 10 thumbs) en stak de strip 750px onder de
+  hoofdfoto uit. FIX in THEMA-style.css, gescoped op min-width 992px:
+  .prod-thumbs krijgt height:0 (haalt de kolom uit de rijberekening) plus
+  min-height:100% (trekt hem terug tot exact de rijhoogte) en overflow-y
+  auto. Zo hoeft er GEEN bandhoogte hardgecodeerd te worden: de kolom
+  volgt automatisch de 740/590/445px die .prod-main per band heeft.
+  .prod-thumb krijgt flex:0 0 auto zodat de thumbs niet platgedrukt
+  worden. Onder 992px is .prod-gallery display:block met een eigen opzet;
+  daar geldt de regel bewust niet. LET OP: met een zichtbare scrollbar
+  worden de thumbs 130px breed i.p.v. 140 (scrollbar-width:thin kost 10px;
+  het via ::-webkit-scrollbar op 4px zetten werkt NIET, Chrome laat
+  scrollbar-width voorgaan en het werd zelfs 125px). Bewuste keuze: liever
+  10px smaller met een zichtbare scrollhint dan een onzichtbare scrollbar.
+  Bij 5 of minder foto's verandert er niets. 
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

@@ -5304,6 +5304,31 @@ font-weight: 600;
   .prod-thumb.is-active{ 
     border:2px solid var(--coral); 
   }
+
+  /* Meer dan 5 thumbnails paste niet: 5 x 140 + 4 x 10 = 740, precies de
+     hoogte van .prod-main. Bij 6+ rekte de grid-rij mee en stak de strip
+     onder de hoofdfoto uit (melding Kulwant, kerstsokken heeft er 10).
+     height:0 haalt de kolom uit de rijberekening, min-height trekt hem
+     daarna terug tot exact de rijhoogte — dus automatisch 740/590/445px,
+     welke band-hoogte .prod-main ook heeft. Onder 992px is de galerij
+     display:block met een eigen opzet, daar geldt dit niet. */
+  @media (min-width:992px){
+    .prod-thumbs{
+      height:0;
+      min-height:100%;
+      overflow-y:auto;
+      scrollbar-width:thin;
+      scrollbar-color:rgb(40 18 27 / 35%) transparent;
+    }
+    .prod-thumbs::-webkit-scrollbar{ width:4px; }
+    .prod-thumbs::-webkit-scrollbar-track{ background:transparent; }
+    .prod-thumbs::-webkit-scrollbar-thumb{
+      background:rgb(40 18 27 / 35%);
+      border-radius:4px;
+    }
+    /* niet laten krimpen wanneer de kolom scrollt */
+    .prod-thumb{ flex:0 0 auto; }
+  }
   .prod-thumb-play{
     position:absolute;
     top:50%; left:50%;
