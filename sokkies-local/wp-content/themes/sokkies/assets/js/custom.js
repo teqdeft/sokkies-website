@@ -1338,40 +1338,66 @@
 
   /* ===== Inklapbaar merkverhaal: 'Lees meer' klapt de tekst uit =====
      WP-toevoeging (htmlv kent deze sectie alleen als doorlink). De
-     ingeklapte hoogte staat inline op het element, uit het CMS-veld. */
+     gewenste ingeklapte hoogte staat inline op het element, uit het CMS. */
   (function () {
+    // Zoekt de onderkant van de LAATSTE tekstregel die nog helemaal binnen
+    // de gewenste hoogte past. Afronden op regelhoogte alleen is niet genoeg:
+    // marges tussen alinea's schuiven de regels op, waardoor de knip verderop
+    // alsnog dwars door een regel valt (viel op mobiel op).
+    function knipHoogte(vak, gewenst) {
+      var top   = vak.getBoundingClientRect().top;
+      var beste = 0;
+      var loop  = document.createTreeWalker(vak, NodeFilter.SHOW_TEXT, null, false);
+      var n, bereik, rects, i, bodem;
+      while ((n = loop.nextNode())) {
+        if (!n.nodeValue || !n.nodeValue.trim()) { continue; }
+        bereik = document.createRange();
+        bereik.selectNodeContents(n);
+        rects = bereik.getClientRects();
+        for (i = 0; i < rects.length; i++) {
+          bodem = rects[i].bottom - top;
+          if (bodem <= gewenst + 1 && bodem > beste) { beste = bodem; }
+        }
+      }
+      return beste > 0 ? Math.ceil(beste) : gewenst;
+    }
+
     document.querySelectorAll('[data-brand-collapse]').forEach(function (vak) {
       var inner = vak.closest('.brand-intro-inner');
       var knop  = inner && inner.querySelector('[data-brand-toggle]');
       if (!knop) { return; }
 
-      var dicht = parseInt(vak.style.maxHeight, 10) || 340;
+      var basis       = parseInt(vak.style.maxHeight, 10) || 340;
+      var labelEl     = knop.querySelector('[data-brand-label]');
+      var labelDicht  = knop.getAttribute('data-label-dicht') || 'Lees meer';
+      var labelOpen   = knop.getAttribute('data-label-open')  || 'Lees minder';
+      var open        = false;
+      var dicht       = basis;
 
-      // Op hele tekstregels afronden, zodat de afknip nooit door een
-      // regel heen valt (een kale px-waarde doet dat willekeurig wel).
-      var eerste = vak.querySelector('p');
-      if (eerste) {
-        var regel = parseFloat(getComputedStyle(eerste).lineHeight);
-        if (regel > 0) {
-          var regels = Math.max(1, Math.floor(dicht / regel));
-          dicht = Math.round(regels * regel);
-          vak.style.maxHeight = dicht + 'px';
-        }
-      }
+      var pasToe = function () {
+        dicht = knipHoogte(vak, basis);
+        if (!open) { vak.style.maxHeight = dicht + 'px'; }
+      };
 
-      // Past alles al binnen de ingeklapte hoogte? Dan is inklappen zinloos.
-      if (vak.scrollHeight <= dicht + 8) {
+      var kort = function () {
+        // Past alles al binnen de hoogte? Dan is inklappen zinloos.
+        return vak.scrollHeight <= dicht + 8;
+      };
+
+      pasToe();
+
+      if (kort()) {
         vak.classList.remove('is-collapsed');
         vak.style.maxHeight = '';
         knop.style.display = 'none';
         return;
       }
 
-      var open = false;
       var zet = function (nieuw) {
         open = nieuw;
         knop.setAttribute('aria-expanded', String(open));
         vak.classList.toggle('is-collapsed', !open);
+        if (labelEl) { labelEl.textContent = open ? labelOpen : labelDicht; }
 
         if (open) {
           vak.style.maxHeight = vak.scrollHeight + 'px';
@@ -1398,8 +1424,13 @@
         if (e.propertyName === 'max-height' && open) { vak.style.maxHeight = 'none'; }
       });
 
+      // Webfonts komen later binnen en veranderen de regelafbreking.
+      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(pasToe); }
+
+      var timer;
       window.addEventListener('resize', function () {
-        if (!open) { vak.style.maxHeight = dicht + 'px'; }
+        clearTimeout(timer);
+        timer = setTimeout(pasToe, 150);
       });
     });
   })();

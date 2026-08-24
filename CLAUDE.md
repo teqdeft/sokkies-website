@@ -757,7 +757,23 @@
   altijd eerst een echte viewport zetten. (4) COPY voor tussenkop/
   tekst_2 is als VOORSTEL aangeleverd, niet zelf op live gezet: het is
   klantcopy. Bewust geen minimale afname genoemd zolang 30-vs-50 open
-  staat. 
+  staat.  MERKVERHAAL — RONDE 3 (2026-08-24): (5) KNOPTEKST WISSELT: nieuw veld
+  label_open ("Knoptekst uitgeklapt", leeg = "Lees minder"); de labels
+  gaan als data-label-dicht/-open mee en JS wisselt de tekst in een
+  <span data-brand-label>. Die span komt ALLEEN bij inklappen, zodat de
+  markup op werkwijze/configurator/toepassingen ongewijzigd blijft. Het
+  XD toont daar 2x "Lees meer" met alleen een gedraaide pijl; op verzoek
+  van Kulwant wisselt de tekst nu wel. (6) AFKNIP OP MOBIEL: afronden op
+  regelhoogte bleek niet genoeg — de marges TUSSEN alinea's schuiven de
+  regels op, waardoor de knip verderop alsnog dwars door een regel viel
+  op 390. Nu zoekt knipHoogte via een TreeWalker plus
+  Range.getClientRects de onderkant van de laatste regel die nog helemaal
+  past, en dat wordt de hoogte: 340 wordt 333 op zowel 390 als 1440, met
+  0 doorgesneden regels. Herberekend na document.fonts.ready, want
+  webfonts veranderen de afbreking, en debounced bij resize. LES: meten
+  in het VERBORGEN browserpaneel misleidt dubbel — innerWidth is 0 en
+  CSS-transities lopen niet door, dus max-height stond al op 333 terwijl
+  offsetHeight nog 340 gaf. Zet transition:none of meet headless. 
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

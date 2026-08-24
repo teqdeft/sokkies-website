@@ -19,6 +19,7 @@ $link_url   = ! empty( $link['url'] ) ? $link['url'] : home_url( '/over-ons/' );
 $link_label = ! empty( $link['title'] ) ? $link['title'] : 'Lees meer';
 $inklappen = (bool) get_sub_field( 'inklappen' );
 $inklap_h  = (int) ( get_sub_field( 'inklap_hoogte' ) ?: 340 );
+$label_open = trim( (string) get_sub_field( 'label_open' ) ) ?: 'Lees minder';
 $assets   = get_template_directory_uri() . '/assets/media/';
 $klassen  = array( 'standaard' => '', 'licht' => ' brand-light', 'licht_werkwijze' => ' brand-light ww-brand', 'geel' => ' brand-intro-yellow' );
 ?>
@@ -49,8 +50,8 @@ $klassen  = array( 'standaard' => '', 'licht' => ' brand-light', 'licht_werkwijz
       </div>
       <?php endif; ?>
       <?php if ( $inklappen || ! empty( $link['url'] ) ) : ?>
-      <a href="<?php echo $inklappen ? '#' : esc_url( $link_url ); ?>" class="brand-intro-link<?php echo $inklappen ? ' brand-intro-toggle' : ''; ?>"<?php echo $inklappen ? ' data-brand-toggle aria-expanded="false"' : ''; ?>>
-        <?php echo esc_html( $link_label ); ?>
+      <a href="<?php echo $inklappen ? '#' : esc_url( $link_url ); ?>" class="brand-intro-link<?php echo $inklappen ? ' brand-intro-toggle' : ''; ?>"<?php echo $inklappen ? ' data-brand-toggle aria-expanded="false" data-label-dicht="' . esc_attr( $link_label ) . '" data-label-open="' . esc_attr( $label_open ) . '"' : ''; ?>>
+        <?php if ( $inklappen ) : ?><span data-brand-label><?php echo esc_html( $link_label ); ?></span><?php else : ?><?php echo esc_html( $link_label ); ?><?php endif; ?>
         <svg xmlns="http://www.w3.org/2000/svg" width="9.39" height="12.199" viewBox="0 0 9.39 12.199">               <g id="Group_491" data-name="Group 491" transform="translate(-653.793 -7826)">                 <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(1204.102 6617.5) rotate(90)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                 <path id="Path_3670" data-name="Path 3670" d="M1289.087,547h11" transform="translate(1205.497 6537.413) rotate(90)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>               </g>             </svg>
       </a>
       <?php endif; ?>

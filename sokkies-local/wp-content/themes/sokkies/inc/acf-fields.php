@@ -963,6 +963,15 @@ add_action( 'acf/init', function () {
 								'instructions'      => 'Hoeveel tekst er in ingeklapte staat zichtbaar is. Leeg = 340.',
 								'conditional_logic' => array( array( array( 'field' => 'field_bi_inklappen', 'operator' => '==', 'value' => '1' ) ) ),
 							),
+							array(
+								'key'               => 'field_bi_label_open',
+								'label'             => 'Knoptekst uitgeklapt',
+								'name'              => 'label_open',
+								'type'              => 'text',
+								'instructions'      => 'Wat er op de knop staat zodra de tekst openstaat. Leeg = "Lees minder".',
+								'placeholder'       => 'Lees minder',
+								'conditional_logic' => array( array( array( 'field' => 'field_bi_inklappen', 'operator' => '==', 'value' => '1' ) ) ),
+							),
 						),
 					),
 
