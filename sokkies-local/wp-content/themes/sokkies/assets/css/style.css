@@ -5549,7 +5549,17 @@ font-weight: 600;
     overflow:hidden;
     transition:max-height .3s ease;
   }
-  .spec-a-inner{ padding:0 4px 18px; }
+  /* De tekstkleur hoort op de CONTAINER, niet alleen op <p>. htmlv had
+     hier uitsluitend <p>, maar in WP plakken redacteuren ook losse tekst
+     of een tabel zonder <p>-wrapper; die viel terug op de donkere
+     basiskleur en was daardoor vrijwel onleesbaar op het blauwe vlak
+     (melding Kulwant 2026-08-25, skisokken > "In productie": de vetgezette
+     bedragen stonden zwart op blauw). rgba i.p.v. opacity, zodat de
+     bestaande opacity:.9 op p/ul/ol niet dubbel telt. */
+  .spec-a-inner{
+    padding:0 4px 18px;
+    color:rgba(255,255,255,.9);
+  }
   .spec-a-inner p{
     color:#fff;
     /* spec 2026-08-12: 17px op 1920 = exact het body-token (was body-sm) */
@@ -5585,8 +5595,8 @@ font-weight: 600;
   /* Nummer en de vetgedrukte aanhef even zwaar: 600, de semibold die de
      site elders ook gebruikt (o.a. .spec-q). <strong> stond op de
      browserstandaard 700 en oogde daardoor zwaarder dan de rest. */
-  .spec-a-inner li strong,
-  .spec-a-inner li b{
+  .spec-a-inner strong,
+  .spec-a-inner b{
     font-weight:600;
   }
 

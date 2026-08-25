@@ -1092,6 +1092,38 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   GEVERIFIEERD door de notificatie te renderen met GFCommon::replace_variables
   op een echte inzending: Voornaam / Achternaam / E-mailadres / Telefoon /
   Bedrijfsnaam / Uw bericht / URL staan er nog, de Country-rij is weg.
+  VETGEDRUKTE TEKST ZWART OP BLAUW IN DE SPECS-ACCORDEON (2026-08-25, melding
+  Kulwant met screenshot van skisokken; hij noemde het "de FAQ-sectie", maar
+  het gaat om de spec-accordeon op de PDP — dezelfde accordeonopmaak).
+  WAT ER MIS WAS: in het antwoord "In productie" stonden de vetgezette
+  bedragen (Oplage / Prijs per paar / Voorbeeld / €10,99 / €6,99 / €4,49)
+  vrijwel onleesbaar zwart op het blauwe vlak. Op de live pagina gemeten: 21
+  <strong>-elementen in .spec-a-inner, waarvan 15 wit en 6 op rgb(0,0,0).
+  OORZAAK: die 6 zijn DIRECTE kinderen van .spec-a-inner — de tekst in de
+  wysiwyg staat daar zonder <p>-wrapper (het ziet eruit als een geplakte
+  tabel die platgeslagen is). De kleur stond alleen op .spec-a-inner p en op
+  ul/ol, dus losse inhoud viel terug op de donkere basiskleur. htmlv kende
+  het probleem niet: daar staat alle inhoud in <p>.
+  FIX: color:rgba(255,255,255,.9) op de CONTAINER .spec-a-inner, zodat élke
+  inhoud (losse tekst, strong, tabellen) de goede kleur erft. BEWUST rgba en
+  geen opacity: .spec-a-inner p en ul/ol hebben al opacity:.9, en een
+  opacity op de container zou daar overheen stapelen (0,81 i.p.v. 0,9). Nu
+  blijft de weergave van p/li exact gelijk en veranderen alleen de kale
+  elementen. Tweede aanpassing: de semibold-regel gold alleen voor
+  .spec-a-inner li strong/b en geldt nu voor alle strong/b in het antwoord —
+  anders stonden de kale strongs op de browserstandaard 700 terwijl die in
+  lijsten op 600 staan.
+  GEVERIFIEERD: eerst de fix op de LIVE pagina geinjecteerd om te bewijzen
+  dat hij op de echte inhoud werkt, daarna lokaal doorgevoerd en opnieuw
+  gemeten: 21/21 strong wit (15x rgb(255,255,255) binnen p/li met hun eigen
+  opacity, 6x rgba(255,255,255,.9)) en 21/21 op font-weight 600.
+  NIET AANGERAAKT: .faq-a-inner (de echte FAQ). Die staat op een lichte
+  achtergrond met color:var(--text), dus een kale <strong> valt daar terug
+  op een donkere kleur die gewoon leesbaar is — geen zichtbaar defect, dus
+  geen wijziging. De spec-accordeon staat altijd op het donkerblauwe vlak
+  (.specs-section heeft bg_sock_dark-blue-tall.svg, er is geen lichte
+  variant) en wordt alleen door single-sokkies_soktype.php gerenderd, dus wit
+  is daar onvoorwaardelijk goed.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
