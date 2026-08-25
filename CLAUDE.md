@@ -1266,6 +1266,39 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   Let op: zodra de kolom scrolt, kost de dunne scrollbalk ~10px breedte
   (thumb 100 i.p.v. 110). Dat gedrag heeft de >=992-band ook, dus het is
   consistent; alleen zichtbaar bij 6+ foto's.
+  TABELOPMAAK NAAR HET AANGELEVERDE ONTWERP (2026-08-25, screenshot Kulwant
+  van hoe de prijstabel op skisokken eruit moet zien). Inhoud ongewijzigd,
+  alleen de opmaak.
+  EERST GEMETEN, TOEN PAS AANGEPAST. Het screenshot is 909px breed en de
+  accordeonregels lopen daarin van x=42 tot x=866, dus 824px; live is die
+  houder 830px. De schaal is daarmee ~1:1, zodat schermafbeeldingspixels
+  direct met CSS-pixels te vergelijken zijn. Dat maakte drie verschillen
+  hard meetbaar:
+    kolomposities : screenshot 0/208/471, live 4/214/473 -> klopte al, de
+                    auto-layout van de tabel geeft exact dezelfde verdeling
+    rijlijnen     : screenshot heeft er GEEN, live had 1px rgba(255,255,255,
+                    .25) per rij
+    rijhoogte     : screenshot 32px per rij, live 47px
+  AANGEPAST:
+  1. De randen zijn weer weg (border:0 op tr). Die had ik er zelf bij gezet
+     toen de tabellen werden toegestaan; het ontwerp toont de tabel als
+     uitgelijnde kolommen zonder lijnen.
+  2. Celpadding van 9px naar 2px verticaal. Met line-height 1.6 (27px) komt
+     een rij daarmee op 32px, precies de rijafstand uit het screenshot.
+  3. margin-top van de tabel van 14px naar 8px. Ook die 14px was een eigen
+     keuze zonder ontwerpbron; met 8px zit er 38px tussen de laatste regel
+     van de inleiding en de koprij, exact zoals in het screenshot.
+  NIET AANGEPAST omdat het al klopte: kolombreedtes, tekstgrootte (17px),
+  kleur (wit op .9) en de gewichten — koprij en bedragen staan op 600 via de
+  <strong> uit de CMS-inhoud, de rest op 400.
+  GEVERIFIEERD na de wijziging, naast de doelwaarden uit het screenshot:
+    rijstappen 33/32/32 (doel 32), randen 0px (doel 0), inleiding->koprij
+    38px (doel 38), laatste rij->volgende alinea 27px (doel ~28),
+    kolomoffsets 4/214/473 (doel 0/208/471).
+  De ruimte ONDER de tabel komt niet uit de CSS maar uit een lege <p>&nbsp;</p>
+  in de CMS-inhoud; die stond er al en levert de ~27px.
+  De regels gelden gedeeld voor .spec-a-inner, .faq-a-inner en .jr-body, dus
+  een tabel op de FAQ- of juridische pagina's krijgt dezelfde strakke opmaak.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

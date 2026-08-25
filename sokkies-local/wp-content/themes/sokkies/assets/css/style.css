@@ -8922,30 +8922,28 @@ main.contact{
   .jr-body table{
     width:100%;
     border-collapse:collapse;
-    margin:14px 0 0;
+    /* 8px: in het aangeleverde ontwerp zit ~38px tussen de laatste regel
+       van de inleiding en de koprij; met 14px werd dat ~43px. */
+    margin:8px 0 0;
     font-size:var(--body-font-size);
     line-height:1.6;
   }
   .spec-a-inner th, .spec-a-inner td,
   .faq-a-inner th, .faq-a-inner td,
   .jr-body th, .jr-body td{
-    padding:9px 18px 9px 0;
+    /* 2px i.p.v. 9px: met line-height 1.6 (27px) komt een rij daarmee op
+       ~31px, zoals in het aangeleverde ontwerp (rijen 32px uit elkaar).
+       Met 9px werd dat 47px en stond de tabel veel te luchtig. */
+    padding:2px 18px 2px 0;
     text-align:left;
     vertical-align:top;
   }
   .spec-a-inner th, .faq-a-inner th, .jr-body th{
     font-weight:600;
   }
-  /* Scheidingslijn per rij. Redacteuren plakken meestal een tabel zonder
-     <thead>; de eerste rij is dan gewoon de eerste <tr>. */
+  /* GEEN scheidingslijnen: het aangeleverde ontwerp (screenshot Kulwant
+     2026-08-25) toont de tabel als uitgelijnde kolommen zonder randen.
+     De eerdere 1px-lijn per rij is daarom weer verwijderd. */
   .spec-a-inner tr, .faq-a-inner tr, .jr-body tr{
-    border-bottom:1px solid rgba(0,0,0,.12);
-  }
-  .spec-a-inner tr{
-    border-bottom-color:rgba(255,255,255,.25);
-  }
-  .spec-a-inner tr:last-child,
-  .faq-a-inner tr:last-child,
-  .jr-body tr:last-child{
-    border-bottom:0;
+    border:0;
   }
