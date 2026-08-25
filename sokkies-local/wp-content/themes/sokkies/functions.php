@@ -488,6 +488,42 @@ add_filter( 'gform_form_theme_slug', function ( $slug, $form ) {
 	return sokkies_is_contactformulier( $form ) ? 'legacy' : $slug;
 }, 10, 2 );
 
+/**
+ * Velden die de bezoeker niet ziet, horen ook niet in de notificatiemail.
+ *
+ * Het landveld ("Country", veld 10) staat wel op sokkies.com maar niet in het
+ * ontwerp. Het blijft in het formulier staan omdat de veldnamen 1:1 gelijk
+ * moeten blijven aan productie — input_10 wordt dus nog gewoon verzonden en
+ * opgeslagen bij de inzending, en blijft beschikbaar voor het systeem dat de
+ * data later ophaalt. Alleen in de mail was het zichtbaar, met de placeholder
+ * "Select country" als waarde (melding Kulwant 2026-08-25, met screenshot).
+ *
+ * De markering is dezelfde als die het veld op de pagina verbergt: de
+ * cssClass 'language' (zie .ct-form-card .gfield.language in style.css). Zo is
+ * er één begrip — "language-velden zijn verborgen voor de bezoeker én voor de
+ * mail" — in plaats van een los veld-ID op twee plekken.
+ *
+ * BEWUST GEEN {all_fields:exclude[10]} in de notificatie: die modifier bestaat
+ * niet in GF 3.0 (common.php:1417-1422 kent alleen value/empty/admin), en het
+ * zou bovendien een databasewijziging zijn die niet meedeployt. Via
+ * gform_merge_tag_filter kan het in code: false teruggeven laat GF het veld
+ * overslaan (common.php:1941-1943).
+ */
+function sokkies_veld_verborgen_in_mail( $veld ) {
+	return ! empty( $veld->cssClass ) && preg_match( '/(^|\s)language(\s|$)/', $veld->cssClass );
+}
+
+add_filter( 'gform_merge_tag_filter', function ( $waarde, $merge_tag, $opties, $veld, $ruwe_waarde, $format ) {
+	if ( 0 !== strpos( (string) $merge_tag, 'all_fields' ) || ! is_object( $veld ) ) {
+		return $waarde;
+	}
+	if ( (int) rgobj( $veld, 'formId' ) !== sokkies_contactformulier_id() ) {
+		return $waarde;
+	}
+	// false = GF slaat dit veld over in {all_fields}.
+	return sokkies_veld_verborgen_in_mail( $veld ) ? false : $waarde;
+}, 10, 6 );
+
 /* -------------------------------------------------------------------------
  * Gravity Forms — Nederlandse meldingen op de front-end
  * -------------------------------------------------------------------------

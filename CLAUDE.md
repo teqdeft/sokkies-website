@@ -1065,6 +1065,33 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   NOG OPEN: wp-content/plugins/gravityforms/ is untracked gelaten. Live heeft
   een eigen GF-installatie die niet uit deze repo komt; committen zou die via
   FTPS overschrijven (18 MB). Bewuste keuze om dat hier niet te doen.
+  LANDVELD UIT DE NOTIFICATIEMAIL (2026-08-25, melding Kulwant met screenshot
+  van de ontvangen mail). Het formulier werkt op live en de mail komt aan,
+  maar in de mail stond nog een rij "Country" met de placeholderwaarde
+  "Select country". Het veld is op de pagina al verborgen (cssClass
+  'language'), maar {all_fields} kijkt niet naar CSS.
+  BELANGRIJK — het veld is NIET verwijderd. input_10 wordt nog steeds
+  verzonden en opgeslagen bij de inzending (gecontroleerd op inzending 4/5/6:
+  veld 10 = "Select country"), zodat het systeem dat de data later ophaalt
+  niets mist. Kulwant heeft expliciet gevraagd de veldnamen 1:1 gelijk te
+  houden aan productie; alleen de weergave in de mail is veranderd.
+  HOE: {all_fields:exclude[10]} bestaat NIET in GF 3.0 — common.php:1417-1422
+  parseert alleen de modifiers value/empty/admin. Wat wel kan: het filter
+  gform_merge_tag_filter, waar false teruggeven het veld laat overslaan
+  (common.php:1941-1943, "if ( $field_value === false ) break;"). Dat is
+  hier gebruikt, met sokkies_veld_verborgen_in_mail() die op dezelfde
+  cssClass 'language' matcht als de CSS-regel. Eén begrip dus:
+  language-velden zijn verborgen voor de bezoeker én voor de mail.
+  BEWUST IN CODE EN NIET IN DE DATABASE: een aangepaste notificatietekst zou
+  een databasewijziging zijn en die deployt niet mee — dan had Kulwant het op
+  live nog een keer handmatig moeten doen. Nu reist de fix mee met de push.
+  Het filter is afgebakend op het contactformulier (formId vergeleken met
+  sokkies_contactformulier_id()) en op merge tags die met all_fields
+  beginnen, dus andere formulieren en de "Bedankt!"-autoresponder (die geen
+  {all_fields} gebruikt) blijven ongemoeid.
+  GEVERIFIEERD door de notificatie te renderen met GFCommon::replace_variables
+  op een echte inzending: Voornaam / Achternaam / E-mailadres / Telefoon /
+  Bedrijfsnaam / Uw bericht / URL staan er nog, de Country-rij is weg.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
