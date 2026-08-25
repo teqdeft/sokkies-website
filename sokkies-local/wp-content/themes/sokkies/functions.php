@@ -198,6 +198,15 @@ function sokkies_rijke_tekst( $html ) {
 		'b' => array(), 'i' => array(), 'u' => array(),
 		'a' => array( 'href' => true, 'target' => true, 'rel' => true ),
 		'ul' => array(), 'ol' => array(), 'li' => array(),
+		// Tabellen (toegevoegd 2026-08-25, melding Kulwant): een in de wysiwyg
+		// geplakte tabel werd hier weggestript, waardoor alleen de celtekst
+		// overbleef en de prijstabel op de PDP als losse woorden verscheen.
+		// BEWUST GEEN width/style/align: de opmaak hoort in de stylesheet, en
+		// inline breedtes uit Word/Excel breken de responsive kolommen.
+		'table' => array(), 'thead' => array(), 'tbody' => array(), 'tfoot' => array(),
+		'tr' => array(), 'caption' => array(),
+		'th' => array( 'colspan' => true, 'rowspan' => true, 'scope' => true ),
+		'td' => array( 'colspan' => true, 'rowspan' => true ),
 	);
 	return wp_kses( (string) $html, $toegestaan );
 }

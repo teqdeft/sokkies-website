@@ -1875,7 +1875,7 @@ add_action( 'acf/init', function () {
 								'instructions' => 'Elk artikel wordt automatisch genummerd en krijgt een eigen regel in de index. Lege rijen worden overgeslagen.',
 								'sub_fields'   => array(
 									array( 'key' => 'field_jr_art_titel', 'label' => 'Kop', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Zonder nummer — die telt vanzelf.' ),
-									array( 'key' => 'field_jr_art_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'instructions' => 'Selecteer woorden en gebruik de linkknop om ze te linken.' ),
+									array( 'key' => 'field_jr_art_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'tabs' => 'all', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'instructions' => 'Selecteer woorden en gebruik de linkknop om ze te linken. Een tabel plak je vanuit Word/Excel/Google Docs, of je zet hem via het tabblad Tekst in HTML; de opmaak komt uit de stylesheet.' ),
 								),
 							),
 							array(
@@ -2602,7 +2602,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				'instructions' => 'Per type, bijv. materiaal/maten/wasadvies. Leeg = de standaardset.',
 				'sub_fields'   => array(
 					array( 'key' => 'field_soktype_spec_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
-					array( 'key' => 'field_soktype_spec_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual', 'instructions' => 'Selecteer woorden en gebruik de linkknop om ze te linken.' ),
+					array( 'key' => 'field_soktype_spec_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'all', 'instructions' => 'Selecteer woorden en gebruik de linkknop om ze te linken. Een tabel plak je vanuit Word/Excel/Google Docs, of je zet hem via het tabblad Tekst in HTML; de opmaak komt uit de stylesheet.' ),
 				),
 			),
 		),

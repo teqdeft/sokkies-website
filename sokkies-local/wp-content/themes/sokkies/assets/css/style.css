@@ -8904,3 +8904,48 @@ main.contact{
   .ct-form-card .gfield.language{
     display:none;
   }
+
+/* -------------------------------------------------------------------------
+   Tabellen uit de wysiwyg (WP-toevoeging; htmlv kende geen tabellen)
+   -------------------------------------------------------------------------
+   Toegevoegd 2026-08-25 (melding Kulwant): een in de CMS geplakte prijstabel
+   kwam als losse woorden op de PDP omdat wp_kses de tabeltags wegstripte.
+   De tags zijn nu toegestaan (zie sokkies_rijke_tekst) en krijgen hier hun
+   opmaak. Dezelfde rijke tekst wordt gebruikt in spec-antwoorden, FAQ-
+   antwoorden en de juridische artikelen, dus de structuurregels zijn gedeeld;
+   alleen de lijnkleur verschilt, want de spec-accordeon staat op het
+   donkerblauwe vlak en de rest op licht. De tekstkleur erft gewoon van de
+   container, zodat er geen kleur dubbel wordt vastgelegd.
+   ------------------------------------------------------------------------- */
+  .spec-a-inner table,
+  .faq-a-inner table,
+  .jr-body table{
+    width:100%;
+    border-collapse:collapse;
+    margin:14px 0 0;
+    font-size:var(--body-font-size);
+    line-height:1.6;
+  }
+  .spec-a-inner th, .spec-a-inner td,
+  .faq-a-inner th, .faq-a-inner td,
+  .jr-body th, .jr-body td{
+    padding:9px 18px 9px 0;
+    text-align:left;
+    vertical-align:top;
+  }
+  .spec-a-inner th, .faq-a-inner th, .jr-body th{
+    font-weight:600;
+  }
+  /* Scheidingslijn per rij. Redacteuren plakken meestal een tabel zonder
+     <thead>; de eerste rij is dan gewoon de eerste <tr>. */
+  .spec-a-inner tr, .faq-a-inner tr, .jr-body tr{
+    border-bottom:1px solid rgba(0,0,0,.12);
+  }
+  .spec-a-inner tr{
+    border-bottom-color:rgba(255,255,255,.25);
+  }
+  .spec-a-inner tr:last-child,
+  .faq-a-inner tr:last-child,
+  .jr-body tr:last-child{
+    border-bottom:0;
+  }

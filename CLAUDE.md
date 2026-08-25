@@ -1124,6 +1124,53 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   (.specs-section heeft bg_sock_dark-blue-tall.svg, er is geen lichte
   variant) en wordt alleen door single-sokkies_soktype.php gerenderd, dus wit
   is daar onvoorwaardelijk goed.
+  TABEL UIT DE WYSIWYG WERD PLATGESLAGEN (2026-08-25, vervolgmelding Kulwant
+  met screenshot van de CMS-editor naast de front-end). Dit is de ECHTE
+  oorzaak achter de zwarte vetgedrukte tekst van hierboven: het was geen
+  kleurprobleem maar een weggestripte tabel.
+  WAT ER MIS WAS: de prijstabel staat correct in de database. Gecontroleerd op
+  pdp_specs rij "In productie" van Skisokken (ID 862): <table><tbody><tr><td>
+  <strong>Oplage</strong>… met vier rijen en drie kolommen. Op de front-end
+  bleef daar alleen losse tekst van over.
+  OORZAAK: sokkies_rijke_tekst() draait wp_kses met een witte lijst waarin
+  géén tabeltags stonden (alleen p/br/strong/em/b/i/u/a/ul/ol/li). wp_kses
+  verwijdert dan de tabeltags maar houdt de inhoud, dus alle celtekst kwam
+  achter elkaar te staan — met de <strong> nog intact, want die stond wél op
+  de lijst. Dat verklaart precies het beeld: kale <strong>-elementen als
+  directe kinderen van .spec-a-inner, zonder <p> eromheen.
+  FIX 1 — table/thead/tbody/tfoot/tr/th/td/caption toegevoegd aan de witte
+  lijst. BEWUST GEEN width/style/align: de opgeslagen HTML komt uit Word/Excel
+  en bevat width="602" en width="200" per cel; die vaste breedtes zouden de
+  responsive kolommen breken. wp_kses gooit niet-toegestane attributen weg en
+  houdt de tag, dus de tabel blijft en de opmaak komt uit de stylesheet.
+  Geverifieerd: het width-attribuut is op de gerenderde tabel null.
+  FIX 2 — tabelopmaak toegevoegd (htmlv kende geen tabellen, dus die was er
+  helemaal niet). De structuurregels zijn gedeeld door de drie plekken die
+  sokkies_rijke_tekst gebruiken: .spec-a-inner, .faq-a-inner en .jr-body.
+  De tekstkleur wordt NIET opnieuw vastgelegd maar geërfd van de container,
+  zodat dezelfde regels werken op het donkerblauwe specvlak en op de lichte
+  FAQ-/juridische pagina's. Alleen de lijnkleur verschilt: rgba(255,255,255,
+  .25) in de spec-accordeon, rgba(0,0,0,.12) elders.
+  FIX 3 — het tabblad "Tekst" stond uit op de wysiwyg-velden (tabs =>
+  'visual'), dus er was geen enkele manier om tabelmarkup te plaatsen of te
+  corrigeren. Nu tabs => 'all' op zowel field_soktype_spec_tekst als
+  field_jr_art_tekst, met een instructie die uitlegt dat een tabel geplakt
+  kan worden vanuit Word/Excel/Docs of via het tabblad Tekst.
+  GEEN ECHTE TABELKNOP: WordPress levert de TinyMCE-table-plugin niet mee
+  (wp-includes/js/tinymce/plugins bevat charmap, colorpicker, hr, image,
+  link, lists, media, paste, tabfocus, textcolor, wordpress, wpautoresize,
+  wpdialogs, wpeditimage, wpemoji, wpgallery, wplink, wptextpattern, wpview —
+  geen table), en er staat ook geen plugin die hem toevoegt. Een knop in de
+  toolbar vereist dus of een plugin (Advanced Editor Tools is de gangbare) of
+  het meeleveren van de TinyMCE-table-plugin in het thema. Bewust NIET
+  eenzijdig gedaan — dat is externe JS in de repo en een keuze van Kulwant.
+  Plakken werkt sowieso al: zo is deze tabel er ook in gekomen.
+  GEVERIFIEERD lokaal na de fix: 1 tabel, 4 rijen, 3 kolommen, inhoud
+  "Oplage | Prijs per paar | Voorbeeld" en "50 paar | €10,99 | kleinere
+  groepen", celkleur rgba(255,255,255,.9), rijlijn rgba(255,255,255,.25),
+  width-attribuut weg, en 0 kale <strong> meer direct onder .spec-a-inner.
+  Op 375px: tabel 373px in een container van 381px, geen overloop en geen
+  horizontale paginascroll.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
