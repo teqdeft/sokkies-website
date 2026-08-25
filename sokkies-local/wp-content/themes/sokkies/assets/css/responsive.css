@@ -5217,6 +5217,12 @@
   }
   .prod-info h1{ order:1; margin-bottom:12px; }
   .prod-info > p{ order:2; }
+  /* Ook de blokken die een redacteur via de wysiwyg in Beschrijving kan
+     zetten meenemen: zonder eigen order krijgen ze 0 en springen ze op
+     mobiel boven de titel. */
+  .prod-info > ul,
+  .prod-info > ol,
+  .prod-info > table{ order:2; }
   .prod-rating{ order:3; }
   .prod-gallery{ order:4; }
   .pdp-usps-main{ order:5; }
@@ -8691,6 +8697,12 @@
   }
   .prod-info h1{ order:1; margin-bottom:12px; }
   .prod-info > p{ order:2; }
+  /* Ook de blokken die een redacteur via de wysiwyg in Beschrijving kan
+     zetten meenemen: zonder eigen order krijgen ze 0 en springen ze op
+     mobiel boven de titel. */
+  .prod-info > ul,
+  .prod-info > ol,
+  .prod-info > table{ order:2; }
   .prod-rating{ order:3; }
   .prod-gallery{ order:4; }
   .pdp-usps-main{ order:5; }
@@ -12419,6 +12431,12 @@
   }
   .prod-info h1{ order:1; margin-bottom:12px; text-align:center; }
   .prod-info > p{ order:2; text-align:center; }
+  /* Ook de blokken die een redacteur via de wysiwyg in Beschrijving kan
+     zetten meenemen: zonder eigen order krijgen ze 0 en springen ze op
+     mobiel boven de titel. */
+  .prod-info > ul,
+  .prod-info > ol,
+  .prod-info > table{ order:2; }
   .prod-rating{ order:3; justify-content:center; margin-left:auto; margin-right:auto; }
   .prod-gallery{ order:4; }
   .pdp-usps-main{ order:5; }

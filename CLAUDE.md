@@ -1389,6 +1389,49 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   echt geladen. Link/lijst-opmaak in de browser gemeten: link #28121B/600/
   onderstreept op het cyaan, CTA zonder onderstreping, marker binnen de
   kolom, li 15px/24px gelijk aan de alinea.
+  PDP-BESCHRIJVING NAAR WYSIWYG (2026-08-25, vervolgverzoek Kulwant, zelfde
+  wens als bij het merkverhaal maar dan voor het veld Beschrijving op het
+  soktype — de tekst naast de grote productfoto).
+  GEDAAN: field_soktype_pdp_beschrijving van textarea naar wysiwyg met
+  toolbar 'sokkies_eenvoudig', media_upload uit, tabs 'all'. Rendering via
+  sokkies_rijke_tekst( wpautop() ), dezelfde witte lijst als elders.
+  DRIE DINGEN DIE HIER ANDERS LAGEN DAN BIJ HET MERKVERHAAL:
+  1. DE SPECIFICATIES-LINK STOND IN DEZELFDE <p> als de tekst en hoort daar
+     te blijven — het ontwerp zet hem achter de laatste zin, niet als los
+     blok eronder. De template bouwt de link nu apart op en schuift hem met
+     strrpos IN de laatste </p> van de gerenderde tekst. Bewust strrpos en
+     geen preg_replace: de svg in die link bevat tekens die in een
+     vervangingsstring een eigen betekenis hebben. Valt er geen </p> te
+     vinden (leeg veld), dan komt de link in een eigen <p>.
+  2. .prod-info IS OP MOBIEL EEN FLEXCONTAINER met expliciete volgorde:
+     h1 order 1, > p order 2, rating 3, galerij 4, usps 5, prijstitel 6,
+     staffel 7, knoppen 8 (responsive.css, banden <=991, <=767 en <=520).
+     Een <ul> uit de editor is een DIRECT kind van .prod-info en zou zonder
+     eigen order op 0 uitkomen — dus bovenaan, boven de titel. In alle drie
+     de banden staat nu ook > ul/ol/table op order 2, zodat ze bij de tekst
+     blijven. In de <=520-band houdt alleen de <p> zijn text-align:center;
+     een gecentreerde bullet-lijst ziet er niet uit.
+     OM DEZELFDE REDEN GEEN WRAPPER-DIV om de tekst: dat zou .prod-info > p
+     breken en de mobiele volgorde slopen.
+  3. LINKKLEUR: roze + 600, dezelfde conventie als redacteurslinks in de FAQ-
+     en spec-teksten (lichte achtergrond, dus dat leest goed). Anders dan bij
+     het merkverhaal, waar donker is gekozen omdat dat blok vier
+     achtergronden heeft. .prod-spec-link is zelf ook een <a> in die alinea
+     en houdt zijn coral via :not(.prod-spec-link).
+  VERDER, net als bij het merkverhaal: lijstopmaak toegevoegd (padding-left
+  32px, disc/decimal, typografie gelijk aan .prod-info p) omdat de globale
+  reset de inspringing weghaalt en de marker anders buiten de kolom valt, en
+  .prod-info is toegevoegd aan de gedeelde tabelselectors.
+  GECONTROLEERD VOORAF: pdp_beschrijving heeft maar één consument (de
+  template), dus er lekt geen HTML in een SEO- of excerpt-pad. In .prod-info
+  zat nog geen enkele <ul>/<ol>/<table> — de staffel is div-gebaseerd — dus
+  de nieuwe selectors raken niets bestaands.
+  GEVERIFIEERD: de pagina rendert 2 alinea's met de Specificaties-link BINNEN
+  de laatste alinea (positie van de link ligt vóór de laatste </p>), geen
+  PHP-fouten. In de browser gemeten: redacteurslink roze/600, spec-link nog
+  steeds coral/600/onderstreept, lijst disc met 32px inspringing en marker
+  binnen de kolom, li-typografie exact gelijk aan de alinea, en order 2 op de
+  lijst.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

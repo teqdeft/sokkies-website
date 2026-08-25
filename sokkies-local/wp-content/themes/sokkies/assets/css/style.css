@@ -5454,6 +5454,30 @@ font-weight: 600;
     text-decoration:underline;
     white-space:nowrap;
   }
+  /* WP-toevoeging 2026-08-25: Beschrijving is een wysiwyg-veld geworden, dus
+     hier komen nu links en opsommingen uit de editor. Het ontwerp kende die
+     niet, dus er was geen enkele regel voor: een link kwam browser-blauw en
+     de bullets vielen buiten de tekstkolom (de globale reset zet padding op
+     0). Roze + 600 is dezelfde conventie als redacteurslinks in de FAQ- en
+     spec-teksten; de achtergrond is hier net zo licht. .prod-spec-link is
+     zelf ook een <a> in diezelfde alinea en houdt zijn coral — vandaar de
+     :not(). */
+  .prod-info p a:not(.prod-spec-link){
+    color:var(--pink);
+    font-weight:600;
+  }
+  .prod-info ul,
+  .prod-info ol{
+    margin:0 0 25px;
+    padding-left:32px;
+  }
+  .prod-info ul{ list-style:disc outside; }
+  .prod-info ol{ list-style:decimal outside; }
+  .prod-info li{
+    font-size:var(--body-font-size);
+    line-height:1.55;
+    color:var(--text);
+  }
   .prod-rating{
     display:flex;
     align-items:center;
@@ -8978,6 +9002,7 @@ main.contact{
    ------------------------------------------------------------------------- */
   .spec-a-inner table,
   .faq-a-inner table,
+  .prod-info table,
   .brand-intro-inner table,
   .jr-body table{
     width:100%;
@@ -8990,6 +9015,7 @@ main.contact{
   }
   .spec-a-inner th, .spec-a-inner td,
   .faq-a-inner th, .faq-a-inner td,
+  .prod-info th, .prod-info td,
   .brand-intro-inner th, .brand-intro-inner td,
   .jr-body th, .jr-body td{
     /* 2px i.p.v. 9px: met line-height 1.6 (27px) komt een rij daarmee op
@@ -8999,12 +9025,12 @@ main.contact{
     text-align:left;
     vertical-align:top;
   }
-  .spec-a-inner th, .faq-a-inner th, .jr-body th, .brand-intro-inner th{
+  .spec-a-inner th, .faq-a-inner th, .jr-body th, .brand-intro-inner th, .prod-info th{
     font-weight:600;
   }
   /* GEEN scheidingslijnen: het aangeleverde ontwerp (screenshot Kulwant
      2026-08-25) toont de tabel als uitgelijnde kolommen zonder randen.
      De eerdere 1px-lijn per rij is daarom weer verwijderd. */
-  .spec-a-inner tr, .faq-a-inner tr, .jr-body tr, .brand-intro-inner tr{
+  .spec-a-inner tr, .faq-a-inner tr, .jr-body tr, .brand-intro-inner tr, .prod-info tr{
     border:0;
   }

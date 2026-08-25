@@ -117,11 +117,24 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
            <!-- Info -->
            <div class="prod-info">
              <h1><?php echo sokkies_kop( $pdp_titel ); ?></h1>
-             <p><?php echo nl2br( esc_html( $beschrijving ) ); ?>
-               <a href="#specs" class="prod-spec-link">Specificaties 
-                <svg xmlns="http://www.w3.org/2000/svg" width="9.39" height="12.199" viewBox="0 0 9.39 12.199">                   <g id="Group_491" data-name="Group 491" transform="translate(-653.793 -7826)">                     <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(1204.102 6617.5) rotate(90)" fill="none" stroke="#fa4b46" stroke-linecap="round" stroke-width="1"/>                     <path id="Path_3670" data-name="Path 3670" d="M1289.087,547h11" transform="translate(1205.497 6537.413) rotate(90)" fill="none" stroke="#fa4b46" stroke-linecap="round" stroke-width="1"/>                   </g>                 </svg>
-               </a>
-             </p>
+             <?php
+             /* De Specificaties-link hoort ACHTER de laatste zin te blijven
+                staan, niet als los blok eronder. Beschrijving is sinds
+                2026-08-25 een wysiwyg en levert dus eigen <p>-blokken; de
+                link wordt daarom IN de laatste </p> geschoven. Zonder dat
+                zou hij een eigen regel met alineamarge krijgen en dat is
+                niet wat het ontwerp doet. Bewust met strrpos i.p.v. een
+                preg_replace: in de svg zitten tekens die in een
+                vervangingsstring een eigen betekenis hebben. */
+             $spec_link = '<a href="#specs" class="prod-spec-link">Specificaties '
+               . '<svg xmlns="http://www.w3.org/2000/svg" width="9.39" height="12.199" viewBox="0 0 9.39 12.199">                   <g id="Group_491" data-name="Group 491" transform="translate(-653.793 -7826)">                     <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(1204.102 6617.5) rotate(90)" fill="none" stroke="#fa4b46" stroke-linecap="round" stroke-width="1"/>                     <path id="Path_3670" data-name="Path 3670" d="M1289.087,547h11" transform="translate(1205.497 6537.413) rotate(90)" fill="none" stroke="#fa4b46" stroke-linecap="round" stroke-width="1"/>                   </g>                 </svg>'
+               . '</a>';
+             $beschrijving_html = sokkies_rijke_tekst( wpautop( $beschrijving ) );
+             $laatste = strrpos( $beschrijving_html, '</p>' );
+             echo false !== $laatste
+               ? substr( $beschrijving_html, 0, $laatste ) . ' ' . $spec_link . substr( $beschrijving_html, $laatste )
+               : $beschrijving_html . '<p>' . $spec_link . '</p>';
+             ?>
              <div class="prod-rating">
                <span class="prod-rating-score"><?php echo esc_html( sokkies_optie( 'review_score', '9.5/10' ) ); ?></span>
                <span class="prod-rating-stars">
