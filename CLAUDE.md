@@ -1330,6 +1330,65 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   omdat de regelafstand van de FAQ-alinea (1.6) is aangehouden — dat was de
   expliciete vraag ("consistent appearance"). Wil Kulwant het strakker, dan
   is line-height 1.4 op .faq-a-inner li genoeg.
+  MERKVERHAAL: TEKSTVELDEN NAAR WYSIWYG (2026-08-25, verzoek Kulwant: "een
+  optie zoals CKEditor om inhoud en links te beheren, alleen voor deze
+  module"). Tekst (boven) en Tekst (onder) van brand_intro waren platte
+  textarea's die met nl2br(esc_html()) in EEN <p> werden gezet — een link of
+  vetgedrukt woord was dus onmogelijk.
+  GEDAAN: beide velden zijn type wysiwyg met toolbar 'sokkies_eenvoudig'
+  (vet/cursief/link/unlink/lijsten), media_upload uit, tabs 'all'. De
+  rendering gaat door sokkies_rijke_tekst(), dezelfde witte lijst als de FAQ,
+  spec- en juridische teksten. Alleen deze module, zoals gevraagd.
+  ADVERSARIEEL NAGEKEKEN (3 parallelle reviewers op security, editor-vs-output
+  pariteit en hergebruik). Wat daaruit kwam en wat ermee is gedaan:
+  - VEILIG: ~45 XSS-payloads door de echte functie gehaald (javascript:/
+    vbscript:/data: met tab-, newline-, nullbyte- en entity-obfuscatie, on*-
+    handlers, script/style/iframe/svg/object/meta, attribuut-breakouts,
+    kapotte nesting). Allemaal onschadelijk. wp_kses is de laatste stap voor
+    echo en krijgt een expliciete array mee, dus ACF's wp_kses_allowed_html-
+    hook (die alleen op context 'acf' reageert) kan de lijst niet verbreden.
+  - GEFIKST, script/style-inhoud: wp_kses haalt <script>/<style> weg maar
+    LAAT DE TEKST ERIN STAAN. Een geplakt style-blok of een [gravityform]-
+    shortcode dumpte zo zijn hele geminificeerde JS als zichtbare alineatekst.
+    sokkies_rijke_tekst() knipt die inhoud nu eerst weg met een preg_replace.
+    Dat hardt meteen ook de drie andere aanroepers (FAQ, spec, juridisch).
+  - GEFIKST, links waren onopgemaakt: .brand-intro-inner a bestond niet, dus
+    een redacteurslink kwam browser-blauw en onderstreept op het cyaan.
+    Nu donker + 600 + onderstreept. BEWUST NIET het roze van .faq-a-inner a:
+    dit blok heeft vier achtergronden (cyaan/licht/licht-werkwijze/geel) en
+    roze op cyaan leest slecht. De CTA .brand-intro-link is zelf ook een <a>
+    in dit blok en houdt zijn eigen opmaak via :not().
+  - GEFIKST, bullets onzichtbaar: er was geen ul/ol/li-regel voor dit blok.
+    De globale reset (* {padding:0}) haalt de inspringing weg en
+    .brand-collapse heeft overflow:hidden, dus de marker buiten de tekstkolom
+    werd weggeknipt — precies hetzelfde patroon als bij de FAQ eerder vandaag.
+    Nu padding-left:32px, disc/decimal, en li-typografie gelijk aan de alinea.
+  - GEFIKST, tabellen: de gedeelde tabelopmaak was gescoped op spec/faq/
+    juridisch; brand-intro stond er niet bij terwijl de witte lijst tabellen
+    wel doorlaat. Selectors uitgebreid.
+  - GECORRIGEERD IN MIJN EIGEN COMMENTAAR: ik schreef dat wpautop() nodig was
+    omdat de velden nog platte tekst bevatten. Dat klopt niet — ACF's wysiwyg
+    format_value draait de acf_the_content-keten en dus wpautop al vóór de
+    template. Gemeten op alle vier de pagina's: met en zonder wpautop scheelt
+    exact één afsluitende newline. De aanroep blijft staan als vangnet en om
+    gelijk te lopen met single-sokkies_soktype.php, maar het commentaar zegt
+    nu wat er echt gebeurt.
+  - NIET OPGELOST, wel vastgelegd: als wysiwyg loopt de waarde nu ook door
+    autoembed en do_shortcode. Een kale URL op een eigen regel wordt een
+    <iframe> die de witte lijst er weer uit haalt, dus die URL is spoorloos.
+    Staat nu in de veldinstructies én in het docblock. Iframe toelaten is
+    NIET de oplossing.
+  GEVERIFIEERD: alle vier de pagina's (Home, Toepassingen, Werkwijze,
+  Configurator) renderen hun volledige tekst — 16/16 veldwaarden woordelijk
+  teruggevonden in de HTML. Inklappen op Home werkt nog: de omschakeling van
+  één <p>-met-<br> naar losse <p>'s kost +4px totale hoogte en 1-2px op het
+  afkappunt, kort() geeft hetzelfde oordeel, en de knop klapt uit naar de
+  volle hoogte met de laatste alinea intact. Toolbarnaam gecontroleerd in
+  plaats van aangenomen: ACF maakt van 'Sokkies eenvoudig' via sanitize_title
+  + '-'->'_' de sleutel 'sokkies_eenvoudig', dus de compacte toolbar wordt
+  echt geladen. Link/lijst-opmaak in de browser gemeten: link #28121B/600/
+  onderstreept op het cyaan, CTA zonder onderstreping, marker binnen de
+  kolom, li 15px/24px gelijk aan de alinea.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

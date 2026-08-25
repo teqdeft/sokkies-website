@@ -193,6 +193,13 @@ add_action( 'admin_head', function () {
  * het accordeon-JS (teamfeedback 2026-08-20).
  */
 function sokkies_rijke_tekst( $html ) {
+	$html = (string) $html;
+	// wp_kses verwijdert <script> en <style> wel, maar LAAT DE INHOUD STAAN:
+	// een geplakt style-blok of een shortcode die inline JS uitspuugt komt dan
+	// als zichtbare bodytekst op de pagina (een [gravityform] dumpt zo zijn hele
+	// geminificeerde script als alineatekst). Niet uitvoerbaar, wel lelijk — dus
+	// eerst de inhoud zelf eruit, daarna pas de witte lijst.
+	$html = preg_replace( '#<(script|style)\b[^>]*>.*?</\1>#is', '', $html );
 	$toegestaan = array(
 		'p' => array(), 'br' => array(), 'strong' => array(), 'em' => array(),
 		'b' => array(), 'i' => array(), 'u' => array(),
@@ -208,7 +215,7 @@ function sokkies_rijke_tekst( $html ) {
 		'th' => array( 'colspan' => true, 'rowspan' => true, 'scope' => true ),
 		'td' => array( 'colspan' => true, 'rowspan' => true ),
 	);
-	return wp_kses( (string) $html, $toegestaan );
+	return wp_kses( $html, $toegestaan );
 }
 
 function sokkies_faq_antwoord( $vraag_id ) {
