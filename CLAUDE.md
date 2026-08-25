@@ -1171,6 +1171,37 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   width-attribuut weg, en 0 kale <strong> meer direct onder .spec-a-inner.
   Op 375px: tabel 373px in een container van 381px, geen overloop en geen
   horizontale paginascroll.
+  VERKEERDE VOETJESFOTO OP OVER-ONS (2026-08-25, melding Kulwant met een
+  screenshot van de WP-pagina naast die van htmlv). Onder de
+  duurzaamheidssectie stond het beeld niet uitgelijnd met het corale paneel:
+  de benen werden afgekapt en raakten het paneel nauwelijks.
+  OORZAAK: niet de positionering maar het BEELD. htmlv gebruikt niet overal
+  dezelfde voetjesfoto — alle elf pagina's nagelopen: over-ons.html en
+  duurzaamheid.html tonen cta-foot.png (369x659, groene groentesokken), de
+  overige negen socks-transparent.png (600x516). De sectietemplate had
+  socks-transparent.png hard als standaard, dus over-ons kreeg het beeld van
+  de homepage. Dat botst met de CSS, want .over-ons/.duurzaamheid
+  .cta-final-feet zet top:-500px, right:0 en width/height:auto — dat is
+  afgestemd op de smalle, hoge cta-foot.png. Met de brede, lage homepagefoto
+  klopt de uitsnede dan niet.
+  FIX: het standaardbeeld volgt nu de page-scope (sokkies_main_class), net
+  als de CSS dat doet: over-ons/duurzaamheid krijgen cta-foot.png, de rest
+  socks-transparent.png. Een eigen keuze in het ACF-veld 'voetjes_foto' wint
+  nog steeds. Bewust in de TEMPLATE en niet als databasewaarde per pagina:
+  zo geldt het meteen voor elke nieuwe over-ons-/duurzaamheidsachtige pagina
+  en hoeft er niets geimporteerd te worden op live.
+  cta-foot.png stond al in het thema (assets/media, 252864 bytes, identiek
+  aan htmlv) — er hoefde dus geen bestand toegevoegd te worden.
+  GEVERIFIEERD op 1920, WordPress naast de htmlv-referentie:
+    htmlv : cta-foot.png 369x659, top -500px, right 0, overlap met het
+            paneel 159px, rechterrand 15px van de viewport
+    WP    : cta-foot.png 369x659, top -500px, right 0, overlap 159px,
+            rechterrand 15px  -> identiek
+  Voor de fix was het op WP socks-transparent.png 600x516 met een overlap van
+  slechts 16px; vandaar het afgekapte beeld.
+  GEEN REGRESSIE: de andere pagina's gecontroleerd op de gerenderde src —
+  home, collectie en werkwijze houden socks-transparent.png, duurzaamheid
+  krijgt net als over-ons cta-foot.png. Precies de verdeling van htmlv.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

@@ -17,7 +17,17 @@ $positie    = get_sub_field( 'voetjes_positie' ) ?: 'achter';
 $contact    = (bool) get_sub_field( 'contactregel' );
 
 $feet_foto = get_sub_field( 'voetjes_foto' );
-$feet_src  = ! empty( $feet_foto['url'] ) ? $feet_foto['url'] : get_template_directory_uri() . '/assets/media/socks-transparent.png';
+// htmlv gebruikt niet overal hetzelfde voetjesbeeld: over-ons.html en
+// duurzaamheid.html tonen cta-foot.png (groene groentesokken), alle andere
+// pagina's socks-transparent.png. Dat hoort bij elkaar met de positionering,
+// want .over-ons/.duurzaamheid .cta-final-feet zet top/right/width/height
+// anders dan de standaardregel. Het standaardbeeld volgt daarom de
+// page-scope; een eigen keuze in het veld 'voetjes_foto' wint altijd.
+// (Melding Kulwant 2026-08-25: op over-ons stonden de voetjes van de
+// homepage, waardoor het beeld niet uitlijnde met het corale paneel.)
+$scope     = function_exists( 'sokkies_main_class' ) ? sokkies_main_class() : '';
+$feet_std  = preg_match( '/\b(over-ons|duurzaamheid)\b/', $scope ) ? 'cta-foot.png' : 'socks-transparent.png';
+$feet_src  = ! empty( $feet_foto['url'] ) ? $feet_foto['url'] : get_template_directory_uri() . '/assets/media/' . $feet_std;
 $feet_img  = '<img class="cta-final-feet" src="' . esc_url( $feet_src ) . '" alt="" aria-hidden="true">';
 $tel_weergave = sokkies_optie( 'telefoon_weergave', '+31 (0)413 410 411' );
 ?>
