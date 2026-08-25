@@ -1202,6 +1202,38 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   GEEN REGRESSIE: de andere pagina's gecontroleerd op de gerenderde src —
   home, collectie en werkwijze houden socks-transparent.png, duurzaamheid
   krijgt net als over-ons cta-foot.png. Precies de verdeling van htmlv.
+  USP-STRIP OVER DE SAMPLE-KNOP OP DE PDP (2026-08-25, melding Kulwant met
+  screenshot van reguliere-sokken; hij noemde het "overlap list items", maar
+  de vier <li> botsen onderling niet — de hele strip valt over de rechterkolom).
+  OORZAAK: de CSS is byte-identiek aan htmlv, dus daar zat het niet in.
+  .pdp-usps-main staat in htmlv IN .prod-gallery-col en wordt met
+  left:calc((min(1720px,100vw - 120px) - 100%)/2) 410px naar rechts geduwd,
+  zodat hij onder BEIDE kolommen gecentreerd oogt. Dat is een truc die alleen
+  standhoudt zolang de rechterkolom korter is dan de linker.
+  GEMETEN op 1920, htmlv naast WP-live:
+    htmlv : galerijkolom 225-1034, .prod-info 225-952, strip 1015-1034
+            -> 63px speling onder de sample-knop
+    WP    : galerijkolom 225-1034, .prod-info 225-1031, strip 1015-1034
+            -> -16px, dus overlap
+  De rechterkolom is in WP 79px hoger dan in het ontwerp (de staffeltabel is
+  redactioneel en telt hier 8 regels), en dat eet precies de 63px speling op.
+  Met CMS-inhoud is dit dus geen incident maar een terugkerend risico.
+  FIX (BEWUSTE AFWIJKING VAN HTMLV in DOM-positie, niet in opmaak): het blok
+  staat nu NA .prod-top, als kind van .container. Daar heeft het van nature de
+  volle containerbreedte en is de left-berekening 0 — (1720 - 1720)/2 — dus de
+  regel mocht ongewijzigd blijven staan.
+  WAAROM DIT HETZELFDE BEELD GEEFT: de ul is justify-content:center. In htmlv
+  centreert die binnen een 900px-blok dat 410px naar rechts staat (midden op
+  953); nu centreert hij binnen de 1720px-container (midden op 953). Gemeten
+  itemposities voor en na de verplaatsing: 644-748, 778-890, 920-1103,
+  1133-1261 — identiek. Ook de verticale plek klopt: zou htmlv deze structuur
+  gebruiken, dan is .prod-top 965 hoog en komt de strip op 1015 — exact waar
+  htmlv hem heeft.
+  GEVERIFIEERD na de fix: 1920 -> strip 1081-1100, 50px onder de sample-knop,
+  geen overlap; 1280 -> 75px speling; 375 -> strip 20-355 binnen een viewport
+  van 401, items wikkelen netjes over twee regels, 0 botsingen, geen
+  horizontale paginascroll. Op alle drie de breedtes botsen de <li> onderling
+  niet.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

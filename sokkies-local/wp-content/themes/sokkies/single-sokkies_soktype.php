@@ -112,15 +112,6 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                </div>
                <?php endif; ?>
              </div>
-
-             <div class="pdp-usps-main">
-               <ul>
-                 <li>Vanaf <?php echo esc_html( sokkies_optie( 'minimale_afname', '30' ) ); ?> paar</li>
-                 <li>Eigen productie</li>
-                 <li>Gratis ontwerp binnen 24u</li>
-                 <li>Gratis verzending</li>
-               </ul>
-             </div>
            </div>
 
            <!-- Info -->
@@ -159,6 +150,28 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
              </div>
            </div>
           </div>
+
+        <?php
+        /* USP-strip. BEWUSTE AFWIJKING VAN HTMLV in DOM-positie: daar staat
+           dit blok IN .prod-gallery-col en wordt het met
+           left:calc((min(1720px,100vw - 120px) - 100%)/2) 410px naar rechts
+           geschoven om onder beide kolommen gecentreerd te lijken. Dat werkt
+           alleen zolang de rechterkolom korter is dan de linker: in htmlv is
+           er precies 63px speling. De inhoud is hier redactioneel (de
+           staffeltabel groeit mee), waardoor .prod-info hoger werd dan in het
+           ontwerp en de strip over de sample-knop viel (melding Kulwant
+           2026-08-25). Het blok staat nu NA .prod-top, waar het van nature de
+           volle containerbreedte heeft. De left-berekening levert daar 0 op
+           (100% is dan de container zelf), dus de opmaak blijft gelijk. */
+        ?>
+        <div class="pdp-usps-main">
+          <ul>
+            <li>Vanaf <?php echo esc_html( sokkies_optie( 'minimale_afname', '30' ) ); ?> paar</li>
+            <li>Eigen productie</li>
+            <li>Gratis ontwerp binnen 24u</li>
+            <li>Gratis verzending</li>
+          </ul>
+        </div>
 
        </div>
      </div>
