@@ -2308,6 +2308,31 @@ font-weight: 600;
     max-width:560px;
   }
 
+  /* Lijsten in FAQ-antwoorden (WP-toevoeging; htmlv kende ze niet — daar
+     stond in elk antwoord alleen een <p>). Redacteuren zetten ze via de
+     wysiwyg. Zonder eigen opmaak viel <li> terug op de browserstandaard:
+     16px, line-height normal en zwart in plaats van --text, en met
+     padding-left:0 vielen de bullets buiten de tekstkolom en waren ze dus
+     onzichtbaar (melding Kulwant 2026-08-25 met referentiebeeld).
+     Grootte, regelafstand en kleur volgen nu .faq-a-inner p, zodat een lijst
+     naadloos bij de lopende tekst past; de inspringing zet de bullets weer
+     binnen de kolom. Geldt in één keer voor alle vier de FAQ-weergaven:
+     section-faq, faq_geel, faq_pagina en de FAQ op de PDP gebruiken
+     allemaal .faq-a-inner. */
+  .faq-a-inner ul,
+  .faq-a-inner ol{
+    margin:10px 0 0;
+    padding-left:32px;
+    max-width:560px;
+  }
+  .faq-a-inner ul{ list-style:disc outside; }
+  .faq-a-inner ol{ list-style:decimal outside; }
+  .faq-a-inner li{
+    font-size:var(--body-font-size);
+    line-height:1.6;
+    color:var(--text);
+  }
+
   /* ===== Slot-CTA: klaar om te ontwerpen ===== */
   .cta-final{
     background:var(--light-beige);
@@ -3799,7 +3824,9 @@ font-weight: 600;
     padding: 120px 0;
   }
 
-  .faq-light .faq-a-inner p{
+  .faq-light .faq-a-inner p,
+  .faq-light .faq-a-inner ul,
+  .faq-light .faq-a-inner ol{
     max-width: 100%;
   }
   .faq-a-inner p a{
@@ -6711,7 +6738,9 @@ font-weight: 600;
   .faq-page .faq-item{
     border-bottom:1px solid var(--border-light);
   }
-  .faq-page .faq-a-inner p{
+  .faq-page .faq-a-inner p,
+  .faq-page .faq-a-inner ul,
+  .faq-page .faq-a-inner ol{
     max-width:none;
   }
   .faq-page .faq-item.is-hidden,
@@ -7719,7 +7748,9 @@ font-weight: 600;
   .pt-faq .faq-item.is-open .faq-a{
     max-height:none;
   }
-  .pt-faq .faq-a-inner p{
+  .pt-faq .faq-a-inner p,
+  .pt-faq .faq-a-inner ul,
+  .pt-faq .faq-a-inner ol{
     max-width:none;
   }
 

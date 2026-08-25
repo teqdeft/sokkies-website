@@ -1299,6 +1299,37 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   in de CMS-inhoud; die stond er al en levert de ~27px.
   De regels gelden gedeeld voor .spec-a-inner, .faq-a-inner en .jr-body, dus
   een tabel op de FAQ- of juridische pagina's krijgt dezelfde strakke opmaak.
+  LIJSTEN IN FAQ-ANTWOORDEN GLOBAAL OPGEMAAKT (2026-08-25, verzoek Kulwant met
+  twee screenshots: de huidige weergave en een referentiebeeld met bullets).
+  WAT ER MIS WAS: er stond helemaal geen opmaak op .faq-a-inner ul/ol/li, dus
+  alles viel terug op de browserstandaard. Live gemeten: 16px in plaats van
+  het body-token 17px, line-height "normal" (19px per item i.p.v. 27px),
+  kleur rgb(0,0,0) i.p.v. --text (#28121B), en padding-left:0. Dat laatste is
+  waarom er GEEN bullets te zien waren: list-style stond gewoon op disc, maar
+  met outside-positie en nul padding vallen de markers buiten de tekstkolom.
+  htmlv kende dit niet — daar staat in elk FAQ-antwoord alleen een <p>.
+  FIX: grootte, regelafstand en kleur volgen nu .faq-a-inner p, zodat een
+  lijst naadloos aansluit op de lopende tekst, plus padding-left:32px zodat de
+  bullets weer binnen de kolom vallen. <ul> krijgt disc, <ol> decimal, zodat
+  een genummerde lijst uit de editor ook werkt.
+  GLOBAAL IN ÉÉN REGEL: alle vier de FAQ-weergaven renderen via
+  sokkies_faq_antwoord() in een .faq-a-inner — section-faq, section-faq_geel,
+  section-faq_pagina en de FAQ op de PDP. Eén selector dekt ze dus allemaal.
+  Ook de max-width-uitzonderingen zijn meegenomen: .faq-light (100%),
+  .faq-page (none) en .pt-faq (none) golden alleen voor p en gelden nu ook
+  voor ul/ol, anders zou een lijst breder lopen dan de alinea erboven.
+  NIET GERAAKT: de lijsten in de spec-accordeon op de PDP. Die zijn op verzoek
+  van de klant genummerd en wit (zie de eerdere notitie van 2026-08-24) en
+  staan onder .spec-a-inner, een andere scope. Gecontroleerd op skisokken:
+  spec blijft decimal/24px/wit, de FAQ op diezelfde pagina wordt disc/32px/
+  --text.
+  GEVERIFIEERD op de homepage: item 17px / 27.2px / rgb(40,18,27) — exact
+  gelijk aan de alinea erboven — afstand tussen items 27-28px (was 19),
+  inspringing 32px t.o.v. de alinea, bullets zichtbaar.
+  LET OP: het referentiebeeld heeft ~24px tussen de items, hier is dat 27px
+  omdat de regelafstand van de FAQ-alinea (1.6) is aangehouden — dat was de
+  expliciete vraag ("consistent appearance"). Wil Kulwant het strakker, dan
+  is line-height 1.4 op .faq-a-inner li genoeg.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
