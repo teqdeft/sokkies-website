@@ -8761,12 +8761,27 @@ main.contact{
     border-color:var(--dark);
   }
   /* juridische regel (HTML-veld) in de voet-opmaak */
+  /* De juridische regel is in GF een HTML-veld bovenin het raster. In het
+     ontwerp staat hij in de VOET, links naast de knoppen (.ct-form-foot in
+     contact.html is een flexrij met space-between). De gform_submit_button-
+     filter zet de inhoud daarom als .ct-form-legal in de voet; het veld zelf
+     is hier verborgen. Eén bron blijft het HTML-veld in Gravity Forms. */
   .ct-form-card .gfield--type-html{
+    display:none;
+  }
+  .ct-form-card .ct-form-legal{
     font-size:calc(var(--body-font-size) - 2px);
     line-height:1.5;
     color:var(--text);
+    margin:0;
+    /* htmlv breekt deze regel met een <br> na ~580px en houdt zo ruimte
+       over voor de knoppen op dezelfde rij; de tekst uit GF heeft die <br>
+       niet, dus begrenzen we de kolom hier. Gemeten in htmlv: 579px op
+       1920 (2 regels, knoppen ernaast), 501px op 1440 (knoppen wikkelen). */
+    flex:0 1 auto;
+    max-width:580px;
   }
-  .ct-form-card .gfield--type-html a{
+  .ct-form-card .ct-form-legal a{
     color:var(--text);
     text-decoration:underline;
     text-underline-offset:2px;
@@ -8774,7 +8789,10 @@ main.contact{
   /* voet met de twee knoppen */
   .ct-form-card .gform_footer{
     display:flex;
-    justify-content:flex-end;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    flex-wrap:wrap;
     margin:30px 0 0;
     padding:0;
   }
@@ -8783,6 +8801,11 @@ main.contact{
     align-items:center;
     gap:12px;
     flex-wrap:wrap;
+    /* space-between zet de knoppen al rechts zolang alles op een rij past;
+       zodra de voetrij wikkelt (vanaf ~1440 is de kaart te smal) valt dat weg
+       en zou de knoppenrij links belanden — zoals in htmlv gebeurt. Deze
+       auto-marge houdt ze in beide gevallen rechts (verzoek Kulwant). */
+    margin-left:auto;
   }
   .ct-form-card .ct-submit,
   .ct-form-card input[type="submit"]{
@@ -8802,10 +8825,6 @@ main.contact{
     opacity:.9;
   }
   /* meldingen */
-  .ct-form-card .gfield_required{
-    color:var(--coral);
-    margin-left:2px;
-  }
   .ct-form-card .gfield_validation_message,
   .ct-form-card .validation_message{
     font-size:calc(var(--body-font-size) - 2px);
@@ -8850,6 +8869,7 @@ main.contact{
   .ct-form-card .gfield_required{
     color:var(--text);
     font-weight:700;
+    margin-left:2px;
   }
   /* Het landkeuzeveld staat wel op sokkies.com maar niet in het ontwerp van
      contact.html. Het blijft staan omdat de veldnamen 1:1 gelijk moeten

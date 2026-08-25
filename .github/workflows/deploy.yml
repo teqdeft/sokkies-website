@@ -36,6 +36,7 @@ jobs:
             **/.vscode/**
             **/wp-config.php
             **/.env
+            **/CLAUDE.md
             **/sokkies-local/wp-admin/**
             **/sokkies-local/wp-includes/**
             **/sokkies-local/wp-content/uploads/**

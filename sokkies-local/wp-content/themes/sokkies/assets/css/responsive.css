@@ -14408,6 +14408,7 @@
   .ct-form-card .ct-form-actions{
     flex-direction:column;
     align-items:stretch;
+    margin-left:0;
   }
   .ct-form-card .ct-alt-btn{
     justify-content:center;

@@ -379,50 +379,113 @@ function sokkies_footermenu() {
 }
 
 /**
- * Contactformulier (Gravity Form 4) in de opmaak van het ontwerp.
+ * Contactformulier (Gravity Forms) in de opmaak van het ontwerp.
  *
- * htmlv heeft naast de verzendknop een tweede, lichte knop ("Liever een
- * aanvraag?") die naar de offertepagina wijst. Gravity Forms rendert alleen
- * zijn eigen knop, dus die bouwen we hier om naar het .ct-form-actions-blok
- * uit contact.html. Zo blijft de knopopmaak van de statische build intact
- * zonder de GF-markup te hoeven overschrijven.
+ * BELANGRIJK — bewust GEEN hardgecodeerd formulier-ID meer. Gravity Forms
+ * gooit bij een import het geëxporteerde ID weg en deelt een vers
+ * auto-increment uit (GFAPI::add_form -> RGFormsModel::insert_form,
+ * gravityforms/includes/api.php:487-493) en maakt de titel zo nodig uniek.
+ * Het formulier heet lokaal 4, maar krijgt op live vrijwel zeker een ander
+ * nummer. Met een hardgecodeerde 4 rendert GF dan een publiek zichtbare
+ * "formulier niet gevonden"-melding — bij ajax=true zelfs een compleet
+ * genest <!DOCTYPE html>-document midden op de pagina.
+ *
+ * Daarom zoeken we het formulier op titel. Vastzetten kan met de constante
+ * SOKKIES_CONTACT_FORM_ID (wp-config.php) of de optie
+ * 'sokkies_contact_form_id'; die winnen allebei van de titelzoektocht.
  */
-add_filter( 'gform_submit_button_4', function ( $button, $form ) {
-    $alt = '<a href="' . esc_url( home_url( '/offerte/' ) ) . '" class="ct-alt-btn">'
-         . '<svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">'
-         . '<g transform="translate(0.5 0.683)">'
-         . '<path d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>'
-         . '<path d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>'
-         . '</g></svg> Liever een aanvraag?</a>';
+function sokkies_contactformulier_titel() {
+	return 'Contact — website';
+}
 
-    // GF's eigen knop krijgt de ontwerp-class mee in plaats van gform_button
-    $button = str_replace( 'gform_button', 'gform_button ct-submit', $button );
+/**
+ * Het ID van het contactformulier, of 0 als het er niet is.
+ */
+function sokkies_contactformulier_id() {
+	static $id = null;
+	if ( null !== $id ) {
+		return $id;
+	}
+	if ( defined( 'SOKKIES_CONTACT_FORM_ID' ) ) {
+		$id = (int) SOKKIES_CONTACT_FORM_ID;
+		return $id;
+	}
+	$vast = (int) get_option( 'sokkies_contact_form_id' );
+	if ( $vast ) {
+		$id = $vast;
+		return $id;
+	}
+	$id = 0;
+	if ( class_exists( 'GFAPI' ) ) {
+		foreach ( (array) GFAPI::get_forms() as $formulier ) {
+			if ( isset( $formulier['title'] ) && sokkies_contactformulier_titel() === $formulier['title'] ) {
+				$id = (int) $formulier['id'];
+				break;
+			}
+		}
+	}
+	return $id;
+}
 
-    return '<div class="ct-form-actions">' . $alt . $button . '</div>';
+/**
+ * Is dit formulier het contactformulier?
+ */
+function sokkies_is_contactformulier( $form ) {
+	$id = sokkies_contactformulier_id();
+	return $id && ! empty( $form['id'] ) && (int) $form['id'] === $id;
+}
+
+/**
+ * De formuliervoet omgebouwd naar .ct-form-foot uit contact.html: de
+ * juridische regel links, de knoppen rechts, op één rij.
+ *
+ * Twee dingen die GF anders doet dan het ontwerp:
+ * 1. htmlv heeft naast de verzendknop een tweede, lichte knop ("Liever een
+ *    aanvraag?") naar de offertepagina; GF rendert alleen zijn eigen knop.
+ * 2. GF zet de juridische regel als HTML-veld bovenin het veldenraster,
+ *    waardoor die over de volle breedte staat en de knoppen eronder komen.
+ *    We halen de inhoud van dat veld hier op en zetten hem naast de knoppen;
+ *    het veld zelf is in style.css verborgen. Zo blijft er één bron: het
+ *    HTML-veld in Gravity Forms, dat de klant gewoon kan aanpassen.
+ */
+add_filter( 'gform_submit_button', function ( $button, $form ) {
+	if ( ! sokkies_is_contactformulier( $form ) ) {
+		return $button;
+	}
+
+	$alt = '<a href="' . esc_url( home_url( '/offerte/' ) ) . '" class="ct-alt-btn">'
+	     . '<svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">'
+	     . '<g transform="translate(0.5 0.683)">'
+	     . '<path d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>'
+	     . '<path d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>'
+	     . '</g></svg> Liever een aanvraag?</a>';
+
+	// GF's eigen knop krijgt de ontwerp-class mee in plaats van gform_button.
+	$button = str_replace( 'gform_button', 'gform_button ct-submit', $button );
+
+	$juridisch = '';
+	foreach ( (array) $form['fields'] as $veld ) {
+		if ( 'html' === $veld->type && ! empty( $veld->content ) ) {
+			$juridisch = '<p class="ct-form-legal">' . $veld->content . '</p>';
+			break;
+		}
+	}
+
+	return $juridisch . '<div class="ct-form-actions">' . $alt . $button . '</div>';
 }, 10, 2 );
 
 /**
- * Gravity Forms' eigen themaopmaak ("orbital") uitzetten.
+ * Het contactformulier op GF's legacy-thema.
  *
- * Die stylesheet laadt ná style.css en overschreef de ontwerpopmaak: blauwe
- * knop met 3px radius, labels op 500/14px, textarea op 288px. Het ontwerp van
- * de site is volledig eigen, dus we hebben die laag niet nodig — zonder hem
- * winnen de .ct-form-card-regels gewoon. Alleen de basis-/foundationstijlen
- * blijven staan voor toegankelijkheid (focus, screen-reader-tekst).
+ * Dan zet GF de gform-theme--framework/orbital classes niet op de wrapper en
+ * vervallen die opmaakregels in één keer — dat is wat de blauwe knop, de
+ * 500/14px-labels en de 288px-textarea van "orbital" wegneemt. Een
+ * wp_dequeue_style op die handles werkte hier niet (GF zet ze later in de
+ * wachtrij) en is daarom bewust weer verwijderd: die haak stond site-breed
+ * aan en zou elk toekomstig formulier onopgemaakt laten.
  */
-add_action( 'wp_enqueue_scripts', function () {
-	// gform_disable_form_theme_css bestaat niet meer in GF 3.x; de
-	// themalagen worden hier uit de wachtrij gehaald. reset en
-	// foundation blijven staan (die gebruiken :where() en hebben dus
-	// specificiteit 0 — ze zitten het ontwerp niet in de weg).
-	wp_dequeue_style( 'gravity_forms_orbital_theme' );
-	wp_dequeue_style( 'gravity_forms_theme_framework' );
-}, 20 );
-
-// Form 4 op het legacy-thema: dan zet GF de gform-theme--framework/orbital
-// classes niet op de wrapper en vervallen die opmaakregels in één keer.
 add_filter( 'gform_form_theme_slug', function ( $slug, $form ) {
-	return ( ! empty( $form['id'] ) && 4 === (int) $form['id'] ) ? 'legacy' : $slug;
+	return sokkies_is_contactformulier( $form ) ? 'legacy' : $slug;
 }, 10, 2 );
 
 /* -------------------------------------------------------------------------

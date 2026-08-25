@@ -14,3 +14,7 @@ Thumbs.db
 # Database-exports (Gravity Forms e.d.) — bevatten interne e-mailadressen en
 # horen niet publiek op de server te staan; ze gaan handmatig naar live.
 exports/
+
+# Lokale hulpplugins — horen niet in de repo (en dus niet op de server)
+sokkies-local/wp-content/plugins/wp-migrate-db/
+sokkies-local/wp-content/mu-plugins/

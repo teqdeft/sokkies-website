@@ -10,19 +10,25 @@
       <div class="container">
         <div class="ct-contact-inner">
           <?php
-          /* Gravity Form 4 ("Contact — website") — het duplicaat van het
-             geïmporteerde Contact - NL, met de velden van het ontwerp. De
-             kaartopmaak (.ct-form-card) blijft van htmlv; de GF-markup wordt
-             daarin gestyled. Argumenten: geen titel, geen beschrijving,
-             ajax aan. */
-          if ( function_exists( 'gravity_form' ) ) {
-              echo '<div class="ct-form-card">';
-              echo '<h3 class="ct-form-kop">Neem contact op</h3>';
-              gravity_form( 4, false, false, false, null, true );
-              echo '</div>';
+          /* Het contactformulier ("Contact — website") uit Gravity Forms. Het
+             ID wordt opgezocht op titel, niet hardgecodeerd: GF deelt bij een
+             import een nieuw ID uit, dus lokaal 4 is op live iets anders. Zie
+             sokkies_contactformulier_id() in functions.php.
+             De kaartopmaak (.ct-form-card) blijft van htmlv; de GF-markup
+             wordt daarin gestyled. Argumenten: geen titel, geen beschrijving,
+             ajax aan.
+             Het formulier wordt bewust alleen aangeroepen als het bestaat:
+             gravity_form() op een onbekend ID zet anders een complete
+             <!DOCTYPE html>-foutmelding midden op de pagina. */
+          $formulier_id = function_exists( 'sokkies_contactformulier_id' ) ? sokkies_contactformulier_id() : 0;
+          echo '<div class="ct-form-card">';
+          echo '<h3 class="ct-form-kop">Neem contact op</h3>';
+          if ( $formulier_id && function_exists( 'gravity_form' ) ) {
+              gravity_form( $formulier_id, false, false, false, null, true );
           } else {
-              echo '<div class="ct-form-card"><p>Het contactformulier is tijdelijk niet beschikbaar.</p></div>';
+              echo '<p>Het contactformulier is tijdelijk niet beschikbaar.</p>';
           }
+          echo '</div>';
           ?>
 
           <aside class="ct-direct">

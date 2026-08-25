@@ -997,6 +997,74 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   /sokkies-website/sokkies-local/contact/. Code deployt, database niet. De
   import op live moet dus ID 4 opleveren, anders wijst de template naar een
   niet-bestaand formulier.
+  DEPLOY-AUDIT VOOR DE PUSH (2026-08-25) — twee blokkers gevonden en opgelost.
+  BLOKKER 1: HET FORMULIER-ID IS OP LIVE NIET 4. Gravity Forms gooit bij een
+  import het geëxporteerde ID weg: GFAPI::add_form doet
+  $form_id = RGFormsModel::insert_form( self::unique_title($titel) ) en zet
+  $form_meta["id"] = $form_id (gravityforms/includes/api.php:487-493, zelf
+  nagelezen). Live heeft een eigen GF-installatie met een eigen
+  auto-increment, dus de kans dat het formulier daar óók 4 wordt is toeval.
+  Er stonden DRIE hardgecodeerde vieren: gravity_form(4) in de sectie,
+  add_filter("gform_submit_button_4") en de ID-check in gform_form_theme_slug.
+  BLOKKER 2: WAT ER DAN GEBEURT IS ERGER DAN EEN LEGE KAART. De sectie riep
+  gravity_form(...) met ajax=true aan. Bij een onbekend ID valt GF terug op
+  get_form_not_found_html(), en die kent GEEN enkele rechtencontrole — een
+  uitgelogde bezoeker ziet hetzelfde als een beheerder. Met ajax=true gaat
+  dat door get_ajax_postback_html(), die er een COMPLEET genest
+  <!DOCTYPE html>-document van maakt, midden in de kaart. Zelf uitgevoerd op
+  de lokale bootstrap met een ontbrekend ID: ajax=true gaf 188 bytes
+  "<!DOCTYPE html>…<p class=\"gform_not_found\">…", ajax=false 85 bytes met
+  alleen de <p>. Extra wrang: door de nieuwe vertaalkaart zou die fout in
+  keurig Nederlands verschijnen ("Er ging iets mis: we konden het formulier
+  niet vinden.") en dus opzettelijk lijken in plaats van kapot.
+  OPGELOST: geen hardgecodeerd ID meer. sokkies_contactformulier_id() zoekt
+  het formulier op titel ("Contact — website"), met voorrang voor de
+  constante SOKKIES_CONTACT_FORM_ID of de optie sokkies_contact_form_id, en
+  geeft 0 als het formulier er niet is. sokkies_is_contactformulier($form)
+  vervangt de ID-checks in beide filters; gform_submit_button_4 is daarmee
+  het generieke gform_submit_button geworden (GF vuurt via gf_apply_filters
+  allebei, form_display.php:1842). De sectie roept gravity_form() alleen nog
+  aan als het ID bestaat en toont anders de eigen nette zin. De kaart en de
+  kop renderen altijd, zodat de pagina nooit half leeg is.
+  BEWUST NIET GEDAAN: ajax op false zetten. Dat zou de verzendroute wijzigen
+  die net getest is (iframe-postback met de Nederlandse bevestiging); de
+  bewaking dekt het probleem al af.
+  OOK VERWIJDERD: de wp_dequeue_style-haak op gravity_forms_orbital_theme /
+  gravity_forms_theme_framework. Die werkte hier niet (GF zet ze later in de
+  wachtrij — het legacy-thema is wat het oplost) én hij stond site-breed aan
+  zonder formulier- of paginacheck, dus elk toekomstig formulier zou
+  onopgemaakt zijn. Dood én riskant, dus eruit.
+  VOET NU GELIJK AAN HTMLV (2026-08-25, melding Kulwant: "vergelijk met de
+  HTML-versie, de privacyregel breekt over twee regels"). GF zet de
+  juridische regel als HTML-veld bovenin het veldenraster, over de volle
+  breedte, met de knoppen eronder. In htmlv is .ct-form-foot juist één
+  flexrij met space-between: tekst links, knoppen rechts. De
+  gform_submit_button-filter haalt de inhoud van het HTML-veld nu op en zet
+  hem als <p class="ct-form-legal"> in de voet; het veld zelf is verborgen
+  in style.css. Eén bron blijft het HTML-veld in GF, dus de klant kan de
+  tekst gewoon blijven bewerken.
+  De htmlv-tekst heeft een <br> die de regel op ~580px afbreekt; de tekst uit
+  productie heeft die niet, dus .ct-form-legal krijgt max-width:580px.
+  GEMETEN, htmlv naast WordPress: op 1920 kaart 1195 vs 1195, tekst 579 vs
+  580, 2 regels vs 2 regels, zelfde rij, knoppen 51px van de rand — gelijk.
+  Op 1440 wikkelt de voetrij in BEIDE versies (kaart 795, tekst 2 regels).
+  AFWIJKING VAN HTMLV, bewust: in htmlv belanden de knoppen na het wikkelen
+  LINKS (304px van de rechterrand gemeten). Kulwant vroeg expliciet om ze
+  rechts, dus .ct-form-actions krijgt margin-left:auto — op één rij doet
+  space-between het werk, na wikkelen deze marge. Gemeten 51px van de rand
+  op zowel 1920 als 1440. Op ≤520 wordt de marge weer 0 (stapelen, full
+  width, knoppen 283/283 op 375px, geen horizontale scroll).
+  HYGIENE naar aanleiding van dezelfde audit: exports/ en de lokale
+  hulpplugins (wp-migrate-db, mu-plugins) staan nu in .gitignore, en
+  **/CLAUDE.md is uit de deploy-exclude gehaald in deploy.yml. Dat laatste
+  omdat dit bestand publiek opvraagbaar bleek op
+  dev.studioubique.com/sokkies-website/CLAUDE.md (HTTP 200, ~193 KB interne
+  notities). LET OP: de exclude voorkomt alleen NIEUWE uploads —
+  dangerous-clean-slate staat op false, dus het bestand dat er al staat moet
+  handmatig van de server verwijderd worden.
+  NOG OPEN: wp-content/plugins/gravityforms/ is untracked gelaten. Live heeft
+  een eigen GF-installatie die niet uit deze repo komt; committen zou die via
+  FTPS overschrijven (18 MB). Bewuste keuze om dat hier niet te doen.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
