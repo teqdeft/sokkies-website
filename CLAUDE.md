@@ -911,6 +911,92 @@
   geven; de waakhond zet animating zelf al vrij. Marquees die nu goed
   lopen (hero-galerij, designed-strip, verticale kolommen) hebben hetzelfde
   patroon en dus hetzelfde risico, maar zijn bewust NIET aangeraakt. 
+CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
+  (2026-08-25, melding Kulwant met twee screenshots, waarvan één het
+  originele productieformulier als referentie).
+  (1) DE GENUMMERDE LIJST (1..5) boven het formulier is geen opmaakkwestie
+  maar de formulierinstelling `validationSummary` van GF. Die staat nu op
+  false voor formulier 4 (GFAPI::update_form); GF laat de <ol> dan helemaal
+  weg en zet class `hide_summary` op de h2 (form_display.php:5620-5640).
+  BEWUST GEEN CSS-verstopping: de items in die lijst zijn focuslinks naar
+  de foutieve velden — wegstylen laat ze in de tab-/screenreadervolgorde
+  staan, weglaten niet.
+  (2) NEDERLANDSE TEKSTEN. De site draait op locale en_US (WPLANG leeg) en
+  Gravity Forms is een commerciële plugin: er komt dus géén nl_NL-taalpakket
+  via WordPress.org — gravityforms/languages/ bevat alleen een .pot. Alle
+  meldingen lopen wél door __()/esc_html__() met textdomain 'gravityforms'.
+  Daarom in functions.php een vertaalkaart (sokkies_gf_nl_meldingen) op de
+  filters gettext + gettext_with_context, ALLEEN front-end (is_admin()
+  bewaakt) zodat het GF-beheer Engels blijft en niet half vertaald raakt.
+  De site-locale is bewust NIET omgezet: dat raakt admin, thema en datums.
+  Formuleringen 1-op-1 van productie: "Er was een probleem met je inzending."
+  + "Controleer de onderstaande velden." (GF plakt die twee aan elkaar) en
+  "Dit veld is vereist."
+  (3) OOK GEVONDEN: de ingebouwde Engelse standaardbevestiging "Thanks for
+  contacting us! We will get in touch with you shortly." verscheen na een
+  geslaagde inzending, omdat alle drie de bevestigingen van formulier 4 op
+  isActive=false stonden én naar pagina's 2556/2501/2554 wezen die lokaal
+  niet bestaan. De standaardbevestiging is nu actief als Nederlandse
+  boodschap (type=message), niet als paginaredirect — dat werkt lokaal en
+  live zonder pagina-ID-afhankelijkheid. /bedankt/ (ID 164) bestaat wél;
+  omzetten naar een redirect kan alsnog, dat is een keuze van Kulwant.
+  GEVERIFIEERD via de echte iframe-verzending in de browser: leeg formulier
+  → samenvatting "Er was een probleem met je inzending. Controleer de
+  onderstaande velden.", géén <ol>, 5x "Dit veld is vereist." en 0 keer
+  "is required" in de respons; geldige inzending → Nederlandse bevestiging.
+  Beide notificatiemails ("Beheerdersmelding", "Bedankt!") waren al
+  volledig Nederlands (gerenderd met GFCommon::replace_variables).
+  LET OP: het label van het verborgen landveld blijft "Country" (Engels) en
+  komt zo in de beheerdersmail. Bewust niet hernoemd — Kulwant heeft
+  gevraagd de veldnamen exact gelijk te houden aan productie.
+  TESTARTEFACTEN die géén bug zijn: example.com staat op de afwijslijst van
+  GF (GF_Field_Email::is_email_rejected) → "ongeldig e-mailadres"; en een
+  <select> die niet wordt meegepost geeft "Ongeldige keuze" — een echte
+  browser post het verborgen landveld altijd mee. Twee testinzendingen zijn
+  weer verwijderd; de 3 inzendingen van Kulwant staan er nog.
+  GECOMMIT/GEPUSHT op verzoek van Kulwant (zie vervolg hieronder).
+  VERVOLG DEZELFDE DAG (2026-08-25, drie meldingen Kulwant met screenshots):
+  (a) KEUZEVELD WEG + KOP GEWIJZIGD. Het radioveld 40 ("Wat wil je laten
+  bedrukken?" met de opties "Ik wil contact opnemen" / "Ik wil een gratis
+  proefdesign") is uit formulier 4 verwijderd; de kop heet nu "Neem contact
+  op". Veld 40 was het ENIGE veld dat niet op productie voorkomt, dus dit
+  brengt het formulier juist dichter bij productiepariteit — de zichtbare
+  velden zijn nu exact 3/4/5/6/9/7 plus het verborgen landveld 10, gelijk
+  aan sokkies.com. De kop staat BEWUST in de sectietemplate als statische
+  <h3 class="ct-form-kop">, niet als GF-veld: zo reist hij mee met de CODE
+  en is er één databasestap minder op live. Hij pakt de bestaande
+  .ct-form-card h3-opmaak (h5−1), gemeten 18px.
+  LET OP: inzendingen 4/5/6 hebben nog wél een waarde voor veld 40 in de
+  database staan; die is nu wees en wordt niet meer getoond. Dat zijn
+  testinzendingen, dus bewust laten staan.
+  (b) KNOPPEN RECHTS I.P.V. LINKS. In style.css stonden TWEE regels voor
+  .ct-form-card .gform_footer: de eerste met justify-content:flex-end, en
+  verderop een override met flex-start die won. Die override kwam uit een
+  eerdere eigen (foutieve) conclusie "de voet lijnt in het ontwerp links
+  uit" — die staat ook zo in de opmerking erboven. In htmlv is
+  .ct-form-foot echter display:flex + justify-content:space-between
+  (style.css:7958), dus de juridische tekst staat links en .ct-form-actions
+  RECHTS. De override is verwijderd en de opmerking gecorrigeerd. Gemeten
+  in de browser: justifyContent flex-end, knoppen eindigen 36px van de
+  kaartrand bij een padding-right van 35px + 1px rand — dus exact op de
+  contentrand. De ≤520-band blijft stapelen (kolom, full width).
+  (c) DODE CSS OPGERUIMD: alle .ct-form-card .gfield--type-radio-regels zijn
+  weg (0 verwijzingen over, accolades in balans 1413/1413). De htmlv-eigen
+  .ct-radios-regels zijn BEWUST blijven staan — die horen bij de statische
+  htmlv-kaart en het thema spiegelt htmlv.
+  DATABASE-EXPORT voor live: exports/sokkies-contactformulier-form4.json
+  (49,4 KB, GF 3.0.3.1), gemaakt met GFFormsModel::get_form_meta_by_id +
+  GFExport::prepare_forms_for_export. LET OP: GFExport::export_forms() zelf
+  is onbruikbaar in CLI — die zet headers en doet die() na de echo.
+  De export bevat alles wat vandaag in de database is veranderd: 28 velden
+  (zonder 40), validationSummary=false, de actieve Nederlandse bevestiging
+  en beide notificaties.
+  DEPLOYRISICO dat hierbij hoort: de sectietemplate roept gravity_form(4)
+  aan, maar formulier 4 bestaat ALLEEN lokaal — live had op het moment van
+  schrijven nog de statische stub en geen enkel gform-wrapper op
+  /sokkies-website/sokkies-local/contact/. Code deployt, database niet. De
+  import op live moet dus ID 4 opleveren, anders wijst de template naar een
+  niet-bestaand formulier.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

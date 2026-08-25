@@ -8695,3 +8695,182 @@ main.contact{
   @media (prefers-reduced-motion: reduce){
     .brand-collapse,.brand-intro-toggle svg{transition:none;}
   }
+
+/* ===== Contactformulier op Gravity Forms in de htmlv-opmaak =====
+   De kaart (.ct-form-card) en de knoppen komen uit contact.html; hieronder
+   krijgt de GF-markup binnen die kaart dezelfde maten, kleuren en het
+   2-koloms raster. Alles is gescoped op .ct-form-card, zodat formulieren
+   elders op de site (offerte, sample, downloads) ongemoeid blijven. */
+  .ct-form-card .gform_wrapper{
+    margin:0;
+  }
+  .ct-form-card .gform_heading{
+    display:none;                 /* titel/beschrijving staan al in het ontwerp */
+  }
+  .ct-form-card .gform_fields{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:26px 40px;
+  }
+  /* GF's eigen 12-koloms spans terugbrengen naar het 2-koloms ontwerp */
+  .ct-form-card .gfield{
+    grid-column:span 1;
+    min-width:0;
+  }
+  .ct-form-card .gfield--width-full,
+  .ct-form-card .gfield--type-html,
+  .ct-form-card .gfield--type-textarea{
+    grid-column:1 / -1;
+  }
+  .ct-form-card .gfield--type-hidden{
+    display:none;
+  }
+  /* labels als in .ct-field label */
+  .ct-form-card .gfield_label{
+    display:block;
+    font-size:var(--body-font-size);
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:8px;
+  }
+  /* invoervelden: zelfde basis als .ct-field input/textarea */
+  .ct-form-card .ginput_container input[type="text"],
+  .ct-form-card .ginput_container input[type="email"],
+  .ct-form-card .ginput_container input[type="tel"],
+  .ct-form-card .ginput_container select,
+  .ct-form-card .ginput_container textarea{
+    width:100%;
+    background:var(--white);
+    border:1px solid var(--input-border);
+    border-radius:8px;
+    padding:13px 16px;
+    font-family:inherit;
+    font-size:16px;
+    color:var(--text);
+  }
+  .ct-form-card .ginput_container textarea{
+    /* GF rendert rows=10; het ontwerp heeft rows=5, vandaar een vaste
+       hoogte. resize blijft aan, dus groter maken kan gewoon. */
+    height:135px;
+    min-height:135px;
+    resize:vertical;
+  }
+  .ct-form-card .ginput_container input:focus,
+  .ct-form-card .ginput_container textarea:focus{
+    outline:none;
+    border-color:var(--dark);
+  }
+  /* juridische regel (HTML-veld) in de voet-opmaak */
+  .ct-form-card .gfield--type-html{
+    font-size:calc(var(--body-font-size) - 2px);
+    line-height:1.5;
+    color:var(--text);
+  }
+  .ct-form-card .gfield--type-html a{
+    color:var(--text);
+    text-decoration:underline;
+    text-underline-offset:2px;
+  }
+  /* voet met de twee knoppen */
+  .ct-form-card .gform_footer{
+    display:flex;
+    justify-content:flex-end;
+    margin:30px 0 0;
+    padding:0;
+  }
+  .ct-form-card .ct-form-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .ct-form-card .ct-submit,
+  .ct-form-card input[type="submit"]{
+    background:var(--dark);
+    color:var(--white);
+    border:0;
+    border-radius:50px;
+    padding:14px 28px;
+    font-family:inherit;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:opacity .2s;
+    width:auto;
+  }
+  .ct-form-card .ct-submit:hover{
+    opacity:.9;
+  }
+  /* meldingen */
+  .ct-form-card .gfield_required{
+    color:var(--coral);
+    margin-left:2px;
+  }
+  .ct-form-card .gfield_validation_message,
+  .ct-form-card .validation_message{
+    font-size:calc(var(--body-font-size) - 2px);
+    color:var(--coral);
+    margin-top:6px;
+    background:none;
+    border:0;
+    padding:0;
+  }
+  .ct-form-card .gform_validation_errors{
+    border:1px solid var(--coral);
+    border-radius:12px;
+    padding:14px 18px;
+    margin-bottom:22px;
+    background:var(--white);
+    box-shadow:none;
+  }
+  .ct-form-card .gform_validation_errors h2{
+    font-size:var(--body-font-size);
+    color:var(--coral);
+    margin:0;
+  }
+  .ct-form-card .gform_confirmation_message{
+    font-size:var(--body-lg-font-size);
+    line-height:1.5;
+    color:var(--text);
+  }
+  /* Correcties na visuele vergelijking met contact.html:
+     - GF's legacy-markup zet een fieldset-kader om een keuzeveld; het
+       ontwerp heeft daar geen kader/achtergrond.
+     - de voet lijnt RECHTS uit: in htmlv is .ct-form-foot een flexrij met
+       space-between, dus de knoppen staan rechts. (Gecorrigeerd 2026-08-25
+       na melding Kulwant; hier stond eerder ten onrechte "links".)
+     - het sterretje bij een verplicht veld is in het ontwerp gewoon
+       tekstkleur, niet coral. */
+  .ct-form-card fieldset.gfield{
+    border:0;
+    padding:0;
+    margin:0;
+    background:none;
+  }
+  .ct-form-card .gfield_required{
+    color:var(--text);
+    font-weight:700;
+  }
+  /* Het landkeuzeveld staat wel op sokkies.com maar niet in het ontwerp van
+     contact.html. Het blijft staan omdat de veldnamen 1:1 gelijk moeten
+     blijven aan productie (input_10 gaat mee naar het vervolgsysteem); het
+     krijgt hier dezelfde opmaak als de overige velden. */
+  .ct-form-card .ginput_container select{
+    height:47px;
+    appearance:none;
+    -webkit-appearance:none;
+    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11.414 6.414'%3E%3Cpath d='M482.224,63.112l5,5,5-5' transform='translate(-481.517 -62.405)' fill='none' stroke='%2328121b' stroke-linecap='round' stroke-width='1'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 16px center;
+    padding-right:42px;
+  }
+  /* Landkeuze (input_10): staat op sokkies.com wél in het formulier maar is
+     daar niet zichtbaar — het veld draagt de eigen class 'language' en wordt
+     door de productiestyling verborgen. Hier hetzelfde: onzichtbaar voor de
+     bezoeker, maar het veld blijft in de DOM en wordt dus nog steeds
+     meegestuurd, zodat de veldnamen 1:1 gelijk blijven aan productie.
+     Bewust geen display:none op het select-element zelf — dat zou de waarde
+     wél blijven versturen, maar we houden de hele rij uit de layout. */
+  .ct-form-card .gfield.language{
+    display:none;
+  }

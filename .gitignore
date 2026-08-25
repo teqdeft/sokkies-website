@@ -10,3 +10,7 @@ sokkies-local/wp-content/debug.log
 .DS_Store
 Thumbs.db
 .dropbox*
+
+# Database-exports (Gravity Forms e.d.) — bevatten interne e-mailadressen en
+# horen niet publiek op de server te staan; ze gaan handmatig naar live.
+exports/

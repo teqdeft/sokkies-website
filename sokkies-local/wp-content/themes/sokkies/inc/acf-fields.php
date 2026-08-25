@@ -1396,7 +1396,7 @@ add_action( 'acf/init', function () {
 								'key'     => 'field_ctf_uitleg',
 								'label'   => '',
 								'type'    => 'message',
-								'message' => 'Het formulier is nog een demo — echte verzending komt met de formulierenfase. De gele contactkaart gebruikt de gegevens uit Website-instellingen.',
+								'message' => 'Dit blok toont het Gravity Forms-contactformulier ("Contact — website"). Velden, validatiemeldingen, bevestiging en notificaties beheer je onder Formulieren. De gele contactkaart gebruikt de gegevens uit Website-instellingen.',
 							),
 						),
 					),

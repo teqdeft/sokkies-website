@@ -14383,3 +14383,33 @@
     order:3;
   }
 }
+
+/* ===================================================================
+   Contactformulier (Gravity Form 4) — zelfde banden als .ct-form-grid
+   -------------------------------------------------------------------
+   De GF-velden zitten in .gform_fields i.p.v. .ct-form-grid, dus de
+   responsive regels van het ontwerp gelden daar niet vanzelf. Hieronder
+   exact dezelfde waarden: vanaf 1679 smallere gaps, en onder 520 één
+   kolom. htmlv blijft onaangeroerd.
+   =================================================================== */
+@media (max-width:1679px){
+  .ct-form-card .gform_fields{
+    gap:20px 26px;
+  }
+}
+@media (max-width:520px){
+  .ct-form-card .gform_fields{
+    grid-template-columns:1fr;
+  }
+  .ct-form-card .gform_footer{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .ct-form-card .ct-form-actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .ct-form-card .ct-alt-btn{
+    justify-content:center;
+  }
+}

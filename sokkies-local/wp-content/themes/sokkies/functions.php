@@ -377,3 +377,120 @@ function sokkies_footermenu() {
 
 	return $kolommen;
 }
+
+/**
+ * Contactformulier (Gravity Form 4) in de opmaak van het ontwerp.
+ *
+ * htmlv heeft naast de verzendknop een tweede, lichte knop ("Liever een
+ * aanvraag?") die naar de offertepagina wijst. Gravity Forms rendert alleen
+ * zijn eigen knop, dus die bouwen we hier om naar het .ct-form-actions-blok
+ * uit contact.html. Zo blijft de knopopmaak van de statische build intact
+ * zonder de GF-markup te hoeven overschrijven.
+ */
+add_filter( 'gform_submit_button_4', function ( $button, $form ) {
+    $alt = '<a href="' . esc_url( home_url( '/offerte/' ) ) . '" class="ct-alt-btn">'
+         . '<svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">'
+         . '<g transform="translate(0.5 0.683)">'
+         . '<path d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>'
+         . '<path d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>'
+         . '</g></svg> Liever een aanvraag?</a>';
+
+    // GF's eigen knop krijgt de ontwerp-class mee in plaats van gform_button
+    $button = str_replace( 'gform_button', 'gform_button ct-submit', $button );
+
+    return '<div class="ct-form-actions">' . $alt . $button . '</div>';
+}, 10, 2 );
+
+/**
+ * Gravity Forms' eigen themaopmaak ("orbital") uitzetten.
+ *
+ * Die stylesheet laadt ná style.css en overschreef de ontwerpopmaak: blauwe
+ * knop met 3px radius, labels op 500/14px, textarea op 288px. Het ontwerp van
+ * de site is volledig eigen, dus we hebben die laag niet nodig — zonder hem
+ * winnen de .ct-form-card-regels gewoon. Alleen de basis-/foundationstijlen
+ * blijven staan voor toegankelijkheid (focus, screen-reader-tekst).
+ */
+add_action( 'wp_enqueue_scripts', function () {
+	// gform_disable_form_theme_css bestaat niet meer in GF 3.x; de
+	// themalagen worden hier uit de wachtrij gehaald. reset en
+	// foundation blijven staan (die gebruiken :where() en hebben dus
+	// specificiteit 0 — ze zitten het ontwerp niet in de weg).
+	wp_dequeue_style( 'gravity_forms_orbital_theme' );
+	wp_dequeue_style( 'gravity_forms_theme_framework' );
+}, 20 );
+
+// Form 4 op het legacy-thema: dan zet GF de gform-theme--framework/orbital
+// classes niet op de wrapper en vervallen die opmaakregels in één keer.
+add_filter( 'gform_form_theme_slug', function ( $slug, $form ) {
+	return ( ! empty( $form['id'] ) && 4 === (int) $form['id'] ) ? 'legacy' : $slug;
+}, 10, 2 );
+
+/* -------------------------------------------------------------------------
+ * Gravity Forms — Nederlandse meldingen op de front-end
+ * -------------------------------------------------------------------------
+ * De site draait op locale en_US en Gravity Forms is een commerciële plugin:
+ * er komt dus géén nl_NL-taalpakket binnen via WordPress.org (de plugin
+ * levert alleen een .pot, zie gravityforms/languages/). Alle meldingen lopen
+ * wel netjes door __()/esc_html__() met textdomain 'gravityforms', dus we
+ * vangen ze hier af in plaats van de site-locale om te gooien — dat laatste
+ * zou het hele admin- en themagedrag raken.
+ *
+ * De formuleringen komen één-op-één van de huidige productiesite
+ * (sokkies.com/nl/contact/), zodat de teksten identiek blijven.
+ * Alleen front-end; de GF-beheerschermen laten we met rust.
+ */
+function sokkies_gf_nl_meldingen() {
+	return array(
+		// Samenvatting bovenaan het formulier. GF plakt deze twee aan elkaar:
+		// "Er was een probleem met je inzending. Controleer de onderstaande velden."
+		'There was a problem with your submission.' => 'Er was een probleem met je inzending.',
+		'Please review the fields below.'           => 'Controleer de onderstaande velden.',
+		'Your form was not submitted. Please try again in a few minutes.' => 'Je formulier is niet verzonden. Probeer het over een paar minuten opnieuw.',
+
+		// Per veld.
+		'This field is required.'                   => 'Dit veld is vereist.',
+		'(Required)'                                => '(Verplicht)',
+		'The email address entered is invalid.'     => 'Het ingevoerde e-mailadres is ongeldig.',
+		'The email address entered is invalid, please check the formatting (e.g. email@domain.com).' => 'Het ingevoerde e-mailadres is ongeldig. Controleer de schrijfwijze (bijv. naam@domein.nl).',
+		'Please enter a valid email address.'       => 'Voer een geldig e-mailadres in.',
+		'Your emails do not match.'                 => 'De e-mailadressen komen niet overeen.',
+		'Please enter a valid phone number.'        => 'Voer een geldig telefoonnummer in.',
+		'Please enter a valid phone number in the correct format.' => 'Voer een geldig telefoonnummer in de juiste notatie in.',
+		'The text entered exceeds the maximum number of characters.' => 'De ingevoerde tekst is langer dan het maximale aantal tekens.',
+
+		// Ingebouwde standaardbevestiging van GF (vangnet; formulier 4 heeft
+		// een eigen Nederlandse bevestiging, zie GF-instellingen).
+		'Thanks for contacting us! We will get in touch with you shortly.' => 'Bedankt voor je bericht! We nemen zo snel mogelijk contact met je op.',
+
+		// Keuzevelden (radio/select).
+		'Invalid selection. Please select from the available choices.' => 'Ongeldige keuze. Maak een keuze uit de beschikbare opties.',
+		'Invalid selection.'                        => 'Ongeldige keuze.',
+
+		// Formulier niet beschikbaar / gesloten.
+		'Sorry. This form is no longer accepting new submissions.' => 'Dit formulier accepteert geen nieuwe inzendingen meer.',
+		'Oops! We could not locate your form.'      => 'Er ging iets mis: we konden het formulier niet vinden.',
+	);
+}
+
+add_filter( 'gettext', function ( $vertaald, $origineel, $domein ) {
+	if ( 'gravityforms' !== $domein || is_admin() ) {
+		return $vertaald;
+	}
+	static $map = null;
+	if ( null === $map ) {
+		$map = sokkies_gf_nl_meldingen();
+	}
+	return isset( $map[ $origineel ] ) ? $map[ $origineel ] : $vertaald;
+}, 10, 3 );
+
+// Sommige GF-strings lopen via _x() en komen dus op dit filter binnen.
+add_filter( 'gettext_with_context', function ( $vertaald, $origineel, $context, $domein ) {
+	if ( 'gravityforms' !== $domein || is_admin() ) {
+		return $vertaald;
+	}
+	static $map = null;
+	if ( null === $map ) {
+		$map = sokkies_gf_nl_meldingen();
+	}
+	return isset( $map[ $origineel ] ) ? $map[ $origineel ] : $vertaald;
+}, 10, 4 );
