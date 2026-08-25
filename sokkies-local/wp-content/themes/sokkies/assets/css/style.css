@@ -5448,6 +5448,15 @@ font-weight: 600;
     color:var(--text);
     margin-bottom:25px;
   }
+  /* Ruimte TUSSEN de alineas van de beschrijving korter (verzoek Kulwant
+     2026-08-25: compacter). De LAATSTE alinea houdt zijn marge, want die
+     bepaalt de afstand tot de ratingregel eronder. Deze selector heeft een
+     hogere specificiteit dan .prod-info p, dus hij wint ook van de
+     band-overrides in responsive.css (die zetten 20/30/33px) zonder dat we
+     die banden een voor een hoeven aan te passen. */
+  .prod-info p:not(:last-of-type){
+    margin-bottom:12px;
+  }
   .prod-spec-link{
     color:var(--coral);
     font-weight:600;

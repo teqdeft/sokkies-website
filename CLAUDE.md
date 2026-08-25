@@ -1432,6 +1432,31 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   steeds coral/600/onderstreept, lijst disc met 32px inspringing en marker
   binnen de kolom, li-typografie exact gelijk aan de alinea, en order 2 op de
   lijst.
+  SPECIFICATIES OP EEN EIGEN REGEL + COMPACTERE ALINEA'S (2026-08-25,
+  vervolgmelding Kulwant met screenshot van skisokken). Twee kleine
+  correcties op de wysiwyg-omzetting van hierboven.
+  (1) DE SPECIFICATIES-LINK stond inline achter de laatste zin ("...in eigen
+  huisstijl Specificaties"). Hij moet een regel lager. Opgelost met een <br>
+  vóór de link in plaats van een spatie — dus nog steeds BINNEN dezelfde
+  alinea. Bewust geen eigen <p>: dan komt de alineamarge erbij en staat hij
+  te ver van de tekst. Bewust ook geen display:block op .prod-spec-link, want
+  dan wordt het klikvlak de volle kolombreedte; nu is het 105px, precies de
+  link (gemeten op 1280).
+  (2) ALINEA-AFSTAND van 20-25px naar 12px, maar ALLEEN tussen alinea's
+  onderling. De laatste alinea houdt zijn marge, want die bepaalt de afstand
+  tot de ratingregel (gemeten: onveranderd 20px). Gedaan met
+  .prod-info p:not(:last-of-type) — die selector heeft specificiteit (0,2,1)
+  tegen (0,1,1) voor .prod-info p, dus hij wint ook van de band-overrides in
+  responsive.css (20px op 1440/1280/992, 30/33px lager) zonder dat elke band
+  apart aangepast hoefde te worden. Eén regel dekt alle breedtes.
+  GEVERIFIEERD op alle negen productpagina's (skisokken, reguliere, sport,
+  bamboe, werk, kerst, zorg, wieler, antislip): overal 2 alinea's, de link
+  binnen de laatste alinea met een <br> ervoor. In de browser gemeten op 1280:
+  marge tussen alinea's 12px, laatste alinea 20px, link links uitgelijnd met
+  de tekst, klikvlak 105px van de 440px kolombreedte, gat tot de rating 20px,
+  kleur nog steeds coral. Op 401px (band <=520) klopt het ook; daar staat de
+  tekst gecentreerd, dus de link volgt die centrering — dat is bestaand
+  gedrag van die band, geen afwijking.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
