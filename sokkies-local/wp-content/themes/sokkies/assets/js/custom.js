@@ -225,6 +225,59 @@
     document.querySelectorAll('.v-swiper-3').forEach((el) => verticalMarquee(el, false));
 
     // Brand logos horizontal marquee — continuous, no arrows
+    /* ===== Waakhond voor de doorlopende marquees =====
+       Swiper's autoplay met delay:0 plant de VOLGENDE stap uitsluitend op het
+       transitionend-event van de wrapper (waitForTransition staat standaard
+       aan). Valt die ene event weg, dan plant niemand een volgende stap en
+       staat de strip stil terwijl autoplay.running gewoon true blijft — dat is
+       precies wat er na een paar minuten gebeurde.
+       Twee manieren waarop die event wegvalt:
+       1. slideNext() no-opt zolang Swiper zichzelf als 'animating' ziet
+          (loopPreventsSliding staat standaard aan) — er start dan geen
+          transitie, dus er komt ook geen transitionend;
+       2. een lopende transitie wordt geannuleerd (loopFix/setTransition(0));
+          de browser vuurt dan transitioncancel, waar niets naar luistert.
+       Eén gemiste event is dus fataal en onherstelbaar. Deze waakhond kijkt
+       daarom of de wrapper écht verschuift en trapt de drift opnieuw aan als
+       dat niet zo is. Hij grijpt alleen in bij stilstand, dus een marquee die
+       gewoon loopt merkt er niets van. */
+    function marqueeWaakhond(sw, wrapper) {
+      if (!sw || !wrapper) { return; }
+      var vorige = null, stil = 0;
+
+      var positie = function () {
+        var m = getComputedStyle(wrapper).transform;
+        if (!m || m === 'none') { return '0,0'; }
+        try {
+          var d = new DOMMatrixReadOnly(m);
+          return Math.round(d.m41) + ',' + Math.round(d.m42);
+        } catch (e) {
+          return m;
+        }
+      };
+
+      setInterval(function () {
+        if (!sw || sw.destroyed || !sw.autoplay) { return; }
+        // Achtergrondtab: de browser bevriest transities zelf. Niet ingrijpen,
+        // wel de meting resetten zodat we bij terugkomst niet meteen aanslaan.
+        if (document.hidden) { vorige = null; stil = 0; return; }
+
+        var nu = positie();
+        if (vorige !== null && nu === vorige) {
+          stil++;
+          if (stil >= 2) {              // ~4s geen enkele verplaatsing
+            sw.animating = false;       // vastgelopen vlag vrijgeven
+            try { sw.autoplay.stop(); sw.autoplay.start(); } catch (e) {}
+            sw.slideNext(sw.params.speed);
+            stil = 0;
+          }
+        } else {
+          stil = 0;
+        }
+        vorige = nu;
+      }, 2000);
+    }
+
     document.querySelectorAll('.brands-swiper').forEach((el) => {
       // Slides klonen tot de strip ruim 2x de viewport vult — Swiper 11's
       // loop heeft anders te weinig slides ("Loop Warning") en hapert op de naad
@@ -241,6 +294,7 @@
         spaceBetween: 70,
         loop: true,
         speed: 4000,
+        loopAdditionalSlides: 4,
         allowTouchMove: false,
         autoplay: {
           delay: 0,
@@ -266,6 +320,7 @@
       while (echteStrip() < window.innerWidth * 4 && wrap.children.length < 120) {
         sw.appendSlide(originals.map((s) => s.cloneNode(true)));
       }
+      marqueeWaakhond(sw, wrap);
     });
 
     // Collectie/partners hero: two vertical columns moving in opposite directions

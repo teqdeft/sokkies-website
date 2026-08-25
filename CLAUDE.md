@@ -874,7 +874,43 @@
   ACF-sectievelden (post_content is leeg bij de sectiebuilder, dus
   standaardzoeken vindt alleen titels) plus een bereik van page/soktype/
   case. Het concrete gebrek dat tot terugdraaien leidde is NIET vastgelegd
-  — navragen voordat dit opnieuw wordt gebouwd. 
+  — navragen voordat dit opnieuw wordt gebouwd.  MERKENSTRIP STOPT NA EEN PAAR MINUTEN (2026-08-25, melding Kulwant
+  met video): de marquee is GEEN doorlopende animatie maar een ketting van
+  losse transities van 4s per slide, en Swiper plant elke volgende stap
+  UITSLUITEND op het transitionend-event van de wrapper (waitForTransition
+  staat standaard aan; in de bundle: wrapperEl.removeEventListener(
+  "transitionend", y) … C()). Blijft die ene event uit, dan plant niemand
+  een volgende stap en staat de strip stil terwijl autoplay.running gewoon
+  true blijft — vandaar dat het in devtools nergens op lijkt. Twee
+  bronnen daarvoor in de Swiper 11-broncode: slideNext no-opt zolang
+  animating true is (loopPreventsSliding staat standaard aan: "if(n&&!d&&
+  r.loopPreventsSliding)return!1") en een geannuleerde transitie vuurt
+  transitioncancel, waar niets naar luistert. Eén gemiste event is dus
+  fataal en onherstelbaar; de eerdere kloon-fix van 2026-08-12/13 stelde
+  het moment alleen uit (40 slides x 4s = 2,7 min per ronde op 1280, meer
+  op een breder scherm — dat verklaart de gemelde 3-4 minuten).
+  WAT ER IS GEDAAN: een waakhond die elke 2s kijkt of de wrapper écht
+  verschuift en de drift opnieuw aantrapt na ~4s stilstand (animating
+  vrijgeven, autoplay herstarten, slideNext). Hij grijpt alleen in bij
+  stilstand en stapt uit zodra document.hidden true is, want dan bevriest
+  de browser de transities zelf. Plus loopAdditionalSlides: 4.
+  WAT ER NIET IS AANGETOOND — eerlijk vastleggen: de storing is NIET
+  gereproduceerd. Een basislijnrun van 260s liep gewoon door, en drie
+  pogingen om de storing te injecteren (setTransition(0), animating=true,
+  autoplay.stop() met running=true) herstelden ZOWEL met als zonder fix
+  binnen 1s — die tests bewijzen dus niets. Wat wél is aangetoond: in een
+  verborgen tab (document.hidden) staat de strip aantoonbaar stil met
+  running=true en index 0, en de herstelactie van de waakhond haalt hem
+  daar uit (index 0 -> 1 -> 2, translate 0 -> -187 -> -318). De waakhond
+  is dus een bewezen vangnet voor een bewezen stilstandtoestand, maar de
+  precieze oorzaak van de 3-4 minuten-melding blijft onbevestigd.
+  VERMOEDEN dat het beste past: een tab die naar de achtergrond gaat —
+  browsers leveren transitionend daar niet, en bij terugkomst is de ketting
+  dood. Dat is precies wat de waakhond opvangt. loopPreventsSliding:false
+  is bewust WEER VERWIJDERD: onbewezen en het kan een zichtbare sprong
+  geven; de waakhond zet animating zelf al vrij. Marquees die nu goed
+  lopen (hero-galerij, designed-strip, verticale kolommen) hebben hetzelfde
+  patroon en dus hetzelfde risico, maar zijn bewust NIET aangeraakt. 
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
