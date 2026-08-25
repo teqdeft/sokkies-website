@@ -1234,6 +1234,38 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   van 401, items wikkelen netjes over twee regels, 0 botsingen, geen
   horizontale paginascroll. Op alle drie de breedtes botsen de <li> onderling
   niet.
+  THUMBNAILKOLOM PLATGEDRUKT OP 768 (2026-08-25, melding Kulwant met
+  screenshot van kerstsokken). De tien thumbs waren 41px hoge streepjes.
+  OORZAAK: in de banden 768-991 en 521-767 staat .prod-thumbs absoluut
+  (top:0 tot bottom:0, breedte 110px) met grid-auto-rows:minmax(0,1fr). Die
+  1fr verdeelt de VOLLE kolomhoogte over het aantal thumbs: bij 5 stuks is
+  dat (547 - 4x15)/5 = 97px, bij 10 stuks (547 - 9x15)/10 = 41px. Het
+  ontwerp ging uit van maximaal 5 foto's; met een CMS is dat niet houdbaar.
+  DIT IS DEZELFDE KLASSE FOUT als de scrollfix van eerder op 2026-08-24, maar
+  die is destijds bewust achter @media (min-width:992px) gezet met de notitie
+  "onder 992px is de galerij display:block met een eigen opzet, daar geldt dit
+  niet". Die aanname klopte niet: de kleinere banden hebben hun eigen variant
+  van hetzelfde probleem. Nu alsnog afgedekt.
+  FIX: grid-auto-rows:calc((100% - 60px) / 5) in plaats van minmax(0,1fr),
+  plus overflow-y:auto en dezelfde dunne scrollbar als in de >=992-band. De
+  60px is 4 gaps van 15px, dus de rijhoogte is exact die van 5 thumbs — bij
+  5 of minder verandert er dus niets en scrollt de kolom pas daarboven.
+  Percentages in grid-auto-rows werken hier omdat de kolom door top/bottom
+  een bepaalde hoogte heeft.
+  DE BAND <=520 IS NIET AANGERAAKT: daar is .prod-thumbs een horizontale
+  flexrij met overflow-x:auto en vaste 90px-thumbs, die had het probleem al
+  niet.
+  GEVERIFIEERD lokaal:
+    768, kerstsokken (10) : thumbs 41px -> 97px, kolom 547 met scrollHoogte
+                            1109, scrollt, blijft binnen de hoofdfoto
+    600, kerstsokken (10) : thumbs 75px = (434-60)/5, scrollt, geen
+                            horizontale paginascroll
+    768, reguliere (5)    : 97px, volle 110px breed, GEEN scrollbalk, laatste
+                            thumb sluit exact op de kolomrand — identiek aan
+                            de situatie voor de fix
+  Let op: zodra de kolom scrolt, kost de dunne scrollbalk ~10px breedte
+  (thumb 100 i.p.v. 110). Dat gedrag heeft de >=992-band ook, dus het is
+  consistent; alleen zichtbaar bij 6+ foto's.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

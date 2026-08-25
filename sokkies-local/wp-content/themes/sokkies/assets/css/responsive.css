@@ -5257,8 +5257,24 @@
     bottom:0;
     width:110px;
     display:grid;
-    grid-auto-rows:minmax(0,1fr);
+    /* Vaste rijhoogte in plaats van 1fr. Met minmax(0,1fr) werd de volle
+       kolomhoogte over ALLE thumbs verdeeld, dus bij 10 stuks bleef er 41px
+       per thumb over en werden ze platgedrukt (melding Kulwant 2026-08-25,
+       kerstsokken op 768px). Deze berekening geeft precies de hoogte die 5
+       thumbs nu al hadden — 5 rijen plus 4 gaps van 15px — dus bij 5 of
+       minder verandert er niets en scrollt de kolom pas daarboven. Zelfde
+       aanpak als in de >=992-band. */
+    grid-auto-rows:calc((100% - 60px) / 5);
+    overflow-y:auto;
+    scrollbar-width:thin;
+    scrollbar-color:rgb(40 18 27 / 35%) transparent;
     gap:15px;
+  }
+  .prod-thumbs::-webkit-scrollbar{ width:4px; }
+  .prod-thumbs::-webkit-scrollbar-track{ background:transparent; }
+  .prod-thumbs::-webkit-scrollbar-thumb{
+    background:rgb(40 18 27 / 35%);
+    border-radius:4px;
   }
   .prod-thumb{
     min-height:0;
@@ -8715,8 +8731,24 @@
     bottom:0;
     width:110px;
     display:grid;
-    grid-auto-rows:minmax(0,1fr);
+    /* Vaste rijhoogte in plaats van 1fr. Met minmax(0,1fr) werd de volle
+       kolomhoogte over ALLE thumbs verdeeld, dus bij 10 stuks bleef er 41px
+       per thumb over en werden ze platgedrukt (melding Kulwant 2026-08-25,
+       kerstsokken op 768px). Deze berekening geeft precies de hoogte die 5
+       thumbs nu al hadden — 5 rijen plus 4 gaps van 15px — dus bij 5 of
+       minder verandert er niets en scrollt de kolom pas daarboven. Zelfde
+       aanpak als in de >=992-band. */
+    grid-auto-rows:calc((100% - 60px) / 5);
+    overflow-y:auto;
+    scrollbar-width:thin;
+    scrollbar-color:rgb(40 18 27 / 35%) transparent;
     gap:15px;
+  }
+  .prod-thumbs::-webkit-scrollbar{ width:4px; }
+  .prod-thumbs::-webkit-scrollbar-track{ background:transparent; }
+  .prod-thumbs::-webkit-scrollbar-thumb{
+    background:rgb(40 18 27 / 35%);
+    border-radius:4px;
   }
   .prod-thumb{
     min-height:0;
