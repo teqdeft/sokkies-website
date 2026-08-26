@@ -1613,6 +1613,34 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   NIET GEKOPPELD, bewust: section-cards_suggestion, section-collection en
   section-dz_points. Hun knoppen wijzen naar de collectie of contact, niet
   naar de offertepagina, en hun standaardteksten zijn geen CTA-varianten.
+  SECUNDAIRE CTA "ZELF ONTWERPEN" (2026-08-25, verzoek Kulwant): in de hero
+  vervangt die "Bekijk collectie", bestemming de configurator. De tekstlink
+  "Eigen ontwerp? Klik hier voor de templates" eronder vervalt; templates
+  staan in de footer onder Downloads & templates.
+  EERST GEMETEN, EN DAT VERANDERDE DE AANPAK. Anders dan bij de primaire CTA
+  is dit GEEN site-brede wijziging maar één pagina. Alle live pagina's
+  nagelopen op de tweede heroknop:
+    home           "Bekijk collectie" -> /collectie/   + de onderregel
+    collectie      "Open configurator" -> /configurator/
+    configurator   "Bekijk voorbeelden" -> /reviews-en-cases/
+    toepassingen   "Bekijk geschikte sokken" -> /collectie/
+    werkwijze, over-ons, duurzaamheid, reviews, contact, waarom-sokkies: geen
+  De andere pagina's hebben dus bewust een eigen tweede knop. Een
+  code-normalisatie zoals bij de primaire CTA zou die kunnen kapen, en de
+  onderregel is een ALGEMEEN veld (Onderregel tekst + link) dat niet
+  permanent uitgezet mag worden — dan is het veld voorgoed onbruikbaar.
+  DAAROM BEWUST GEEN CODEWIJZIGING aan de rendering: dit is een
+  inhoudswijziging op één pagina en hoort in het CMS. Twee/drie velden op
+  Home > Secties > Hero: Knop 2 (label + link) en de twee Onderregel-velden
+  leegmaken.
+  LET OP bij het controleren: "Bekijk collectie" staat op vrijwel elke pagina
+  in de HTML, maar dat is de knop in het megamenu (.mega-usps in de header),
+  niet de hero. Die valt buiten dit verzoek.
+  WEL IN CODE GEDAAN: de drie ACF-instructies bij de hero bijgewerkt, zodat
+  het beheerscherm niet meer naar het oude patroon wijst — Knop 2 noemt nu
+  "Zelf ontwerpen" naar de configurator als secundaire CTA, en beide
+  Onderregel-velden vermelden dat de templates-link vervallen is en in de
+  footer staat.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
