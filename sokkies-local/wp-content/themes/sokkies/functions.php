@@ -75,6 +75,10 @@ require_once get_template_directory() . '/inc/cpt.php';
 // ACF-veldgroepen (PHP-registratie — zie inc/acf-fields.php)
 require_once get_template_directory() . '/inc/acf-fields.php';
 
+// Logica van het offerteformulier (max. 2 soktypes, 'Geen extra's'-uitsluiting,
+// en de adresopzoeking). Apart bestand omdat het meer is dan een paar regels.
+require_once get_template_directory() . '/inc/offerte-formulier.php';
+
 /**
  * Site-instelling uit de ACF-opties-pagina, met hardcoded fallback zolang
  * de opties nog niet zijn opgeslagen (of ACF uit staat).
@@ -558,7 +562,10 @@ add_filter( 'gform_submit_button', function ( $button, $form ) {
  * aan en zou elk toekomstig formulier onopgemaakt laten.
  */
 add_filter( 'gform_form_theme_slug', function ( $slug, $form ) {
-	return sokkies_is_contactformulier( $form ) ? 'legacy' : $slug;
+	// Ook het offerteformulier: dezelfde reden, de eigen opmaak wint dan.
+	$eigen = sokkies_is_contactformulier( $form )
+		|| ( function_exists( 'sokkies_is_offerte' ) && sokkies_is_offerte( $form ) );
+	return $eigen ? 'legacy' : $slug;
 }, 10, 2 );
 
 /**
@@ -633,6 +640,21 @@ function sokkies_gf_nl_meldingen() {
 		// Ingebouwde standaardbevestiging van GF (vangnet; formulier 4 heeft
 		// een eigen Nederlandse bevestiging, zie GF-instellingen).
 		'Thanks for contacting us! We will get in touch with you shortly.' => 'Bedankt voor je bericht! We nemen zo snel mogelijk contact met je op.',
+
+		// Uploadveld. De teksten volgen htmlv/offerte.html: 'Sleep uw bestanden
+		// hierheen, of klik om te uploaden.' met daaronder de toegestane types.
+		'Drop files here or'      => 'Sleep uw bestanden hierheen, of',
+		'Select files'            => 'klik',
+		'Accepted file types: %s'  => '%s',
+		'Accepted file types: %s.' => '%s',
+		'Max. file size: %s'       => 'max. %s per bestand',
+		'Max. files: %s'           => 'maximaal %s bestanden',
+
+		// Getalvelden (o.a. 'Aantal paar' op het offerteformulier).
+		'Please enter a number greater than or equal to %s.' => 'Vul een aantal in van minimaal %s.',
+		'Please enter a number less than or equal to %s.'    => 'Vul een aantal in van maximaal %s.',
+		'Please enter a number from %1$s to %2$s.'          => 'Vul een aantal in tussen %1$s en %2$s.',
+		'Please enter a valid number'                       => 'Vul een geldig getal in',
 
 		// Keuzevelden (radio/select).
 		'Invalid selection. Please select from the available choices.' => 'Ongeldige keuze. Maak een keuze uit de beschikbare opties.',

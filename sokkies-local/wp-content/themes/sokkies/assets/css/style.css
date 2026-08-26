@@ -9043,3 +9043,330 @@ main.contact{
   .spec-a-inner tr, .faq-a-inner tr, .jr-body tr, .brand-intro-inner tr, .prod-info tr{
     border:0;
   }
+
+/* -------------------------------------------------------------------------
+   Offerteformulier op Gravity Forms in de opmaak van htmlv/offerte.html
+   -------------------------------------------------------------------------
+   Toegevoegd 2026-08-26. De statische driestapsopzet is vervangen door een
+   meerstaps Gravity Form; de ontwerpklassen (.stepper, .pick-card,
+   .quote-input) horen bij die oude markup. Hier wordt de GF-markup op
+   dezelfde waarden gezet, net als eerder bij .ct-form-card. Alles is
+   gescoped onder .quote-card zodat andere formulieren er niets van merken.
+   ------------------------------------------------------------------------- */
+  .quote-card .gform_wrapper{ margin:0; }
+  .quote-card .gform_heading{ display:none; }
+
+  /* De stappenbalk komt uit gform_progress_steps (zie
+     inc/offerte-formulier.php): daar wordt de GF-markup vervangen door de
+     <ol class="stepper"> uit htmlv, zodat de ontwerpregels hierboven in dit
+     bestand van toepassing zijn. Er is dus GEEN eigen .gf_step-opmaak nodig. */
+
+  /* labels en velden — dezelfde waarden als .quote-label in het ontwerp */
+  .quote-card .gfield_label{
+    display:block;
+    font-family:var(--roc-grotesk);
+    font-size:var(--body-lg-font-size);
+    font-weight:600;
+    color:var(--text);
+    margin-bottom:12px;
+    line-height:1;
+  }
+  /* "(optioneel)" achter het label: .opt staat al in het ontwerp (400). */
+  .quote-card .gfield_required{ color:var(--coral); font-weight:600; }
+  /* Het ontwerp zet een spatie tussen label en sterretje ("Postcode *"). */
+  .quote-card .gfield_required{ margin-left:.28em; }
+  .quote-card .gfield_description{
+    font-size:calc(var(--body-font-size) - 2px);
+    color:var(--text);
+    opacity:.7;
+    margin:0 0 8px;
+    padding:0;
+  }
+  .quote-card .ginput_container input[type="text"],
+  .quote-card .ginput_container input[type="email"],
+  .quote-card .ginput_container input[type="tel"],
+  .quote-card .ginput_container input[type="number"],
+  .quote-card .ginput_container textarea{
+    width:100%;
+    border:1.5px solid var(--border-light);
+    border-radius:5px;
+    padding:12px 14px;
+    height:50px;
+    font-size:var(--body-font-size);
+    font-family:var(--roc-grotesk);
+    color:var(--text);
+    background:var(--white);
+  }
+  /* GF zet rows='10' vast, ongeacht de veldgrootte — vandaar een hoogte in
+     CSS. Het ontwerp gebruikt rows="5"; met de regelhoogte en padding van
+     .quote-input-textarea komt dat neer op ongeveer 165px. */
+  .quote-card .ginput_container textarea{
+    height:auto;
+    min-height:165px;
+    padding:17px 14px;
+    resize:vertical;
+  }
+  /* Veldenrooster. De meeste velden vullen de breedte; stap 3 zet ze in een
+     rij van drie en twee rijen van twee, net als .quote-grid /
+     .quote-grid-3 in htmlv. BEWUST flex met wrap en geen grid: de
+     postcoderij heeft VASTE kolommen van 155px en de rijen eronder halve
+     breedtes, en dat past niet in één grid-template. Rijafstand 22px en
+     kolomafstand 20px komen allebei uit het ontwerp.
+     De rijafstand komt BEWUST van een marge onder elk veld en niet van
+     row-gap: een lege regel die alleen dient om een rij af te breken kost bij
+     row-gap altijd een volle rijafstand, en die is er niet meer af te halen
+     (een flexregel kan niet kleiner dan 0, en een negatieve marge op het
+     volgende veld zet dat veld scheef t.o.v. zijn buurman). */
+  .quote-card .gform_fields{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0 20px;
+    align-items:flex-start;
+  }
+  .quote-card .gform_fields > .gfield{ flex:0 0 100%; min-width:0; margin-bottom:22px; }
+
+  /* Stap 3 — dezelfde rijen als htmlv/offerte.html (regels 491-540). */
+  .quote-card .gform_fields > .of-postcode,
+  .quote-card .gform_fields > .of-huisnummer,
+  .quote-card .gform_fields > .of-toevoeging{ flex:0 0 155px; }
+  .quote-card .gform_fields > .of-bedrijf,
+  .quote-card .gform_fields > .of-contact,
+  .quote-card .gform_fields > .of-email,
+  .quote-card .gform_fields > .of-telefoon{ flex:0 0 calc(50% - 10px); }
+
+  /* De verborgen trackingvelden staan wél in de flow; zonder dit zouden ze
+     rij-gaten trekken van 22px per stuk. */
+  .quote-card .gform_fields > .gfield--type-hidden,
+  .quote-card .gform_fields > .gform_hidden{ display:none; }
+
+  /* Straat/plaats/provincie horen bij het gevonden adres: normaal onzichtbaar,
+     zichtbaar zodra de bezoeker "Handmatig invullen" kiest of de opzoeking
+     niets oplevert. */
+  .quote-card .gform_fields > .of-auto{ display:none; }
+  .quote-card .gform_fields > .of-auto.is-zichtbaar{
+    display:block;
+    flex:0 0 calc(50% - 10px);
+  }
+
+  .quote-card .of-kop h3{ margin:0 0 6px; }
+
+  /* HARDE RIJOVERGANG. flex-wrap breekt pas als een regel vol is, en zodra de
+     veldkolom breder werd dan ~1030px paste "Bedrijfsnaam" nog náást de drie
+     vaste kolommen van 155px — waardoor de hele stap een veld opschoof. Op
+     1280 viel dat niet op, op 1920 wel. Deze lege velden zijn 100% breed en
+     dwingen de overgang af, ongeacht de schermbreedte; de negatieve marge
+     haalt de rijafstand die ze zelf toevoegen er weer af. */
+  .quote-card .gform_fields > .of-rij-break{
+    flex:0 0 100%;
+    height:0;
+    padding:0;
+    margin:0;
+    overflow:hidden;
+  }
+
+  .quote-card .gform_fields > .of-adres-paneel{ flex:0 0 100%; }
+  /* Alleen weg zodra de bezoeker het adres zelf invult; de rijovergang
+     hierboven houdt de indeling dan gewoon overeind. */
+  .quote-card .gform_fields > .of-adres-paneel.is-verborgen{ display:none; }
+  .quote-card .of-adres-paneel .quote-address{ margin-bottom:0; }
+
+  /* Aantal paar is in het ontwerp een smal veld (.quote-input-sm). */
+  .quote-card .of-aantal input[type="number"]{ max-width:200px; }
+
+  /* Uploadveld als de .dropzone uit het ontwerp. GF bouwt hier een
+     .gform_drop_area met daarin de instructie en een knop; die krijgen
+     dezelfde opmaak als het gestippelde vlak in htmlv. */
+  .quote-card .gform_drop_area{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:baseline;
+    gap:4px 0.25em;
+    text-align:center;
+    border:1.5px dashed #cabda9;
+    border-radius:15px;
+    padding:22px;
+    background:#faf6f0;
+    cursor:pointer;
+    margin:0;
+  }
+  /* In het ontwerp staat "Sleep uw bestanden hierheen, of klik om te
+     uploaden." op EEN regel; GF zet de knop standaard onder de tekst. Met
+     wrap op de rij blijven ze naast elkaar en breekt het alleen als het
+     echt niet past. */
+  .quote-card .gform_drop_instructions{
+    font-size:var(--body-font-size);
+    color:var(--text);
+    font-weight:600;
+  }
+  /* De staart van de zin ná het onderstreepte "klik" — zelfde gewicht als de
+     rest van de zin, maar zonder onderstreping. */
+  .quote-card .dz-staart{
+    font-size:var(--body-font-size);
+    color:var(--text);
+    font-weight:600;
+    text-decoration:none;
+  }
+  /* De regeltekst neemt de volle breedte, zodat hij netjes onder de zin
+     valt in plaats van ernaast. */
+  .quote-card .gform_drop_area .gform_fileupload_rules{ flex:0 0 100%; }
+  /* De knop van GF is in het ontwerp gewoon het onderstreepte woord
+     "klik om te uploaden" binnen dezelfde zin. */
+  .quote-card .gform_button_select_files{
+    background:none;
+    border:0;
+    padding:0;
+    font-family:var(--roc-grotesk);
+    font-size:var(--body-font-size);
+    font-weight:600;
+    color:var(--text);
+    text-decoration:underline;
+    cursor:pointer;
+  }
+  .quote-card .gform_fileupload_rules{
+    font-size:15px;
+    color:var(--text);
+    opacity:1;
+    margin:0;
+    text-align:center;
+  }
+
+  /* Beeldkaarten voor de soktypes en de extra opties.
+     De opmaak zelf staat al in htmlv (.pick-card / .extra-card, hierboven in
+     dit bestand); de PHP-filter zet die classnamen op het GF-label. Wat hier
+     nog nodig is, is de BRUG tussen twee verschillen:
+       1. htmlv zet de input IN het label (.pick-card input), GF ernaast —
+          dus het vakje zelf hier verbergen;
+       2. htmlv markeert de keuze met .is-selected via eigen JS, GF heeft
+          gewoon :checked — de input staat vóór het label, dus met de
+          +-combinator is dezelfde staat te pakken. */
+  .quote-card .of-soktypes .gfield_checkbox{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:20px var(--h5-font-size);
+  }
+  .quote-card .of-extras .gfield_checkbox{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:var(--h5-font-size);
+  }
+  .quote-card .gfield_checkbox .gchoice{ position:relative; }
+  .quote-card .gfield_checkbox .gfield-choice-input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+  }
+  .quote-card .gfield_checkbox label{
+    display:block;
+    margin:0;
+    cursor:pointer;
+    text-align:center;
+  }
+
+  /* GF zet een fieldset met rand en legend om een keuzeveld; het ontwerp
+     heeft daar geen kader. Zelfde ingreep als bij het contactformulier. */
+  .quote-card fieldset.gfield{
+    border:0;
+    padding:0;
+    margin:0;
+    background:none;
+  }
+  .quote-card fieldset.gfield legend.gfield_label{
+    padding:0;
+    float:left;
+    width:100%;
+  }
+
+  /* De geselecteerde staat komt NIET uit een :checked-regel hier: offerte.js
+     zet .is-selected op het label, precies zoals htmlv dat doet, zodat alle
+     ontwerpregels (.is-selected .pick-img, .pick-check, .type-pick-outer)
+     ongewijzigd van toepassing zijn. */
+
+  /* uitgeschakeld door de max-2-regel of door "Geen extras" */
+  .quote-card .gfield_checkbox .gchoice.is-uitgeschakeld label{
+    opacity:.4;
+    cursor:not-allowed;
+  }
+
+  /* knoppen onderaan elke stap */
+  /* gap 20px = .quote-actions-right uit het ontwerp (Overslaan naast Volgende). */
+  .quote-card .gform_page_footer{
+    display:flex;
+    gap:20px;
+    align-items:center;
+    justify-content:flex-end;
+    margin:8px 0 0;
+    padding:0;
+    border:0;
+  }
+  .quote-card .gform_next_button,
+  .quote-card .gform_button{
+    background:var(--dark);
+    color:var(--white);
+    border:1px solid var(--dark);
+    border-radius:50px;
+    padding:12px 25.27px;
+    font-family:var(--roc-grotesk);
+    font-weight:600;
+    font-size:var(--body-font-size);
+    cursor:pointer;
+  }
+  /* De terugknop is in het ontwerp een KALE knop met een pijltje (.btn-back
+     in htmlv), geen omrande pil. Het pijltje zelf komt uit PHP; hier alleen
+     de opmaak eromheen. margin-right:auto duwt hem naar links, zoals
+     .quote-actions-split doet. */
+  .quote-card .gform_previous_button{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:transparent;
+    color:var(--text);
+    border:0;
+    padding:0;
+    font-family:var(--roc-grotesk);
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    margin-right:auto;
+  }
+
+  /* "Overslaan" op stap 2 — .cta-light uit het ontwerp. */
+  .quote-card .of-overslaan{
+    background:var(--white);
+    border:0.5px solid var(--dark);
+    color:var(--dark);
+    border-radius:50px;
+    padding:12px 25.27px;
+    font-family:var(--roc-grotesk);
+    font-weight:600;
+    font-size:var(--body-font-size);
+    cursor:pointer;
+    transition:background .2s, color .2s;
+  }
+  .quote-card .of-overslaan:hover{ background:var(--dark); color:var(--white); }
+
+  /* meldingen */
+  .quote-card .gfield_validation_message,
+  .quote-card .validation_message,
+  .quote-card .of-adres-fout{
+    font-size:calc(var(--body-font-size) - 2px);
+    color:var(--coral);
+    margin-top:6px;
+    background:none;
+    border:0;
+    padding:0;
+  }
+  .quote-card .gform_validation_errors{
+    border:1px solid var(--coral);
+    border-radius:12px;
+    padding:14px 18px;
+    margin-bottom:22px;
+    background:var(--white);
+    box-shadow:none;
+  }
+  .quote-card .gform_validation_errors h2{
+    font-size:var(--body-font-size);
+    color:var(--coral);
+    margin:0;
+  }
+  .quote-card .of-postcode.is-zoekend input{ opacity:.6; }

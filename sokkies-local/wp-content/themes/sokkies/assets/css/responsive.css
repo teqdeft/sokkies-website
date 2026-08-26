@@ -103,6 +103,8 @@
    1440-1680 — 1440-DESIGN (Kulwant-final; schaalt omhoog t/m 1680)
    =================================================================== */
 @media (min-width:1440px) and (max-width:1679px){
+  /* Gravity-tegenhanger van .type-picker / .extra-picker (gemeten op htmlv). */
+  .quote-card .of-soktypes .gfield_checkbox{ gap:10px; }
   /* ws-compare-doodle: alleen 1920-ontwerp (zie basis) */
   .ws-compare-doodle-1{
     display:none;
@@ -1136,6 +1138,8 @@
    1280-1439 — 1280-opmaak (perfect bevonden op 1280; schaalt omhoog)
    =================================================================== */
 @media (min-width:1280px) and (max-width:1439px){
+  /* Gravity-tegenhanger van .type-picker / .extra-picker (gemeten op htmlv). */
+  .quote-card .of-soktypes .gfield_checkbox{ gap:10px; }
   /* ws-compare-doodle: alleen 1920-ontwerp (zie basis) */
   .ws-compare-doodle-1{
     display:none;
@@ -2324,6 +2328,8 @@
    992-1279 — zelfde 1280-opmaak (gevloerd op 992, besluit Kulwant)
    =================================================================== */
 @media (min-width:992px) and (max-width:1279px){
+  /* Gravity-tegenhanger van .type-picker / .extra-picker (gemeten op htmlv). */
+  .quote-card .of-soktypes .gfield_checkbox{ gap:20px 10px; }
   /* mega-hoverbrug is desktop-only (drawer/sheet heeft geen hover-gat) */
   .mega::before{
     display:none;
@@ -3986,6 +3992,8 @@
    768-991 (tablet)
    =================================================================== */
 @media (min-width:768px) and (max-width:991px){
+  /* Gravity-tegenhanger van .type-picker / .extra-picker (gemeten op htmlv). */
+  .quote-card .of-soktypes .gfield_checkbox{ grid-template-columns:repeat(4,1fr); gap:20px 10px; }
   /* mega-hoverbrug is desktop-only (drawer/sheet heeft geen hover-gat) */
   .mega::before{
     display:none;
@@ -6513,6 +6521,9 @@
    521-767
    =================================================================== */
 @media (min-width:521px) and (max-width:767px){
+  /* Gravity-tegenhanger van .type-picker / .extra-picker (gemeten op htmlv). */
+  .quote-card .of-soktypes .gfield_checkbox{ grid-template-columns:repeat(3,1fr); gap:20px 10px; }
+  .quote-card .of-extras .gfield_checkbox{ grid-template-columns:repeat(2,1fr); }
   /* mega-hoverbrug is desktop-only (drawer/sheet heeft geen hover-gat) */
   .mega::before{
     display:none;
@@ -7121,6 +7132,19 @@
   .extra-picker{ grid-template-columns:repeat(2,1fr); }
   .quote-grid,
   .quote-grid-3{ grid-template-columns:1fr; }
+  /* Gravity-tegenhanger van .quote-grid / .quote-grid-3 hierboven: onder de
+     768px staan de velden van stap 3 onder elkaar in plaats van in rijen. */
+  .quote-card .gform_fields > .of-postcode,
+  .quote-card .gform_fields > .of-huisnummer,
+  .quote-card .gform_fields > .of-toevoeging,
+  .quote-card .gform_fields > .of-bedrijf,
+  .quote-card .gform_fields > .of-contact,
+  .quote-card .gform_fields > .of-email,
+  .quote-card .gform_fields > .of-telefoon,
+  .quote-card .gform_fields > .of-auto.is-zichtbaar{ flex:0 0 100%; }
+  /* = .quote-actions-split / .quote-actions-right */
+  .quote-card .gform_page_footer{ flex-direction:column; align-items:stretch; gap:12px; }
+  .quote-card .gform_previous_button{ margin-right:0; justify-content:center; }
   .quote-actions-split{ flex-direction:column; align-items:stretch; gap:12px; }
   .quote-actions-right{ flex-direction:column; }
   .aanvraag-steps{ grid-template-columns:1fr; gap:26px; }
@@ -10353,6 +10377,9 @@
    520px en smaller (mobiel — FINAL)
    =================================================================== */
 @media (max-width:520px){
+  /* Gravity-tegenhanger van .type-picker / .extra-picker (gemeten op htmlv). */
+  .quote-card .of-soktypes .gfield_checkbox{ grid-template-columns:repeat(2,1fr); }
+  .quote-card .of-extras .gfield_checkbox{ grid-template-columns:repeat(2,1fr); }
   /* mega-hoverbrug is desktop-only (drawer/sheet heeft geen hover-gat) */
   .mega::before{
     display:none;
@@ -10953,6 +10980,19 @@
   .extra-picker{ grid-template-columns:repeat(2,1fr); }
   .quote-grid,
   .quote-grid-3{ grid-template-columns:1fr; }
+  /* Gravity-tegenhanger van .quote-grid / .quote-grid-3 hierboven: onder de
+     768px staan de velden van stap 3 onder elkaar in plaats van in rijen. */
+  .quote-card .gform_fields > .of-postcode,
+  .quote-card .gform_fields > .of-huisnummer,
+  .quote-card .gform_fields > .of-toevoeging,
+  .quote-card .gform_fields > .of-bedrijf,
+  .quote-card .gform_fields > .of-contact,
+  .quote-card .gform_fields > .of-email,
+  .quote-card .gform_fields > .of-telefoon,
+  .quote-card .gform_fields > .of-auto.is-zichtbaar{ flex:0 0 100%; }
+  /* = .quote-actions-split / .quote-actions-right */
+  .quote-card .gform_page_footer{ flex-direction:column; align-items:stretch; gap:12px; }
+  .quote-card .gform_previous_button{ margin-right:0; justify-content:center; }
   .quote-actions-split{ flex-direction:column; align-items:stretch; gap:12px; }
   .quote-actions-right{ flex-direction:column; }
   .aanvraag-steps{ grid-template-columns:1fr; gap:26px; }

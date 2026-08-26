@@ -1726,6 +1726,209 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   geïmporteerd (ID 41-48) via wp-load-script met MAMP-php
   (mysqli.default_socket naar /Applications/MAMP/tmp/mysql/mysql.sock).
 
+OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
+  VERVERSEN + "GEEN EXTRA'S" EXCLUSIEF (2026-08-26, opdracht Kulwant).
+  STATUS: LOKAAL, NOG NIET GECOMMIT/GEPUSHT — op zijn uitdrukkelijke
+  verzoek eerst volledig lokaal testen.
+  WAT ER IS GEBOUWD: het statische wizardblok in
+  template-parts/sections/section-offerte_funnel.php is vervangen door een
+  echt meerstaps Gravity Form ("Offerte — website", lokaal ID 5) in
+  .quote-card. Serverlogica in inc/offerte-formulier.php, gedrag in
+  assets/js/offerte.js, opmaak achter .quote-card in style.css.
+  Stap 1 soktypes (max 2) + aantal paar (min 50, standaard 50) + optionele
+  upload + wensen; stap 2 aanvullende opties + Jouw input; stap 3
+  adres (postcode+huisnummer -> straat/plaats/provincie via PDOK) +
+  contactgegevens. Berichtgeving 1-op-1 overgenomen van formulier 4.
+  HET FORMULIER-ID WORDT NERGENS HARDGECODEERD (sokkies_offerte_form_id:
+  constante -> optie -> titel -> 0) — GF hernummert bij import, zie de
+  blokker die eerder bij het contactformulier is beschreven.
+  (1) STAP + INGEVULDE GEGEVENS OVERLEVEN EEN VERVERSING.
+  WAT ER MIS WAS: F5 op stap 2 of 3 zette de bezoeker terug op stap 1 met
+  een leeg formulier — bij een offerteaanvraag van drie stappen is dat het
+  hele verhaal opnieuw typen.
+  FIX: sessionStorage-sleutel 'sokkies-offerte' met de ingevulde velden en
+  de stap. Bij het laden worden de waarden teruggezet en klikt het script
+  "Volgende" tot de bewaarde stap bereikt is (de drie .gform_page-divs
+  staan allemaal in de DOM, maar de STAP zelf vergt een serveromgang, dus
+  doorlopen is nodig).
+  BEWUST sessionStorage EN NIET localStorage: stap 3 bevat naam, e-mail en
+  adres. Die horen niet permanent op de machine van de bezoeker te blijven
+  staan; nu verdwijnen ze met het tabblad. Er wordt niets serverzijdig
+  opgeslagen, dus er ontstaan ook geen halve inzendingen met persoonsgegevens.
+  Bij een geslaagde inzending wist gform_confirmation_loaded de opslag.
+  DRIE ECHTE VALKUILEN die tijdens het testen boven kwamen:
+    (a) het script hing aan gform_post_render maar was zonder
+        afhankelijkheden geregistreerd, dus het kon vóór jQuery draaien en
+        bond die haak nooit — de bewaarde stap bleef daardoor op 1 staan.
+        Nu wp_enqueue_script(..., array('jquery'), ...).
+    (b) tijdens het teruglopen naar de bewaarde stap schreef de
+        klik-handler de stap waar we LANGS kwamen terug in de opslag, zodat
+        een tweede verversing weer op stap 1 uitkwam. Nu blokkeert een vlag
+        'herstellen' het bewaren tijdens het doorlopen; bij aankomst (of bij
+        een blijvende veldmelding) gaat de vlag uit en wordt één keer bewaard.
+    (c) het doorlopen klikte TWEE keer op "Volgende": een keer vanuit
+        DOMContentLoaded en een keer vanuit de eerste gform_post_render,
+        die immers ook bij het gewone laden vuurt. GF brak de tweede af
+        ("Another submission is already in progress for form #5") — het
+        werkte, maar op geluk. Nu een rem (wachtOpStap) EN het doorlopen
+        wordt uitsluitend door gform_post_render gestuurd; herstel() zet
+        alleen de bewaarde stap klaar en klikt zelf niet meer.
+  NIET TERUG TE ZETTEN: gekozen BESTANDEN. Een browser staat het om
+  veiligheidsredenen niet toe een file-veld te vullen. De bezoeker moet zijn
+  ontwerp na een verversing opnieuw kiezen; alle andere velden staan er wel.
+  (2) "GEEN EXTRA'S" WERKT NU ALS IN HTMLV.
+  WAT ER MIS WAS: de eerste versie zette de tegenoverliggende opties op
+  disabled. Daardoor was precies het OMSCHAKELEN onmogelijk: wie eenmaal
+  "Labels" aanvinkte kon "Geen extra's" niet meer aanklikken en andersom —
+  de bezoeker zat vast in zijn eerste keuze.
+  FIX: exact het gedrag uit htmlv/assets/js/custom.js:430-443 nagebouwd, en
+  er wordt NIETS meer uitgeschakeld: "Geen extra's" aanklikken zet de rest
+  uit; een van de eerste vier aanklikken zet "Geen extra's" uit; die eerste
+  vier zijn vrij te combineren; blijft er niets over, dan valt de keuze
+  terug op "Geen extra's". Net als in htmlv staat "Geen extra's" standaard
+  aan (isSelected op de keuze in formulier 5).
+  DAARBIJ EEN TWEEDE BUG GEVONDEN EN GEFIXT: in de opslag staan alleen de
+  AANGEVINKTE hokjes, dus wat de server standaard aanvinkt bleef na een
+  verversing staan naast de keuze van de bezoeker — "Labels" + "Geen
+  extra's" tegelijk. Het terugzetten wist nu eerst alle checkboxes/radio's
+  van het formulier en zet daarna pas de bewaarde waarden.
+  De servervalidatie (gform_field_validation) die de combinatie weigert
+  blijft staan als vangnet; met dit gedrag kan de combinatie niet meer
+  ontstaan, maar JS kan uitvallen.
+  GEVERIFIEERD in de browser op de echte pagina:
+    - acht klikscenario's op de extra-opties (vers laden, los aanvinken,
+      drie combineren, terug naar "Geen extra's", vandaar weer een optie,
+      de laatste weghalen, en "Geen extra's" nog eens): telkens de
+      verwachte stand, .is-selected loopt mee, 0 velden disabled.
+    - stap 1 -> 2 -> 3 invullen, verversen: stap 3, alle acht waarden terug,
+      geen enkele veldmelding; nog eens verversen: opnieuw stap 3 (dat was
+      de tweede valkuil). Terug naar stap 2 schrijft de stap ook terug.
+    - keuze die AFWIJKT van de standaard (Labels + Kaartjes) overleeft de
+      verversing zonder dat "Geen extra's" blijft hangen.
+    - volledige inzending: Nederlandse bevestiging, opslag daarna leeg.
+      Uitgaande mail tijdens die test geblokkeerd met een tijdelijke
+      mu-plugin (pre_wp_mail), zodat er niets naar support@ of een
+      bezoeker ging; mu-plugin en testinzendingen zijn weer verwijderd
+      (0 inzendingen op formulier 5).
+  TESTARTEFACT, GEEN BUG: example.com staat op de afwijslijst van GF
+  (GF_Field_Email::is_email_rejected) -> "Het ingevoerde e-mailadres is
+  ongeldig." Dat is dezelfde valkuil als eerder bij formulier 4.
+  LET OP — DATABASEWERK DAT NIET MEEDEPLOYT: formulier 5 zelf en de
+  standaardkeuze "Geen extra's" zitten in de DATABASE. Code deployt, de
+  database niet. Op live moet het formulier dus geïmporteerd/aangemaakt
+  worden; de titel "Offerte — website" is wat de code opzoekt, dus die moet
+  exact gelijk blijven (GF ontdubbelt titels bij import — controleer dat er
+  geen "Offerte — website 1" ontstaat).
+  OPEN: de adresopzoeking is NEDERLAND-ONLY (PDOK Locatieserver, gratis en
+  zonder sleutel). België/Europa vraagt een betaalde dienst met sleutel;
+  de provider staat daarom geïsoleerd in sokkies_offerte_adres_provider(),
+  dus alleen die functie hoeft om.
+
+  STAP 3 GELIJKGETROKKEN MET HTMLV + NAVIGATIE AF (2026-08-26, vervolg
+  dezelfde dag, opdracht Kulwant met een screenshot van htmlv waarin het
+  adrespaneel en de terugknop omcirkeld staan).
+  WAT ER IS BIJGEKOMEN, 1:1 uit htmlv/offerte.html regels 491-540:
+    - kop "Jouw gegevens" (GF-html-veld; stap 1 en 2 halen hun kop uit het
+      eerste veldlabel, stap 3 heeft zo'n veld niet);
+    - het paneel "Gevonden adres" met "Klopt niet? Handmatig invullen"
+      (ook een html-veld, met exact de markup uit het ontwerp);
+    - label "E-mail" i.p.v. "E-mailadres" en verzendknop "Vraag offerte aan";
+    - terugknop "Terug" MET het pijltje uit het ontwerp;
+    - "Overslaan" naast "Volgende" op stap 2 (htmlv regel 484).
+  VELD-ID'S ZIJN NIET AANGERAAKT; er zijn alleen velden bijgekomen (38, 39).
+  WAAROM "PREVIOUS" ENGELS BLEEF: de terugknop van de LAATSTE pagina komt
+  niet uit het paginaveld maar uit de formulierinstelling `lastPageButton`
+  (form_display.php:6055), en die stond leeg — GF viel dus terug op
+  __('Previous'). Nu gevuld met "Terug". De paginavelden zelf stonden al
+  goed, wat het zo verwarrend maakte.
+  LAYOUT: .quote-card .gform_fields is van display:grid naar FLEX met wrap
+  gegaan (gap 22px 20px). Bewust geen grid: de postcoderij heeft vaste
+  kolommen van 155px en de rijen eronder halve breedtes, en dat past niet in
+  één grid-template. Alle velden staan standaard op flex:0 0 100%; alleen de
+  velden van stap 3 krijgen hun eigen breedte.
+  LET OP: de 19 verborgen trackingvelden staan wél in de flow. Zonder een
+  expliciete display:none op .gfield--type-hidden trokken ze elk een rij-gat
+  van 22px onder het formulier.
+  STRAAT/PLAATS/PROVINCIE blijven gewone velden — ze gaan mee de notificatie
+  in en dus naar het vervolgsysteem — maar staan verborgen achter het paneel.
+  "Handmatig invullen" klapt ze open, en dat gebeurt ook AUTOMATISCH als de
+  opzoeking niets vindt of de dienst plat ligt: anders kan de bezoeker zijn
+  adres nergens kwijt en loopt de aanvraag daar dood.
+  Het paneel zelf staat via CSS uit tot er echt een adres is (een leeg groen
+  vlak is geen "gevonden adres"). Verbergen gebeurt op het VELD en niet op
+  het paneel erin, want een leeg veld telt in de flex-flow nog steeds mee.
+  "OVERSLAAN" is een gewone knop die de echte "Volgende" aanklikt. Bewust
+  geen tweede verzendknop: GF leidt de doelpagina af uit zijn eigen knop-ID
+  (form_display.php:4471), dus een kopie met een ander ID kan daarnaast
+  grijpen. Zo is Overslaan gegarandeerd identiek aan Volgende.
+  GEVERIFIEERD DOOR METEN, htmlv naast WordPress op 1280 (htmlv draait
+  lokaal op http://localhost:8080/htmlv/offerte.html):
+    kaartbreedte 788 = 788; velden 155/155/155 op x=79/254/429 en 343/343 op
+    x=79/442 — identiek; labels 17px/600 met 12px eronder; invoervelden 50px
+    hoog, padding 12px 14px, radius 5px, rand 1px solid rgb(211,206,208);
+    paneel: kop 12px rgb(90,83,70), waarde 15px/600 op rgb(234,252,241) met
+    rand rgb(29,214,101), radius 10px, padding 10px 16px;
+    rijafstanden t.o.v. de postcoderij: paneel +101, bedrijf +188, e-mail
+    +289, knoppen +398 — alle vier gelijk aan htmlv.
+  BEWUSTE AFWIJKING: de knoppen staan hier in roc-grotesk, in htmlv rendert
+  .cta-dark in ARIAL. Oorzaak: htmlv zet geen font-family op de knop en een
+  <button> erft de sitefont niet (een <a> wel — vandaar dat .cta-light daar
+  wél goed staat). Dat is een fout in de statische build, geen ontwerpkeuze;
+  overnemen zou de knop uit de huisstijl trekken. Verschil: 8px breder.
+  RESPONSIVE: de bandregels van .type-picker/.extra-picker en .quote-grid
+  zijn nagemeten in htmlv en overgenomen voor de GF-tegenhangers —
+  soktypes 5/4/3/2 kolommen vanaf 992/768/521/520, extra's 5 tot 768 en
+  daaronder 2, en onder 768 staan de velden van stap 3 onder elkaar met een
+  gestapelde knoppenbalk. Op 390: geen horizontale paginascroll.
+  FOUT DIE ERNA BOVENKWAM — VELDEN SCHOVEN OP BREDE SCHERMEN OP (melding
+  Kulwant met een screenshot: "Bedrijfsnaam" stond bovenaan náást de
+  postcoderij, en daardoor stond elk volgend veld een plek verkeerd).
+  OORZAAK: flex-wrap breekt een regel pas als hij vol is. De postcoderij is
+  3 x 155px + 2 x 20px = 505px breed; "Bedrijfsnaam" is 50% - 10px. Zodra de
+  veldkolom breder werd dan ongeveer 1030px paste dat er nog naast. Op 1280
+  (veldkolom 706px) gebeurde dat niet, op 1920 (veldkolom 1099px) wel.
+  LES: een indeling die op ÉÉN breedte klopt is niet geverifieerd. Bij
+  flex-wrap altijd narekenen vanaf welke containerbreedte een volgend item
+  er nog bij past, en op de breedste band controleren — niet alleen op de
+  band waarin je toevallig werkt.
+  FIX: twee lege velden van 100% breed ("Rijovergang", cssClass
+  of-rij-break) na Toevoeging en na Provincie. Die dwingen de overgang af,
+  ongeacht de schermbreedte.
+  DAARBIJ MOEST DE RIJAFSTAND OM. Met row-gap kost zo'n lege regel altijd
+  een volle rijafstand extra, en die is er niet af te halen: een flexregel
+  kan niet kleiner dan 0, en een negatieve marge op het VOLGENDE veld zet
+  dat veld scheef ten opzichte van zijn buurman (Bedrijfsnaam stond dan 22px
+  hoger dan Contactpersoon). Daarom nu gap:0 20px (alleen kolomafstand) en
+  22px marge onder elk veld; de lege regel heeft hoogte 0 en marge 0 en kost
+  dus niets. De voetmarge ging van 30px naar 8px, want de laatste veldrij
+  brengt zelf al 22px mee.
+  HET ADRESVAK TOONT STANDAARD DE TEKST UIT HET ONTWERP
+  ("Voorbeeldstraat 12, 1234 AB Plaatsnaam", htmlv regel 512) — op verzoek
+  van Kulwant, die expliciet dezelfde inhoud als de HTML wilde. Die regel
+  staat in de VELDINHOUD van het formulier en niet in het script, zodat hij
+  er ook staat als het script niet draait. Zodra de opzoeking een adres
+  vindt, vervangt het script hem door het echte adres. LET OP: tot die tijd
+  ziet de bezoeker dus een voorbeeldadres.
+  GEVERIFIEERD na de fix, op 1280 EN op 1920 EN op 390:
+    1280: rijen postcode/huisnummer/toevoeging - paneel - bedrijf/contact -
+          e-mail/telefoon, met offsets 101 / 188 / 289 / 398 t.o.v. de
+          postcoderij — exact gelijk aan htmlv;
+    1920: dezelfde vier rijen (veldkolom 1099px), niets schuift meer op;
+    390 : alles onder elkaar, knoppenbalk gestapeld, geen horizontale
+          paginascroll;
+    handmatig invullen: straat/plaats naast elkaar, provincie eronder, en de
+    tweede rijovergang houdt Bedrijfsnaam van de provincierij af;
+    volledige inzending: alle 14 waarden in de inzending (inclusief
+    straat/plaats/provincie), Nederlandse bevestiging, opslag daarna leeg.
+  MEETVALKUIL (kostte een verkeerde conclusie): getComputedStyle op een
+  element in een VERBORGEN stap geeft de OPGEGEVEN waarde terug
+  ("repeat(5, 1fr)") en geen pixelkolommen. Kolommen tellen met split(' ')
+  levert dan altijd 2 op. Meet dus in de zichtbare stap, of lees de
+  opgegeven waarde bewust uit.
+  NOG NIET GEDAAN, bewust: de Google Address API. De opzoeking loopt nu op
+  PDOK (gratis, zonder sleutel, alleen Nederland) en vult hetzelfde paneel.
+  Alleen sokkies_offerte_adres_provider() hoeft om.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
