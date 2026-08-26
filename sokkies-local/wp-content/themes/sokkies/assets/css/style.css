@@ -7517,6 +7517,19 @@ font-weight: 600;
     border-radius:14px;
     display:block;
   }
+  /* Logo/zegel in plaats van een foto: helemaal tonen, NIET bijsnijden en
+     ook niet uitvergroten. Een logo van 300x300 werd anders opgerekt naar
+     het vlak van 557x435 en verloor zijn scherpte. Geen radius: die hoort
+     bij een fotovlak, niet bij een vrijstaand logo. */
+  .dz-pane-img.is-logo img{
+    width:auto;
+    max-width:100%;
+    height:auto;
+    max-height:435px;
+    object-fit:contain;
+    border-radius:0;
+    margin:0 auto;
+  }
 
 /* ===== Duurzaamheid — certificaten en keurmerken (kaarten) ===== */
   .dz-keur{

@@ -77,7 +77,18 @@ if ( ! $rijen ) { $rijen = $standaard; }
               <svg xmlns="http://www.w3.org/2000/svg" width="9.39" height="12.199" viewBox="0 0 9.39 12.199" aria-hidden="true"><g transform="translate(-653.793 -7826)"><path d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(1204.102 6617.5) rotate(90)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/><path d="M1289.087,547h11" transform="translate(1205.497 6537.413) rotate(90)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/></g></svg>
             </a>
           </div>
-          <div class="dz-pane-img"><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( $rij['label'] ); ?>"><?php endif; ?></div>
+          <?php
+          /* Een logo of zegel hoort niet bijgesneden te worden zoals een foto:
+             het vlak is 557x435 en een logo van 300x300 werd daar met
+             object-fit:cover bijna twee keer in uitvergroot en afgesneden
+             (melding Kulwant, GOTS-tab). Met de schakelaar 'Beeld rechts is
+             een logo' wordt het beeld helemaal getoond op zijn eigen formaat.
+             BEWUST EEN KEUZE IN HET CMS en niet automatisch: de foto op de
+             Coca-Cola-tab is 300x225 en dus even klein als het logo, dus aan
+             het formaat alleen valt niet te zien wat het is. */
+          $is_logo = $eigen && ! empty( $rij['foto_logo'] );
+          ?>
+          <div class="dz-pane-img<?php echo $is_logo ? ' is-logo' : ''; ?>"><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( wp_strip_all_tags( $rij['label'] ) ); ?>"><?php endif; ?></div>
         </div>
         <?php endforeach; ?>
       </div>

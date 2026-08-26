@@ -1482,6 +1482,7 @@ add_action( 'acf/init', function () {
 									array( 'key' => 'field_dzc_tab_noot', 'label' => 'Certificaatregel (optioneel)', 'name' => 'noot', 'type' => 'text' ),
 									array( 'key' => 'field_dzc_tab_keurmerk', 'label' => 'Certificaatlogo (optioneel)', 'name' => 'keurmerk', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Het zegel of logo van het certificaat, komt onder de tekst te staan. PNG met transparante achtergrond werkt het beste op het corale vlak. Leeg = geen logo.' ),
 									array( 'key' => 'field_dzc_tab_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'De grote foto rechts naast de tekst.' ),
+									array( 'key' => 'field_dzc_tab_foto_logo', 'label' => 'Beeld rechts is een logo', 'name' => 'foto_logo', 'type' => 'true_false', 'ui' => 1, 'default_value' => 0, 'instructions' => 'AAN voor een logo of zegel: het beeld wordt dan helemaal getoond op zijn eigen formaat. UIT (standaard) voor een foto: die vult het vlak en wordt bijgesneden. Zet dit aan als een logo er uitvergroot of afgesneden uitziet.' ),
 								),
 							),
 						),
