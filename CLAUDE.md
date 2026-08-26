@@ -1994,6 +1994,45 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   de oorzaak is niet achterhaald. Van belang omdat het bepaalt of lokaal
   testen veilig is: uitzoeken vóór er weer testinzendingen worden gedaan.
 
+  'LEES MEER' OP DE CERTIFICATEN-TABS + CERTIFICAATLOGO (2026-08-26, twee
+  meldingen Kulwant: "de tweede tab heeft veel content, zelfde Lees meer als
+  op de homepage" en "optie in het CMS om het certificaatlogo te uploaden").
+  HERGEBRUIK, GEEN TWEEDE IMPLEMENTATIE: de tabs gebruiken exact dezelfde
+  .brand-collapse + [data-brand-toggle] als het merkverhaal op de homepage,
+  en dus hetzelfde script in custom.js. Dat script zocht de knop alleen
+  binnen .brand-intro-inner; die selector is nu
+  '.brand-intro-inner, .dz-pane-text'.
+  DE ECHTE VALKUIL — VERBORGEN TABS ZIJN NIET TE METEN. Een tab die dicht
+  staat heeft hoogte 0. Het script concludeert dan dat de tekst kort is,
+  verbergt de knop en zet het inklappen uit — voorgoed, want het draait maar
+  één keer. Daarom koppelt een MutationObserver op de class van .dz-pane het
+  blok pas zodra die tab voor het EERST geopend wordt. Tab 1 staat al open en
+  wordt meteen gekoppeld.
+  DREMPEL INSTELBAAR GEMAAKT. Eerst op live gezet met de standaardmarge van
+  8px; toen bleek dat drie tabs (442, 390 en 390px) net over de ingeklapte
+  334px gingen en dus een 'Lees meer' kregen die twee regels onthulde. Dat is
+  een knop zonder nut. Nu leest het script data-brand-min-overflow; de tabs
+  zetten hem op 120px, zonder attribuut blijft het 8px. Het merkverhaal op de
+  homepage verandert daardoor NIET (nagemeten na de deploy: nog steeds
+  333px van 5809px, knop werkt).
+  BEWUST NIET INSTELBAAR PER TAB IN HET CMS. De zes tabs lopen sterk uiteen
+  in lengte en het script verbergt de knop al vanzelf. Een vinkje per tab zou
+  de redacteur werk geven zonder iets toe te voegen.
+  CERTIFICAATLOGO: nieuw ACF-veld 'keurmerk' in de tabs-repeater, uitvoer als
+  .dz-cert-logo onder de tekst. Staat BINNEN het inklapblok omdat het in het
+  ontwerp de afsluiting van de tekst is; erbuiten zou het boven de knop
+  hangen terwijl de tekst er afgeknipt boven staat. Gevolg: een korte tab kan
+  door het logo alsnog over de drempel gaan en een knop krijgen — dat klopt,
+  er is dan echt meer te zien. Max 260px breed.
+  GEVERIFIEERD op live, alle zes tabs doorgeklikt:
+    OEKO-TEX 828px -> 494px verborgen, knop; GOTS 2344px -> 2012px
+    verborgen, knop; BSCI 442, Minder plastic 390, Bewust transport 312 en
+    Bamboe 390 -> geen knop, volledig zichtbaar.
+  MEETVALKUIL (opnieuw): in de browserpane van Claude lopen CSS-transities
+  niet door en laden afbeeldingen niet. Uitklappen leek daardoor niets te
+  doen (hoogte bleef 340). Met de transitie tijdelijk uitgezet klopte alles:
+  max-height 2914px, hoogte 2914. Meet de eindtoestand, niet de animatie.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
