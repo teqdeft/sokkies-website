@@ -20,8 +20,22 @@ $assets = get_template_directory_uri() . '/assets/media/';
 $standaard_fotos = array( 'howit-img1.png', 'howit-img2.png', 'howit-img3.png', 'howit-img4.png' );
 
 $urls = array();
-for ( $i = 0; $i < 4; $i++ ) {
-	$urls[] = ! empty( $fotos[ $i ]['url'] ) ? $fotos[ $i ]['url'] : $assets . $standaard_fotos[ $i ];
+foreach ( (array) $fotos as $f ) {
+	if ( ! empty( $f['url'] ) ) { $urls[] = $f['url']; }
+	if ( 4 === count( $urls ) ) { break; }
+}
+/* Aanvullen tot vier met de standaardfoto's, maar sla er een over als de
+   redacteur hem zelf al gekozen heeft — anders staat dezelfde foto twee keer
+   op de pagina. Dat gebeurde precies zo op live: de galerij bevatte
+   howit-img3, en dat was ook de standaard voor de derde plek. */
+$gekozen = array();
+foreach ( $urls as $u ) {
+	$gekozen[] = strtolower( basename( (string) parse_url( $u, PHP_URL_PATH ) ) );
+}
+foreach ( $standaard_fotos as $bestand ) {
+	if ( 4 === count( $urls ) ) { break; }
+	if ( in_array( strtolower( $bestand ), $gekozen, true ) ) { continue; }
+	$urls[] = $assets . $bestand;
 }
 $collages = array( array_slice( $urls, 0, 2 ), array_slice( $urls, 2, 2 ) );
 

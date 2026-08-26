@@ -1524,6 +1524,13 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   fallback (die gold alleen als het hele veld leeg was) en voorkomt dat de
   collage half leeg staat — precies wat er op live gebeurde. Zet de klant
   eigen foto's op plek 3 en 4, dan winnen die gewoon.
+  NA DE EERSTE DEPLOY GEZIEN EN METEEN GECORRIGEERD: er stonden wel vier
+  foto's, maar howit-img3 twee keer. De galerij op live bevat howit-img3 en
+  howit-img2, en howit-img3 was toevallig ook de standaard voor de derde
+  plek — dus dezelfde foto op plek 1 en 3. Het aanvullen slaat een
+  standaardfoto nu over als de redacteur hem zelf al gekozen heeft
+  (vergelijking op bestandsnaam uit het URL-pad). Resultaat op live: vier
+  verschillende foto's.
   CSS EN BESTANDEN WAREN ER AL: .story-collage-right staat in style.css:6937
   en is byte-identiek aan htmlv (met diff gecontroleerd), en howit-img1 t/m 4
   staan alle vier in assets/media. Alleen de markup ontbrak.
