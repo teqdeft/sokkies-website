@@ -1492,6 +1492,16 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   de verificatie is op live gedaan na de deploy. De wijziging is puur
   additief — twee absolute gepositioneerde <img>'s in een div zonder eigen
   opmaak, dus buiten de flow en zonder invloed op de swiper.
+  NA DE DEPLOY GEMETEN OP LIVE (bamboesokken): op 1920 staan beide doodles er
+  — links 344x346 en 314px boven de sectie uit (dat is de PDP-override
+  top:-64%, precies het beeld uit de melding), rechts 380x230 met 74px onder
+  de sectierand en 76px van rechts. Geen horizontale scroll.
+  NIET SCHRIKKEN ONDER 1680px: .case-duddle-icons .dubble-right staat daar in
+  ELKE band op display:none. Dat is geen fout en geen gevolg van deze
+  wijziging — die regels in responsive.css zijn byte-identiek aan htmlv
+  (gecontroleerd met diff). De rechter doodle hoort dus alleen op de breedste
+  band te verschijnen; de linker blijft overal staan. Wie later op 1280 kijkt
+  en denkt dat de fix niet werkt: dat is by design.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
