@@ -7488,6 +7488,18 @@ font-weight: 600;
     color:var(--white);
     text-decoration:underline;
   }
+  /* De 'Lees meer'-knop is dezelfde als op de homepage, maar staat hier op
+     het corale vlak: dus wit en zonder onderstreping (die geldt alleen voor
+     links IN de tekst). Het pijltje erft de kleur via stroke="currentColor". */
+  .dz-pane-text .brand-intro-toggle{
+    color:var(--white);
+    text-decoration:none;
+    margin-top:22px;
+  }
+  .dz-pane-text .brand-collapse{ margin-bottom:0; }
+  /* De laatste alinea binnen het ingeklapte blok mag geen marge houden,
+     anders zit er te veel lucht tussen de tekst en de knop. */
+  .dz-pane-text .brand-collapse > :last-child{ margin-bottom:0; }
   .dz-pane-img img{
     width:100%;
     height:435px;

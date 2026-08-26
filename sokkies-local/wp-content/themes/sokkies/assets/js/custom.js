@@ -1442,8 +1442,10 @@
       return beste > 0 ? Math.ceil(beste) : gewenst;
     }
 
-    document.querySelectorAll('[data-brand-collapse]').forEach(function (vak) {
-      var inner = vak.closest('.brand-intro-inner');
+    function koppel(vak) {
+      // Ook de certificaten-tabs op /duurzaamheid/ gebruiken dit blok; daar
+      // is de omhullende .dz-pane-text in plaats van .brand-intro-inner.
+      var inner = vak.closest('.brand-intro-inner, .dz-pane-text');
       var knop  = inner && inner.querySelector('[data-brand-toggle]');
       if (!knop) { return; }
 
@@ -1512,5 +1514,23 @@
         clearTimeout(timer);
         timer = setTimeout(pasToe, 150);
       });
+    }
+
+    document.querySelectorAll('[data-brand-collapse]').forEach(function (vak) {
+      /* Zit het blok in een tab die nog dicht staat, dan valt er niets te
+         meten: een verborgen element heeft hoogte 0, en dan zou het script
+         concluderen dat de tekst kort is en de knop verbergen. Daarom pas
+         koppelen zodra de tab voor het eerst geopend wordt. */
+      var paneel = vak.closest('.dz-pane');
+      if (paneel && !paneel.classList.contains('active')) {
+        var kijker = new MutationObserver(function () {
+          if (!paneel.classList.contains('active')) { return; }
+          kijker.disconnect();
+          koppel(vak);
+        });
+        kijker.observe(paneel, { attributes: true, attributeFilter: ['class'] });
+        return;
+      }
+      koppel(vak);
     });
   })();

@@ -48,11 +48,24 @@ if ( ! $rijen ) { $rijen = $standaard; }
                De standaardteksten hierboven zijn kale strings zonder <p>, die
                krijgen hun alinea's alsnog van wpautop(). */
             $tekst = $eigen ? $rij['tekst'] : wpautop( $rij['tekst'] );
-            echo sokkies_rijke_tekst( $tekst );
             ?>
-            <?php if ( ! empty( $rij['noot'] ) ) : ?>
-            <p><?php echo esc_html( $rij['noot'] ); ?></p>
-            <?php endif; ?>
+            <?php /* Inklappen werkt hetzelfde als het merkverhaal op de homepage:
+                     dezelfde .brand-collapse + [data-brand-toggle] en dus ook
+                     hetzelfde script. BEWUST NIET per tab in te stellen in het
+                     CMS: de zes tabs verschillen sterk in lengte en het script
+                     verbergt de knop vanzelf als de tekst al binnen de hoogte
+                     past. Zo hoeft de redacteur nergens aan te denken. */ ?>
+            <div class="brand-collapse is-collapsed" data-brand-collapse style="max-height:340px">
+              <noscript><style>.brand-collapse{max-height:none !important}</style></noscript>
+              <?php echo sokkies_rijke_tekst( $tekst ); ?>
+              <?php if ( ! empty( $rij['noot'] ) ) : ?>
+              <p><?php echo esc_html( $rij['noot'] ); ?></p>
+              <?php endif; ?>
+            </div>
+            <a href="#" class="brand-intro-link brand-intro-toggle dz-pane-toggle" data-brand-toggle aria-expanded="false" data-label-dicht="Lees meer" data-label-open="Lees minder">
+              <span data-brand-label>Lees meer</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="9.39" height="12.199" viewBox="0 0 9.39 12.199" aria-hidden="true"><g transform="translate(-653.793 -7826)"><path d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(1204.102 6617.5) rotate(90)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/><path d="M1289.087,547h11" transform="translate(1205.497 6537.413) rotate(90)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/></g></svg>
+            </a>
           </div>
           <div class="dz-pane-img"><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( $rij['label'] ); ?>"><?php endif; ?></div>
         </div>
