@@ -2033,6 +2033,34 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   doen (hoogte bleef 340). Met de transitie tijdelijk uitgezet klopte alles:
   max-height 2914px, hoogte 2914. Meet de eindtoestand, niet de animatie.
 
+  LOGO IN HET RECHTERBEELDVLAK WERD UITVERGROOT EN AFGESNEDEN (2026-08-26,
+  melding Kulwant met screenshot van de GOTS-tab).
+  OORZAAK: .dz-pane-img img is 557x435 met object-fit:cover — gemaakt voor
+  een foto. Het GOTS-logo is 300x300, werd dus bijna 2x uitvergroot (onscherp)
+  en aan alle kanten bijgesneden.
+  FIX: schakelaar per tab 'Beeld rechts is een logo' (veld foto_logo). Aan =
+  class is-logo => width/height auto, max-height 435, object-fit:contain,
+  geen border-radius: het logo staat compleet en op zijn eigen formaat.
+  Uit (standaard) = alles precies zoals het was.
+  BEWUST GEEN AUTOMATISCHE DETECTIE, en dat is de kern van deze fix: het
+  ligt voor de hand om "kleine afbeelding = logo" te gokken, maar de foto op
+  de Coca-Cola-tab is 300x225 en dus even klein als het logo. Elke regel op
+  formaat zou drie tabs die er nu goed uitzien alsnog omgooien. Transparantie
+  uitlezen (PNG-kleurtype) helpt evenmin: foto's worden ook als RGBA-PNG
+  geexporteerd. Alleen de redacteur weet wat het is.
+  GEVERIFIEERD met een HEADLESS CHROME-screenshot (de browserpane van Claude
+  laadt geen afbeeldingen, dus daar is dit soort werk niet te beoordelen):
+  logo compleet, scherp, gecentreerd naast de tekst; overige tabs onveranderd.
+  Commando dat werkte:
+    chrome.exe --headless=new --disable-gpu --no-sandbox --hide-scrollbars
+      --window-size=1600,1300 --virtual-time-budget=10000
+      --screenshot="<WINDOWS-PAD>\naam.png" "<url>"
+  LET OP: --screenshot heeft een WINDOWS-pad nodig; een pad uit Git Bash
+  geeft "Access is denied".
+  NOG TE DOEN OP LIVE: de schakelaar staat standaard uit, en vanaf deze
+  machine is de live database niet te bereiken. Kulwant moet hem dus zelf
+  aanzetten op de GOTS-tab (Pagina Duurzaamheid > Certificaten-tabs > tab 2).
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
