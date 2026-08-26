@@ -40,7 +40,16 @@ if ( ! $rijen ) { $rijen = $standaard; }
         <div class="dz-pane<?php echo 0 === $i ? ' active' : ''; ?>">
           <div class="dz-pane-text">
             <h2><?php echo esc_html( $rij['titel'] ); ?></h2>
-            <p><?php echo esc_html( $rij['tekst'] ); ?></p>
+            <?php
+            /* Rijke tekst: het veld is een wysiwyg, dus de redacteur bepaalt
+               zelf de alinea's, vetgedrukte tussenkopjes en opsommingen. Eerder
+               ging dit door esc_html() heen binnen één <p>; alles werd dan één
+               lap tekst (melding Kulwant op /duurzaamheid/).
+               De standaardteksten hierboven zijn kale strings zonder <p>, die
+               krijgen hun alinea's alsnog van wpautop(). */
+            $tekst = $eigen ? $rij['tekst'] : wpautop( $rij['tekst'] );
+            echo sokkies_rijke_tekst( $tekst );
+            ?>
             <?php if ( ! empty( $rij['noot'] ) ) : ?>
             <p><?php echo esc_html( $rij['noot'] ); ?></p>
             <?php endif; ?>

@@ -1478,7 +1478,7 @@ add_action( 'acf/init', function () {
 								'sub_fields'   => array(
 									array( 'key' => 'field_dzc_tab_label', 'label' => 'Tab-naam', 'name' => 'label', 'type' => 'text' ),
 									array( 'key' => 'field_dzc_tab_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
-									array( 'key' => 'field_dzc_tab_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 4, 'new_lines' => '' ),
+									array( 'key' => 'field_dzc_tab_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'all', 'instructions' => 'Verdeel de tekst in alinea\'s met Enter. Vet, cursief, opsommingen en links kunnen hier; gebruik vet voor tussenkopjes zoals "Milieuaspect". Koppen en afbeeldingen verschijnen niet op de site.' ),
 									array( 'key' => 'field_dzc_tab_noot', 'label' => 'Certificaatregel (optioneel)', 'name' => 'noot', 'type' => 'text' ),
 									array( 'key' => 'field_dzc_tab_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 								),

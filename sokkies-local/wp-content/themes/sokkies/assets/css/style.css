@@ -7464,6 +7464,30 @@ font-weight: 600;
   .dz-pane-text p:last-child{
     margin-bottom:0;
   }
+  /* Sinds het tekstveld een wysiwyg is, kan de redacteur hier ook vet,
+     opsommingen en links kwijt. Alles staat op het corale vlak, dus wit —
+     de kleur wordt van de container geerfd zodat losse tekst (zonder <p>)
+     niet terugvalt op de donkere basiskleur. */
+  .dz-pane-text{ color:var(--white); }
+  .dz-pane-text strong,
+  .dz-pane-text b{ font-weight:700; }
+  .dz-pane-text ul,
+  .dz-pane-text ol{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    margin:0 0 24px;
+    padding-left:20px;
+  }
+  .dz-pane-text ul{ list-style:disc; }
+  .dz-pane-text ol{ list-style:decimal; }
+  .dz-pane-text li{ margin-bottom:8px; }
+  .dz-pane-text li:last-child{ margin-bottom:0; }
+  .dz-pane-text ul:last-child,
+  .dz-pane-text ol:last-child{ margin-bottom:0; }
+  .dz-pane-text a{
+    color:var(--white);
+    text-decoration:underline;
+  }
   .dz-pane-img img{
     width:100%;
     height:435px;
