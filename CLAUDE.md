@@ -1543,6 +1543,39 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   bestand netjes "No syntax errors detected". Gebruik voor uitwisseling
   tussen bash en de PHP-CLI altijd een pad dat Windows óók ziet (de
   scratchpad), en controleer na het schrijven de bytegrootte.
+  PRIMAIRE CTA OVERAL ÉÉN LABEL (2026-08-25, verzoek Kulwant): "Gratis
+  ontwerp aanvragen" naar /offerte/. Er stonden drie varianten door elkaar:
+  "Gratis proefdesign", "Gratis ontwerp binnen 24 uur" en "Vraag gratis
+  proefdesign aan". BEWUST ZONDER "binnen 24 uur" op de knop — die belofte
+  staat al in de topbalk, de USP-regel en de subregel onder de voettekst-CTA.
+  ÉÉN BRON: nieuwe helper sokkies_cta_label() in functions.php. Alle dertien
+  plekken verwijzen daar nu naar, in plaats van dertien losse teksten. Een
+  volgende labelwijziging is daarmee één regel.
+  WAT ER IS AANGEPAST: de header-CTA (functions.php), de standaardwaarden van
+  section-process (het "Hoe wij tot de perfecte sokken komen"-blok),
+  section-calculator, section-cta_final en section-process_split, plus de
+  hardgecodeerde knoppen in 404.php, page.php (beide stickybalken),
+  single-sokkies_case.php (2x) en single-sokkies_soktype.php (3x). Ook de
+  CMS-teksten in acf-fields.php zijn meegegaan (7 instructies/placeholders),
+  anders zegt het beheerscherm "Leeg = ..." met een tekst die niet meer klopt.
+  BEWUST NIET AANGERAAKT, want beloftes en geen knoppen: de vergelijkingsrij
+  "Gratis ontwerp binnen 24 uur" in single-sokkies_soktype.php:312 en
+  section-ws_compare.php, en de USP-kaart "Gratis proefdesign binnen 24 uur"
+  (single-sokkies_soktype.php:28). Dat is precies de scheiding die Kulwant
+  zelf aangaf: de knop noemt de handeling, de tekst eromheen de belofte.
+  VALKUIL ONDERWEG, hier vastgelegd omdat hij makkelijk te missen is: in
+  page.php staat de stickybalk-markup BINNEN een php-string (echo '<a …>').
+  Een eerste, te generieke vervanging zette daar <?php echo … ?> in, wat als
+  platte tekst op de pagina zou verschijnen. Daar moet concatenatie staan
+  (' . esc_html( sokkies_cta_label() ) . '). In de gewone templates is de
+  inline-php-variant juist wél goed. Gecontroleerd en gecorrigeerd.
+  DE HERO IS NIET IN CODE TE ZETTEN: section-hero.php rendert knop_1/knop_2
+  volledig uit ACF-linkvelden en toont ze alleen als er een URL staat. Label
+  én bestemming komen daar dus uit de DATABASE en verhuizen niet mee met een
+  deploy. Datzelfde geldt voor elke andere plek waar de redacteur een eigen
+  linktitel heeft ingevuld: die wint van de standaard. Na de deploy is op
+  live nagelopen welke knoppen nog een oude tekst tonen; dat zijn precies de
+  plekken die in het CMS aangepast moeten worden.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

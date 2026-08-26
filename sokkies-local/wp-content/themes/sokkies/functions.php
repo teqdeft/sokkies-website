@@ -305,6 +305,24 @@ function sokkies_hoofdmenu() {
 }
 
 /**
+ * Label van de primaire CTA — één bron voor de hele site.
+ *
+ * Verzoek Kulwant 2026-08-25: overal dezelfde tekst "Gratis ontwerp
+ * aanvragen" naar /offerte/. Daarvoor stonden er drie varianten door elkaar
+ * ("Gratis proefdesign", "Gratis ontwerp binnen 24 uur" en "Vraag gratis
+ * proefdesign aan"). BEWUST ZONDER "binnen 24 uur": die belofte staat al in
+ * de topbalk, in de USP-regel en in de subregel onder de voettekst-CTA. De
+ * knop noemt de handeling, de tekst eromheen de belofte.
+ *
+ * Dit is de STANDAARD. Een link die in de CMS een eigen titel heeft gekregen
+ * wint hier nog steeds van — die staat in de database en verhuist niet mee
+ * met een deploy.
+ */
+function sokkies_cta_label() {
+	return 'Gratis ontwerp aanvragen';
+}
+
+/**
  * De gele knop rechts in de headerbalk.
  *
  * In htmlv is dit op alle 21 pagina's een <button class="cta"> ZONDER
@@ -327,7 +345,7 @@ function sokkies_header_cta() {
 		$label = $link['title'];
 	}
 	if ( '' === $label ) {
-		$label = 'Gratis proefdesign';
+		$label = sokkies_cta_label();
 	}
 
 	$url = is_array( $link ) && ! empty( $link['url'] ) ? $link['url'] : home_url( '/offerte/' );

@@ -211,12 +211,12 @@ if ( $story ) {
         <div class="container">
           <h2>Klaar om jouw eigen<br>sokken te ontwerpen?</h2>
           <p>Binnen 24 uur digitaal ontwerp in je inbox</p>
-          <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta">Vraag gratis proefdesign aan</a>
+          <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
         </div>
       </div>
     </section>
 
-<div class="conf-sticky"><a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta">Gratis proefdesign</a></div>
+<div class="conf-sticky"><a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a></div>
 
 </main>
 

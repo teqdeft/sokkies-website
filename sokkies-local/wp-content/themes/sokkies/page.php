@@ -18,9 +18,9 @@ if ( function_exists( 'have_rows' ) && have_rows( 'secties' ) ) {
 // Vaste mobiele knoppenbalk (per pagina instelbaar; CSS toont hem alleen mobiel).
 $balk = function_exists( 'get_field' ) ? ( get_field( 'mobiele_balk' ) ?: 'geen' ) : 'geen';
 if ( 'knop' === $balk ) {
-	echo '<div class="conf-sticky"><a href="' . esc_url( home_url( '/offerte/' ) ) . '" class="cta">Gratis proefdesign</a></div>';
+	echo '<div class="conf-sticky"><a href="' . esc_url( home_url( '/offerte/' ) ) . '" class="cta">' . esc_html( sokkies_cta_label() ) . '</a></div>';
 } elseif ( 'twee_knoppen' === $balk ) {
-	echo '<div class="uc-sticky"><a href="' . esc_url( home_url( '/offerte/' ) ) . '" class="cta">Gratis ontwerp binnen 24 uur</a><a href="' . esc_url( home_url( '/collectie/' ) ) . '" class="cta-light">Bekijk geschikte sokken</a></div>';
+	echo '<div class="uc-sticky"><a href="' . esc_url( home_url( '/offerte/' ) ) . '" class="cta">' . esc_html( sokkies_cta_label() ) . '</a><a href="' . esc_url( home_url( '/collectie/' ) ) . '" class="cta-light">Bekijk geschikte sokken</a></div>';
 } elseif ( 'contact' === $balk ) {
 	get_template_part( 'template-parts/deel', 'funnel-sticky' );
 }

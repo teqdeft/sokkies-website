@@ -27,7 +27,7 @@ get_header();
         <div class="er-links-row">
           <a href="<?php echo esc_url( home_url( '/collectie/' ) ); ?>">Sokkencollectie</a>
           <a href="<?php echo esc_url( home_url( '/werkwijze/' ) ); ?>">Werkwijze</a>
-          <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>">Gratis proefdesign</a>
+          <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>"><?php echo esc_html( sokkies_cta_label() ); ?></a>
           <a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Contact</a>
         </div>
       </div>

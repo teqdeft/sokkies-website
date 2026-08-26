@@ -16,7 +16,7 @@ if ( $rijen ) {
 }
 $knop   = get_sub_field( 'knop' );
 $knop_url   = ! empty( $knop['url'] ) ? $knop['url'] : home_url( '/offerte/' );
-$knop_label = ! empty( $knop['title'] ) ? $knop['title'] : 'Vraag gratis proefdesign aan';
+$knop_label = ! empty( $knop['title'] ) ? $knop['title'] : sokkies_cta_label();
 $fotos  = get_sub_field( 'collage' );
 
 $standaard_stappen = array(

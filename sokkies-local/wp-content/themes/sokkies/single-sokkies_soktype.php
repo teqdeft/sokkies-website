@@ -159,7 +159,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
              <?php endif; ?>
 
              <div class="prod-actions">
-               <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta">Gratis ontwerp binnen 24 uur</a>
+               <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
                <a href="<?php echo esc_url( home_url( '/sample-request/' ) ); ?>" class="cta-light">Vraag een sample aan</a>
              </div>
            </div>
@@ -581,7 +581,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
         <div class="container">
           <h2>Klaar om jouw eigen<br>sokken te ontwerpen?</h2>
           <p>Binnen 24 uur digitaal ontwerp in je inbox</p>
-          <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta">Vraag gratis proefdesign aan</a>
+          <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
         </div>
       </div>
     </section>
@@ -592,7 +592,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
     </div>
 
     <div class="pdp-sticky">
-      <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta">Gratis ontwerp binnen 24 uur</a>
+      <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
       <div class="pdp-sticky-row">
         <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta-dark">Bereken je prijs</a>
         <a href="<?php echo esc_url( home_url( '/sample-request/' ) ); ?>" class="cta-light">Sample aanvraag</a>
