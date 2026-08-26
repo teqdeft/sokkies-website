@@ -1502,6 +1502,40 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   (gecontroleerd met diff). De rechter doodle hoort dus alleen op de breedste
   band te verschijnen; de linker blijft overal staan. Wie later op 1280 kijkt
   en denkt dat de fix niet werkt: dat is by design.
+  TWEE RECHTERFOTO'S ONTBRAKEN IN "HOE HET BEGON" (2026-08-25, melding
+  Kulwant met htmlv ernaast). over-ons.html heeft VIER foto's in dit blok:
+  .story-collage links van de tekst met howit-img1/2, en
+  .story-collage.story-collage-right ERONDER met howit-img3/4 — die tweede is
+  een zusje van .overons-story-text binnen .overons-story-right.
+  OORZAAK: section-overons_story.php kende maar één collage. Alle foto's uit
+  het galerijveld gingen in de linker, en de rechtercollage werd nergens
+  gerenderd. De class stond ook niet in de template, dus het was geen
+  opmaakprobleem maar ontbrekende markup.
+  WAT ER OP LIVE STOND: de galerij bevatte maar twee foto's (howit-img3 en
+  howit-img2) en die belandden allebei links. In het TEKSTVELD stond
+  bovendien een leeg <div class="story-collage story-collage-right"></div>,
+  overgebleven markup die ooit uit htmlv is meegeplakt. Die haalt de template
+  er nu uit met een preg_replace op lege story-collage-divs, anders zou hij
+  naast de echte rechtercollage staan met dezelfde class en opmaak. BETER is
+  hem ook in de CMS-tekst zelf weg te halen; dat kon hier niet, zie hieronder.
+  FIX: vier vaste plekken, 1-2 links en 3-4 rechts, per collage klein/groot
+  zoals in het ontwerp. Een plek die de redacteur niet vult valt terug op de
+  standaardfoto uit assets/media. Dat is dezelfde gedachte als de bestaande
+  fallback (die gold alleen als het hele veld leeg was) en voorkomt dat de
+  collage half leeg staat — precies wat er op live gebeurde. Zet de klant
+  eigen foto's op plek 3 en 4, dan winnen die gewoon.
+  CSS EN BESTANDEN WAREN ER AL: .story-collage-right staat in style.css:6937
+  en is byte-identiek aan htmlv (met diff gecontroleerd), en howit-img1 t/m 4
+  staan alle vier in assets/media. Alleen de markup ontbrak.
+  NIET LOKAAL GETEST: de XAMPP-stack lag nog steeds stil, dus de verificatie
+  is opnieuw op live gedaan na de deploy.
+  OMGEVINGSVALKUIL (tweede keer vandaag tegengekomen, dus hier vastgelegd):
+  de PHP-CLI is een Windows-binary en kan /tmp van Git Bash NIET lezen. Een
+  file_get_contents("/tmp/...") geeft dan false; schrijf je dat resultaat
+  door, dan zet je een LEEG bestand neer — en php -l meldt over een leeg
+  bestand netjes "No syntax errors detected". Gebruik voor uitwisseling
+  tussen bash en de PHP-CLI altijd een pad dat Windows óók ziet (de
+  scratchpad), en controleer na het schrijven de bytegrootte.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
