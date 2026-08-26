@@ -2061,6 +2061,37 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   machine is de live database niet te bereiken. Kulwant moet hem dus zelf
   aanzetten op de GOTS-tab (Pagina Duurzaamheid > Certificaten-tabs > tab 2).
 
+  ACHTERGRONDVORMEN OP DE HOMEPAGE LIEPEN NIET DOOR BOVEN 1920px
+  (2026-08-26, melding Kulwant met screenshot op 2560px: "achtergrondkleur
+  loopt over de volgende sectie heen").
+  WAT HET ECHT WAS: geen overloop maar een GAT. Drie vormen stonden zonder
+  background-size en werden dus op ware grootte vanaf linksboven getekend:
+    .gift:before   bg-white-mask.png  1920x1645 -> 625px onbedekt op 2545px
+    .cases:before  bg-blue-shape.png  1920x1074 -> 625px onbedekt
+    .impact:before bg-element.png     1980x1015 -> herhaalde zich rechts
+                                      (die regel heeft geen no-repeat)
+  Bij .gift bleef in die strook het beige van .gift:after (height:90%)
+  zichtbaar, en dat ziet er op een screenshot uit alsof de kleur over de
+  kaarten heen loopt. Het beeld leidt hier dus naar de verkeerde oorzaak:
+  niet iets dat te ver doorloopt, maar iets dat te vroeg ophoudt.
+  FIX: background-size: max(100%, <eigen breedte>px) auto. Onder die breedte
+  levert max() exact de afmeting van het bestand zelf op — aantoonbaar
+  identiek aan het oude 'auto', want breedte/intrinsieke breedte = 1 dus ook
+  de hoogte blijft gelijk. Daarboven groeit de vorm mee. 'auto' als hoogte
+  houdt de schuine hoek intact (100% 100% zou hem platdrukken).
+  BEWUST GEEN no-repeat bij .impact:before: in de smalle banden is die
+  sectie hoger dan de afbeelding en wordt er verticaal wel degelijk
+  herhaald. no-repeat zou daar de onderkant leeg laten.
+  NIET AANGERAAKT: er staan nog ~27 andere regels met een media-achtergrond
+  zonder background-size (o.a. .conf-bg, .ws-gets, .pt-otp, .timeline). Een
+  deel daarvan zijn kleine doodles waar de ware grootte juist klopt, en een
+  deel gebruikt de shorthand met /contain. Alleen de drie vormen op de
+  gemelde pagina zijn nagekeken en gefixt; de rest is een aparte controle
+  waard op 2560px voordat er iets aan verandert.
+  GEVERIFIEERD met headless screenshots: 2560 lokaal en op live (strook weg,
+  witte vorm loopt door tot de rechterrand, schuine hoek intact) en 1440
+  (ongewijzigd).
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
