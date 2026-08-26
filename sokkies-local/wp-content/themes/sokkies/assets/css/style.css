@@ -964,8 +964,15 @@ font-weight: 600;
     height: 100%;
     position: absolute;
     top: 0;
-    left: 0; 
+    left: 0;
     z-index: 0;
+    /* bg-element.png is 1980px breed en stond zonder background-size. Boven
+       die breedte werd hij dus HERHAALD (background-repeat staat hier op de
+       standaard 'repeat'), waardoor rechts een naad met een herhaalde
+       linkerrand ontstond. max() laat alles onder 1980px ongemoeid.
+       Bewust GEEN no-repeat erbij: in smalle banden is de sectie hoger dan
+       de afbeelding en wordt er verticaal wel degelijk herhaald. */
+    background-size: max(100%, 1980px) auto;
   }
   .impact .container{
     position: relative;
@@ -1762,6 +1769,13 @@ font-weight: 600;
     height:100%;
     z-index:0;
     background-repeat: no-repeat;
+    /* bg-white-mask.png is 1920x1645 en stond zonder background-size, dus hij
+       werd op ware grootte vanaf links getekend. Op een scherm breder dan
+       1920px hield de witte vorm daar op en bleef rechts het beige van
+       .gift:after zichtbaar (op 2560px een strook van 625px — melding
+       Kulwant). max() houdt hem onder 1920px exact zoals hij was en laat hem
+       daarboven meegroeien; 'auto' als hoogte bewaart de schuine hoek. */
+    background-size: max(100%, 1920px) auto;
   }
    .gift:after{
     content:'';
@@ -1895,6 +1909,10 @@ font-weight: 600;
   height:100%;
   z-index:0;
   background-repeat: no-repeat;
+  /* bg-blue-shape.png is 1920px breed; daarboven bleef rechts een strook
+     onbedekt, net als bij .gift. Zelfde oplossing, zelfde reden: onder
+     1920px verandert er niets. */
+  background-size: max(100%, 1920px) auto;
  }
  .cases-feet{
     position: absolute;
