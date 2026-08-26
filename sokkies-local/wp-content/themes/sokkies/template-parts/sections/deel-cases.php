@@ -16,6 +16,15 @@ if ( 2 === count( $case_ids ) ) {
 	// Zelfde htmlv-truc als testimonial (≥8) en hero-gallery (≥16).
 	$case_ids = array_merge( $case_ids, $case_ids );
 }
+// De sok-doodles op het gele vlak. In htmlv heeft alleen de PDP-variant ze
+// (product-detail.html: .case-duddle-icons in .case-section-outer); home
+// heeft de voetjes en collectie heeft niets. Ze staan absoluut gepositioneerd
+// t.o.v. .case-section-outer (die is position:relative), dus ze moeten daar
+// BINNEN staan — buiten zou de linker doodle t.o.v. de hele sectie gaan
+// rekenen en verkeerd uitkomen. Ontbraken hier volledig; gemeld door Kulwant
+// 2026-08-25 met een vergelijking naast htmlv. CSS en de twee PNG's zaten al
+// in het thema, alleen de markup niet.
+$duddles = $args['duddles'] ?? ( false !== strpos( (string) $stijl_klasse, 'cases-pdp' ) );
 $assets = get_template_directory_uri() . '/assets/media/';
 ?>
 <?php $sectie_klasse = $args['sectie_klasse'] ?? ( 'cases' . $stijl_klasse ); ?>
@@ -23,6 +32,12 @@ $assets = get_template_directory_uri() . '/assets/media/';
   <div class="case-section-outer">
   <?php if ( $feet ) : ?>
   <img class="cases-feet" src="<?php echo esc_url( $assets ); ?>Voeten-in-de-lucht.png" alt="" aria-hidden="true">
+  <?php endif; ?>
+  <?php if ( $duddles ) : ?>
+  <div class="case-duddle-icons">
+    <img class="dubble-left" src="<?php echo esc_url( $assets ); ?>sock-duddle-red-l.png" alt="" aria-hidden="true">
+    <img class="dubble-right" src="<?php echo esc_url( $assets ); ?>sock-duddle-red-r.png" alt="" aria-hidden="true">
+  </div>
   <?php endif; ?>
     <div class="container">
       <h2><?php echo sokkies_kop( $titel ); ?></h2>

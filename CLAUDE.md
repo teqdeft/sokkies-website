@@ -1457,6 +1457,41 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   kleur nog steeds coral. Op 401px (band <=520) klopt het ook; daar staat de
   tekst gecentreerd, dus de link volgt die centrering — dat is bestaand
   gedrag van die band, geen afwijking.
+  SOK-DOODLES ONTBRAKEN OP HET GELE CASES-VLAK (2026-08-25, melding Kulwant
+  met een screenshot van htmlv naast bamboesokken, doodles rood omcirkeld).
+  WAT ER MIS WAS: deel-cases.php rendert wel de voetjes (home-variant) maar
+  nooit de .case-duddle-icons. In htmlv heeft de PDP-variant die wel:
+  product-detail.html zet <div class="case-duddle-icons"> met
+  sock-duddle-red-l.png en sock-duddle-red-r.png BINNEN .case-section-outer,
+  direct voor .container.
+  DE CSS EN DE TWEE PNG'S ZATEN AL IN HET THEMA — alleen de markup ontbrak.
+  Basisregels op style.css:4662/4669 (.dubble-left top:-22% left:31% 344px,
+  .dubble-right bottom:-15% right:4% 380px) plus een PDP-override op 6152
+  (.cases.cases-pdp .dubble-left top:-64% left:28%). Dat verklaart ook de
+  plek op het screenshot: de linker doodle steekt ver boven de sectie uit,
+  richting de navigatie.
+  BINNEN .case-section-outer, niet erbuiten: die heeft position:relative
+  (style.css:1908) en de doodles zijn absolute. Buiten het blok zouden ze
+  t.o.v. de hele sectie of de pagina gaan rekenen en verkeerd landen.
+  GESCOPED: nieuw argument 'duddles', standaard aan zodra stijl_klasse
+  cases-pdp bevat. Dat is precies de variant die htmlv ze geeft. De andere
+  varianten blijven zoals htmlv: home = voetjes (Voeten-in-de-lucht.png),
+  collectie = niets.
+  DE CONFIGURATOR IS BEWUST NIET AANGERAAKT: htmlv gebruikt daar
+  .cases.cases-solid met doodles PLUS een .case-sock-right, maar de
+  WP-pagina rendert een eigen variant (.cases.conf-designed) die niet uit de
+  stijl-map van section-cases.php komt. Dat is een andere keuze dan htmlv en
+  valt buiten deze melding — apart bekijken als het alsnog moet.
+  GECONTROLEERD OP LIVE, alle vier de varianten: bamboesokken
+  (cases cases-pdp) had 0 doodles = de melding; configurator
+  (cases conf-designed) 0; home (cases) 0 doodles maar wel 1 voetjes-
+  afbeelding, conform htmlv; collectie (case-inner-page) niets, ook conform.
+  LET OP BIJ HET NALEZEN: de lokale XAMPP-stack lag stil op het moment van
+  deze wijziging (Apache en MariaDB allebei down, site gaf HTTP 000 en WP een
+  "Error establishing a database connection"). Er is dus NIET lokaal getest;
+  de verificatie is op live gedaan na de deploy. De wijziging is puur
+  additief — twee absolute gepositioneerde <img>'s in een div zonder eigen
+  opmaak, dus buiten de flow en zonder invloed op de swiper.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/
