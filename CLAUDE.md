@@ -1929,6 +1929,36 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   PDOK (gratis, zonder sleutel, alleen Nederland) en vult hetzelfde paneel.
   Alleen sokkies_offerte_adres_provider() hoeft om.
 
+  FOTO'S VAN OPTIES MET EEN & VIELEN OP LIVE WEG (2026-08-26, melding
+  Kulwant: "op live missen afbeeldingen op stap 1 en 2").
+  WAT ER MIS WAS: "Yoga & pilates sokken", "Kids & baby sokken" en
+  "Inpak & verzending" kregen op live het grijze vlak met het doorstreepte
+  rondje in plaats van hun foto. LOKAAL klopte het wel — alle 14 foto's.
+  EERST UITGESLOTEN: het was GEEN deploy-probleem. De drie bestanden staan
+  gewoon op de server (alle drie HTTP 200) en zitten in git. Ook geen
+  404's in de pagina: er stond helemaal geen <img>, maar de terugval-SVG.
+  OORZAAK: Gravity Forms bewaart de tekst van een keuze niet overal gelijk.
+  Lokaal komt hij rauw binnen ("Yoga & pilates sokken"), op live
+  HTML-gecodeerd ("Yoga &amp; pilates sokken"). De fotolijst wordt met een
+  exacte array-sleutel opgezocht op de RAUWE tekst, dus precies de drie
+  opties met een & misten hun sleutel en vielen terug op het icoon.
+  Dat het lokaal werkte en op live niet, maakte het misleidend: dezelfde
+  code, dezelfde bestanden, ander resultaat.
+  FIX: sokkies_offerte_keuzetekst() decodeert eerst (html_entity_decode met
+  ENT_QUOTES/UTF-8) en ELKE vergelijking van keuzetekst loopt daar nu
+  langs. De gedecodeerde tekst wordt ook getoond, zodat esc_html() precies
+  één keer codeert en er geen "&amp;amp;" op de kaart komt.
+  DAARBIJ EEN STILLERE FOUT MEEGENOMEN: de serverzijdige uitsluiting van
+  "Geen extra's" vergeleek op een apostrof die als &#039; opgeslagen kan
+  zijn. Die controle werd op live dus niet afgedwongen — het vangnet onder
+  de JS-logica was er in de praktijk niet. Loopt nu ook via de normalisatie.
+  GEVERIFIEERD op live na de deploy: 14 foto's in het formulier, alle 14
+  HTTP 200, nog exact 1 doorstreept rondje (dat van "Geen extra's"), de
+  labels tonen 1x &amp; en er staat nergens "&amp;amp;".
+  LES: vergelijk nooit op onbewerkte keuzetekst uit GF. Wat lokaal rauw
+  binnenkomt, kan op een andere omgeving gecodeerd zijn — en dan faalt
+  alleen de handvol opties met een &, ' of " erin, wat je makkelijk mist.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
