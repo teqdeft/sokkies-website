@@ -45,7 +45,7 @@ $tel_weergave = sokkies_optie( 'telefoon_weergave', '+31 (0)413 410 411' );
       <?php elseif ( ! empty( $knop_2['url'] ) ) : ?>
       <div class="cta-final-actions">
         <a href="<?php echo esc_url( $knop_url ); ?>" class="cta"><?php echo esc_html( $knop_label ); ?></a>
-        <a href="<?php echo esc_url( $knop_2['url'] ); ?>" class="cta-light"><?php echo esc_html( ! empty( $knop_2['title'] ) ? $knop_2['title'] : 'Lees meer' ); ?></a>
+        <a href="<?php echo esc_url( $knop_2['url'] ); ?>" class="cta-light"><?php echo esc_html( sokkies_cta_tekst( $knop_2['title'] ?? '', $knop_2['url'] ?? '', 'Lees meer' ) ); ?></a>
       </div>
       <?php else : ?>
       <a href="<?php echo esc_url( $knop_url ); ?>" class="cta"><?php echo esc_html( $knop_label ); ?></a>

@@ -1603,6 +1603,16 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   WIE HET LIEVER NETJES IN HET CMS ZET: leeg het titelveld van de link, dan
   pakt de knop automatisch sokkies_cta_label(). De normalisatie is dan een
   vangnet dat niets meer doet.
+  NOG ÉÉN PLEK GEVONDEN NA DE TWEEDE DEPLOY: de collectiepagina heeft een
+  EIGEN hero (section-coll_hero.php met .coll-hero-btns), los van
+  section-hero.php. Daar stond nog "Gratis ontwerp binnen 24 uur". Ook
+  gekoppeld, net als de tweede knop van section-cta_final. De helper heeft nu
+  een derde parameter $terugval, zodat een sectie met een eigen standaard
+  ('Bekijk collectie', 'Lees meer') die behoudt als het titelveld leeg is en
+  alleen de OUDE CTA-teksten worden opgeruimd.
+  NIET GEKOPPELD, bewust: section-cards_suggestion, section-collection en
+  section-dz_points. Hun knoppen wijzen naar de collectie of contact, niet
+  naar de offertepagina, en hun standaardteksten zijn geen CTA-varianten.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

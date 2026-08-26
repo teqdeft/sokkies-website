@@ -340,10 +340,12 @@ function sokkies_cta_label() {
  * Wie dit liever in het CMS zelf rechtzet: leeg het titelveld, dan pakt de
  * knop automatisch sokkies_cta_label().
  */
-function sokkies_cta_tekst( $titel, $url = '' ) {
+function sokkies_cta_tekst( $titel, $url = '', $terugval = null ) {
 	$titel = trim( (string) $titel );
 	if ( '' === $titel ) {
-		return sokkies_cta_label();
+		// Geen titel ingevuld: de sectie-eigen terugval als die er is,
+		// anders het CTA-label. Zo houdt 'Bekijk collectie' zijn eigen tekst.
+		return null === $terugval ? sokkies_cta_label() : $terugval;
 	}
 	// Alleen normaliseren op de offertepagina.
 	if ( '' !== $url && false === strpos( (string) $url, '/offerte' ) ) {

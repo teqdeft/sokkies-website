@@ -75,10 +75,10 @@ $render_kolom = function ( $fotos, $standaard ) use ( $assets ) {
                 <?php if ( ! empty( $knop_1['url'] ) || ! empty( $knop_2['url'] ) ) : ?>
                 <div class="coll-hero-btns">
                   <?php if ( ! empty( $knop_1['url'] ) ) : ?>
-                  <a href="<?php echo esc_url( $knop_1['url'] ); ?>" class="cta"<?php echo ! empty( $knop_1['target'] ) ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo esc_html( ! empty( $knop_1['title'] ) ? $knop_1['title'] : 'Lees meer' ); ?></a>
+                  <a href="<?php echo esc_url( $knop_1['url'] ); ?>" class="cta"<?php echo ! empty( $knop_1['target'] ) ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo esc_html( sokkies_cta_tekst( $knop_1['title'] ?? '', $knop_1['url'] ?? '', 'Lees meer' ) ); ?></a>
                   <?php endif; ?>
                   <?php if ( ! empty( $knop_2['url'] ) ) : ?>
-                  <a href="<?php echo esc_url( $knop_2['url'] ); ?>" class="cta-transparent"<?php echo ! empty( $knop_2['target'] ) ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo esc_html( ! empty( $knop_2['title'] ) ? $knop_2['title'] : 'Lees meer' ); ?></a>
+                  <a href="<?php echo esc_url( $knop_2['url'] ); ?>" class="cta-transparent"<?php echo ! empty( $knop_2['target'] ) ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo esc_html( sokkies_cta_tekst( $knop_2['title'] ?? '', $knop_2['url'] ?? '', 'Lees meer' ) ); ?></a>
                   <?php endif; ?>
                 </div>
                 <?php endif; ?>
