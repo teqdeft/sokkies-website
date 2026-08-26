@@ -61,6 +61,16 @@ if ( ! $rijen ) { $rijen = $standaard; }
               <?php if ( ! empty( $rij['noot'] ) ) : ?>
               <p><?php echo esc_html( $rij['noot'] ); ?></p>
               <?php endif; ?>
+              <?php
+              /* Het zegel/logo van het certificaat. Staat BINNEN het inklapbare
+                 blok omdat het in het ontwerp de afsluiting van de tekst is;
+                 buiten het blok zou het boven de 'Lees meer'-knop komen te
+                 hangen terwijl de tekst er nog afgeknipt boven staat. */
+              if ( ! empty( $rij['keurmerk']['url'] ) ) :
+                $keur_alt = ! empty( $rij['keurmerk']['alt'] ) ? $rij['keurmerk']['alt'] : $rij['label'];
+              ?>
+              <img class="dz-cert-logo" src="<?php echo esc_url( $rij['keurmerk']['url'] ); ?>" alt="<?php echo esc_attr( wp_strip_all_tags( $keur_alt ) ); ?>" loading="lazy">
+              <?php endif; ?>
             </div>
             <a href="#" class="brand-intro-link brand-intro-toggle dz-pane-toggle" data-brand-toggle aria-expanded="false" data-label-dicht="Lees meer" data-label-open="Lees minder">
               <span data-brand-label>Lees meer</span>

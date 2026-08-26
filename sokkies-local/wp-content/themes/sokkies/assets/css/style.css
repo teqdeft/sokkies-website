@@ -7497,6 +7497,16 @@ font-weight: 600;
     margin-top:22px;
   }
   .dz-pane-text .brand-collapse{ margin-bottom:0; }
+  /* Certificaatlogo onder de tekst (CMS-veld 'keurmerk'). Vaste maximale
+     breedte zodat een groot bronbestand het tekstblok niet uit elkaar trekt;
+     op smalle schermen schaalt hij mee. */
+  .dz-cert-logo{
+    display:block;
+    width:100%;
+    max-width:260px;
+    height:auto;
+    margin:28px 0 0;
+  }
   /* De laatste alinea binnen het ingeklapte blok mag geen marge houden,
      anders zit er te veel lucht tussen de tekst en de knop. */
   .dz-pane-text .brand-collapse > :last-child{ margin-bottom:0; }
