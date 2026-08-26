@@ -1576,6 +1576,33 @@ CONTACTFORMULIER — NEDERLANDSE MELDINGEN + GENUMMERDE FOUTENLIJST WEG
   linktitel heeft ingevuld: die wint van de standaard. Na de deploy is op
   live nagelopen welke knoppen nog een oude tekst tonen; dat zijn precies de
   plekken die in het CMS aangepast moeten worden.
+  VERVOLG: ALLEEN DE STANDAARD AANPASSEN WAS NIET GENOEG. Na de eerste deploy
+  bleek op live dat alle vijf de genoemde plekken een eigen linktitel in de
+  DATABASE hebben; die wint van de standaard. Gemeten per pagina:
+    header      "Gratis proefdesign"           (op elke pagina)
+    hero        "Gratis ontwerp binnen 24 uur" (home, collectie)
+    procesblok  "Proefdesign aanvragen"        (home) — een VIERDE variant
+    calculator  "Vraag gratis proefdesign aan"
+    cta-final   "Vraag gratis proefdesign aan"
+  De nieuwe tekst verscheen wél waar géén titel was ingevuld (o.a. 3x op de
+  PDP, 2x op collectie), dus de codekant deed het goed.
+  OPGELOST MET sokkies_cta_tekst( $titel, $url ): leeg -> de standaard, een
+  van de BEKENDE OUDE varianten -> ook de standaard, en een zelfgekozen
+  afwijkende tekst blijft staan. Alleen op links die naar /offerte wijzen,
+  zodat een knop met dezelfde tekst naar een andere bestemming ongemoeid
+  blijft. Zo hoeft er niets in het CMS bijgewerkt te worden en werkt het
+  meteen op alle pagina's — een DB-wijziging zou bovendien niet meedeployen.
+  Toegepast op de header-CTA, section-process, section-process_split,
+  section-calculator, section-cta_final en de hero. De hero heeft een eigen
+  wikkel omdat knop_1/knop_2 overal heen kunnen wijzen: alleen bij een
+  offerte-link wordt genormaliseerd, anders blijft de eigen titel met de
+  'Lees meer'-terugval intact.
+  GETEST met de functies geïsoleerd uit functions.php (9 gevallen, allemaal
+  goed): leeg, de vier oude varianten, hoofdletters, een eigen tekst op een
+  offerte-link (blijft), en oude teksten op niet-offerte-links (blijven).
+  WIE HET LIEVER NETJES IN HET CMS ZET: leeg het titelveld van de link, dan
+  pakt de knop automatisch sokkies_cta_label(). De normalisatie is dan een
+  vangnet dat niets meer doet.
   FIX #4 (2026-08-19,
   gift-sectie home): volledig lege repeater-rijen renderden als blanco
   kaart → array_filter in de partial (leeg = geen foto/titel/punten/

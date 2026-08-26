@@ -8,7 +8,7 @@
 $titel      = get_sub_field( 'titel' ) ?: "Klaar om jouw eigen<br>sokken te ontwerpen?";
 $subtekst   = get_sub_field( 'subtekst' ) ?: 'Binnen 24 uur digitaal ontwerp in je inbox';
 $knop       = get_sub_field( 'knop' );
-$knop_label = ! empty( $knop['title'] ) ? $knop['title'] : sokkies_cta_label();
+$knop_label = sokkies_cta_tekst( $knop['title'] ?? '', $knop['url'] ?? '' );
 $knop_url   = ! empty( $knop['url'] ) ? $knop['url'] : home_url( '/offerte/' );
 $knop_2     = get_sub_field( 'knop_2' );
 $feet       = get_sub_field( 'sokken_voetjes' );

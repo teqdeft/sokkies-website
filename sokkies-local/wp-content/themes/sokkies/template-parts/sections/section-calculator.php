@@ -9,7 +9,7 @@ $titel      = get_sub_field( 'titel' ) ?: 'Wat kost het?';
 $stijl      = get_sub_field( 'stijl' ) ?: 'standaard';
 $knop       = get_sub_field( 'knop' );
 $knop_url   = ! empty( $knop['url'] ) ? $knop['url'] : home_url( '/offerte/' );
-$knop_label = ! empty( $knop['title'] ) ? $knop['title'] : sokkies_cta_label();
+$knop_label = sokkies_cta_tekst( $knop['title'] ?? '', $knop['url'] ?? '' );
 
 $matrix = sokkies_staffel_matrix();
 if ( ! $matrix ) {

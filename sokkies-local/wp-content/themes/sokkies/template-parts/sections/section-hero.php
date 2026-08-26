@@ -19,6 +19,15 @@ if ( $usps ) {
 $rating      = (bool) get_sub_field( 'rating_tonen' );
 $knop_1      = get_sub_field( 'knop_1' );
 $knop_2      = get_sub_field( 'knop_2' );
+// De heroknoppen kunnen overal heen wijzen, dus alleen een link NAAR DE
+// OFFERTEPAGINA krijgt het gestandaardiseerde CTA-label. Een knop naar een
+// andere pagina houdt gewoon zijn eigen titel (en de 'Lees meer'-terugval).
+$hero_label = function ( $knop ) {
+	if ( ! empty( $knop['url'] ) && false !== strpos( (string) $knop['url'], '/offerte' ) ) {
+		return sokkies_cta_tekst( $knop['title'] ?? '', $knop['url'] );
+	}
+	return ! empty( $knop['title'] ) ? $knop['title'] : 'Lees meer';
+};
 $onder_tekst = get_sub_field( 'onderregel_tekst' );
 $onder_link  = get_sub_field( 'onderregel_link' );
 $variant     = get_sub_field( 'variant' ) ?: 'standaard';
@@ -96,10 +105,10 @@ $assets = get_template_directory_uri() . '/assets/media/';
             <?php if ( ! empty( $knop_1['url'] ) || ! empty( $knop_2['url'] ) ) : ?>
             <div class="<?php echo 'configurator' === $variant ? 'conf-hero-btns' : 'hero-btns'; ?>">
               <?php if ( ! empty( $knop_1['url'] ) ) : ?>
-              <a href="<?php echo esc_url( $knop_1['url'] ); ?>" class="cta"><?php echo esc_html( ! empty( $knop_1['title'] ) ? $knop_1['title'] : 'Lees meer' ); ?></a>
+              <a href="<?php echo esc_url( $knop_1['url'] ); ?>" class="cta"><?php echo esc_html( $hero_label( $knop_1 ) ); ?></a>
               <?php endif; ?>
               <?php if ( ! empty( $knop_2['url'] ) ) : ?>
-              <a href="<?php echo esc_url( $knop_2['url'] ); ?>" class="cta-light"><?php echo esc_html( ! empty( $knop_2['title'] ) ? $knop_2['title'] : 'Lees meer' ); ?></a>
+              <a href="<?php echo esc_url( $knop_2['url'] ); ?>" class="cta-light"><?php echo esc_html( $hero_label( $knop_2 ) ); ?></a>
               <?php endif; ?>
             </div>
             <?php endif; ?>

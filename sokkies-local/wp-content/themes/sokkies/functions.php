@@ -323,6 +323,43 @@ function sokkies_cta_label() {
 }
 
 /**
+ * Label voor een primaire CTA, met de oude varianten opgeruimd.
+ *
+ * De vijf plekken uit het verzoek (header, hero, procesblok, onder de
+ * calculator, voettekst-CTA) hebben allemaal een eigen linktitel IN DE
+ * DATABASE staan. Die wint van de standaard hierboven en verhuist niet mee
+ * met een deploy, dus alleen de standaard aanpassen liet op live nog steeds
+ * "Gratis proefdesign" en "Vraag gratis proefdesign aan" zien.
+ *
+ * Daarom worden de bekende OUDE teksten hier omgezet naar de nieuwe. Een
+ * zelfgekozen, afwijkende titel blijft gewoon staan — er wordt alleen
+ * opgeruimd wat we willen vervangen. En alleen op links die naar de
+ * offertepagina wijzen, zodat een knop met dezelfde tekst naar een andere
+ * bestemming ongemoeid blijft.
+ *
+ * Wie dit liever in het CMS zelf rechtzet: leeg het titelveld, dan pakt de
+ * knop automatisch sokkies_cta_label().
+ */
+function sokkies_cta_tekst( $titel, $url = '' ) {
+	$titel = trim( (string) $titel );
+	if ( '' === $titel ) {
+		return sokkies_cta_label();
+	}
+	// Alleen normaliseren op de offertepagina.
+	if ( '' !== $url && false === strpos( (string) $url, '/offerte' ) ) {
+		return $titel;
+	}
+	$oud = array(
+		'gratis proefdesign',
+		'gratis ontwerp binnen 24 uur',
+		'vraag gratis proefdesign aan',
+		'proefdesign aanvragen',
+		'gratis proefdesign aanvragen',
+	);
+	return in_array( strtolower( $titel ), $oud, true ) ? sokkies_cta_label() : $titel;
+}
+
+/**
  * De gele knop rechts in de headerbalk.
  *
  * In htmlv is dit op alle 21 pagina's een <button class="cta"> ZONDER
@@ -341,14 +378,14 @@ function sokkies_header_cta() {
 	$link  = function_exists( 'get_field' ) ? get_field( 'cta_link', 'option' ) : null;
 	$label = trim( (string) sokkies_optie( 'cta_label', '' ) );
 
+	$url = is_array( $link ) && ! empty( $link['url'] ) ? $link['url'] : home_url( '/offerte/' );
+
 	if ( '' === $label && is_array( $link ) && ! empty( $link['title'] ) ) {
 		$label = $link['title'];
 	}
-	if ( '' === $label ) {
-		$label = sokkies_cta_label();
-	}
-
-	$url = is_array( $link ) && ! empty( $link['url'] ) ? $link['url'] : home_url( '/offerte/' );
+	// Leeg -> de standaard; een oude variant -> ook de standaard; een eigen
+	// tekst blijft staan. Zie sokkies_cta_tekst().
+	$label = sokkies_cta_tekst( $label, $url );
 
 	return array(
 		'label'  => $label,
