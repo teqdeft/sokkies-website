@@ -1461,9 +1461,16 @@
         if (!open) { vak.style.maxHeight = dicht + 'px'; }
       };
 
+      /* Hoeveel er MINSTENS verborgen moet blijven voordat inklappen zin
+         heeft. Standaard 8px (alleen echt passende tekst telt als kort) —
+         dat is het gedrag van het merkverhaal op de homepage. De tabs op
+         /duurzaamheid/ zetten dit hoger: daar leverden tabs van net iets
+         over de hoogte een 'Lees meer' op die twee regels onthulde. */
+      var marge = parseInt(vak.getAttribute('data-brand-min-overflow'), 10) || 8;
+
       var kort = function () {
         // Past alles al binnen de hoogte? Dan is inklappen zinloos.
-        return vak.scrollHeight <= dicht + 8;
+        return vak.scrollHeight <= dicht + marge;
       };
 
       pasToe();

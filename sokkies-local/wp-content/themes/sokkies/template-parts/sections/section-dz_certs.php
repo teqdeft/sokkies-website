@@ -55,7 +55,7 @@ if ( ! $rijen ) { $rijen = $standaard; }
                      CMS: de zes tabs verschillen sterk in lengte en het script
                      verbergt de knop vanzelf als de tekst al binnen de hoogte
                      past. Zo hoeft de redacteur nergens aan te denken. */ ?>
-            <div class="brand-collapse is-collapsed" data-brand-collapse style="max-height:340px">
+            <div class="brand-collapse is-collapsed" data-brand-collapse data-brand-min-overflow="120" style="max-height:340px">
               <noscript><style>.brand-collapse{max-height:none !important}</style></noscript>
               <?php echo sokkies_rijke_tekst( $tekst ); ?>
               <?php if ( ! empty( $rij['noot'] ) ) : ?>
