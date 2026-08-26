@@ -1959,6 +1959,41 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   binnenkomt, kan op een andere omgeving gecodeerd zijn — en dan faalt
   alleen de handvol opties met een &, ' of " erin, wat je makkelijk mist.
 
+  CERTIFICATEN-TABS OP /duurzaamheid/ — TEKSTVELD NAAR WYSIWYG (2026-08-26,
+  melding Kulwant met screenshot: "we need a ck editor in de cms").
+  WAT ER MIS WAS: de tekst in de tabs stond als één lap zonder opmaak.
+  Tussenkopjes ("Milieuaspect", "Sociaal verantwoorde productie",
+  "Kwaliteit") liepen gewoon door in de alinea.
+  OORZAAK: field_dzc_tab_tekst was een TEXTAREA en section-dz_certs.php zette
+  de waarde met esc_html() in één enkele <p>. Alles wat de redacteur intypte
+  werd dus platgeslagen — er was geen enkele manier om te structureren.
+  FIX: wysiwyg met dezelfde opzet als de andere rijke-tekstvelden hier
+  (toolbar 'sokkies_eenvoudig' = vet/cursief/link/opsommingen, tabs => 'all',
+  media_upload => 0), uitvoer via sokkies_rijke_tekst(). De standaardteksten
+  in de template zijn kale strings en krijgen hun alinea's van wpautop().
+  LET OP: het is TinyMCE (de editor die WordPress zelf meelevert), niet
+  CKEditor. Dat laatste zou een externe plugin vergen; TinyMCE is wat ACF
+  gebruikt en wat op de andere velden in dit thema al staat.
+  OPMAAK ERBIJ: opsommingen, vet en links op de corale kaart stonden nog niet
+  in style.css. De tekstkleur staat nu op de CONTAINER .dz-pane-text, zodat
+  losse inhoud zonder <p> niet terugvalt op de donkere basiskleur — dezelfde
+  les als eerder bij .spec-a-inner.
+  GEEN INHOUD KWIJT: de opgeslagen waarde is platte tekst en komt er via
+  wpautop als alinea's uit. Op live pakte dat zelfs beter uit dan verwacht:
+  de GOTS-tab ging van 1 naar 12 alinea's omdat de regelafbraken die er al in
+  stonden nu wél gehonoreerd worden. Tekenaantal voor en na identiek (2091).
+  GETEST door tijdelijk opgemaakte inhoud in de lokale database te zetten:
+  vet, <br>, een <ul> en een link overleven sokkies_rijke_tekst() en worden
+  correct getoond. Daarna teruggezet naar de oorspronkelijke tekst.
+  OPEN VRAAG — LOKALE EN LIVE DATABASE LOPEN UITEEN. De GOTS-tekst is op
+  live 2091 tekens en lokaal 347; de live-tekst komt in de lokale database
+  NERGENS voor (gecontroleerd met een LIKE op postmeta). De databases zijn
+  dus NIET dezelfde. Tegelijk staat het offerteformulier van vandaag —
+  inclusief de velden of-rij-break die hier lokaal zijn aangemaakt — wél
+  compleet op live. Die twee waarnemingen zijn niet met elkaar te rijmen en
+  de oorzaak is niet achterhaald. Van belang omdat het bepaalt of lokaal
+  testen veilig is: uitzoeken vóór er weer testinzendingen worden gedaan.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
