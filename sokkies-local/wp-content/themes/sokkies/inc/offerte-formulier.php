@@ -69,12 +69,29 @@ function sokkies_offerte_veld( $form, $label ) {
  * sub-index nummers die op 0 eindigen overslaat (1.9 -> 1.11). Daarom lopen
  * we over de inputs van het veld in plaats van zelf te tellen.
  */
+/**
+ * Keuzeteksten vergelijkbaar maken.
+ *
+ * Gravity Forms bewaart de tekst van een keuze niet overal hetzelfde: soms
+ * rauw ("Yoga & pilates sokken"), soms HTML-gecodeerd ("Yoga &amp; pilates
+ * sokken"), afhankelijk van hoe het formulier is aangemaakt of geïmporteerd.
+ * Op live bleek dat lokaal niet: daar matchten precies de opties met een &
+ * niet, waardoor hun foto terugviel op het lege icoon. Dezelfde valkuil geldt
+ * voor "Geen extra's" (apostrof → &#039;), en dan wordt de uitsluiting
+ * serverzijdig stilletjes niet meer afgedwongen.
+ *
+ * Daarom loopt ELKE vergelijking van keuzetekst via deze functie.
+ */
+function sokkies_offerte_keuzetekst( $tekst ) {
+	return trim( html_entity_decode( (string) $tekst, ENT_QUOTES, 'UTF-8' ) );
+}
+
 function sokkies_offerte_aangevinkt( $veld ) {
 	$gekozen = array();
 	foreach ( (array) $veld->inputs as $input ) {
 		$naam = 'input_' . str_replace( '.', '_', $input['id'] );
 		if ( isset( $_POST[ $naam ] ) && '' !== $_POST[ $naam ] ) {
-			$gekozen[] = wp_unslash( $_POST[ $naam ] );
+			$gekozen[] = sokkies_offerte_keuzetekst( wp_unslash( $_POST[ $naam ] ) );
 		}
 	}
 	return $gekozen;
@@ -388,7 +405,10 @@ add_filter( 'gform_field_choice_markup_pre_render', function ( $markup, $choice,
 	}
 	$soort = $kaarten[ $field->label ]['soort'];
 	$fotos = $kaarten[ $field->label ]['fotos'];
-	$tekst = isset( $choice['text'] ) ? (string) $choice['text'] : '';
+	// Gedecodeerd vergelijken EN tonen: zo valt de foto niet weg als de
+	// keuzetekst gecodeerd is opgeslagen, en codeert esc_html() hieronder
+	// precies één keer (anders zou "&amp;" op de kaart komen te staan).
+	$tekst = sokkies_offerte_keuzetekst( isset( $choice['text'] ) ? $choice['text'] : '' );
 
 	$assets = get_template_directory_uri() . '/assets/media/';
 	if ( ! empty( $fotos[ $tekst ] ) ) {
