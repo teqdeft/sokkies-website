@@ -7477,6 +7477,24 @@ font-weight: 600;
     grid-template-columns:1fr;
     gap:0;
   }
+  /* Onderaan de sectie ligt duurzaamheid-hero-bg.png: een WITTE wig die
+     rechtsonder steil omhoog loopt (op 94% van de breedte begint het wit al
+     zo'n 330px boven de onderkant van de sectie). Bij twee kolommen bleef de
+     tekst links van die wig, maar op volle breedte loopt hij er tot 94% in —
+     en witte tekst op een wit vlak is onleesbaar (melding Kulwant).
+     Daarom onder een volle-breedte-tab extra ruimte, zodat de laatste regels
+     én de knop boven de wig blijven. Alleen vanaf 768px: daaronder staat de
+     afbeelding op ware grootte gecentreerd en is alleen het vlakke midden
+     zichtbaar, waar het wit pas ~55px boven de onderkant begint.
+     Maatvoering: de tekst loopt op 1280px het verst door (tot 95,6% van de
+     breedte) en daar begint het wit 407px boven de onderkant. Met de 130px
+     die de sectie zelf al heeft, is 300px hier genoeg — op 1920 en 2560
+     blijft er ruim marge over. */
+  @media (min-width:768px){
+    .dz-pane.dz-pane-solo{
+      padding-bottom:300px;
+    }
+  }
   .dz-pane.active{
     display:grid;
   }
