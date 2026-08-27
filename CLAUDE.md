@@ -2190,6 +2190,31 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   paginascroll. Alleen de band <=520px zet een eigen background-position;
   verder is er onder 1920px geen enkele override, dus daar is niets geraakt.
 
+  CERTIFICATEN-TAB ZONDER FOTO KRIJGT DE VOLLE BREEDTE (2026-08-27, melding
+  Kulwant met screenshot van de tab "Bamboe als materiaal").
+  WAT ER MIS WAS: .dz-pane is een raster van twee kolommen (1fr + 557px op
+  de basis, per band smaller). Zonder foto werd de rechterkolom nog steeds
+  gereserveerd, dus stond er ruim 550px leeg naast de tekst. Het lege
+  .dz-pane-img werd bovendien altijd gerenderd.
+  FIX: het beeldvlak wordt niet meer uitgevoerd als er geen foto is, en het
+  paneel krijgt dan de class dz-pane-solo met één kolom en gap 0.
+  BEWUST MET TWEE CLASSES (.dz-pane.dz-pane-solo, specificiteit 0,2,0): elke
+  band in responsive.css zet zijn eigen grid-template-columns op .dz-pane
+  (0,1,0). Eén regel op specificiteit wint dus in ELKE band; het alternatief
+  was de regel in zes media queries herhalen.
+  GEMETEN tekstbreedte (met foto -> zonder foto):
+    1920: 660 -> 1285   1440: 470 -> 970
+    onder 768px stond de kolom al onder elkaar; daar verandert alleen de gap.
+  GEVERIFIEERD op live, alle zes tabs doorgeklikt: OEKO-TEX, BSCI en Bewust
+  transport houden twee kolommen (tekst 660px, beeld aanwezig); GOTS, Minder
+  plastic en Bamboe hebben geen foto en gaan naar 1285px zonder beeldvlak.
+  LET OP: 1285px is een lange regellengte om te lezen. Als dat storend wordt,
+  is een max-width op .dz-pane-solo .dz-pane-text genoeg — maar Kulwant vroeg
+  expliciet om de VOLLE breedte, dus die staat er nu niet op.
+  TERZIJDE: de GOTS-tab heeft inmiddels helemaal geen foto meer. De eerder
+  gebouwde schakelaar "Beeld rechts is een logo" is daar dus niet meer nodig;
+  hij blijft beschikbaar voor tabs die wel een zegel als beeld krijgen.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
