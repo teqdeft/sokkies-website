@@ -2961,6 +2961,24 @@ font-weight: 600;
     background:url(../media/bg_right-red.svg) no-repeat center top;
     padding:220px 0 80px;
   }
+  /* bg_right-red.svg (1920x1567) stond op ware grootte GECENTREERD: op 2560px
+     bleef links en rechts 320px wit staan.
+     LET OP — DIT IS EEN SVG. Een SVG-achtergrond houdt zich aan zijn eigen
+     preserveAspectRatio, dus 'background-size: <breedte> <hoogte>' rekt hem
+     NIET uit: hij past zich passend in dat vak en laat de rest leeg. De
+     hoogte-vastzetten-truc die bij de PNG-vormen werkt (.collection, .cases,
+     .gift) heeft hier dus geen effect — geprobeerd en nagemeten: nog steeds
+     exact 1920px coral met 320px wit ernaast.
+     Daarom cover: die schaalt de SVG wél op tot hij de breedte vult.
+     Bewust alleen vanaf 1920px: de smallere banden zetten background-position
+     op 'right top' om een bepaald deel van de vorm te tonen, en cover zou dat
+     daar omgooien. Op 1920 zelf is het verschil 0,8% (1905x1554 i.p.v.
+     1920x1567) en dus niet zichtbaar. */
+  @media (min-width:1920px){
+    .compare-inner-main{
+      background-size:cover;
+    }
+  }
   .compare-inner-main h2{
     text-align:center;
     color:#fff;
@@ -3180,6 +3198,12 @@ font-weight: 600;
   }
    .case-inner-page .case-section-outer {
     background:url(../media/bg-case-inner.svg) no-repeat center top;
+    /* COVER LATEN STAAN. Geprobeerd om de hoogte vast te zetten (zoals bij
+       .collection en .cases), maar NAGEMETEN werd het slechter: de bovenrand
+       van het blauw week met cover 10% van de bandhoogte af t.o.v. 1920px en
+       met een vaste hoogte 27%. Dit is een grote schuine vorm; die uitrekken
+       vervormt hem sterker dan het gelijkmatige opschalen van cover. Zelfde
+       conclusie als bij .cta-final-panel — zie CLAUDE.md. */
     background-size:cover;
       padding: 15% 0 50px;
   }
