@@ -7468,6 +7468,15 @@ font-weight: 600;
     gap:68px;
     align-items:start;
   }
+  /* Tab zonder foto: geen lege tweede kolom, de tekst pakt de volle breedte.
+     BEWUST met twee classes (0,2,0): de banden in responsive.css zetten elk
+     hun eigen grid-template-columns op .dz-pane (0,1,0), en die worden hier
+     op specificiteit verslagen — dus in élke band, zonder de regel per band
+     te hoeven herhalen. */
+  .dz-pane.dz-pane-solo{
+    grid-template-columns:1fr;
+    gap:0;
+  }
   .dz-pane.active{
     display:grid;
   }

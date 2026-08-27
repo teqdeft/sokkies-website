@@ -36,8 +36,13 @@ if ( ! $rijen ) { $rijen = $standaard; }
       <div class="dz-certs-panes">
         <?php foreach ( $rijen as $i => $rij ) :
           $foto = $eigen ? ( ! empty( $rij['foto'] ) ? $rij['foto']['url'] : '' ) : $assets . $rij['bestand'];
+          /* Zonder foto is de rechterkolom leeg en blijft er een gat van
+             ruim 550px naast de tekst staan (melding Kulwant, tab "Bamboe als
+             materiaal"). Dan de tweede kolom helemaal weglaten en de tekst
+             de volle breedte geven. */
+          $heeft_foto = '' !== (string) $foto;
         ?>
-        <div class="dz-pane<?php echo 0 === $i ? ' active' : ''; ?>">
+        <div class="dz-pane<?php echo 0 === $i ? ' active' : ''; ?><?php echo $heeft_foto ? '' : ' dz-pane-solo'; ?>">
           <div class="dz-pane-text">
             <h2><?php echo esc_html( $rij['titel'] ); ?></h2>
             <?php
@@ -88,7 +93,9 @@ if ( ! $rijen ) { $rijen = $standaard; }
              het formaat alleen valt niet te zien wat het is. */
           $is_logo = $eigen && ! empty( $rij['foto_logo'] );
           ?>
-          <div class="dz-pane-img<?php echo $is_logo ? ' is-logo' : ''; ?>"><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( wp_strip_all_tags( $rij['label'] ) ); ?>"><?php endif; ?></div>
+          <?php if ( $heeft_foto ) : ?>
+          <div class="dz-pane-img<?php echo $is_logo ? ' is-logo' : ''; ?>"><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( wp_strip_all_tags( $rij['label'] ) ); ?>"></div>
+          <?php endif; ?>
         </div>
         <?php endforeach; ?>
       </div>
