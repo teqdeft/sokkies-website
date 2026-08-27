@@ -2251,6 +2251,36 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   keren viel het op doordat een net toegevoegde regel "niet werkte".
   Controleer na zo'n bewerking altijd of het aantal /* gelijk is aan */.
 
+  PDP: TWEE ACHTERGRONDVORMEN DEKTEN BOVEN 1920px DE BREEDTE NIET
+  (2026-08-27, melding Kulwant op /collectie/reguliere-sokken bij 2560px).
+  1. .design-bg-union — bg-cards-pdp-bg.png (1921x1392) stond op ware grootte
+     GECENTREERD (no-repeat center bottom, geen background-size). Op 2560px
+     bleef daardoor links én rechts ruim 300px wit staan; op de screenshot
+     zijn dat de twee witte stroken.
+     FIX: background-size:max(100%, 1921px) 1392px. De hoogte is precies de
+     hoogte van het vlak én van de afbeelding, dus alleen de breedte rekt mee.
+     Onder 1921px levert max() de eigen breedte op — belangrijk, want in de
+     1680-ronde is 100% auto hier juist BEWUST weggehaald (zie de comment in
+     de regel zelf); die keuze blijft nu intact.
+  2. .cases-pdp.cases:before — bg_sock_yellow_2.png (1920x1505).
+     DE VALKUIL: deze regel gebruikt de SHORTHAND `background:`, en die zet
+     background-size én background-repeat terug op hun standaard (auto /
+     repeat). De basisregel .cases:before — die eerder die dag juist een
+     maat had gekregen — had hier dus geen enkele invloed op. Gevolg boven
+     1920px: de vorm herhaalde zich (rechts een tweede linkerrand) en dekte
+     de breedte niet.
+     FIX: no-repeat terug in de shorthand, plus
+     background-size:max(100%, 1920px) 1505px. Vlak is ~820px hoog en de
+     afbeelding 1505px, dus de hoogte vastzetten houdt op elke breedte
+     hetzelfde deel van de vorm zichtbaar.
+  LES: een `background:`-shorthand in een override wist stilzwijgend de
+  size/repeat van de basisregel. Wie een basisregel aanpast, moet dus ook
+  zoeken naar overrides die de shorthand gebruiken — anders lijkt de fix te
+  werken op de ene pagina en niet op de andere.
+  GEVERIFIEERD met headless screenshots, links- en rechterrand van beide
+  banden bemonsterd: lokaal 2560 gevuld/gevuld, en op live na de deploy
+  zowel op 2560 als op 1920 gevuld/gevuld.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
