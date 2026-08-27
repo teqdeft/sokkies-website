@@ -2369,6 +2369,19 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   BEWUST ZO GELATEN: de directe route vraagt GEEN adres. Dat is letterlijk
   wat Kulwant beschreef, maar het is wel een gratis sample die ergens heen
   moet — voorleggen vóór livegang.
+  NA DE PUSH (2026-08-27, commit 51849b4): de code staat op live en is daar
+  geverifieerd (textarea op /offerte/ meet 126px). HET FORMULIER ZELF STAAT
+  ER NOG NIET — de database deployt niet mee, dus /sample-request/ toont nu
+  de terugvalzin "Het sampleformulier is tijdelijk niet beschikbaar." Dat is
+  de nette val uit de sectietemplate, geen fout. Nodig: het formulier op live
+  importeren via Formulieren > Importeren/Exporteren. Er is een exportbestand
+  gemaakt uit de lokale database (GF 3.0.3.1, 40 velden) en aan Kulwant
+  gegeven; het staat BEWUST niet in de repo, want dan zou het na een deploy
+  publiek te downloaden zijn. GF deelt bij import een nieuw ID uit — dat
+  geeft niets, alles zoekt op titel ("Sample — website").
+  TER INFO: het offerteformulier staat op live als ID 5, hetzelfde als
+  lokaal. De oude open vraag hierboven (lopen de databases uiteen?) is
+  daarmee nog steeds niet opgehelderd.
 
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
