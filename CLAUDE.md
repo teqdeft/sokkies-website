@@ -2092,6 +2092,45 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   witte vorm loopt door tot de rechterrand, schuine hoek intact) en 1440
   (ongewijzigd).
 
+  GOLF VAN DE COLLECTIESECTIE SCHAALDE MEE BOVEN 1920px (2026-08-27,
+  melding Kulwant: "op 2560px ziet de achtergrondvorm er anders uit dan op
+  1920px").
+  EERST MISVERSTAAN: de eerste melding las ik als "WordPress wijkt af van
+  htmlv". Dat klopte niet — nagemeten waren die twee op 1920, 2200 en 2560
+  pixelidentiek (0px verschil per kolom). Pas de tweede melding maakte
+  duidelijk wat er bedoeld werd: 2560 wijkt af van 1920, in BEIDE builds.
+  Les: "matcht de html niet" kan ook betekenen "matcht de andere breedte
+  niet". Vraag welke twee dingen vergeleken worden voordat je gaat zoeken.
+  OORZAAK: .collection:before/:after tekenen bg-yellow-shape.png (1920x1356)
+  met background-size:cover. 'cover' rekent met de BREEDTE van de sectie,
+  dus boven 1920px groeit de vorm mee: op 2560px 1797px hoog in plaats van
+  1356px. Het vlak eromheen blijft 701px hoog en toont dus een ANDER STUK
+  van dezelfde afbeelding — steilere golf, dunnere gele band.
+  FIX (responsive.css, nieuwe band @media (min-width:1920px)):
+    background-size:100% 1356px  -> hoogte vast op wat 1920px toont, breedte
+    rekt mee zodat er rechts niets onbedekt blijft.
+  De correctie top:-100% uit de 2000px-band is VERWIJDERD: die compenseerde
+  juist het meeschalen. Met een vaste hoogte klopt de basiswaarde -76% weer.
+  BEWUST IN responsive.css EN NIET IN style.css: responsive.css wordt ná
+  style.css ingeladen, dus een regel in style.css zou het top:-100% uit de
+  2000px-band niet kunnen overrulen.
+  ONDER 1920px VERANDERT ER NIETS: die banden hebben hun eigen regels en
+  houden 'cover'.
+  GEVERIFIEERD met headless screenshots, 10 kolommen langs de golf gemeten
+  (kleurgrens geel/coral per kolom, genormaliseerd op de linkerrand):
+    1920 vóór de fix : 0,9,22,35,54,67,80,99,108,77
+    1920/2000/2560/3440 ná de fix: exact dezelfde reeks, 0px afwijking
+    LIVE na deploy, 1920 vs 2560: 0px afwijking
+  MEETVALKUIL: meet de kleurgrens pas ONDER de productkaarten. Hoger in de
+  pagina staan corale kaartfoto's; een simpele "eerste corale pixel"-scan
+  pikt die op en levert onzin (afwijkingen van honderden pixels die er niet
+  zijn). Twee van de tien kolommen waren daardoor eerst vervuild.
+  TESTOPZET zonder lokale server (Apache lag eruit): htmlv is statisch, dus
+  home.html gekopieerd naar een tijdelijk bestand waarin de link naar
+  responsive.css vervangen is door het THEMA-bestand, en dat via file://
+  gescreenshot. Zo test je de echte gewijzigde CSS zonder WordPress. De
+  tijdelijke bestanden zijn daarna verwijderd.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
