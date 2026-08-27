@@ -252,7 +252,24 @@
    * WAT NIET TERUGKOMT: gekozen bestanden. Een browser staat het om
    * veiligheidsredenen niet toe een file-veld te vullen; dat kan alleen de
    * bezoeker zelf. */
-  var OPSLAG = 'sokkies-offerte';
+  /* De sleutel is PER FORMULIER. Dit script bedient zowel het offerte- als
+     het sampleformulier, en die hebben andere veld-ID's: input_2 is op het
+     ene "Aantal paar" en op het andere iets heel anders. Met één gedeelde
+     sleutel zou een bezoeker die eerst de offerte invult en daarna het
+     sampleformulier opent zijn oude waarden in de VERKEERDE velden
+     terugkrijgen. */
+  var sleutel = null;
+  function opslagSleutel() {
+    // Eenmaal gevonden onthouden: na een geslaagde inzending VERVANGT GF het
+    // formulier door de bevestiging, en dan is er geen <form> meer om het
+    // nummer uit te lezen. Zonder deze cache wist het opruimen daarna de
+    // verkeerde sleutel en bleven de ingevulde gegevens staan.
+    if (sleutel) { return sleutel; }
+    var f = document.querySelector('form[id^="gform_"]');
+    var nr = f && f.id ? f.id.replace(/[^0-9]/g, '') : '';
+    if (nr) { sleutel = 'sokkies-formulier-' + nr; }
+    return sleutel || 'sokkies-formulier-onbekend';
+  }
   var doelStap = 0;
   var pogingen = 0;
   var herstellen = false;
@@ -292,18 +309,30 @@
         data.velden[el.name] = el.value;
       }
     });
-    try { sessionStorage.setItem(OPSLAG, JSON.stringify(data)); } catch (e) { /* privémodus */ }
+    try { sessionStorage.setItem(opslagSleutel(), JSON.stringify(data)); } catch (e) { /* privémodus */ }
   }
 
   function gelezen() {
     try {
-      var ruw = sessionStorage.getItem(OPSLAG);
+      var ruw = sessionStorage.getItem(opslagSleutel());
       return ruw ? JSON.parse(ruw) : null;
     } catch (e) { return null; }
   }
 
   function wis() {
-    try { sessionStorage.removeItem(OPSLAG); } catch (e) {}
+    try { sessionStorage.removeItem(opslagSleutel()); } catch (e) {}
+  }
+
+  /* De proefontwerp-keuze op het sampleformulier wordt BEWUST niet
+     teruggezet. Dat blok hoort alleen open te gaan als de bezoeker op "Ik wil
+     toch een proefontwerp" klikt; na een verversing stond het anders alsnog
+     open omdat de eerdere keuze werd hersteld.
+     GEVOLG, en dat is een bewuste afweging: aantal, opmerkingen en adres uit
+     dat blok komen na een verversing NIET terug. Gravity Forms schakelt de
+     velden van een verborgen blok uit, en uitgeschakelde velden slaan we niet
+     op. De contactgegevens en de gekozen soktypes blijven wel bewaard. */
+  function isProefKeuze(el) {
+    return !!(el && el.closest && el.closest('.of-proef'));
   }
 
   function zetVeldenTerug(data) {
@@ -313,12 +342,13 @@
     // wat de server standaard aanvinkt (zoals "Geen extra's") zou anders
     // blijven staan naast de keuze die de bezoeker echt maakte.
     Array.prototype.forEach.call(f.querySelectorAll('input[type="checkbox"], input[type="radio"]'), function (el) {
-      if (eigenVeld(el)) { el.checked = false; }
+      if (eigenVeld(el) && !isProefKeuze(el)) { el.checked = false; }
     });
     Object.keys(data.velden).forEach(function (naam) {
       var waarde = data.velden[naam];
       var els = f.querySelectorAll('[name="' + naam.replace(/(["\\])/g, '\\$1') + '"]');
       Array.prototype.forEach.call(els, function (el) {
+        if (isProefKeuze(el)) { return; }
         if (el.type === 'checkbox' || el.type === 'radio') {
           el.checked = Array.isArray(waarde) && waarde.indexOf(el.value) !== -1;
         } else {
@@ -420,6 +450,38 @@
     if (eerste) { eerste.focus(); }
   });
 
+  /* Sampleformulier: "Ik wil toch een proefontwerp".
+     De knop kiest alleen; het verborgen radioveld doet het echte werk, zodat
+     GF's voorwaardelijke logica het proefontwerp- en adresblok opent én de
+     server weet dat die velden dan verplicht zijn. Na de keuze verdwijnt de
+     knop, net als in het ontwerp waar de knoppenbalk wordt vervangen. */
+  document.addEventListener('click', function (e) {
+    var knop = e.target && e.target.closest ? e.target.closest('.of-proef-open') : null;
+    if (!knop) { return; }
+    e.preventDefault();
+    var keuzes = document.querySelectorAll('.of-proef input[type="radio"]');
+    if (keuzes.length < 2) { return; }
+    keuzes[1].checked = true;
+    // GF luistert op change om zijn regels opnieuw te draaien.
+    keuzes[1].dispatchEvent(new Event('change', { bubbles: true }));
+    if (window.jQuery) { jQuery(keuzes[1]).trigger('change'); }
+    pasProefknopToe();
+    var blok = document.querySelector('.of-aantal');
+    if (blok) { blok.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+  });
+
+  /* De keuzeknop hoort weg te blijven zodra het proefontwerp gekozen is.
+     Niet één keer verbergen bij de klik: na een mislukte verzending bouwt GF
+     de voet opnieuw op en stond de knop er weer, terwijl de blokken al open
+     waren. Daarom bij elke render opnieuw bepalen. */
+  function pasProefknopToe() {
+    var knop = document.querySelector('.of-proef-open');
+    if (!knop) { return; }
+    var gekozen = document.querySelector('.of-proef input[type="radio"]:checked');
+    var isProef = gekozen && gekozen.value && gekozen.value.indexOf('Ik wil') === 0;
+    knop.style.display = isProef ? 'none' : '';
+  }
+
   /* "Overslaan" op stap 2 doet precies hetzelfde als "Volgende" — het is in
      het ontwerp puur het signaal dat die stap optioneel is. Daarom klikt hij
      de echte knop aan in plaats van zelf te versturen: dan kan hij ook niet
@@ -434,7 +496,7 @@
   });
 
   // Bij het laden en na elke stap opnieuw de staat toepassen.
-  function init() { markeerAlles(); pasSoktypesToe(); pasExtrasToe(null); initAdres(); }
+  function init() { markeerAlles(); pasSoktypesToe(); pasExtrasToe(null); initAdres(); pasProefknopToe(); }
 
   document.addEventListener('DOMContentLoaded', function () {
     init();

@@ -7176,6 +7176,11 @@
   .quote-card .gform_fields > .of-email,
   .quote-card .gform_fields > .of-telefoon,
   .quote-card .gform_fields > .of-auto.is-zichtbaar{ flex:0 0 100%; }
+  /* Idem voor .sample-proof-grid op het sampleformulier: htmlv zet die
+     onder de 768px ook op één kolom, dus "Aantal paar" mag hier niet op
+     zijn vaste 200px blijven staan. */
+  .sample-card .gform_fields > .of-aantal,
+  .sample-card .gform_fields > .of-wensen{ flex:0 0 100%; }
   /* = .quote-actions-split / .quote-actions-right */
   .quote-card .gform_page_footer{ flex-direction:column; align-items:stretch; gap:12px; }
   .quote-card .gform_previous_button{ margin-right:0; justify-content:center; }
@@ -11024,6 +11029,11 @@
   .quote-card .gform_fields > .of-email,
   .quote-card .gform_fields > .of-telefoon,
   .quote-card .gform_fields > .of-auto.is-zichtbaar{ flex:0 0 100%; }
+  /* Idem voor .sample-proof-grid op het sampleformulier: htmlv zet die
+     onder de 768px ook op één kolom, dus "Aantal paar" mag hier niet op
+     zijn vaste 200px blijven staan. */
+  .sample-card .gform_fields > .of-aantal,
+  .sample-card .gform_fields > .of-wensen{ flex:0 0 100%; }
   /* = .quote-actions-split / .quote-actions-right */
   .quote-card .gform_page_footer{ flex-direction:column; align-items:stretch; gap:12px; }
   .quote-card .gform_previous_button{ margin-right:0; justify-content:center; }

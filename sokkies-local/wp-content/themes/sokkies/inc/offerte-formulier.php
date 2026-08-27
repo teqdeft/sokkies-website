@@ -52,6 +52,31 @@ function sokkies_is_offerte( $form ) {
 	return $id && ! empty( $form['id'] ) && (int) $form['id'] === $id;
 }
 
+/**
+ * Formulieren die de kaartopmaak uit htmlv gebruiken.
+ *
+ * Het offerte- en het sampleformulier delen de soktypekaarten met foto, het
+ * uploadveld als gestippeld vlak, de (optioneel)-markering en de
+ * adresopzoeking. De filters die dáárover gaan gelden dus voor allebei.
+ * Wat ALLEEN bij de offerte hoort — de stappenbalk en de vorige/volgende-
+ * knoppen — blijft op sokkies_is_offerte() staan; het sampleformulier is
+ * één pagina.
+ *
+ * Neemt een formulier-array of een ID, zodat hij ook werkt in filters die
+ * alleen een veld met ->formId meegeven.
+ */
+function sokkies_form_eigen_opmaak( $form_of_id ) {
+	$id = is_array( $form_of_id ) ? (int) rgar( $form_of_id, 'id' ) : (int) $form_of_id;
+	if ( ! $id ) {
+		return false;
+	}
+	$ids = array( sokkies_offerte_form_id() );
+	if ( function_exists( 'sokkies_sample_form_id' ) ) {
+		$ids[] = sokkies_sample_form_id();
+	}
+	return in_array( $id, array_filter( $ids ), true );
+}
+
 /** Zoekt een veld op label; geeft het GF_Field of null. */
 function sokkies_offerte_veld( $form, $label ) {
 	foreach ( (array) $form['fields'] as $v ) {
@@ -104,7 +129,9 @@ function sokkies_offerte_aangevinkt( $veld ) {
  * vertaalkaart in functions.php): kort, Nederlands, "je"-vorm.
  */
 add_filter( 'gform_field_validation', function ( $resultaat, $waarde, $form, $veld ) {
-	if ( ! sokkies_is_offerte( $form ) ) {
+	// Geldt voor beide eigen formulieren: het sampleformulier heeft dezelfde
+	// soktypekaarten met dezelfde regel van maximaal twee.
+	if ( ! sokkies_form_eigen_opmaak( $form ) ) {
 		return $resultaat;
 	}
 
@@ -265,11 +292,13 @@ add_filter( 'gform_progress_steps', function ( $markup, $form, $huidige ) {
  * ontwerp het met een placeholder op.
  */
 function sokkies_offerte_optioneel_labels() {
-	return array( 'Upload je ontwerp', 'Jouw wensen' );
+	// 'Opmerkingen' hoort bij het sampleformulier; htmlv zet daar
+	// "(optioneel)" achter, net als bij het uploadveld.
+	return array( 'Upload je ontwerp', 'Jouw wensen', 'Opmerkingen' );
 }
 
 add_filter( 'gform_field_content', function ( $content, $field ) {
-	if ( ! is_object( $field ) || (int) $field->formId !== sokkies_offerte_form_id() ) {
+	if ( ! is_object( $field ) || ! sokkies_form_eigen_opmaak( $field->formId ) ) {
 		return $content;
 	}
 
@@ -396,7 +425,7 @@ function sokkies_offerte_keuze_fotos() {
 }
 
 add_filter( 'gform_field_choice_markup_pre_render', function ( $markup, $choice, $field, $value ) {
-	if ( ! is_object( $field ) || (int) $field->formId !== sokkies_offerte_form_id() ) {
+	if ( ! is_object( $field ) || ! sokkies_form_eigen_opmaak( $field->formId ) ) {
 		return $markup;
 	}
 	$kaarten = sokkies_offerte_keuze_fotos();
@@ -454,14 +483,17 @@ add_filter( 'gform_field_choice_markup_pre_render', function ( $markup, $choice,
 }, 10, 4 );
 
 /**
- * Script laden zodra het offerteformulier op de pagina staat.
+ * Script laden zodra het offerte- of sampleformulier op de pagina staat.
+ *
+ * Beide gebruiken hetzelfde offerte.js: de soktypekaarten, de adresopzoeking
+ * en het onthouden van ingevulde velden zijn identiek. Het script kijkt zelf
+ * of de betreffende velden er staan, dus wat er niet is doet niets.
  *
  * De REST-url komt via wp_localize_script mee: op live staat de site in een
  * andere submap, dus een pad in de JavaScript hardcoderen gaat daar mis.
  */
 add_action( 'wp_enqueue_scripts', function () {
-	$id = sokkies_offerte_form_id();
-	if ( ! $id ) {
+	if ( ! sokkies_offerte_form_id() && ! ( function_exists( 'sokkies_sample_form_id' ) && sokkies_sample_form_id() ) ) {
 		return;
 	}
 	wp_register_script(
@@ -481,9 +513,9 @@ add_action( 'wp_enqueue_scripts', function () {
 	);
 }, 20 );
 
-/** Pas inschakelen als het formulier daadwerkelijk gerenderd wordt. */
+/** Pas inschakelen als een van beide formulieren daadwerkelijk gerenderd wordt. */
 add_filter( 'gform_form_args', function ( $args ) {
-	if ( ! empty( $args['form_id'] ) && (int) $args['form_id'] === sokkies_offerte_form_id() ) {
+	if ( ! empty( $args['form_id'] ) && sokkies_form_eigen_opmaak( (int) $args['form_id'] ) ) {
 		wp_enqueue_script( 'sokkies-offerte' );
 	}
 	return $args;

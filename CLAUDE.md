@@ -2315,6 +2315,61 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   y bij 1920 en 2560, maar dat is uitzondering; elders schuift alles op en
   vergelijk je per ongeluk twee verschillende secties.
 
+  SAMPLEFORMULIER (/sample-request/) AFGEROND (2026-08-27, opdracht Kulwant:
+  "alleen lokaal werken, niets committen tot het formulier af en getest is").
+  Gravity Form "Sample — website" (lokaal ID 6). Hergebruikt zoveel mogelijk
+  het offerteformulier: inc/offerte-formulier.php bevat nu de GEDEELDE haken
+  (sokkies_form_eigen_opmaak() bepaalt of een form-ID van ons is), en
+  assets/js/offerte.js bedient beide formulieren. inc/sample-formulier.php
+  heeft alleen wat écht sample-specifiek is (titel, ID-lookup, de voetbalk).
+  DE STROOM ZOALS KULWANT HEM DEFINIEERDE (wijkt bewust af van htmlv, waar
+  het adresblok gewoon boven de contactvelden staat): soktype -> contact ->
+  twee knoppen. "Vraag gratis sample aan" verstuurt meteen; "Ik wil toch een
+  proefontwerp" opent het proefblok en PAS DAARNA verschijnt het adresblok.
+  Technisch hangt dat aan een verborgen radioveld (of-proef) met GF's eigen
+  voorwaardelijke logica — de knop vinkt alleen die radio aan. Zo weet ook de
+  SERVER dat aantal/postcode/huisnummer dan verplicht zijn; met alleen CSS
+  verbergen zou dat niet kloppen.
+  LET OP — GEVOLG VAN DIE OPZET: GF schakelt de invoervelden van verborgen
+  velden UIT, en uitgeschakelde velden worden niet bewaard. Aantal,
+  opmerkingen en adres overleven daarom GEEN pagina-verversing; de rest wel.
+  Dat is bewust: het alternatief was het proefblok na een verversing weer
+  openklappen, en Kulwant wilde expliciet dat het dicht blijft.
+  LAATSTE RONDE VANDAAG, allemaal tegen htmlv/sample-request.html gemeten:
+    - textarea stond op min-height 165px ("ongeveer", nooit nagemeten). In
+      htmlv is het rows="5" + height:auto = NAGEMETEN 126px, op offerte.html
+      én sample-request.html. Nu 126px vast voor .quote-card (GF forceert
+      altijd rows="10", dus de hoogte moet uit CSS komen). Geldt dus ook
+      voor "Jouw wensen" op /offerte/ — op verzoek van Kulwant.
+    - "Opmerkingen" kreeg "(optioneel)" achter het label, via de bestaande
+      sokkies_offerte_optioneel_labels().
+    - hint onder "Wat wil je laten bedrukken?" was "Kies een of twee soorten
+      sokken.", htmlv zegt "Max. 2 selecteerbaar" -> overgenomen.
+    - "Minimaal 50 paar." stond BOVEN het invoerveld (formulierbreed staat
+      descriptionPlacement op 'above'). Daardoor begon het nummerveld 23px
+      lager dan de textarea ernaast en liep de rij scheef. Nu per veld op
+      'below'. In htmlv staat er helemaal geen hint, maar 50 is een harde
+      grens dus hij blijft staan.
+    - .sample-proof-grid gaat in htmlv onder 768px naar één kolom; of-aantal
+      bleef hier op 200px staan. Toegevoegd aan de twee mobiele blokken in
+      responsive.css.
+  GETEST EN BEWEZEN (lokaal, 1440/600/375, testinzendingen daarna gewist):
+    - directe route: soktype + contact -> verzendt, zonder adres, bevestiging
+      verschijnt. Opgeslagen keuze "Nee, alleen een sample".
+    - proefroute: aantal 75 + opmerkingen + postcode 5211AB/12 -> opgeslagen
+      inclusief automatisch gevulde straat/plaats/provincie (Maijweg,
+      's-Hertogenbosch, Noord-Brabant).
+    - minimum 50: aantal 30 wordt geweigerd met "Vul een aantal in van
+      minimaal 50." en de opmaak blijft heel (velden voor/na exact even
+      breed, proefblok blijft open, knop blijft weg).
+    - maximaal twee soorten: derde vakje wordt disabled; met de JS omzeild
+      weigert de SERVER het ("Kies maximaal twee soorten sokken.").
+    - velden zijn leeg na een geslaagde verzending.
+    - straat/plaats/provincie blijven verborgen tot "Handmatig invullen".
+  BEWUST ZO GELATEN: de directe route vraagt GEEN adres. Dat is letterlijk
+  wat Kulwant beschreef, maar het is wel een gratis sample die ergens heen
+  moet — voorleggen vóór livegang.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

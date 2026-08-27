@@ -79,6 +79,10 @@ require_once get_template_directory() . '/inc/acf-fields.php';
 // en de adresopzoeking). Apart bestand omdat het meer is dan een paar regels.
 require_once get_template_directory() . '/inc/offerte-formulier.php';
 
+// Logica van het sampleformulier. Deelt de opmaakfilters met het
+// offerteformulier hierboven; hier staat alleen wat sample-eigen is.
+require_once get_template_directory() . '/inc/sample-formulier.php';
+
 /**
  * Site-instelling uit de ACF-opties-pagina, met hardcoded fallback zolang
  * de opties nog niet zijn opgeslagen (of ACF uit staat).
@@ -562,9 +566,11 @@ add_filter( 'gform_submit_button', function ( $button, $form ) {
  * aan en zou elk toekomstig formulier onopgemaakt laten.
  */
 add_filter( 'gform_form_theme_slug', function ( $slug, $form ) {
-	// Ook het offerteformulier: dezelfde reden, de eigen opmaak wint dan.
+	// Ook het offerte- en sampleformulier: dezelfde reden, de eigen opmaak
+	// wint dan.
 	$eigen = sokkies_is_contactformulier( $form )
-		|| ( function_exists( 'sokkies_is_offerte' ) && sokkies_is_offerte( $form ) );
+		|| ( function_exists( 'sokkies_is_offerte' ) && sokkies_is_offerte( $form ) )
+		|| ( function_exists( 'sokkies_is_sample' ) && sokkies_is_sample( $form ) );
 	return $eigen ? 'legacy' : $slug;
 }, 10, 2 );
 
