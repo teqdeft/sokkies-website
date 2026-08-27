@@ -21,11 +21,30 @@
 /* ===================================================================
    2000px en breder
    =================================================================== */
-@media (min-width:2000px){
-
-
+/* ===================================================================
+   1920 en breder — de golf van de collectiesectie op ware proportie
+   -------------------------------------------------------------------
+   .collection:before/:after tekenen bg-yellow-shape.png (1920x1356) met
+   background-size:cover. 'cover' rekent met de BREEDTE van de sectie, dus
+   boven 1920px werd de vorm meegeschaald: op 2560px kwam hij 1797px hoog
+   uit in plaats van 1356px. Het vlak eromheen blijft 701px hoog, dus je
+   ziet dan een ANDER stuk van dezelfde afbeelding — de golf oogt steiler,
+   de gele band dunner (melding Kulwant op 2560px).
+   De hoogte staat nu vast op de hoogte die de vorm op 1920px heeft; de
+   breedte rekt mee zodat er rechts geen strook onbedekt blijft. Onder
+   1920px verandert er niets: die banden hebben hun eigen regels en 'cover'
+   blijft daar gewoon staan.
+   De oude correctie top:-100% (die hier stond voor >=2000px) is daarmee
+   overbodig: die compenseerde juist het meeschalen. Met een vaste hoogte
+   klopt de basiswaarde -76% weer, en dat is exact wat 1920px toont.
+   =================================================================== */
+@media (min-width:1920px){
+  .collection:before,
+  .collection:after{
+    background-size:100% 1356px;
+  }
   .collection:before{
-    top: -100%;
+    top:-76%;
   }
 }
 
