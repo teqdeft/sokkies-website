@@ -5980,6 +5980,13 @@ font-weight: 600;
     width:100%;
     height:1392px;
     background:url(../media/bg-cards-pdp-bg.png) no-repeat center bottom;
+    /* bg-cards-pdp-bg.png is 1921x1392 en werd op ware grootte GECENTREERD
+       getekend. Op 2560px bleef daardoor links en rechts een witte strook van
+       ruim 300px staan. De hoogte blijft precies 1392px — gelijk aan het vlak
+       en aan de afbeelding zelf — en alleen de breedte rekt mee. Onder 1921px
+       levert max() de eigen breedte op, dus daar verandert niets; met name de
+       1680-ronde (waar 100% auto juist bewust is weggehaald) blijft intact. */
+    background-size:max(100%, 1921px) 1392px;
     z-index: 0;
   }
   .design-now h2{
@@ -6164,7 +6171,16 @@ font-weight: 600;
   }
   .cases-pdp.cases:before {
     content: '';
-    background: url(../media/bg_sock_yellow_2.png);
+    /* LET OP: dit is de SHORTHAND, en die zet background-size en
+       background-repeat terug op hun standaard. De basisregel .cases:before
+       heeft hier dus geen invloed op — vandaar dat beide hieronder opnieuw
+       staan. Zonder no-repeat herhaalde de vorm zich boven 1920px (rechts
+       een tweede linkerrand), en zonder maat viel er een strook onbedekt.
+       bg_sock_yellow_2.png is 1920x1505 in een vlak van ~820px hoog: de
+       hoogte staat daarom vast op 1505px zodat er op elke breedte hetzelfde
+       deel van de vorm zichtbaar blijft, en alleen de breedte rekt mee. */
+    background: url(../media/bg_sock_yellow_2.png) no-repeat;
+    background-size: max(100%, 1920px) 1505px;
   }
   
   .cases.cases-pdp .case-section-outer h2, .cases.cases-pdp .case-text, .cases.cases-pdp .case-link{
