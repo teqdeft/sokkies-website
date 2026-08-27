@@ -2281,6 +2281,40 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   banden bemonsterd: lokaal 2560 gevuld/gevuld, en op live na de deploy
   zowel op 2560 als op 1920 gevuld/gevuld.
 
+  SVG-ACHTERGRONDEN LATEN ZICH NIET UITREKKEN — DE VERKLARING VOOR TWEE
+  MISLUKTE POGINGEN (2026-08-27, ontdekt op /collectie/).
+  DE KERN: een SVG-achtergrond houdt zich aan zijn eigen preserveAspectRatio
+  (standaard xMidYMid meet). 'background-size: <breedte> <hoogte>' rekt zo'n
+  vorm dus NIET uit: hij wordt PASSEND in dat vak gezet en de rest blijft
+  leeg. Bij een PNG gebeurt precies wat je vraagt — die wordt wél uitgerekt.
+  DAAROM WERKTE DE HOOGTE-VASTZETTEN-TRUC WEL BIJ:
+    .collection:before/:after  bg-yellow-shape.png
+    .cases:before              bg-blue-shape.png
+    .gift:before               bg-white-mask.png
+    .impact:before             bg-element.png
+    .design-bg-union           bg-cards-pdp-bg.png
+    .cases-pdp.cases:before    bg_sock_yellow_2.png
+  EN NIET BIJ (allebei geprobeerd, nagemeten, teruggedraaid):
+    .cta-final-panel                        cta-bg-shape.svg
+    .case-inner-page .case-section-outer    bg-case-inner.svg
+  Bij .case-section-outer werd de afwijking van de diagonaal zelfs groter:
+  10% van de bandhoogte met cover, 27% met een vaste hoogte. Dat is precies
+  het letterboxen: de vorm werd kleiner in plaats van breder.
+  VUISTREGEL VOOR DE RESTERENDE VORMEN:
+    PNG  -> hoogte vastzetten + breedte max(100%, <eigen breedte>px) werkt.
+    SVG  -> alleen cover (of preserveAspectRatio="none" in het BESTAND zetten,
+            maar dat raakt elke plek waar die SVG gebruikt wordt).
+  TOEGEPAST OP .compare-inner-main (bg_right-red.svg, 1920x1567): stond op
+  ware grootte gecentreerd, dus op 2560px 320px wit aan weerszijden. Nu
+  cover, alleen vanaf 1920px — de smallere banden zetten background-position
+  op 'right top' om een bepaald deel te tonen en cover zou dat omgooien.
+  GEVERIFIEERD op live, coral gemeten op drie hoogtes in het vlak:
+    1920: 0..1919 (vol)   2560: 0..2559 (vol, was 320..2239)
+  MEETVALKUIL: meet de kleurgrens op de y-positie van het ELEMENT, niet op
+  een vaste y. Op deze pagina staat .compare-inner-main toevallig op dezelfde
+  y bij 1920 en 2560, maar dat is uitzondering; elders schuift alles op en
+  vergelijk je per ongeluk twee verschillende secties.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
