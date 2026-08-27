@@ -22,7 +22,16 @@
    2000px en breder
    =================================================================== */
 /* ===================================================================
-   1920 en breder — de golf van de collectiesectie op ware proportie
+   1920 en breder — achtergrondvormen op hun ware proportie
+   -------------------------------------------------------------------
+   ALGEMEEN PATROON (geldt voor alle vormen hieronder): de vorm is een
+   afbeelding van 1920px breed die met background-size:cover in een vlak
+   staat dat LAGER is dan de afbeelding. 'cover' pakt dan de breedte als
+   maatstaf, dus boven 1920px groeit de vorm mee en wordt er een KLEINER
+   deel van dezelfde afbeelding zichtbaar. De vorm oogt daardoor
+   uitvergroot: rondingen worden steiler, banden dunner of dikker.
+   De oplossing is telkens dezelfde: hoogte VAST op wat 1920px toont,
+   breedte laten meerekken zodat er niets onbedekt blijft.
    -------------------------------------------------------------------
    .collection:before/:after tekenen bg-yellow-shape.png (1920x1356) met
    background-size:cover. 'cover' rekent met de BREEDTE van de sectie, dus
@@ -46,6 +55,12 @@
   .collection:before{
     top:-76%;
   }
+  /* NIET voor .cta-final-panel (cta-bg-shape.svg). Geprobeerd en NAGEMETEN:
+     de linkerrand van het corale vlak week met cover maximaal 3,4% van de
+     breedte af t.o.v. 1920px, en met een vaste hoogte 11%. Deze vorm is een
+     grote ronding waarvan juist de HORIZONTALE maat telt; die uitrekken zet
+     de bocht verder naar rechts. Hier is cover dus de betere keuze — laat
+     staan. Zie CLAUDE.md voor de meetwaarden. */
 }
 
 /* ===================================================================

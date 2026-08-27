@@ -2161,6 +2161,35 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   sectie hoger (zoals .cases), dan bepaalt cover de hoogte en verandert een
   breedteregel het beeld ook onder 1920px. Meet dat per geval na.
 
+  SLOT-CTA OP 2560px — GEMETEN EN BEWUST NIET AANGEPAST (2026-08-27, derde
+  melding Kulwant in dezelfde reeks, nu over .cta-final-panel).
+  DE TRUC DIE BIJ .collection EN .cases WERKTE, WERKT HIER NIET. Sterker:
+  hij maakt het erger. Eerst toegepast, toen nagemeten, daarna teruggedraaid.
+  MEETPUNT: op welk percentage van de breedte begint het corale vlak, op
+  3/8/15/25% van de paneelhoogte (dat is de bocht linksboven).
+    1920 cover (referentie)      13,8 / 11,3 / 7,5 / 2,5
+    2560 cover (huidige staat)   14,1 / 12,2 / 9,7 / 5,9   -> max 3,4% afwijking
+    2560 vaste hoogte 1133px     21,4 / 19,5 / 17,0 / 13,3 -> max 10,8% ERGER
+    2560 paneel meegeschaald     13,9 / 11,7 / 8,6 / 4,4   -> max 1,9% beter
+  WAAROM DE VASTE HOOGTE HIER FAALT: bij .collection is de zichtbare vorm een
+  horizontale golfband — die uitrekken verschuift de rand nauwelijks. Bij
+  .cta-final-panel is het een grote RONDING waarvan juist de horizontale maat
+  telt; uitrekken duwt de bocht naar rechts en vergroot het beige vlak links.
+  Dus: de vorm bepaalt welke oplossing past, niet het patroon.
+  WAT WEL ZOU HELPEN, MAAR EEN ONTWERPKEUZE IS: het paneel even hard laten
+  meeschalen als de vorm (min-height:23.2vw + inhoud verticaal centreren).
+  Dan zie je op elke breedte hetzelfde deel van de vorm — afwijking terug
+  naar 1,9% — maar het CTA-blok wordt op 2560px ongeveer 150px hoger. Niet
+  doorgevoerd zonder akkoord; op 1920px verandert die variant niets (0,3%).
+  GEEN GRATIS OPLOSSING: de vorm is getekend op 1920px breed. Op een breder
+  scherm kan hij alleen (a) meeschalen (cover — ronding wordt groter t.o.v.
+  het paneel) of (b) uitgerekt worden (ronding vervormt). Een derde weg
+  bestaat alleen als het paneel zelf meegroeit.
+  RESPONSIVE NAGEKEKEN op live: 390 (paneel 390x385, positie 18% top),
+  768 (753x407), 1440 (1425x418) — allemaal cover, geen horizontale
+  paginascroll. Alleen de band <=520px zet een eigen background-position;
+  verder is er onder 1920px geen enkele override, dus daar is niets geraakt.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
