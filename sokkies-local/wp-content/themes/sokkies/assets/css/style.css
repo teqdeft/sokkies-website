@@ -1909,10 +1909,17 @@ font-weight: 600;
   height:100%;
   z-index:0;
   background-repeat: no-repeat;
-  /* bg-blue-shape.png is 1920px breed; daarboven bleef rechts een strook
-     onbedekt, net als bij .gift. Zelfde oplossing, zelfde reden: onder
-     1920px verandert er niets. */
-  background-size: max(100%, 1920px) auto;
+  /* bg-blue-shape.png is 1920x1074 en stond eerst zonder background-size:
+     boven 1920px bleef rechts een strook onbedekt. Met 'auto' als hoogte
+     groeide de vorm dan mee met de breedte — op 2560px werd de blauwe band
+     1200px hoog in plaats van 790px (melding Kulwant).
+     Daarom nu de hoogte VAST op wat 1920px toont, en alleen de breedte die
+     meerekt zodat er niets onbedekt blijft. max() houdt het op 1920px en
+     smaller exact zoals het was.
+     LET OP: deze regel geldt alleen vanaf 1680px. Alle smallere banden
+     zetten in responsive.css een ANDER bestand (blue-shape-lg.png) met
+     cover/contain; die blijven ongemoeid. */
+  background-size: max(100%, 1920px) 1074px;
  }
  .cases-feet{
     position: absolute;
