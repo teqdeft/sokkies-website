@@ -2131,6 +2131,36 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   gescreenshot. Zo test je de echte gewijzigde CSS zonder WordPress. De
   tijdelijke bestanden zijn daarna verwijderd.
 
+  BLAUWE VORM VAN 'WAT WE MAAKTEN' SCHAALDE MEE BOVEN 1920px (2026-08-27,
+  melding Kulwant met screenshot op 2560px).
+  DEELS MIJN EIGEN VORIGE FIX. bg-blue-shape.png (1920x1074) stond zonder
+  background-size, dus boven 1920px bleef rechts een strook onbedekt. Dat is
+  eerder diezelfde dag opgelost met 'max(100%,1920px) auto' — maar met AUTO
+  als hoogte groeit de vorm mee met de breedte. Gevolg: de strook was weg,
+  maar de blauwe band werd op 2560px 1200px hoog in plaats van 790px.
+  De strook repareren en de proporties bewaren zijn twee verschillende
+  dingen; 'auto' doet alleen het eerste.
+  FIX: background-size: max(100%, 1920px) 1074px. De hoogte staat vast op
+  wat 1920px toont, alleen de breedte rekt mee.
+  GEMETEN bandhoogte (blauw, headless screenshots):
+    1680 -> 810px, 1920 -> 810px, 2560 -> 816px, 3440 -> 828px
+    (was op 2560: 1200px)
+    LIVE na deploy: 1920 -> 804px, 2560 -> 810px (6px verschil, was 410px)
+  LET OP — DEZE BASISREGEL GELDT ALLEEN VANAF 1680px. Alle smallere banden
+  zetten in responsive.css een ANDER bestand: blue-shape-lg.png met cover
+  (992-1679, 768-991, 521-767) of contain (<=520). Wie hier iets verandert,
+  raakt dus alleen 1680+. Nagekeken op live: 390, 768 en 1280 gebruiken
+  blue-shape-lg.png met cover, 1680 gebruikt de nieuwe regel, en op geen van
+  die breedtes is er horizontale paginascroll.
+  .cases heeft overflow:hidden en de inhoud (case-slider + gallerystrip)
+  steekt daar met opzet buiten; op 390 is dat 1582px die netjes wordt
+  afgeknipt. Dat is geen fout, dus niet "oplossen".
+  BREDERE LES voor de andere ~27 vormen zonder background-size: kijk eerst
+  of de sectie HOGER of LAGER is dan de afbeelding. Is de sectie lager (zoals
+  .gift), dan is de breedte bepalend en volstaat een breedteregel. Is de
+  sectie hoger (zoals .cases), dan bepaalt cover de hoogte en verandert een
+  breedteregel het beeld ook onder 1920px. Meet dat per geval na.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
