@@ -2215,6 +2215,42 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   gebouwde schakelaar "Beeld rechts is een logo" is daar dus niet meer nodig;
   hij blijft beschikbaar voor tabs die wel een zegel als beeld krijgen.
 
+  VOLLE-BREEDTE-TAB BOTSTE MET DE WITTE WIG ONDERIN (2026-08-27, direct
+  vervolg op de wijziging hierboven — en veroorzaakt DOOR die wijziging).
+  Onderaan .dz-certs ligt duurzaamheid-hero-bg.png (1920x531): een witte wig
+  die rechtsonder steil omhoog loopt. Uit de PNG gemeten waar het wit begint,
+  omgerekend naar px boven de onderkant van de sectie (vorm is 523px hoog,
+  bottom:-40px):
+    80% van de breedte -> 86px    90% -> 227px    98% -> 425px
+  MET TWEE KOLOMMEN was er niets aan de hand: de tekst bleef links (tot ~63%)
+  en rechts stond het BEELD — een foto over die wig is geen probleem. Op
+  volle breedte loopt de tekst door tot ruim 95% en komt hij in het wit
+  terecht: witte tekst op wit.
+  FIX: 300px extra ruimte onder een volle-breedte-tab, bovenop de 130px van
+  de sectie zelf. Alleen vanaf 768px — daaronder staat de afbeelding op ware
+  grootte gecentreerd en is alleen het vlakke midden zichtbaar (wit begint
+  daar pas ~55px boven de onderkant).
+  WAAROM NIET DE TEKST SMALLER: dat was de andere optie, maar op 1280px is
+  het hele tekstvlak al 95,6% breed; om daar vrij te blijven zou de kolom
+  smaller moeten worden dan de oude twee-koloms-tekst. De ruimte eronder is
+  bovendien gewoon coral boven een decoratieve diagonaal, dus dat leest niet
+  als een gat.
+  NAGEMETEN met de langste tekst, volledig uitgeklapt (reikt tot / wit begint
+  / vrije ruimte / marge):
+    1280: 95,6% / 407 / 430 / +23    1440: 95,0% / 391 / 430 / +39
+    1920: 93,7% / 318 / 430 / +112   2560: 82,7% / 124 / 430 / +306
+    LIVE na deploy, 1920, alle drie de tabs zonder foto: marge 103-140px.
+  MEETVALKUIL: de browserpane voert CSS-transities niet uit, dus na een klik
+  op 'Lees meer' blijft .brand-collapse op 340px staan terwijl max-height al
+  op de volle hoogte staat. getClientRects() van tekstnodes geeft dan wél de
+  posities van de AFGEKNIPTE tekst — je meet dus iets dat niemand ziet.
+  Zet transition op none en max-height op none voordat je meet.
+  EIGEN FOUT, TWEE KEER GEMAAKT: bij het uitbreiden van een bestaand
+  CSS-commentaarblok plakte ik nieuwe zinnen ná de afsluitende */ en liet ik
+  een tweede */ staan. De parser slikt dan de regels die erop volgen. Beide
+  keren viel het op doordat een net toegevoegde regel "niet werkte".
+  Controleer na zo'n bewerking altijd of het aantal /* gelijk is aan */.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
