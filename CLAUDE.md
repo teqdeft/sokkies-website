@@ -2383,6 +2383,62 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   lokaal. De oude open vraag hierboven (lopen de databases uiteen?) is
   daarmee nog steeds niet opgehelderd.
 
+  DRIE BEDANKPAGINA'S, ELK FORMULIER ZIJN EIGEN (2026-08-28, opdracht
+  Kulwant: "alleen lokaal, niets naar live"). Er was één /bedankt/ en drie
+  formulieren; nu heeft elk formulier zijn eigen bedankpagina en verwijst het
+  daar na verzending naartoe.
+    contact (form 4) -> /bedankt-contact/  (#1248, nieuw)
+    offerte (form 5) -> /bedankt/          (#164, ONGEWIJZIGD op verzoek)
+    sample  (form 6) -> /bedankt-sample/   (#1249, nieuw)
+  AANPAK: géén drie sectietemplates. De layout 'bedankt_inhoud' was volledig
+  hardgecodeerd (alleen een message-veld in ACF); die is nu veldgestuurd
+  (field_bd_*: titel, intro, ref_tonen, stappen_titel, stappen-repeater,
+  wacht_titel, kaarten-repeater, volg_titel, volg_tekst). De standaardwaarden
+  in de template zijn LETTERLIJK de oude hardcoded tekst, dus een pagina
+  zonder ingevulde velden rendert precies zoals voorheen — daarom kon
+  /bedankt/ leeg blijven en toch onveranderd blijven. Nagemeten: h1-HTML,
+  intro, drie koppen, drie stappen, drie kaarten en de follow-sectie identiek
+  aan de meting vóór de wijziging.
+  BEVESTIGING op type 'page' (niet 'redirect'): GF bewaart dan het PAGINA-ID
+  en bouwt de URL zelf, dus een latere slug- of submapwijziging blijft goed.
+  queryString 'ref={entry_id}'.
+  LET OP — VALKUIL DIE TOESLOEG: update_form() zette validationPlacement van
+  het offerteformulier terug op 'above'. Na ELKE update_form opnieuw op
+  'below' zetten; stond al in dit document en gebeurde alsnog.
+  ECHT REFERENTIENUMMER I.P.V. NEPDATA: er stond een vast
+  "Referentie #SK-2026-0518-4729" en "Bevestigd op 18 mei 2026, 14:32" in de
+  markup. Nu de pagina echt na een verzending wordt getoond, is dat niet meer
+  houdbaar. De referentie en de datum komen uit de inzending (?ref=); zonder
+  ref valt de referentieregel weg en blijft de stapregel leeg. Uit de
+  inzending wordt BEWUST alleen de datum gebruikt — de URL is te raden, dus
+  er komen geen ingevulde gegevens op deze pagina.
+  NIEUW: sokkies_datum_nl() in functions.php. De site draait op locale en_US
+  zonder Nederlands taalbestand, dus wp_date() gaf "28 August 2026". De
+  sitetaal omzetten zou de hele beheeromgeving meenemen — te grof voor één
+  zin, vandaar een eigen maandtabel.
+  BUG DIE HIERUIT VOLGDE EN IS OPGELOST: offerte.js wist de opgeslagen
+  formuliervelden op gform_confirmation_loaded (offerte.js:516), en dat event
+  vuurt NIET bij een doorverwijzing. Nagemeten: na verzending stond
+  'sokkies-formulier-4' er nog. Gevolg zou zijn dat de bezoeker zijn oude
+  antwoorden terugkrijgt bij een volgend bezoek aan het formulier — precies
+  wat eerder was gevraagd te voorkomen. Opgelost met een klein script onderin
+  de bedankt-sectie dat alle sokkies-formulier-* sleutels wist. Wie daar komt
+  is immers klaar met invullen. Nagemeten voor alle drie de formulieren: na
+  de doorverwijzing is de opslag leeg.
+  GETEST (lokaal, 1440 en 375, testinzendingen daarna gewist): alle drie de
+  formulieren verzenden en landen op hun eigen pagina met het juiste
+  referentienummer en de Nederlandse datum; de drie pagina's meten vrijwel
+  gelijk (statushoogte 1043/1065/1047, follow-overlap identiek), stappen en
+  kaarten stapelen op mobiel, geen horizontale scroll.
+  BEWUST NIET GEDAAN: de stappen op /bedankt/ gaan over het VOELEN van een
+  sample ("Voel de kwaliteit", "Klaar voor je eigen ontwerp?") terwijl de kop
+  offerte-taal is. Die tekst hoort eerder bij het sampleformulier. Kulwant
+  vroeg expliciet de bestaande inhoud te laten staan, dus ongemoeid gelaten —
+  wel voorleggen.
+  NOG OPEN op deze pagina's (bestaand, niet door deze wijziging ontstaan): de
+  vier social links staan op href="#", het nieuwsbriefformulier is een stub
+  zonder verzending, en 'brochure 2026' veroudert jaarlijks.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

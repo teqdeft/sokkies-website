@@ -1808,12 +1808,43 @@ add_action( 'acf/init', function () {
 						),
 					),
 
+					/* Eén layout voor ALLE bedankpagina's (contact, offerte, sample).
+					   Elk formulier verwijst na verzending naar zijn eigen pagina, en
+					   die pagina's verschillen alleen in tekst — dus geen drie losse
+					   sectietemplates maar één met velden. Alles leeg laten geeft
+					   exact de oorspronkelijke offerte-bedankpagina terug; de
+					   standaardwaarden staan in de sectietemplate. */
 					'layout_bedankt_inhoud' => array(
 						'key' => 'layout_bedankt_inhoud', 'name' => 'bedankt_inhoud', 'label' => 'Bedankt-inhoud (bevestiging + volg ons)', 'display' => 'block',
 						'acfe_flexible_category'  => array( 'Funnel' ),
 						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/bedankt_inhoud.png',
 						'sub_fields' => array(
-							array( 'key' => 'field_bedankt_inhoud_uitleg', 'label' => '', 'type' => 'message', 'message' => 'Deze sectie is een 1:1-demo van de statische funnelpagina. Inhoud en echte verzending worden bewerkbaar in de formulierenfase (Gravity Forms).' ),
+							array( 'key' => 'field_bd_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Tekst tussen [haken] wordt geel. Leeg = "[Bedankt] voor je aanvraag!".' ),
+							array( 'key' => 'field_bd_intro', 'label' => 'Introtekst', 'name' => 'intro', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '', 'instructions' => 'De regel onder de titel. <br> mag. Leeg = de standaardzin.' ),
+							array( 'key' => 'field_bd_ref_tonen', 'label' => 'Referentienummer tonen', 'name' => 'ref_tonen', 'type' => 'true_false', 'ui' => 1, 'default_value' => 1, 'instructions' => 'Het nummer van de aanvraag. Verschijnt alleen als de bezoeker hier via een verzonden formulier komt — bij een gewoon paginabezoek valt de regel weg.' ),
+							array( 'key' => 'field_bd_stappen_titel', 'label' => 'Kop boven de stappen', 'name' => 'stappen_titel', 'type' => 'text', 'instructions' => 'Leeg = "Wat gebeurt er nu?".' ),
+							array(
+								'key' => 'field_bd_stappen', 'label' => 'Stappen', 'name' => 'stappen', 'type' => 'repeater', 'layout' => 'block', 'button_label' => 'Stap toevoegen',
+								'instructions' => 'Houd het op DRIE stappen: het ontwerp zet ze in drie kolommen naast elkaar, bij een ander aantal ontstaan er gaten of loopt de rij over. De eerste stap krijgt automatisch het vinkje (die is immers al gebeurd), de rest wordt genummerd. Leeg = de standaardstappen.',
+								'sub_fields' => array(
+									array( 'key' => 'field_bd_stap_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
+									array( 'key' => 'field_bd_stap_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
+								),
+							),
+							array( 'key' => 'field_bd_wacht_titel', 'label' => 'Kop boven de kaarten', 'name' => 'wacht_titel', 'type' => 'text', 'instructions' => 'Leeg = "Terwijl je wacht".' ),
+							array(
+								'key' => 'field_bd_kaarten', 'label' => 'Kaarten', 'name' => 'kaarten', 'type' => 'repeater', 'layout' => 'block', 'button_label' => 'Kaart toevoegen',
+								'instructions' => 'Suggesties om te lezen tijdens het wachten. Ook hier zijn DRIE kaarten de bedoeling; de sok-achtergrond eronder is op die hoogte afgestemd. Leeg = de standaardkaarten.',
+								'sub_fields' => array(
+									array( 'key' => 'field_bd_kaart_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+									array( 'key' => 'field_bd_kaart_tag', 'label' => 'Label', 'name' => 'tag', 'type' => 'text', 'instructions' => 'Het woordje boven de titel, bijvoorbeeld "Brochure".' ),
+									array( 'key' => 'field_bd_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
+									array( 'key' => 'field_bd_kaart_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
+									array( 'key' => 'field_bd_kaart_link', 'label' => 'Link', 'name' => 'link', 'type' => 'link' ),
+								),
+							),
+							array( 'key' => 'field_bd_volg_titel', 'label' => 'Kop "Volg ons"', 'name' => 'volg_titel', 'type' => 'text', 'instructions' => 'Leeg = "Volg ons voor inspiratie".' ),
+							array( 'key' => 'field_bd_volg_tekst', 'label' => 'Tekst onder "Volg ons"', 'name' => 'volg_tekst', 'type' => 'text', 'instructions' => 'Leeg = "Nieuwe ontwerpen, achter-de-schermen, case-studies.".' ),
 						),
 					),
 

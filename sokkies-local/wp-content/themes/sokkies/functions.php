@@ -116,6 +116,32 @@ function sokkies_kop( $tekst, $klasse = 'text-yellow' ) {
 }
 
 /**
+ * Datum in het Nederlands, bijvoorbeeld "28 augustus 2026, 14:32".
+ *
+ * BEWUST NIET wp_date()/date_i18n(): de site draait op locale en_US zonder
+ * Nederlands taalbestand, dus die geven "August". De hele voorkant is
+ * Nederlands, en een bezoeker die net iets heeft aangevraagd hoort geen
+ * Engelse maandnaam te zien. De sitetaal omzetten zou de héle beheeromgeving
+ * en alle plugin-teksten meenemen — te grof voor dit ene zinnetje.
+ */
+function sokkies_datum_nl( $tijd, $met_tijd = true ) {
+	$tijd = (int) $tijd;
+	if ( ! $tijd ) {
+		return '';
+	}
+	$maanden = array(
+		1 => 'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+		'juli', 'augustus', 'september', 'oktober', 'november', 'december',
+	);
+	$dag   = (int) wp_date( 'j', $tijd );
+	$maand = $maanden[ (int) wp_date( 'n', $tijd ) ];
+	$jaar  = wp_date( 'Y', $tijd );
+	return $met_tijd
+		? sprintf( '%d %s %s, %s', $dag, $maand, $jaar, wp_date( 'H:i', $tijd ) )
+		: sprintf( '%d %s %s', $dag, $maand, $jaar );
+}
+
+/**
  * Page-scope class op <main> — de pagina-slug, met uitzonderingen waar de
  * CSS-class uit htmlv anders heet dan de slug.
  */

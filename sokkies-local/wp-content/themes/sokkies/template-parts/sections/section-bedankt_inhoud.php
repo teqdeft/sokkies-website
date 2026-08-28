@@ -1,102 +1,142 @@
 <?php
 /**
- * Sectie: Bedankt-pagina (bevestiging + volg ons) — 1:1 uit bedankt.html (demo-formulieren; echte
- * verzending en het wizard-eindpunt komen met de formulierenfase).
+ * Sectie: Bedankt-pagina (bevestiging + volg ons) — opmaak 1:1 uit bedankt.html.
+ *
+ * Deze sectie bedient ALLE bedankpagina's. Elk formulier verwijst na een
+ * geslaagde verzending naar zijn eigen pagina (contact / offerte / sample) en
+ * die verschillen alleen in tekst. Vandaar velden met standaardwaarden in
+ * plaats van drie bijna identieke templates.
+ *
+ * BELANGRIJK: de standaardwaarden hieronder zijn LETTERLIJK de tekst die hier
+ * eerst hardgecodeerd stond. Een bestaande pagina zonder ingevulde velden
+ * rendert daardoor exact zoals voorheen.
+ *
  * Contactgegevens in de zijkolom komen uit Website-instellingen.
  */
 $assets_uri = get_template_directory_uri() . '/assets/';
+
+/* ---------- referentie van de aanvraag ----------
+ * De bevestiging van Gravity Forms geeft het inzendingsnummer mee als ?ref=.
+ * Alleen dan tonen we een referentie: hier stond eerst een vast nepnummer,
+ * en dat is precies wat je een klant niet wilt laten zien nu de pagina echt
+ * na een verzending wordt getoond. Geen ref = de regel valt weg.
+ *
+ * Uit de inzending gebruiken we ALLEEN de datum; er komt bewust geen
+ * ingevulde gegevens op deze pagina, want de URL is te raden. */
+$ref_id    = isset( $_GET['ref'] ) ? absint( wp_unslash( $_GET['ref'] ) ) : 0;
+$ref_tekst = '';
+$ref_datum = '';
+if ( $ref_id && class_exists( 'GFAPI' ) ) {
+	$inzending = GFAPI::get_entry( $ref_id );
+	if ( $inzending && ! is_wp_error( $inzending ) ) {
+		$tijd      = strtotime( rgar( $inzending, 'date_created' ) . ' UTC' );
+		$ref_tekst = 'Referentie #SK-' . wp_date( 'Y-md', $tijd ) . '-' . $ref_id;
+		$ref_datum = sokkies_datum_nl( $tijd );
+	}
+}
+
+$titel        = get_sub_field( 'titel' ) ?: '[Bedankt] voor je aanvraag!';
+$intro        = get_sub_field( 'intro' ) ?: 'Je hoort binnen 24 uur (op werkdagen) van ons met een persoonlijk<br>antwoord en een eerste digitaal ontwerp.';
+$ref_tonen    = ( null === get_sub_field( 'ref_tonen' ) ) ? true : (bool) get_sub_field( 'ref_tonen' );
+$stappentitel = get_sub_field( 'stappen_titel' ) ?: 'Wat gebeurt er nu?';
+$wachttitel   = get_sub_field( 'wacht_titel' ) ?: 'Terwijl je wacht';
+$volgtitel    = get_sub_field( 'volg_titel' ) ?: 'Volg ons voor inspiratie';
+$volgtekst    = get_sub_field( 'volg_tekst' ) ?: 'Nieuwe ontwerpen, achter-de-schermen, case-studies.';
+
+/* Stap 1 meldt wanneer de aanvraag binnenkwam. Weten we dat echt (via de
+   inzending), dan die datum; anders de tekst uit het ontwerp. */
+$stappen = get_sub_field( 'stappen' );
+if ( ! $stappen ) {
+	$stappen = array(
+		array( 'titel' => 'Aanvraag ontvangen', 'tekst' => $ref_datum ? 'Bevestigd op ' . $ref_datum : 'Bevestigd op 18 mei 2026, 14:32' ),
+		array( 'titel' => 'Voel de kwaliteit', 'tekst' => 'Check de stof, de pasvorm en de afwerking in het echt.' ),
+		array( 'titel' => 'Klaar voor je eigen ontwerp?', 'tekst' => 'Vraag een offerte aan of start direct de configurator.' ),
+	);
+} elseif ( $ref_datum && empty( $stappen[0]['tekst'] ) ) {
+	$stappen[0]['tekst'] = 'Bevestigd op ' . $ref_datum;
+}
+
+$kaarten = get_sub_field( 'kaarten' );
+if ( ! $kaarten ) {
+	$kaarten = array(
+		array( 'tag' => 'Brochure', 'titel' => 'Download onze brochure 2026', 'tekst' => 'Onze volledige collectie + voorbeelden in één PDF.', 'bestand' => 'Voeten-in-de-lucht.png', 'pad' => '/downloads/' ),
+		array( 'tag' => 'Case', 'titel' => 'Lees hoe een logistieke partner hun sokken liet bedrukken', 'tekst' => 'Probleem, aanpak en resultaten.', 'bestand' => 'Sokkies_FleurBoerdonk_2.png', 'pad' => '/reviews-en-cases-detail/' ),
+		array( 'tag' => 'Inspiratie', 'titel' => 'Bekijk onze inspiration gallery', 'tekst' => 'Honderden ontwerpen van bestaande klanten.', 'bestand' => 'timeline-img6.png', 'pad' => '/reviews-en-cases/' ),
+	);
+}
+
+/* Het pijltje in de kaartlink staat drie keer in het ontwerp; hier één keer. */
+$pijl = '<svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
+                    <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">
+                      <path id="Path_3670" data-name="Path 3670" d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
+                      <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
+                    </g>
+                  </svg>';
 ?>
 <section class="thanks-hero">
       <div class="container">
         <div class="banner-section">
-          <h1><span class="text-yellow">Bedankt</span> voor je aanvraag!</h1>
-          <p>Je hoort binnen 24 uur (op werkdagen) van ons met een persoonlijk<br>antwoord en een eerste digitaal ontwerp.</p>
-          <span class="thanks-ref">Referentie #SK-2026-0518-4729</span>
+          <h1><?php echo sokkies_kop( $titel ); ?></h1>
+          <p><?php echo sokkies_kop( $intro ); ?></p>
+          <?php if ( $ref_tonen && $ref_tekst ) : ?>
+          <span class="thanks-ref"><?php echo esc_html( $ref_tekst ); ?></span>
+          <?php endif; ?>
         </div>
       </div>
     </section>
 
 <section class="thanks-status">
       <div class="container">
-        <h2>Wat gebeurt er nu?</h2>
+        <h2><?php echo esc_html( $stappentitel ); ?></h2>
         <div class="thanks-steps">
-          <div class="thanks-step is-done">
+          <?php foreach ( $stappen as $i => $stap ) : ?>
+          <div class="thanks-step<?php echo 0 === $i ? ' is-done' : ''; ?>">
             <span class="thanks-step-dot">
+              <?php if ( 0 === $i ) : ?>
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="11" viewBox="0 0 14 11" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5.5 5 9.5 13 1.5"/></svg>
+              <?php else : ?>
+              <?php echo (int) ( $i + 1 ); ?>.
+              <?php endif; ?>
             </span>
-            <h3>Aanvraag ontvangen</h3>
-            <p>Bevestigd op 18 mei 2026, 14:32</p>
+            <h3><?php echo esc_html( rgar( $stap, 'titel' ) ); ?></h3>
+            <?php if ( '' !== trim( (string) rgar( $stap, 'tekst' ) ) ) : ?>
+            <p><?php echo sokkies_kop( $stap['tekst'] ); ?></p>
+            <?php endif; ?>
           </div>
-          <div class="thanks-step">
-            <span class="thanks-step-dot">2.</span>
-            <h3>Voel de kwaliteit</h3>
-            <p>Check de stof, de pasvorm en de afwerking in het echt.</p>
-          </div>
-          <div class="thanks-step">
-            <span class="thanks-step-dot">3.</span>
-            <h3>Klaar voor je eigen ontwerp?</h3>
-            <p>Vraag een offerte aan of start direct de configurator.</p>
-          </div>
+          <?php endforeach; ?>
         </div>
       </div>
 
       <div class="suggestion-outer">
         <div class="container-md">
-          <h2>Terwijl je wacht</h2>
+          <h2><?php echo esc_html( $wachttitel ); ?></h2>
           <div class="wait-grid">
-            <a href="<?php echo esc_url( home_url( '/downloads/' ) ); ?>" class="wait-card">
-              <div class="wait-img"><img src="<?php echo esc_url( $assets_uri ); ?>media/Voeten-in-de-lucht.png" alt=""></div>
+            <?php
+            foreach ( $kaarten as $kaart ) :
+	            // Eigen kaart uit het CMS of een van de standaardkaarten.
+	            $link = rgar( $kaart, 'link' );
+	            $url  = is_array( $link ) ? rgar( $link, 'url' ) : '';
+	            if ( ! $url ) { $url = home_url( rgar( $kaart, 'pad', '/' ) ); }
+	            $foto = rgar( $kaart, 'foto' );
+	            $src  = is_array( $foto ) ? rgar( $foto, 'url' ) : '';
+	            if ( ! $src ) { $src = $assets_uri . 'media/' . rgar( $kaart, 'bestand' ); }
+	            $alt  = is_array( $foto ) ? rgar( $foto, 'alt' ) : '';
+            ?>
+            <a href="<?php echo esc_url( $url ); ?>" class="wait-card"<?php echo ( is_array( $link ) && rgar( $link, 'target' ) ) ? ' target="' . esc_attr( $link['target'] ) . '" rel="noopener"' : ''; ?>>
+              <div class="wait-img"><img src="<?php echo esc_url( $src ); ?>" alt="<?php echo esc_attr( $alt ); ?>"></div>
               <div class="wait-body">
-                <span class="wait-tag">Brochure</span>
-                <h3>Download onze brochure 2026</h3>
-                <p>Onze volledige collectie + voorbeelden in één PDF.</p>
+                <?php if ( rgar( $kaart, 'tag' ) ) : ?>
+                <span class="wait-tag"><?php echo esc_html( $kaart['tag'] ); ?></span>
+                <?php endif; ?>
+                <h3><?php echo esc_html( rgar( $kaart, 'titel' ) ); ?></h3>
+                <p><?php echo esc_html( rgar( $kaart, 'tekst' ) ); ?></p>
                 <span class="wait-link">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
-                    <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">
-                      <path id="Path_3670" data-name="Path 3670" d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
-                      <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
-                    </g>
-                  </svg>
+                  <?php echo $pijl; // phpcs:ignore WordPress.Security.EscapeOutput -- vaste SVG hierboven ?>
                   Bekijk
                 </span>
               </div>
             </a>
-  
-            <a href="<?php echo esc_url( home_url( '/reviews-en-cases-detail/' ) ); ?>" class="wait-card">
-              <div class="wait-img"><img src="<?php echo esc_url( $assets_uri ); ?>media/Sokkies_FleurBoerdonk_2.png" alt=""></div>
-              <div class="wait-body">
-                <span class="wait-tag">Case</span>
-                <h3>Lees hoe een logistieke partner hun sokken liet bedrukken</h3>
-                <p>Probleem, aanpak en resultaten.</p>
-                <span class="wait-link">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
-                    <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">
-                      <path id="Path_3670" data-name="Path 3670" d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
-                      <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
-                    </g>
-                  </svg>
-                  Bekijk
-                </span>
-              </div>
-            </a>
-  
-            <a href="<?php echo esc_url( home_url( '/reviews-en-cases/' ) ); ?>" class="wait-card">
-              <div class="wait-img"><img src="<?php echo esc_url( $assets_uri ); ?>media/timeline-img6.png" alt=""></div>
-              <div class="wait-body">
-                <span class="wait-tag">Inspiratie</span>
-                <h3>Bekijk onze inspiration gallery</h3>
-                <p>Honderden ontwerpen van bestaande klanten.</p>
-                <span class="wait-link">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
-                    <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">
-                      <path id="Path_3670" data-name="Path 3670" d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
-                      <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
-                    </g>
-                  </svg>
-                  Bekijk
-                </span>
-              </div>
-            </a>
+            <?php endforeach; ?>
           </div>
         </div>
       </div>
@@ -108,8 +148,8 @@ $assets_uri = get_template_directory_uri() . '/assets/';
         <div class="container-md">
           <div class="follow-inner">
             <div class="follow-left">
-              <h2>Volg ons voor inspiratie</h2>
-              <p>Nieuwe ontwerpen, achter-de-schermen, case-studies.</p>
+              <h2><?php echo esc_html( $volgtitel ); ?></h2>
+              <p><?php echo esc_html( $volgtekst ); ?></p>
               <div class="follow-socials">
                 <a href="#" class="follow-social">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20.923" height="20" viewBox="0 0 20.923 20">
@@ -141,7 +181,7 @@ $assets_uri = get_template_directory_uri() . '/assets/';
                 </a>
               </div>
             </div>
-  
+
             <form class="newsletter-card" id="newsletterForm">
               <h3>Ja, ik wil graag op de hoogte gehouden worden van kortingen, nieuws en aanbiedingen.</h3>
               <input type="email" class="quote-input newsletter-input" name="email" placeholder="voorbeeld@domeinnaam.nl" required>
@@ -157,3 +197,21 @@ $assets_uri = get_template_directory_uri() . '/assets/';
         </div>
       </div>
     </section>
+<?php
+/* De formulieren onthouden ingevulde velden in sessionStorage, zodat een
+ * verversing niets weggooit. Dat opruimen hing aan gform_confirmation_loaded
+ * — en dat event vuurt NIET meer nu de formulieren doorverwijzen in plaats
+ * van een bevestiging in de pagina te tonen (nagemeten: de opgeslagen sleutel
+ * bleef staan na een geslaagde verzending). Zonder dit stukje krijgt de
+ * bezoeker zijn oude antwoorden terug zodra hij opnieuw naar het formulier
+ * gaat. Wie hier komt, is klaar met invullen — dus alles wissen. */
+?>
+<script>
+(function () {
+  try {
+    Object.keys(sessionStorage)
+      .filter(function (k) { return k.indexOf('sokkies-formulier-') === 0; })
+      .forEach(function (k) { sessionStorage.removeItem(k); });
+  } catch (e) {}
+})();
+</script>
