@@ -1170,6 +1170,36 @@ add_action( 'acf/init', function () {
 						),
 					),
 
+					/* Blogoverzicht: beige kop met kruimelpad, titel en
+					   categoriechips, daaronder het kaartraster. Kop en raster
+					   zitten in ÉÉN layout omdat de chips in het ontwerp op het
+					   beige vlak staan — met een losse kop-sectie ertussen zou
+					   die achtergrond precies op de verkeerde plek ophouden. */
+					'layout_blog_overzicht' => array(
+						'key'        => 'layout_blog_overzicht',
+						'name'       => 'blog_overzicht',
+						'label'      => 'Blogoverzicht (kop + filters + kaarten)',
+						'display'    => 'block',
+						'acfe_flexible_category'  => array( 'Cases' ),
+						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/case_grid.png',
+						'sub_fields' => array(
+							array( 'key' => 'field_bo_breadcrumb', 'label' => 'Kruimelpad-label', 'name' => 'breadcrumb', 'type' => 'text', 'instructions' => 'Leeg = "Blogs".' ),
+							array( 'key' => 'field_bo_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Tekst tussen [haken] wordt geel. Leeg = "Inzichten & inspiratie".' ),
+							array( 'key' => 'field_bo_subtekst', 'label' => 'Subtekst', 'name' => 'subtekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '', 'instructions' => 'Optionele regel onder de titel. Leeg = geen subtekst, zoals in het ontwerp.' ),
+							array( 'key' => 'field_bo_alles', 'label' => 'Label van de eerste chip', 'name' => 'alles_label', 'type' => 'text', 'instructions' => 'Leeg = "Alles".' ),
+							array(
+								'key'           => 'field_bo_blogs',
+								'label'         => 'Blogs',
+								'name'          => 'blogs',
+								'type'          => 'relationship',
+								'post_type'     => array( 'sokkies_blog' ),
+								'filters'       => array( 'search' ),
+								'return_format' => 'id',
+								'instructions'  => 'Leeg = álle blogs (nieuwste eerst). Er verschijnen er 9; "Meer laden" toont de rest. De chips komen automatisch uit de categorieën die op de getoonde blogs staan, in de volgorde waarin de categorieën zijn aangemaakt.',
+							),
+						),
+					),
+
 					'layout_faq_pagina' => array(
 						'key'        => 'layout_faq_pagina',
 						'name'       => 'faq_pagina',
@@ -2571,6 +2601,49 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 					'param'    => 'post_type',
 					'operator' => '==',
 					'value'    => 'sokkies_case',
+				),
+			),
+		),
+	) );
+
+	// —— Veldgroep op de Blog-CPT ——
+	//
+	// De DATUM staat hier bewust NIET tussen: die komt uit de
+	// publicatiedatum van WordPress zelf (rechterkolom bij het bewerken) en
+	// wordt op de voorkant Nederlands opgemaakt. Een los datumveld ernaast
+	// levert alleen maar twee data op die uit elkaar kunnen lopen.
+	// De categorieën komen uit de taxonomie 'Blogcategorieën'.
+	acf_add_local_field_group( array(
+		'key'    => 'group_sokkies_blog',
+		'title'  => 'Bloggegevens',
+		'fields' => array(
+			array( 'key' => 'field_blog_foto', 'label' => 'Uitgelichte afbeelding', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Staat groot boven het artikel en op de kaart in het overzicht.' ),
+			array( 'key' => 'field_blog_auteur', 'label' => 'Auteur', 'name' => 'auteur', 'type' => 'text', 'instructions' => 'De naam achter "Auteur:" boven het artikel. Leeg = de regel valt weg.' ),
+			array( 'key' => 'field_blog_intro', 'label' => 'Intro', 'name' => 'intro', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'instructions' => 'De alinea('."'".'s) boven de eerste tussenkop.' ),
+			array(
+				'key'          => 'field_blog_secties',
+				'label'        => 'Tekstblokken',
+				'name'         => 'secties',
+				'type'         => 'repeater',
+				'layout'       => 'block',
+				'button_label' => 'Tekstblok toevoegen',
+				'instructions' => 'Elk blok is een tussenkop met tekst eronder. De nummering (1. 2. 3.) telt vanzelf mee — die hoef je niet zelf te typen.',
+				'sub_fields'   => array(
+					array( 'key' => 'field_blog_sectie_kop', 'label' => 'Tussenkop', 'name' => 'kop', 'type' => 'text' ),
+					array( 'key' => 'field_blog_sectie_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0 ),
+				),
+			),
+			array( 'key' => 'field_blog_tab_slot', 'label' => 'Afsluitblok', 'type' => 'tab' ),
+			array( 'key' => 'field_blog_slot_kop', 'label' => 'Kop', 'name' => 'slot_kop', 'type' => 'text', 'instructions' => 'Het blok onder de streep, bijv. "Deadline in zicht?". Leeg = het hele blok valt weg.' ),
+			array( 'key' => 'field_blog_slot_tekst', 'label' => 'Tekst', 'name' => 'slot_tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
+			array( 'key' => 'field_blog_slot_knop', 'label' => 'Knop', 'name' => 'slot_knop', 'type' => 'link', 'instructions' => 'Leeg = "Neem contact op" naar de contactpagina.' ),
+		),
+		'location' => array(
+			array(
+				array(
+					'param'    => 'post_type',
+					'operator' => '==',
+					'value'    => 'sokkies_blog',
 				),
 			),
 		),

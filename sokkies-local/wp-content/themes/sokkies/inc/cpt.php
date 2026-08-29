@@ -213,4 +213,60 @@ add_action( 'init', function () {
 		'show_admin_column' => true,
 		'hierarchical'      => true,
 	) );
+
+	// Blogs: titel = de kop van het artikel, de rest via ACF (net als de
+	// cases — dit thema gebruikt de standaardeditor nergens).
+	//
+	// LET OP de rewrite-slug: die is BEWUST enkelvoud 'blog', terwijl de
+	// overzichtspagina de slug 'blogs' krijgt. Precies zoals bij de cases
+	// ('cases' voor het posttype, 'reviews-en-cases' voor de pagina): een
+	// posttype-slug die gelijk is aan een paginaslug vecht om dezelfde URL
+	// en dan wint er willekeurig één.
+	register_post_type( 'sokkies_blog', array(
+		'labels' => array(
+			'name'               => 'Blogs',
+			'singular_name'      => 'Blog',
+			'menu_name'          => 'Blogs',
+			'add_new'            => 'Nieuw blog',
+			'add_new_item'       => 'Nieuw blog toevoegen',
+			'edit_item'          => 'Blog bewerken',
+			'new_item'           => 'Nieuw blog',
+			'view_item'          => 'Blog bekijken',
+			'search_items'       => 'Blogs zoeken',
+			'not_found'          => 'Geen blogs gevonden',
+			'not_found_in_trash' => 'Geen blogs in de prullenbak',
+			'all_items'          => 'Alle blogs',
+		),
+		'public'              => true,
+		'publicly_queryable'  => true,
+		'has_archive'         => false,
+		'rewrite'             => array( 'slug' => 'blog', 'with_front' => false ),
+		'show_ui'             => true,
+		'show_in_menu'        => true,
+		'menu_position'       => 31,
+		'menu_icon'           => 'dashicons-welcome-write-blog',
+		// 'title' voor de kop; de publicatiedatum komt uit WordPress zelf en
+		// wordt op de voorkant Nederlands opgemaakt.
+		'supports'            => array( 'title' ),
+		'hierarchical'        => false,
+		'exclude_from_search' => false,
+	) );
+
+	// De categorieën onder de titel op het overzicht (Style & trends,
+	// Tips & advies, Ideeën, Achtergrond). Meerdere per artikel: op de
+	// kaarten staan er in het ontwerp twee naast elkaar.
+	register_taxonomy( 'sokkies_blog_cat', 'sokkies_blog', array(
+		'labels' => array(
+			'name'          => 'Blogcategorieën',
+			'singular_name' => 'Categorie',
+			'menu_name'     => 'Categorieën',
+			'add_new_item'  => 'Nieuwe categorie toevoegen',
+			'edit_item'     => 'Categorie bewerken',
+			'all_items'     => 'Alle categorieën',
+		),
+		'public'            => false,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'hierarchical'      => true,
+	) );
 } );

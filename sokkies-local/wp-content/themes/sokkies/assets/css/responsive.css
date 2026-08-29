@@ -14548,3 +14548,23 @@
     justify-content:center;
   }
 }
+
+/* ===== Blogoverzicht en blogdetail =====
+   De blogkaarten dragen zowel .case-grid als .blog-grid; die laatste is
+   bewust specifieker (.case-grid.blog-grid) zodat de drie kolommen van het
+   ontwerp niet worden overschreven door de vier van de cases. Daardoor moet
+   het kolomaantal per band hier wél expliciet mee-afschalen. */
+@media (min-width:768px) and (max-width:991px){
+  .case-grid.blog-grid{ grid-template-columns:repeat(2,1fr); }
+}
+@media (min-width:521px) and (max-width:767px){
+  .case-grid.blog-grid{ grid-template-columns:repeat(2,1fr); }
+  .case-grid-section.blog-grid-section{ padding-bottom:180px; }
+}
+@media (max-width:520px){
+  .case-grid.blog-grid{ grid-template-columns:1fr; gap:16px; }
+  .case-grid-section.blog-grid-section{ padding-bottom:150px; }
+  /* de chips passen niet op één regel: gecentreerd laten afbreken */
+  .blog-filter{ justify-content:center; }
+  .blog-body{ padding-top:40px; }
+}

@@ -287,7 +287,7 @@ function sokkies_hoofdmenu() {
 			array( 'label' => 'Home',            'url' => home_url( '/' ),               'mega' => false, 'alleen_mobiel' => true,  'actief' => is_front_page() ),
 			array( 'label' => 'Sokkencollectie', 'url' => home_url( '/collectie/' ),     'mega' => true,  'alleen_mobiel' => false, 'actief' => is_page( 'collectie' ) ),
 			array( 'label' => 'Configurator',    'url' => home_url( '/configurator/' ),  'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( 'configurator' ) ),
-			array( 'label' => 'Inspiratie',      'url' => '#',                           'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( array( 'toepassingen', 'reviews-en-cases', 'downloads' ) ) ),
+			array( 'label' => 'Inspiratie',      'url' => '#',                           'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( array( 'toepassingen', 'reviews-en-cases', 'downloads', 'blogs' ) ) || is_singular( 'sokkies_blog' ) ),
 			array( 'label' => 'Werkwijze',       'url' => home_url( '/werkwijze/' ),     'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( 'werkwijze' ) ),
 			array( 'label' => 'Over ons',        'url' => home_url( '/over-ons/' ),      'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( 'over-ons' ) ),
 			array( 'label' => 'Contact',         'url' => home_url( '/contact/' ),       'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( 'contact' ) ),
@@ -295,6 +295,17 @@ function sokkies_hoofdmenu() {
 	}
 
 	$huidig = ( is_page() || is_singular() ) ? get_queried_object_id() : 0;
+
+	// Een blogartikel hoort bij het blogoverzicht. Zonder dit licht er op een
+	// artikel géén menu-item op, want 'actief_bij' wijst naar pagina's en elk
+	// los artikel daarin opnemen is ondoenlijk.
+	if ( is_singular( 'sokkies_blog' ) ) {
+		$overzicht = get_page_by_path( 'blogs' );
+		if ( $overzicht ) {
+			$huidig = $overzicht->ID;
+		}
+	}
+
 	$items  = array();
 
 	foreach ( $rijen as $rij ) {
@@ -456,7 +467,7 @@ function sokkies_footermenu() {
 				array( 'label' => 'Downloads & templates',  'url' => home_url( '/downloads/' ),            'target' => '' ),
 				array( 'label' => 'Veelgestelde vragen',    'url' => home_url( '/veelgestelde-vragen/' ),  'target' => '' ),
 				array( 'label' => 'Projecten',              'url' => '#',                                  'target' => '' ),
-				array( 'label' => 'Blogs',                  'url' => '#',                                  'target' => '' ),
+				array( 'label' => 'Blogs',                  'url' => home_url( '/blogs/' ),                'target' => '' ),
 				array( 'label' => 'Sokkies geeft terug',    'url' => '#',                                  'target' => '' ),
 			),
 		);

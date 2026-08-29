@@ -593,20 +593,37 @@
     })();
 
 
-    // ===== Cases-overzicht: filters + meer laden =====
-    (function () {
-      const grid = document.getElementById('caseGrid');
+    // ===== Filterbaar kaartraster: cases-overzicht én blogoverzicht =====
+    // Stond eerst vast op #caseGrid/#caseMore. Het blogoverzicht gebruikt
+    // exact hetzelfde raster, dus dit draait nu PER SECTIE met
+    // [data-filtergrid] — twee rasters op één pagina zouden elkaar anders in
+    // de weg zitten. Twee dingen zijn erbij gekomen voor de blog:
+    //   - een kaart mag MEERDERE waarden per filter hebben (een blog staat in
+    //     twee categorieën), dus vergelijken we op losse woorden in plaats van
+    //     de hele waarde. Bij één waarde (de cases) verandert er niets.
+    //   - hoeveel kaarten er per klik bij komen staat in data-step
+    //     (cases 8, blog 9); zonder attribuut blijft het 8, zoals het was.
+    document.querySelectorAll('[data-filtergrid]').forEach(function (wrap) {
+      const grid = wrap.querySelector('.case-grid');
       if (!grid) return;
       const cards  = Array.from(grid.querySelectorAll('.case-card'));
-      const groups = document.querySelectorAll('.case-filter');
-      const empty  = document.getElementById('caseEmpty');
-      const more   = document.getElementById('caseMore');
-      const STEP   = 8;
+      const groups = wrap.querySelectorAll('.case-filter');
+      const empty  = wrap.querySelector('.js-filter-empty');
+      const more   = wrap.querySelector('.js-filter-more');
+      const STEP   = parseInt(wrap.dataset.step, 10) || 8;
       let shown = STEP;
 
       function activeValue(group) {
         const chip = group.querySelector('.chip.is-active');
         return chip ? chip.dataset.value : 'all';
+      }
+
+      // Kaartwaarde kan één term zijn ("sport") of meerdere, spatiegescheiden
+      // ("style-trends tips-advies").
+      function heeftWaarde(card, key, val) {
+        const ruw = card.dataset[key];
+        if (!ruw) return false;
+        return ruw.split(/\s+/).indexOf(val) !== -1;
       }
 
       function render() {
@@ -616,7 +633,7 @@
         // Cards that survive the current filter combination
         const matches = cards.filter(card =>
           Object.entries(filters).every(([key, val]) =>
-            val === 'all' || card.dataset[key] === val));
+            val === 'all' || heeftWaarde(card, key, val)));
 
         cards.forEach(c => { c.hidden = true; });
         matches.slice(0, shown).forEach(c => { c.hidden = false; });
@@ -643,7 +660,7 @@
       if (more) more.addEventListener('click', () => { shown += STEP; render(); });
 
       render();
-    })();
+    });
 
 
     // ===== Product-detail: galerij, specs-accordion en "Bekijk ook deze" =====

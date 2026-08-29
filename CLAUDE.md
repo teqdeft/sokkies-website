@@ -2439,6 +2439,100 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   vier social links staan op href="#", het nieuwsbriefformulier is een stub
   zonder verzending, en 'brochure 2026' veroudert jaarlijks.
 
+  BLOG: CPT + OVERZICHT + DETAIL (2026-08-28, opdracht Kulwant met twee
+  ontwerpscreenshots; "alleen lokaal, niets committen"). Er was nog niets
+  blog-achtigs: geen CPT, geen htmlv-pagina. De screenshots zijn de enige
+  bron.
+  MAXIMAAL HERGEBRUIK, want het ontwerp is bijna letterlijk het
+  cases-overzicht: dezelfde .simple-hero (beige kop), .case-filter/.chip,
+  .case-card met het pijltje en "Bekijk", .case-more met "Meer laden" en
+  dezelfde slot-CTA. Nieuw is alleen: drie kolommen i.p.v. vier, de chips op
+  het beige vlak, en op het detail de smalle tekstkolom met de foto die over
+  de grens beige/wit valt.
+  WAT IS ER BIJGEKOMEN:
+    inc/cpt.php            sokkies_blog + taxonomie sokkies_blog_cat
+    inc/acf-fields.php     group_sokkies_blog + layout blog_overzicht
+    section-blog_overzicht.php
+    single-sokkies_blog.php
+    style.css / responsive.css  de .blog-*-regels
+  REWRITE-SLUG: het posttype staat op 'blog' (enkelvoud) en de
+  overzichtspagina op 'blogs'. Zelfde truc als bij de cases ('cases' vs
+  'reviews-en-cases'): een posttype-slug die gelijk is aan een paginaslug
+  vecht om dezelfde URL.
+  MENU_POSITION: eerst 28 gepakt, maar dat botste met sokkies_logo. Nu 31
+  (26 t/m 30 waren bezet).
+  GEDEELDE FILTER-JS AANGEPAST (custom.js): stond vast op #caseGrid/#caseMore
+  en draait nu per sectie via [data-filtergrid]. Twee dingen erbij, allebei
+  nodig voor de blog:
+    - kaarten mogen MEERDERE waarden per filter hebben (een blog staat vaak
+      in twee categorieën). Vergelijking ging van === naar losse woorden;
+      bij één waarde verandert er niets voor de cases.
+    - aantal per klik uit data-step (cases 8, blog 9).
+  Het cases-overzicht is daarna nagemeten: 24 kaarten, 8 zichtbaar, filteren
+  werkt, "Meer laden" gaat naar 16 — identiek aan ervoor.
+  SPECIFICITEIT — VALKUIL DIE TOESLOEG: .blog-hero/.blog-grid werden
+  overschreven door .simple-hero/.case-grid uit responsive.css (zelfde
+  gewicht, later bestand). De hero-padding kwam daardoor op 60px en de foto
+  lag op mobiel volledig ín het beige. Opgelost door de selectors te
+  verzwaren (.simple-hero.blog-detail-hero, .case-grid.blog-grid). GEVOLG:
+  het kolomaantal moest daarna wél expliciet per band mee-afschalen, want de
+  responsive .case-grid-regels raken de blog nu niet meer. Die staan
+  onderaan responsive.css.
+  FOTO-OVERLAP FLUÏDE: de uitgelichte foto ligt met de helft van zijn hoogte
+  op het beige. Met een vast getal (-250px) klopte dat alleen op desktop.
+  Nu calc(min(880px,100%) * -0.28125) — 0.28125 = (9/16)/2, de halve hoogte
+  van een 16:9-foto. Nagemeten 50/50 op 1440 én 375.
+  SOKKENFOTO VAN DE SLOT-CTA staat absoluut, 330px bóven die sectie. Met de
+  standaard 70px onder het raster lag hij over de onderste kaartenrij; de
+  blog-rastersectie heeft daarom 270px onderruimte.
+  MENU'S ZITTEN IN DE DATABASE, NIET IN DE CODE-FALLBACK. De fallback in
+  functions.php is aangepast voor de volledigheid, maar hoofdmenu en
+  footermenu komen uit ACF-opties — daar zijn de footerlink "Blogs" (was #)
+  en 'actief_bij' van Inspiratie bijgewerkt. Voor artikelen is er wél code
+  bij gekomen: een sokkies_blog-single telt voor het menu als de
+  blogoverzichtspagina, anders licht er op een artikel niets op.
+  DATUM komt uit de publicatiedatum van WordPress (geen apart ACF-veld, dat
+  levert twee data die uiteen kunnen lopen) en gaat door sokkies_datum_nl().
+  GETEST: 12 testblogs, 4 categorieën, overzicht op 1440/900/375 (3/2/1
+  kolommen, geen horizontale scroll), filteren incl. blogs met twee
+  categorieën, "Meer laden" 9 -> 12, detailpagina met alle velden, drie
+  gerelateerde kaarten, en alle 16 bestaande pagina's nog 200 zonder
+  PHP-fouten.
+  NOG OPEN: de nav-link "Inspiratie" zelf blijft een #-stub (bestond al).
+
+  ECHTE BLOGDATA GEÏMPORTEERD VAN SOKKIES.COM (2026-08-28, aanwijzing
+  Kulwant: "neem de data van sokkies.com/nl/blogs/"). De 12 verzonnen
+  testblogs zijn vervangen door de 9 echte artikelen, met hun categorieën,
+  uitgelichte foto's (grootste variant uit de srcset, naar de lokale
+  mediabibliotheek), datums en volledige tekst. Chipvolgorde en
+  artikelvolgorde zijn nagemeten gelijk aan de live site.
+  BELANGRIJKE VONDST — VIER ARTIKELEN ZIJN OP DE LIVE SITE KAPOT: hun
+  NL-url stuurt met een 301 door naar een Engelse slug die 404 geeft
+  ("Oeps, deze pagina is kwijt"):
+    /nl/creatieve-manieren-om-sokken-te-bedrukken/
+    /nl/sokken-bedrukken-in-kleine-oplage-al-vanaf-50-stuks/
+    /nl/duurzaam-kerstcadeau-personeel/
+    /nl/kerstcadeaus-bedrukte-sokken/
+  Voor die vier bestaat alleen nog wat het overzicht toont: titel,
+  categorie, foto en de afgekapte samenvatting ("...de perfecte…"). Die
+  samenvatting staat er nu als intro; DE VOLLEDIGE TEKST MOET VAN KULWANT
+  KOMEN (of uit een back-up van de oude site). Hun datums zijn geschat
+  tussen de buren in, zodat de overzichtsvolgorde klopt met live.
+  Live meldt ook geen auteur; alleen "Spoedlevering" heeft er een
+  ("Rick Vissers", conform het ontwerpscreenshot).
+  De vijf werkende artikelen zijn volledig: "Spoedlevering" met 6
+  genummerde blokken plus het afsluitblok ("Deadline in zicht?" — in de
+  bron het laatste tekstblok, hier verplaatst naar het aparte slotveld
+  zodat er geen "7." voor komt te staan), "Sokkenmaten" is bewust één
+  doorlopende intro met 6 lijsten (de bron heeft geen tussenkoppen).
+  CATEGORIE-EIGENAARDIGHEID VAN DE BRON: er bestaat zowel "Style & trends"
+  als "Stijl & trends" — dat is op sokkies.com zelf zo (vermoedelijk een
+  dubbeling in hun CMS). Bewust allebei overgenomen; samenvoegen is een
+  redactionele keuze aan Kulwant.
+  LET OP: termnamen staan in de database als "Style &amp; trends" — dat is
+  normaal WordPress-gedrag (wp_insert_term codeert de &). esc_html codeert
+  niet dubbel, dus de voorkant toont gewoon "Style & trends"; nagemeten.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

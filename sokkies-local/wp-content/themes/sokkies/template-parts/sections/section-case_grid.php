@@ -25,7 +25,7 @@ foreach ( $case_ids as $case_id ) {
 	$kaarten[] = array( 'id' => $case_id, 'type' => $type, 'branche' => $branche );
 }
 ?>
-<section class="case-grid-section" id="cases">
+<section class="case-grid-section" id="cases" data-filtergrid data-step="8">
   <div class="container">
     <h2><?php echo sokkies_kop( $titel ); ?></h2>
 
@@ -73,10 +73,10 @@ foreach ( $case_ids as $case_id ) {
       <?php endforeach; ?>
     </div>
 
-    <p id="caseEmpty" hidden>Geen cases gevonden voor deze combinatie.</p>
+    <p id="caseEmpty" class="js-filter-empty" hidden>Geen cases gevonden voor deze combinatie.</p>
 
     <div class="case-more">
-      <button type="button" class="cta-light" id="caseMore">Meer laden</button>
+      <button type="button" class="cta-light js-filter-more" id="caseMore">Meer laden</button>
     </div>
   </div>
 </section>

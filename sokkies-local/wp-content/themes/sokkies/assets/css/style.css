@@ -5051,7 +5051,135 @@ font-weight: 600;
     justify-content:center;
     margin-top:34px;
   }
-  
+
+  /* Blogoverzicht — leunt op de opmaak van het cases-overzicht hierboven.
+     Alleen dit wijkt af: de filterchips staan nog op het beige vlak en
+     gecentreerd, en het raster heeft drie kolommen in plaats van vier. */
+  .simple-hero.blog-hero{
+    /* minder ruimte onderaan dan .simple-hero: de chips vullen die nu */
+    padding-bottom:55px;
+  }
+  .simple-hero.blog-hero .simple-hero-content{
+    margin-bottom:30px;
+  }
+  .blog-filter{
+    justify-content:center;
+    gap:11px;
+  }
+  .case-grid.blog-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+  .case-grid-section.blog-grid-section{
+    /* De sokkenfoto van de slot-CTA staat absoluut, 330px bóven die sectie.
+       Met de standaard 70px eronder kwam hij over de onderste kaartenrij
+       heen te liggen; hier hoort hij onder de kaarten te beginnen, zoals in
+       het ontwerp. */
+    padding-bottom:270px;
+  }
+  .blog-leeg{
+    text-align:center;
+    font-size:var(--body-font-size);
+    color:var(--text);
+  }
+
+  /* ---- Blogdetail ---- */
+  .simple-hero.blog-detail-hero{
+    /* Ruimte voor de uitgelichte foto, die over de grens beige/wit heen valt.
+       0.28125 = (9/16)/2, oftewel de halve hoogte van een 16:9-foto. Door
+       met de fotobreedte te rekenen klopt de overlap op ELKE schermbreedte;
+       een vast getal zette de foto op mobiel volledig ín het beige. */
+    padding-bottom:calc(min(880px, 100%) * 0.28125 + 30px);
+  }
+  .simple-hero.blog-detail-hero .simple-hero-content{
+    margin-bottom:18px;
+  }
+  .simple-hero.blog-detail-hero .simple-hero-content h1{
+    /* Blogkoppen zijn lang; in het ontwerp breken ze over twee regels in
+       plaats van de volle containerbreedte te vullen. Even breed als de
+       uitgelichte foto eronder, dan staan ze samen in één kolom. */
+    max-width:880px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .blog-meta{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-size:var(--body-sm-font-size);
+    color:var(--text);
+  }
+  .blog-meta-auteur span{
+    font-weight:600;
+    text-decoration:underline;
+  }
+  .blog-meta-punt{ opacity:.6; }
+  .blog-meta-tags{ margin-left:6px; }
+
+  .blog-artikel{
+    background:#fff;
+    padding:0 0 90px;
+  }
+  .blog-foto{
+    width:min(880px, 100%);
+    /* de helft van de foto ligt op het beige vlak hierboven — zie de
+       toelichting bij .blog-detail-hero voor de 0.28125 */
+    margin:calc(min(880px, 100%) * -0.28125) auto 0;
+    position:relative;
+    z-index:1;
+  }
+  .blog-foto img{
+    width:100%;
+    aspect-ratio:16/9;
+    object-fit:cover;
+    border-radius:25px;
+    display:block;
+  }
+  .blog-body{
+    max-width:720px;
+    margin:0 auto;
+    padding-top:60px;
+  }
+  .blog-body p{
+    font-size:var(--body-font-size);
+    line-height:1.65;
+    color:var(--text);
+    margin-bottom:18px;
+  }
+  .blog-body p:last-child{ margin-bottom:0; }
+  .blog-blok{ margin-top:34px; }
+  .blog-body h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    color:var(--text);
+    margin-bottom:12px;
+  }
+  .blog-body ul,
+  .blog-body ol{
+    margin:0 0 18px 20px;
+    font-size:var(--body-font-size);
+    line-height:1.65;
+    color:var(--text);
+  }
+  .blog-body li{ margin-bottom:6px; }
+  .blog-body a{ color:var(--text); text-decoration:underline; }
+  .blog-scheiding{
+    border:0;
+    border-top:1px solid var(--border-light);
+    margin:50px 0 40px;
+  }
+  .blog-slot h2{ margin-bottom:10px; }
+  .blog-slot p{ margin-bottom:22px; }
+  .blog-slot .cta-light{ display:inline-flex; }
+
+  .blog-others{
+    background:var(--light-beige);
+    text-align:center;
+  }
+  .blog-others .case-grid{ text-align:left; }
+
   .designed-beige:before{
     background: var(--light-beige);
   }
