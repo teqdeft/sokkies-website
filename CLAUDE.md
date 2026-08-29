@@ -1985,14 +1985,24 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   GETEST door tijdelijk opgemaakte inhoud in de lokale database te zetten:
   vet, <br>, een <ul> en een link overleven sokkies_rijke_tekst() en worden
   correct getoond. Daarna teruggezet naar de oorspronkelijke tekst.
-  OPEN VRAAG — LOKALE EN LIVE DATABASE LOPEN UITEEN. De GOTS-tekst is op
-  live 2091 tekens en lokaal 347; de live-tekst komt in de lokale database
-  NERGENS voor (gecontroleerd met een LIKE op postmeta). De databases zijn
-  dus NIET dezelfde. Tegelijk staat het offerteformulier van vandaag —
-  inclusief de velden of-rij-break die hier lokaal zijn aangemaakt — wél
-  compleet op live. Die twee waarnemingen zijn niet met elkaar te rijmen en
-  de oorzaak is niet achterhaald. Van belang omdat het bepaalt of lokaal
-  testen veilig is: uitzoeken vóór er weer testinzendingen worden gedaan.
+  OPGELOST 2026-08-28 — DE 'ONVERKLAARBARE' DATABASE-PARITEIT: de plugin
+  WP MIGRATE DB staat lokaal actief. Iemand (Kulwant of de collega) pusht
+  daarmee periodiek de LOKALE database naar dev.studioubique.com, met
+  domein-herschrijving (de footerlink kwam op live netjes als
+  dev.studioubique.com-url aan). Bewijs: /bedankt-contact/, /bedankt-sample/,
+  het sampleformulier (gform_6) en het complete blogoverzicht — allemaal
+  alleen lokaal aangemaakt — stonden zonder eigen actie op live, inclusief
+  lokaal geüploade afbeeldingen, terwijl de CI-deploy uploads en database
+  aantoonbaar NIET meeneemt (deploy.yml sluit uploads uit; geen .sql in de
+  repo). De sync loopt met vertraging: live toonde de blogvolgorde van
+  VÓÓR de datumcorrectie van diezelfde middag.
+  GEVOLGEN: (1) lokaal is GEEN geïsoleerde sandbox — inhoud die hier wordt
+  aangemaakt verschijnt op de dev-site; (2) testinzendingen en testcontent
+  dus altijd meteen opruimen (gebeurde al); (3) de eerdere waarneming dat
+  de GOTS-tekst uiteenliep was gewoon een momentopname tussen twee pushes.
+  De multi-machine-regel onderaan ("NOOIT een lokale DB naar live pushen")
+  beschrijft dus niet de werkelijke praktijk — navragen bij Kulwant wat de
+  bedoeling is.
 
   'LEES MEER' OP DE CERTIFICATEN-TABS + CERTIFICAATLOGO (2026-08-26, twee
   meldingen Kulwant: "de tweede tab heeft veel content, zelfde Lees meer als
