@@ -14568,3 +14568,11 @@
   .blog-filter{ justify-content:center; }
   .blog-body{ padding-top:40px; }
 }
+
+/* Blogdetail: fotorijen stapelen in de smalle banden */
+@media (max-width:767px){
+  .blog-fotos-2,
+  .blog-fotos-3{ grid-template-columns:1fr; }
+  .blog-review-sterren{ margin-left:0; width:100%; }
+  .blog-review-persoon{ flex-wrap:wrap; }
+}

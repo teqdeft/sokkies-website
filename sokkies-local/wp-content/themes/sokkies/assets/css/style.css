@@ -5199,6 +5199,64 @@ font-weight: 600;
     line-height:32px;
     margin:26px 0 10px;
   }
+  /* Fotorij uit het blok Foto's: 1 = volle breedte, 2-3 naast elkaar.
+     Zelfde afronding als de overige blogbeelden. */
+  .blog-fotos{
+    display:grid;
+    gap:20px;
+    margin:34px 0;
+  }
+  .blog-fotos-2{ grid-template-columns:repeat(2,1fr); }
+  .blog-fotos-3{ grid-template-columns:repeat(3,1fr); }
+  .blog-fotos img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:15px;
+    display:block;
+  }
+
+  /* Reviewblok in het artikel — de kaartopmaak van de testimonials,
+     maar dan als los blok met de persoon eronder (sokkies.com-structuur). */
+  .blog-review{
+    border:1px solid var(--text);
+    border-radius:25px;
+    padding:30px 34px;
+    margin:34px 0;
+  }
+  .blog-review-quote{
+    font-weight:600;
+    margin-bottom:18px;
+  }
+  .blog-review-persoon{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .blog-review-persoon > img{
+    width:56px;
+    height:56px;
+    object-fit:cover;
+    border-radius:50%;
+    /* de algemene .blog-body img-regel centreert met margin:auto — in deze
+       flexrij zou dat de vrije ruimte opslokken en alles naar het midden
+       duwen */
+    margin:0;
+  }
+  .blog-review-wie{
+    display:flex;
+    flex-direction:column;
+  }
+  .blog-review-wie span{
+    font-size:var(--body-sm-font-size);
+    opacity:.75;
+  }
+  .blog-review-sterren{
+    margin-left:auto;
+    color:var(--green);
+    letter-spacing:1px;
+  }
+
   .blog-scheiding{
     border:0;
     border-top:1px solid var(--border-light);

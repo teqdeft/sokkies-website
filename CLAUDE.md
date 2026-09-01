@@ -2501,6 +2501,27 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   en 'actief_bij' van Inspiratie bijgewerkt. Voor artikelen is er wél code
   bij gekomen: een sokkies_blog-single telt voor het menu als de
   blogoverzichtspagina, anders licht er op een artikel niets op.
+  ARTIKELBLOKKEN: TEKST, FOTORIJEN EN REVIEWS (2026-08-29, verzoek Kulwant
+  naar het voorbeeld van sokkies.com/argentina/): het secties-veld van de
+  blog is omgezet van repeater naar FLEXIBLE CONTENT met drie blokken —
+  Tekst (kop+wysiwyg), Foto's (galerij: 1 = vol, 2-3 naast elkaar) en
+  Review/testimonial (post_object naar sokkies_review + optionele
+  foto/logo, gerenderd als kaart met quote, persoon en groene sterren).
+  MIGRATIE WAS NODIG: een repeater bewaart het AANTAL rijen, flexible
+  content een array layoutnamen — zonder migratie leest ACF de oude
+  blokken niet. De oude waarden zijn RUW uit postmeta gelezen (niet via
+  get_field, dat door de nieuwe definitie zou gaan) en teruggeschreven
+  als tekst-layouts; alle 9 artikelen gecontroleerd.
+  VALKUIL DIE TOESLOEG: de algemene .blog-body img-regel centreert met
+  margin:auto — in de flexrij van de reviewkaart slokte dat de vrije
+  ruimte op en schoof alles naar het midden; overschreven met margin:0.
+  LET OP HEADLESS: de mobiele screenshot leek rechts afgekapte tekst te
+  tonen; in de echte browser op 375px is scrollWidth exact 375 en klopt
+  alles — het was een headless-artefact (alleen de topbar-marquee steekt
+  bewust buiten zijn geknipte container).
+  GETEST: Argentinie-artikel opgebouwd zoals live (tekst, fotorij van 3,
+  tekst, fotorij van 2, review Harry P. Lynch met OneTreePlanted-logo,
+  slottekst) — desktop en mobiel nagemeten.
   AFBEELDINGEN IN DE BLOGTEKST (2026-08-29, verzoek Kulwant: "ck editor
   met afbeeldingen"): media_upload staat aan op de intro- en
   tekstblok-velden (de knop "Media toevoegen" boven de editor). BEWUST een
