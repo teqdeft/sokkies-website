@@ -2619,7 +2619,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 		'fields' => array(
 			array( 'key' => 'field_blog_foto', 'label' => 'Uitgelichte afbeelding', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Staat groot boven het artikel en op de kaart in het overzicht.' ),
 			array( 'key' => 'field_blog_auteur', 'label' => 'Auteur', 'name' => 'auteur', 'type' => 'text', 'instructions' => 'De naam achter "Auteur:" boven het artikel. Leeg = de regel valt weg.' ),
-			array( 'key' => 'field_blog_intro', 'label' => 'Intro', 'name' => 'intro', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'instructions' => 'De alinea('."'".'s) boven de eerste tussenkop.' ),
+			array( 'key' => 'field_blog_intro', 'label' => 'Intro', 'name' => 'intro', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 1, 'instructions' => 'De alinea('."'".'s) boven de eerste tussenkop. Afbeeldingen kunnen via "Media toevoegen".' ),
 			array(
 				'key'          => 'field_blog_secties',
 				'label'        => 'Tekstblokken',
@@ -2630,7 +2630,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				'instructions' => 'Elk blok is een tussenkop met tekst eronder. De kop komt er letterlijk zo op de site — wil je nummering (1. 2. 3.), typ die dan zelf in de kop. Lijstjes maak je gewoon in het tekstveld.',
 				'sub_fields'   => array(
 					array( 'key' => 'field_blog_sectie_kop', 'label' => 'Tussenkop', 'name' => 'kop', 'type' => 'text' ),
-					array( 'key' => 'field_blog_sectie_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0 ),
+					array( 'key' => 'field_blog_sectie_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 1, 'instructions' => 'Ook afbeeldingen kunnen hier, via "Media toevoegen".' ),
 				),
 			),
 			array( 'key' => 'field_blog_tab_slot', 'label' => 'Afsluitblok', 'type' => 'tab' ),

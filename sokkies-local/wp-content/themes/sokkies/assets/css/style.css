@@ -5165,6 +5165,34 @@ font-weight: 600;
   }
   .blog-body li{ margin-bottom:6px; }
   .blog-body a{ color:var(--text); text-decoration:underline; }
+  /* Afbeeldingen uit de editor (media_upload staat aan op de blogvelden).
+     Zelfde afronding als de uitgelichte foto, nooit breder dan de kolom. */
+  .blog-body img{
+    max-width:100%;
+    height:auto;
+    border-radius:15px;
+    display:block;
+    margin:24px auto;
+  }
+  .blog-body figure{
+    margin:24px auto;
+  }
+  .blog-body figure img{ margin:0 auto; }
+  .blog-body figcaption{
+    font-size:var(--body-sm-font-size);
+    color:var(--text);
+    opacity:.7;
+    text-align:center;
+    margin-top:8px;
+  }
+  .blog-body h3{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    color:var(--text);
+    font-size:calc(var(--h2-font-size) - 8px);
+    margin:26px 0 10px;
+  }
   .blog-scheiding{
     border:0;
     border-top:1px solid var(--border-light);

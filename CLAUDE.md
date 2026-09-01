@@ -2501,6 +2501,16 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   en 'actief_bij' van Inspiratie bijgewerkt. Voor artikelen is er wél code
   bij gekomen: een sokkies_blog-single telt voor het menu als de
   blogoverzichtspagina, anders licht er op een artikel niets op.
+  AFBEELDINGEN IN DE BLOGTEKST (2026-08-29, verzoek Kulwant: "ck editor
+  met afbeeldingen"): media_upload staat aan op de intro- en
+  tekstblok-velden (de knop "Media toevoegen" boven de editor). BEWUST een
+  aparte renderfunctie sokkies_blog_tekst(): de gedeelde
+  sokkies_rijke_tekst() blijft afbeeldingen strippen, want in
+  FAQ-antwoorden en certificaten-tabs breken die de opmaak. Bijschriften
+  ([caption]) renderen naar figure/figcaption via nieuwe html5-themasupport
+  + do_shortcode. GETEST: afbeelding met bijschrift in een blok — figure,
+  figcaption en afronding kloppen; de lege afbeelding op de headless
+  screenshot was loading="lazy" (bestand serveert 200, 305KB).
   NUMMERING VAN DE TEKSTBLOKKEN (2026-08-29, verzoek Kulwant): NIET meer
   automatisch. De kop rendert letterlijk zoals in het CMS getypt; wie
   1. 2. 3. wil, typt dat zelf. De import is daarop nagelopen: de

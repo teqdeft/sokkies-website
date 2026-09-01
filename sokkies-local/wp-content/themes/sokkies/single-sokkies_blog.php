@@ -82,7 +82,7 @@ $andere = get_posts( array(
 
       <div class="blog-body">
         <?php if ( $intro ) : ?>
-        <div class="blog-intro"><?php echo sokkies_rijke_tekst( $intro ); ?></div>
+        <div class="blog-intro"><?php echo sokkies_blog_tekst( $intro ); ?></div>
         <?php endif; ?>
 
         <?php if ( $secties ) : ?>
@@ -95,7 +95,7 @@ $andere = get_posts( array(
           <h2><?php echo esc_html( $sectie['kop'] ); ?></h2>
           <?php endif; ?>
           <?php if ( ! empty( $sectie['tekst'] ) ) : ?>
-          <?php echo sokkies_rijke_tekst( $sectie['tekst'] ); ?>
+          <?php echo sokkies_blog_tekst( $sectie['tekst'] ); ?>
           <?php endif; ?>
         </div>
         <?php endforeach; ?>

@@ -10,6 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 function sokkies_setup() {
 	add_theme_support( 'title-tag' );
 	add_theme_support( 'post-thumbnails' );
+	// Bijschriften als <figure>/<figcaption> in plaats van de oude
+	// div.wp-caption — nodig sinds afbeeldingen in de blogtekst kunnen.
+	add_theme_support( 'html5', array( 'caption', 'gallery' ) );
 }
 add_action( 'after_setup_theme', 'sokkies_setup' );
 
@@ -248,6 +251,42 @@ function sokkies_rijke_tekst( $html ) {
 		'tr' => array(), 'caption' => array(),
 		'th' => array( 'colspan' => true, 'rowspan' => true, 'scope' => true ),
 		'td' => array( 'colspan' => true, 'rowspan' => true ),
+	);
+	return wp_kses( $html, $toegestaan );
+}
+
+/**
+ * Blogtekst renderen: als sokkies_rijke_tekst(), maar MET afbeeldingen.
+ *
+ * Bewust een aparte functie en geen vlag op de gedeelde helper: de
+ * FAQ-antwoorden en certificaten-tabs horen afbeeldingen juist te blijven
+ * strippen (daar breken ze de opmaak), en een boolean-parameter op een
+ * gedeelde helper wordt vroeg of laat op de verkeerde plek aangezet.
+ *
+ * do_shortcode eerst: een afbeelding met bijschrift staat in de editor als
+ * [caption]-shortcode en zou anders als letterlijke tekst verschijnen. Door
+ * de html5-themasupport rendert die naar <figure>/<figcaption>.
+ */
+function sokkies_blog_tekst( $html ) {
+	$html = do_shortcode( (string) $html );
+	$html = preg_replace( "#<(script|style)\b[^>]*>.*?</\1>#is", "", $html );
+	$toegestaan = array(
+		"p" => array(), "br" => array(), "strong" => array(), "em" => array(),
+		"b" => array(), "i" => array(), "u" => array(),
+		"a" => array( "href" => true, "target" => true, "rel" => true ),
+		"ul" => array(), "ol" => array(), "li" => array(),
+		"h3" => array(), "h4" => array(),
+		"img" => array(
+			"src" => true, "alt" => true, "width" => true, "height" => true,
+			"class" => true, "srcset" => true, "sizes" => true,
+			"loading" => true, "decoding" => true,
+		),
+		"figure" => array( "class" => true ),
+		"figcaption" => array( "class" => true ),
+		"table" => array(), "thead" => array(), "tbody" => array(), "tfoot" => array(),
+		"tr" => array(), "caption" => array(),
+		"th" => array( "colspan" => true, "rowspan" => true, "scope" => true ),
+		"td" => array( "colspan" => true, "rowspan" => true ),
 	);
 	return wp_kses( $html, $toegestaan );
 }
