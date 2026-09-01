@@ -110,13 +110,17 @@ $andere = get_posts( array(
           <?php endif; ?>
         </div>
         <?php if ( ! empty( $sectie['fotos'] ) ) :
-	        // Twee indelingen: naast elkaar (1 vol, 2 = 50/50, 3 = drie
-	        // kolommen) of 'eerste vol' — de eerste over de volle breedte en
-	        // de rest in paren van 50/50, zoals in Kulwants voorbeeld.
-	        if ( 'eerste_vol' === ( $sectie['fotos_indeling'] ?? '' ) && count( $sectie['fotos'] ) > 1 ) {
+	        /* De indeling volgt automatisch uit het AANTAL (afspraak Kulwant):
+	           1 = volle breedte, 2 = 50/50, 3 = eerste vol + twee 50/50,
+	           4 = tweemaal 50/50. Vanaf vijf: oneven begint met een volle
+	           foto, even wordt allemaal paren. */
+	        $n = count( $sectie['fotos'] );
+	        if ( 1 === $n ) {
+		        $klasse = 'blog-fotos-1';
+	        } elseif ( 1 === $n % 2 ) {
 		        $klasse = 'blog-fotos-groot';
 	        } else {
-		        $klasse = 'blog-fotos-' . min( 3, count( $sectie['fotos'] ) );
+		        $klasse = 'blog-fotos-2';
 	        }
         ?>
         <div class="blog-fotos <?php echo esc_attr( $klasse ); ?>">
