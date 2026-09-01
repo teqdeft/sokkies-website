@@ -86,15 +86,12 @@ $andere = get_posts( array(
         <?php endif; ?>
 
         <?php
-        /* Artikelblokken (flexible content): tekst, een fotorij of een
-           review — in de volgorde uit het CMS, zoals op sokkies.com.
-           Geen automatische nummering: de kop staat er letterlijk zoals
-           getypt; wie 1. 2. 3. wil, typt dat zelf. */
+        /* Tekstblokken (repeater, zoals voorheen) met per blok optioneel een
+           fotorij en/of review eronder — de structuur van sokkies.com, waar
+           beeldrijen en de testimonial tussen de tekstsecties staan. Geen
+           automatische nummering: de kop staat er letterlijk zoals getypt. */
         if ( $secties ) :
-	        foreach ( $secties as $sectie ) :
-		        $soort = $sectie['acf_fc_layout'];
-
-		        if ( 'tekst' === $soort ) : ?>
+	        foreach ( $secties as $sectie ) : ?>
         <div class="blog-blok">
           <?php if ( ! empty( $sectie['kop'] ) ) : ?>
           <h2><?php echo esc_html( $sectie['kop'] ); ?></h2>
@@ -103,7 +100,7 @@ $andere = get_posts( array(
           <?php echo sokkies_blog_tekst( $sectie['tekst'] ); ?>
           <?php endif; ?>
         </div>
-        <?php elseif ( 'fotos' === $soort && ! empty( $sectie['fotos'] ) ) :
+        <?php if ( ! empty( $sectie['fotos'] ) ) :
 	        // 1 foto = volle breedte, 2-3 naast elkaar (aantal in de class).
 	        $aantal = min( 3, count( $sectie['fotos'] ) );
         ?>
@@ -112,12 +109,13 @@ $andere = get_posts( array(
           <img src="<?php echo esc_url( $foto_item['url'] ); ?>" alt="<?php echo esc_attr( $foto_item['alt'] ); ?>" loading="lazy">
           <?php endforeach; ?>
         </div>
-        <?php elseif ( 'review' === $soort && ! empty( $sectie['review'] ) ) :
+        <?php endif; ?>
+        <?php if ( ! empty( $sectie['review'] ) ) :
 	        $review_id = (int) $sectie['review'];
 	        $quote     = get_field( 'quote', $review_id );
 	        $functie   = get_field( 'functie', $review_id );
 	        $sterren   = (int) ( get_field( 'sterren', $review_id ) ?: 5 );
-	        $rfoto     = $sectie['foto'];
+	        $rfoto     = $sectie['review_foto'];
 	        if ( $quote ) :
         ?>
         <div class="blog-review">
@@ -132,7 +130,7 @@ $andere = get_posts( array(
               <span><?php echo esc_html( $functie ); ?></span>
               <?php endif; ?>
             </div>
-            <span class="blog-review-sterren"><?php echo esc_html( str_repeat( '★', max( 1, min( 5, $sterren ) ) ) ); ?></span>
+            <span class="blog-review-sterren"><?php echo esc_html( str_repeat( "★", max( 1, min( 5, $sterren ) ) ) ); ?></span>
           </div>
         </div>
         <?php endif; endif;

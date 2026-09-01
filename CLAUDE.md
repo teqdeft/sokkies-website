@@ -2501,7 +2501,25 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   en 'actief_bij' van Inspiratie bijgewerkt. Voor artikelen is er wél code
   bij gekomen: een sokkies_blog-single telt voor het menu als de
   blogoverzichtspagina, anders licht er op een artikel niets op.
-  ARTIKELBLOKKEN: TEKST, FOTORIJEN EN REVIEWS (2026-08-29, verzoek Kulwant
+  TERUGGEDRAAID EN ANDERS OPGELOST (2026-08-29, correctie Kulwant: "je hebt
+  het verkeerd aangepast — eerst terugzetten"): de ombouw van het
+  secties-veld naar flexible content VERVING de bestaande blokstructuur, en
+  omdat de code wel deployt en de database niet, stonden alle artikelen op
+  dev ZONDER tekst (repeater-data door een flexible-definitie gelezen =
+  leeg; nagemeten: 0 blog-blokken op dev). LES: een VELDTYPE wijzigen is
+  een schemawijziging die code en data tegelijk raakt — met gescheiden
+  deploy (code via git, data via WP Migrate DB op andermans moment) breekt
+  dat per definitie. Alleen VELDEN TOEVOEGEN is veilig.
+  De opzet is nu: dezelfde tekstblokken-repeater als voorheen (zelfde
+  veldsleutels, dus bestaande data leest direct weer), met per blok DRIE
+  nieuwe optionele velden: fotos (galerij), review (post_object naar
+  sokkies_review) en review_foto. Rendervolgorde per blok: kop, tekst,
+  fotorij, review — zo blijft de sokkies.com-structuur haalbaar (beeld en
+  testimonial tussen de tekstsecties). Lokale data via een JSON-snapshot
+  teruggevouwen (foto- en reviewrijen in het voorgaande tekstblok);
+  Argentinie rendert pixelidentiek aan de flexible-versie.
+  DE OORSPRONKELIJKE OPZET HIERONDER IS DUS VERVANGEN — alleen ter
+  geschiedenis: (2026-08-29, verzoek Kulwant
   naar het voorbeeld van sokkies.com/argentina/): het secties-veld van de
   blog is omgezet van repeater naar FLEXIBLE CONTENT met drie blokken —
   Tekst (kop+wysiwyg), Foto's (galerij: 1 = vol, 2-3 naast elkaar) en

@@ -2621,37 +2621,26 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 			array( 'key' => 'field_blog_auteur', 'label' => 'Auteur', 'name' => 'auteur', 'type' => 'text', 'instructions' => 'De naam achter "Auteur:" boven het artikel. Leeg = de regel valt weg.' ),
 			array( 'key' => 'field_blog_intro', 'label' => 'Intro', 'name' => 'intro', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 1, 'instructions' => 'De alinea('."'".'s) boven de eerste tussenkop. Afbeeldingen kunnen via "Media toevoegen".' ),
 			array(
-				/* Van repeater naar flexible content (2026-08-29, verzoek
-				   Kulwant naar het voorbeeld van sokkies.com/argentina/): een
-				   artikel is een stapel blokken — tekst, een fotorij, of een
-				   review — in elke gewenste volgorde. */
+				/* TERUGGEDRAAID naar de repeater (2026-08-29, correctie Kulwant):
+				   de eerdere ombouw naar flexible content VERVING de bestaande
+				   blokstructuur, en omdat de code wél deployt en de database
+				   niet, stonden alle artikelen op dev zonder tekst. De opzet is
+				   nu: dezelfde tekstblokken als voorheen, met foto's en een
+				   review als EXTRA, optionele velden per blok — bestaande
+				   inhoud en veldsleutels blijven ongemoeid. */
 				'key'          => 'field_blog_secties',
-				'label'        => 'Artikelblokken',
+				'label'        => 'Tekstblokken',
 				'name'         => 'secties',
-				'type'         => 'flexible_content',
-				'button_label' => 'Blok toevoegen',
-				'instructions' => 'Bouw het artikel op uit blokken; sleep om te herordenen.',
-				'layouts'      => array(
-					'layout_blog_tekst' => array(
-						'key' => 'layout_blog_tekst', 'name' => 'tekst', 'label' => 'Tekst', 'display' => 'block',
-						'sub_fields' => array(
-							array( 'key' => 'field_blog_sectie_kop', 'label' => 'Tussenkop', 'name' => 'kop', 'type' => 'text', 'instructions' => 'De kop komt er letterlijk zo op de site — wil je nummering (1. 2. 3.), typ die dan zelf. Leeg = alleen tekst.' ),
-							array( 'key' => 'field_blog_sectie_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 1, 'instructions' => 'Losse afbeeldingen kunnen ook hier, via "Media toevoegen"; voor een nette fotorij is er het blok Foto\'s.' ),
-						),
-					),
-					'layout_blog_fotos' => array(
-						'key' => 'layout_blog_fotos', 'name' => 'fotos', 'label' => 'Foto\'s', 'display' => 'block',
-						'sub_fields' => array(
-							array( 'key' => 'field_blog_fotos_lijst', 'label' => 'Foto\'s', 'name' => 'fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Eén foto = volle breedte; twee of drie komen naast elkaar.' ),
-						),
-					),
-					'layout_blog_review' => array(
-						'key' => 'layout_blog_review', 'name' => 'review', 'label' => 'Review / testimonial', 'display' => 'block',
-						'sub_fields' => array(
-							array( 'key' => 'field_blog_review_post', 'label' => 'Review', 'name' => 'review', 'type' => 'post_object', 'post_type' => array( 'sokkies_review' ), 'return_format' => 'id', 'ui' => 1, 'instructions' => 'Kies een review (naam, quote, functie en sterren beheer je onder Reviews in het menu links).' ),
-							array( 'key' => 'field_blog_review_foto', 'label' => 'Foto of logo', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Optioneel — komt naast de naam te staan, zoals het OneTreePlanted-logo op de huidige site.' ),
-						),
-					),
+				'type'         => 'repeater',
+				'layout'       => 'block',
+				'button_label' => 'Tekstblok toevoegen',
+				'instructions' => 'Elk blok is een tussenkop met tekst, en optioneel een fotorij en\/of een review eronder. De kop komt er letterlijk zo op de site — wil je nummering (1. 2. 3.), typ die dan zelf.',
+				'sub_fields'   => array(
+					array( 'key' => 'field_blog_sectie_kop', 'label' => 'Tussenkop', 'name' => 'kop', 'type' => 'text' ),
+					array( 'key' => 'field_blog_sectie_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 1, 'instructions' => 'Ook losse afbeeldingen kunnen hier, via "Media toevoegen".' ),
+					array( 'key' => 'field_blog_sectie_fotos', 'label' => 'Foto\x27s onder dit blok', 'name' => 'fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Optioneel — een nette fotorij zoals op de huidige site: één foto = volle breedte, twee of drie komen naast elkaar.' ),
+					array( 'key' => 'field_blog_sectie_review', 'label' => 'Review onder dit blok', 'name' => 'review', 'type' => 'post_object', 'post_type' => array( 'sokkies_review' ), 'return_format' => 'id', 'allow_null' => 1, 'ui' => 1, 'instructions' => 'Optioneel — kies een review (naam, quote, functie en sterren beheer je onder Reviews in het menu links).' ),
+					array( 'key' => 'field_blog_sectie_review_foto', 'label' => 'Foto\/logo bij de review', 'name' => 'review_foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Optioneel — zoals het OneTreePlanted-logo op de huidige site.' ),
 				),
 			),
 			array( 'key' => 'field_blog_tab_slot', 'label' => 'Afsluitblok', 'type' => 'tab' ),
