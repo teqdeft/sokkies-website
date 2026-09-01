@@ -238,7 +238,7 @@ if ( $promo_aan ) {
           </div>
 
           <div class="footer-legal">
-            <span>© 2026 Sokkies &nbsp;•&nbsp; <a href="#">Algemene voorwaarden</a></span><span class="fl-sep"> &nbsp;•&nbsp; </span><span><a href="#">Cookieverklaring</a> &nbsp;•&nbsp; KVK: 89538226</span><span class="fl-sep"> &nbsp;•&nbsp; </span><span>BTW: NL865014218B01</span>
+            <span>© 2026 Sokkies &nbsp;•&nbsp; <a href="<?php echo esc_url( home_url( '/juridisch/' ) ); ?>">Algemene voorwaarden</a></span><span class="fl-sep"> &nbsp;•&nbsp; </span><span><a href="<?php echo esc_url( home_url( '/cookieverklaring/' ) ); ?>">Cookieverklaring</a> &nbsp;•&nbsp; KVK: 89538226</span><span class="fl-sep"> &nbsp;•&nbsp; </span><span>BTW: NL865014218B01</span>
           </div>
         </div>
       </div>

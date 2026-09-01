@@ -2601,6 +2601,31 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   normaal WordPress-gedrag (wp_insert_term codeert de &). esc_html codeert
   niet dubbel, dus de voorkant toont gewoon "Style & trends"; nagemeten.
 
+  JURIDISCHE PAGINA'S COMPLEET (2026-08-29, opdracht Kulwant): naast
+  /juridisch/ (algemene voorwaarden) bestaan lokaal nu /privacy-policy/
+  (16 artikelen, NL-bron sokkies.com/nl/contact/privacy-policy/),
+  /impressum/ (10 artikelen, BEWUST DUITS - een Impressum is een Duitse
+  wettelijke plicht, par. 5 DDG) en /cookieverklaring/. Alle drie op de
+  juridisch-layout; volledigheid geverifieerd: alle 119 (privacy) en 63
+  (impressum) bronzinnen komen letterlijk terug op de nieuwe pagina's.
+  DE COOKIEVERKLARING HEEFT GEEN EIGEN TEKST: op de huidige site vult
+  COOKIEBOT hem live in via een script. De juridisch-layout heeft daarom
+  een nieuw optioneel veld 'Cookiebot-ID' (field_jr_cookiebot); de
+  sectie rendert dan het cd.js-script van consent.cookiebot.com. Het ID
+  van de huidige site (715f9cf6-...) staat erin; werkt het domein niet
+  mee (Cookiebot controleert domeinen), dan blijft het vak leeg tot het
+  dev-domein in Cookiebot is toegevoegd.
+  LET OP: /privacy-policy/ HERGEBRUIKT WP-pagina #3 (de standaard
+  privacy-conceptpagina van WordPress) - die is nu gepubliceerd met de
+  echte inhoud. De footerlinks 'Algemene voorwaarden' en
+  'Cookieverklaring' (footer.php + deel-mini-footer.php) waren #-stubs
+  en wijzen nu naar /juridisch/ en /cookieverklaring/. De pagina's zelf
+  zijn database en verschijnen op dev pas na de volgende sync.
+  NB: de artikelen van /juridisch/ (AV) zijn ~200 tekens per stuk -
+  vermoedelijk ingekorte demoteksten, veel korter dan de echte AV op
+  sokkies.com/nl/algemene-voorwaarden/. Niet aangeraakt (viel buiten de
+  opdracht) maar wel voorleggen.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

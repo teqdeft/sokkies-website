@@ -19,7 +19,7 @@
           </a>
         </div>
         <div class="mini-footer-right">
-          © 2026 Sokkies &nbsp;·&nbsp; <a href="#">Algemene voorwaarden</a>&nbsp;·&nbsp; <a href="#">Cookieverklaring</a>
+          © 2026 Sokkies &nbsp;·&nbsp; <a href="<?php echo esc_url( home_url( '/juridisch/' ) ); ?>">Algemene voorwaarden</a>&nbsp;·&nbsp; <a href="<?php echo esc_url( home_url( '/cookieverklaring/' ) ); ?>">Cookieverklaring</a>
         </div>
       </div>
     </footer>

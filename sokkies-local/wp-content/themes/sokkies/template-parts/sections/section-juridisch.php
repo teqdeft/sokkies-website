@@ -24,6 +24,7 @@ $datum       = trim( (string) get_sub_field( 'datum' ) );
 $index_titel = trim( (string) get_sub_field( 'index_titel' ) );
 $intro       = (string) get_sub_field( 'intro' );
 $print_knop  = get_sub_field( 'print_knop' );
+$cookiebot   = trim( (string) get_sub_field( 'cookiebot' ) );
 
 if ( '' === $titel )       { $titel       = get_the_title(); }
 if ( '' === $kruimelpad )  { $kruimelpad  = $titel; }
@@ -71,7 +72,7 @@ $heeft_intro = '' !== trim( wp_strip_all_tags( $intro ) );
     </div>
 </div>
 
-<?php if ( $artikelen || $heeft_intro ) : ?>
+<?php if ( $artikelen || $heeft_intro || '' !== $cookiebot ) : ?>
 <section class="jr-content">
   <div class="container-md">
     <div class="jr-inner">
@@ -98,6 +99,15 @@ $heeft_intro = '' !== trim( wp_strip_all_tags( $intro ) );
 
       <div class="jr-body">
         <?php if ( $heeft_intro ) { echo sokkies_rijke_tekst( $intro ); } ?>
+
+        <?php if ( '' !== $cookiebot ) : ?>
+        <?php /* De cookieverklaring komt live uit Cookiebot, zoals op de
+                 huidige site: het script vult zichzelf aan met de actuele
+                 cookielijst. Zonder verbinding blijft het vak gewoon leeg. */ ?>
+        <div class="jr-cookiebot">
+          <script id="CookieDeclaration" src="https://consent.cookiebot.com/<?php echo esc_attr( $cookiebot ); ?>/cd.js" type="text/javascript" async></script>
+        </div>
+        <?php endif; ?>
 
         <?php foreach ( $artikelen as $i => $artikel ) : ?>
         <div class="jr-article" id="jr-<?php echo (int) ( $i + 1 ); ?>">

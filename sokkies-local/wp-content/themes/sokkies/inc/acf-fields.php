@@ -1926,6 +1926,13 @@ add_action( 'acf/init', function () {
 								'instructions' => 'Staat boven het eerste artikel. Leeg = geen inleiding.',
 							),
 							array(
+								'key'          => 'field_jr_cookiebot',
+								'label'        => 'Cookiebot-ID',
+								'name'         => 'cookiebot',
+								'type'         => 'text',
+								'instructions' => 'Alleen voor de cookieverklaring: het domain-group-ID uit Cookiebot. De verklaring wordt dan live door Cookiebot in de pagina gezet, zoals op de huidige site. Leeg = geen Cookiebot-blok.',
+							),
+							array(
 								'key'          => 'field_jr_index_titel',
 								'label'        => 'Kop boven de index',
 								'name'         => 'index_titel',
