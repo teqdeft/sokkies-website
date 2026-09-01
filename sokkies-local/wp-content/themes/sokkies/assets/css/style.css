@@ -5068,6 +5068,8 @@ font-weight: 600;
   }
   .case-grid.blog-grid{
     grid-template-columns:repeat(3,1fr);
+    z-index: 1;
+    position: relative;
   }
   .case-grid-section.blog-grid-section{
     /* De sokkenfoto van de slot-CTA staat absoluut bóven die sectie (79%
@@ -5330,7 +5332,7 @@ font-weight: 600;
      .case-others-regels (basis 120px, banden 90px) winnen anders op
      bronvolgorde. De brede banden krijgen meer, onderaan responsive.css. */
   .case-others.blog-others{
-    padding-bottom:380px;
+    padding-bottom:220px;
   }
   .blog-others .case-grid{ text-align:left; }
 

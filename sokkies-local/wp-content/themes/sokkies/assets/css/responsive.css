@@ -49,6 +49,11 @@
    =================================================================== */
 
 
+@media (min-width:2000px){
+  .cta-final-feet {
+      left: 150px;
+  }
+}
 @media (min-width:1920px){
   .collection:before,
   .collection:after{
@@ -68,6 +73,7 @@
       top: -37%;
       right: 2%;
   }
+  
 }
 
 /* ===================================================================
@@ -1172,6 +1178,10 @@
   .case-story-inner .v-swiper .swiper-slide{
     width:100%;
     height:275px;
+  }
+
+  .case-others.blog-others{
+    padding-bottom: 260px;
   }
 }
 
@@ -2683,7 +2693,9 @@
     left: 69px;
     width: 31%;
   }
-
+  .case-others.blog-others {
+    padding-bottom: 160px;
+  }
   .footer-grid {
     grid-template-columns: 1.32fr auto 1.35fr;
   }
@@ -4340,11 +4352,13 @@
     max-width: 92%;
   }
   .cta-final-feet {
-    top: -29%;
+    top: -49%;
     left: 20px;
-    width: 26%;
+    width: 35%;
   }
-
+  .case-others.blog-others {
+    padding-bottom: 160px;
+  }
   .footer-grid {
     grid-template-columns: 1.32fr auto 1.35fr;
   }
@@ -14596,11 +14610,11 @@
    ~400px boven de CTA uit — "Andere inzichten" heeft daar meer onderruimte
    nodig, net als het blogoverzicht. */
 @media (min-width:1680px){
-  .case-others.blog-others{ padding-bottom:460px; }
+  .case-others.blog-others{ padding-bottom:320px; }
 }
 
 /* Blogdetail, smalle banden: de sokkenfoto is daar kleiner en de kaarten
    stapelen — de volle 380px onderruimte wordt dan lege lucht. */
 @media (max-width:767px){
-  .case-others.blog-others{ padding-bottom:280px; }
+  .case-others.blog-others{ padding-bottom:190px; }
 }
