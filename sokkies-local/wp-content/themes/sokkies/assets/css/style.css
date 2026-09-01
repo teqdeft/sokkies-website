@@ -5270,7 +5270,9 @@ font-weight: 600;
   .blog-review-persoon > img{
     width:56px;
     height:56px;
-    object-fit:cover;
+    /* contain i.p.v. cover: een logo mag niet worden bijgesneden (het
+       OneTreePlanted-logo verloor zijn linkerrand — melding Kulwant) */
+    object-fit:contain;
     /* geen afronding: in het ontwerp is het logo/de foto gewoon vierkant */
     border-radius:0;
     /* de algemene .blog-body img-regel centreert met margin:auto — in deze

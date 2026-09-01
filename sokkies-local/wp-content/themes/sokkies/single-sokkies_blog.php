@@ -131,9 +131,12 @@ $andere = get_posts( array(
         if ( '' !== trim( (string) ( $sectie['review_quote'] ?? '' ) ) ) :
 	        $sterren = (int) ( $sectie['review_sterren'] ?: 5 );
 	        $rfoto   = $sectie['review_foto'];
+	        // Aanhalingstekens die de redacteur zelf meetypte eraf halen —
+	        // de kaart zet er al nette om de quote heen (anders staat er ""…"").
+	        $rq = preg_replace( '/^[\s"\'\x{201C}\x{201D}\x{2018}\x{2019}\x{00AB}\x{00BB}]+|[\s"\'\x{201C}\x{201D}\x{2018}\x{2019}\x{00AB}\x{00BB}]+$/u', '', (string) $sectie['review_quote'] );
         ?>
         <div class="blog-review">
-          <p class="blog-review-quote">&ldquo;<?php echo esc_html( $sectie['review_quote'] ); ?>&rdquo;</p>
+          <p class="blog-review-quote">&ldquo;<?php echo esc_html( $rq ); ?>&rdquo;</p>
           <div class="blog-review-persoon">
             <?php if ( $rfoto ) : ?>
             <img src="<?php echo esc_url( $rfoto['url'] ); ?>" alt="<?php echo esc_attr( $rfoto['alt'] ); ?>" loading="lazy">
