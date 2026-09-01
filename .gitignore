@@ -17,4 +17,7 @@ exports/
 
 # Lokale hulpplugins — horen niet in de repo (en dus niet op de server)
 sokkies-local/wp-content/plugins/wp-migrate-db/
+# Gravity Forms: live heeft een eigen installatie die niet uit deze repo komt.
+# Meecommitten zou die via de FTPS-deploy overschrijven (circa 24 MB).
+sokkies-local/wp-content/plugins/gravityforms/
 sokkies-local/wp-content/mu-plugins/

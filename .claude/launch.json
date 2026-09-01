@@ -21,6 +21,17 @@
         "cd '/private/tmp/claude-501/-Users-rankinai-Library-CloudStorage-Dropbox-sokkies-sokkies-sokkies-main/c9a66f1d-5d3f-4337-a7a8-983f2d1587f5/scratchpad/site' && exec python3 -m http.server 8765 --bind 127.0.0.1"
       ],
       "port": 8765
+    },
+    {
+      "name": "sokkies-static-win",
+      "runtimeExecutable": "C:/xampp/php/php.exe",
+      "runtimeArgs": [
+        "-S",
+        "127.0.0.1:8765",
+        "-t",
+        "D:/vishal/sokkies/sokkies-main/sokkies-website"
+      ],
+      "port": 8765
     }
   ]
 }
