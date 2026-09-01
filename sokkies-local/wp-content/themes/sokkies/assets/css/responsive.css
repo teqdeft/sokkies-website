@@ -14584,3 +14584,16 @@
 @media (min-width:1680px){
   .case-grid-section.blog-grid-section{ padding-bottom:380px; }
 }
+
+/* Blogdetail: vanaf 1680px staat de CTA-sokkenfoto op -90% en stijgt hij
+   ~400px boven de CTA uit — "Andere inzichten" heeft daar meer onderruimte
+   nodig, net als het blogoverzicht. */
+@media (min-width:1680px){
+  .case-others.blog-others{ padding-bottom:460px; }
+}
+
+/* Blogdetail, smalle banden: de sokkenfoto is daar kleiner en de kaarten
+   stapelen — de volle 380px onderruimte wordt dan lege lucht. */
+@media (max-width:767px){
+  .case-others.blog-others{ padding-bottom:280px; }
+}

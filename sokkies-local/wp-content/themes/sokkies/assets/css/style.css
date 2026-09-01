@@ -5302,6 +5302,13 @@ font-weight: 600;
     background:var(--light-beige);
     text-align:center;
   }
+  /* De sokkenfoto van de slot-CTA steekt boven de CTA uit en zou anders
+     over de eerste kaart liggen. BEWUST met dubbele class: de kale
+     .case-others-regels (basis 120px, banden 90px) winnen anders op
+     bronvolgorde. De brede banden krijgen meer, onderaan responsive.css. */
+  .case-others.blog-others{
+    padding-bottom:380px;
+  }
   .blog-others .case-grid{ text-align:left; }
 
   .designed-beige:before{

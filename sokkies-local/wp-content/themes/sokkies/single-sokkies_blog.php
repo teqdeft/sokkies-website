@@ -200,8 +200,10 @@ $andere = get_posts( array(
   </section>
   <?php endif; ?>
 
-  <!-- Slot-CTA — gelijk aan de cases-detailpagina -->
-  <section class="cta-final cta-final-detail">
+  <!-- Slot-CTA. BEWUST NIET de -detail-variant van de cases: die verbergt
+       de sokkenfoto en maakt de achtergrond wit, terwijl het blogontwerp
+       juist de sokken op het beige toont (aanwijzing Kulwant). -->
+  <section class="cta-final">
     <img class="cta-final-feet" src="<?php echo esc_url( $assets ); ?>socks-transparent.png" alt="" aria-hidden="true">
     <div class="cta-final-panel">
       <div class="container">
