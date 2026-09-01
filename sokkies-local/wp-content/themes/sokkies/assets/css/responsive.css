@@ -14576,3 +14576,10 @@
   .blog-review-sterren{ margin-left:0; width:100%; }
   .blog-review-persoon{ flex-wrap:wrap; }
 }
+
+/* Blogoverzicht: vanaf 1680px staat de CTA-sokkenfoto op -90% (i.p.v. -79%)
+   en stijgt hij ~400px boven de CTA uit — de kaartensectie heeft daar meer
+   onderruimte nodig, anders ligt de sok over de onderste kaartenrij. */
+@media (min-width:1680px){
+  .case-grid-section.blog-grid-section{ padding-bottom:380px; }
+}

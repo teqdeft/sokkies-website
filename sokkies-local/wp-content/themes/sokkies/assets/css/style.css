@@ -5070,11 +5070,19 @@ font-weight: 600;
     grid-template-columns:repeat(3,1fr);
   }
   .case-grid-section.blog-grid-section{
-    /* De sokkenfoto van de slot-CTA staat absoluut, 330px bóven die sectie.
-       Met de standaard 70px eronder kwam hij over de onderste kaartenrij
-       heen te liggen; hier hoort hij onder de kaarten te beginnen, zoals in
-       het ontwerp. */
+    /* De sokkenfoto van de slot-CTA staat absoluut bóven die sectie (79%
+       van de CTA-hoogte; nagemeten 330px op 1440). Met de standaard 70px
+       eronder lag hij over de onderste kaartenrij; hier hoort hij onder de
+       kaarten te beginnen, zoals in het ontwerp. Vanaf 1680px stijgt de
+       foto naar 90% (~400px) — die band krijgt extra ruimte onderaan
+       responsive.css. */
     padding-bottom:270px;
+  }
+  /* Op het blogoverzicht is de achtergrond achter de sokken en de rode
+     diagonaal WIT, niet beige (ontwerp; op andere pagina's sluit het beige
+     juist aan op de beige sectie erboven). */
+  main.blogs .cta-final{
+    background:#fff;
   }
   .blog-leeg{
     text-align:center;
