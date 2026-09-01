@@ -5084,11 +5084,11 @@ font-weight: 600;
 
   /* ---- Blogdetail ---- */
   .simple-hero.blog-detail-hero{
-    /* Ruimte voor de uitgelichte foto, die over de grens beige/wit heen valt.
-       0.27193 = (620/1140)/2, de halve hoogte van de 1140x620-foto uit het
-       ontwerp (XD-meting Kulwant). Door met de fotobreedte te rekenen klopt
-       de overlap op elke schermbreedte. */
-    padding-bottom:calc(min(1140px, 100%) * 0.27193 + 30px);
+    /* De halve-foto-overlap zit niet meer hier maar in .blog-foto-band
+       (beige/wit-verloop): de eerdere calc met min() en een factor pakte
+       per omgeving verschillend uit. Hier alleen nog wat lucht tussen de
+       metaregel en de foto. */
+    padding-bottom:30px;
   }
   .simple-hero.blog-detail-hero .simple-hero-content{
     margin-bottom:18px;
@@ -5136,13 +5136,16 @@ font-weight: 600;
     background:#fff;
     padding:0 0 90px;
   }
+  /* Band achter de uitgelichte foto: bovenste helft beige (aansluitend op
+     de hero erboven), onderste helft wit. De foto staat er gewoon in de
+     flow middenin — geen negatieve marges, dus exact 50/50 in elke
+     browser en op elke breedte. */
+  .blog-foto-band{
+    background:linear-gradient(to bottom, var(--light-beige) 50%, #fff 50%);
+  }
   .blog-foto{
     width:min(1140px, 100%);
-    /* de helft van de foto ligt op het beige vlak hierboven — zie de
-       toelichting bij .blog-detail-hero voor de 0.27193 */
-    margin:calc(min(1140px, 100%) * -0.27193) auto 0;
-    position:relative;
-    z-index:1;
+    margin:0 auto;
   }
   .blog-foto img{
     width:100%;

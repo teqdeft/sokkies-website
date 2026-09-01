@@ -72,13 +72,22 @@ $andere = get_posts( array(
   </div>
 
   <section class="blog-artikel">
-    <div class="container">
 
-      <?php if ( $foto ) : ?>
-      <div class="blog-foto">
-        <img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ); ?>">
+    <?php if ( $foto ) : ?>
+    <?php /* De band achter de foto is boven beige en onder wit (verloop op
+             50%). Zo ligt de foto ALTIJD precies half op het beige — zonder
+             negatieve marges of calc, die per omgeving verschillend
+             uitpakten (melding Kulwant met schermafdruk van dev). */ ?>
+    <div class="blog-foto-band">
+      <div class="container">
+        <div class="blog-foto">
+          <img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ); ?>">
+        </div>
       </div>
-      <?php endif; ?>
+    </div>
+    <?php endif; ?>
+
+    <div class="container">
 
       <div class="blog-body">
         <?php if ( $intro ) : ?>
