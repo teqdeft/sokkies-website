@@ -82,6 +82,10 @@ require_once get_template_directory() . '/inc/acf-fields.php';
 // en de adresopzoeking). Apart bestand omdat het meer is dan een paar regels.
 require_once get_template_directory() . '/inc/offerte-formulier.php';
 
+// Eenmalige aanmaak van de juridische pagina's waar ze ontbreken (de
+// inhoud staat in inc/juridisch-inhoud.php) — zie de toelichting daar.
+require_once get_template_directory() . '/inc/juridisch-seed.php';
+
 // Logica van het sampleformulier. Deelt de opmaakfilters met het
 // offerteformulier hierboven; hier staat alleen wat sample-eigen is.
 require_once get_template_directory() . '/inc/sample-formulier.php';
