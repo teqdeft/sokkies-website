@@ -5242,6 +5242,16 @@ font-weight: 600;
      van 50/50 (voorbeeld Kulwant: 100 en daaronder 50-50). */
   .blog-fotos-groot{ grid-template-columns:repeat(2,1fr); }
   .blog-fotos-groot img:first-child{ grid-column:1 / -1; }
+  /* Eén foto (of de grote eerste van 'eerste vol') in een breed 2:1-kader,
+     zoals in het ontwerp — anders wordt een staande of vierkante foto
+     schermvullend hoog (melding Kulwant met drone-foto). */
+  .blog-fotos-1 img,
+  .blog-fotos-groot img:first-child{
+    aspect-ratio:2 / 1;
+    /* height:auto verslaat de algemene height:100% van .blog-fotos img —
+       die vocht met de aspect-ratio en gaf een tussenmaat (1.80 gemeten) */
+    height:auto;
+  }
   .blog-fotos img{
     width:100%;
     height:100%;
