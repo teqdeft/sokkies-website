@@ -5152,7 +5152,8 @@ font-weight: 600;
     display:block;
   }
   .blog-body{
-    max-width:720px;
+    /* 850px conform het ontwerp (XD-meting Kulwant); was 720 */
+    max-width:850px;
     margin:0 auto;
     padding-top:60px;
   }
