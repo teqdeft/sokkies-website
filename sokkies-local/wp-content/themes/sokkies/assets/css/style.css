@@ -5085,10 +5085,10 @@ font-weight: 600;
   /* ---- Blogdetail ---- */
   .simple-hero.blog-detail-hero{
     /* Ruimte voor de uitgelichte foto, die over de grens beige/wit heen valt.
-       0.28125 = (9/16)/2, oftewel de halve hoogte van een 16:9-foto. Door
-       met de fotobreedte te rekenen klopt de overlap op ELKE schermbreedte;
-       een vast getal zette de foto op mobiel volledig ín het beige. */
-    padding-bottom:calc(min(880px, 100%) * 0.28125 + 30px);
+       0.27193 = (620/1140)/2, de halve hoogte van de 1140x620-foto uit het
+       ontwerp (XD-meting Kulwant). Door met de fotobreedte te rekenen klopt
+       de overlap op elke schermbreedte. */
+    padding-bottom:calc(min(1140px, 100%) * 0.27193 + 30px);
   }
   .simple-hero.blog-detail-hero .simple-hero-content{
     margin-bottom:18px;
@@ -5137,16 +5137,17 @@ font-weight: 600;
     padding:0 0 90px;
   }
   .blog-foto{
-    width:min(880px, 100%);
+    width:min(1140px, 100%);
     /* de helft van de foto ligt op het beige vlak hierboven — zie de
-       toelichting bij .blog-detail-hero voor de 0.28125 */
-    margin:calc(min(880px, 100%) * -0.28125) auto 0;
+       toelichting bij .blog-detail-hero voor de 0.27193 */
+    margin:calc(min(1140px, 100%) * -0.27193) auto 0;
     position:relative;
     z-index:1;
   }
   .blog-foto img{
     width:100%;
-    aspect-ratio:16/9;
+    /* 1140x620 uit het ontwerp */
+    aspect-ratio:1140/620;
     object-fit:cover;
     border-radius:25px;
     display:block;
