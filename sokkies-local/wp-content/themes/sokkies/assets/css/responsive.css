@@ -47,6 +47,8 @@
    overbodig: die compenseerde juist het meeschalen. Met een vaste hoogte
    klopt de basiswaarde -76% weer, en dat is exact wat 1920px toont.
    =================================================================== */
+
+
 @media (min-width:1920px){
   .collection:before,
   .collection:after{
@@ -61,6 +63,11 @@
      grote ronding waarvan juist de HORIZONTALE maat telt; die uitrekken zet
      de bocht verder naar rechts. Hier is cover dus de betere keuze — laat
      staan. Zie CLAUDE.md voor de meetwaarden. */
+     .cases-feet {
+      position: absolute;
+      top: -37%;
+      right: 2%;
+  }
 }
 
 /* ===================================================================
@@ -409,15 +416,15 @@
   }
    .cases:before{
     background:url(../media/blue-shape-lg.png);
-    background-size: cover;
+    background-size: 100%;
     height:76%;
     background-repeat: no-repeat;
   }
   .cases-feet {
-    top: -22%;
-    right: 3%;
-    width: 204px;
-    height: 304px;
+    top: -16%;
+    right: 0%;
+    width: 244px;
+    height: 354px;
   }
   .designed {
     margin-top: 102px;
@@ -1421,9 +1428,9 @@
     background-repeat: no-repeat;
   }
   .cases-feet {
-    top: -22%;
-    right: 3%;
-    width: 204px;
+    top: -13%;
+    right: 0%;
+    width: 224px;
     height: 304px;
   }
   .designed {
@@ -2620,9 +2627,9 @@
     background-repeat: no-repeat;
   }
   .cases-feet {
-    top: -16%;
-    right: 3%;
-    width: 204px;
+    top: -10%;
+    right: 0%;
+    width: 224px;
     height: 304px;
   }
   .designed {
@@ -4281,10 +4288,10 @@
     background-repeat: no-repeat;
   }
   .cases-feet {
-    top: -22%;
-    right: 2%;
-    width: 141px;
-    height: 206px;
+    top: -12%;
+    right: 0%;
+    width: 140px;
+    height: 226px;
   }
   .designed {
     margin-top: 102px;

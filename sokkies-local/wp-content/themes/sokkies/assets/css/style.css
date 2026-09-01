@@ -1919,11 +1919,11 @@ font-weight: 600;
      LET OP: deze regel geldt alleen vanaf 1680px. Alle smallere banden
      zetten in responsive.css een ANDER bestand (blue-shape-lg.png) met
      cover/contain; die blijven ongemoeid. */
-  background-size: max(100%, 1920px) 1074px;
+  background-size: max(100%, 1920px) 100%;
  }
  .cases-feet{
     position: absolute;
-    top: -25%;
+    top: -37%;
     right: 0;
     width: 383px;
     height: 100%;
