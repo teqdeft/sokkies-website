@@ -5115,7 +5115,13 @@ font-weight: 600;
     text-decoration:underline;
   }
   .blog-meta-punt{ opacity:.6; }
-  .blog-meta-tags{ margin-left:6px; }
+  .blog-meta-tags{
+    /* margin-bottom:0 is de echte fix: .case-card-tags geeft 20px mee en in
+       deze gecentreerde flexrij schoof de hele taggroep daardoor ~10px
+       omhoog t.o.v. de auteursregel (melding Kulwant: opmaak klopt niet). */
+    margin-left:24px;
+    margin-bottom:0;
+  }
   .blog-meta-tags span{
     /* In de kaarten zijn de tags beige op wit; hier staan ze op het beige
        herovlak en zijn ze in het ontwerp juist WIT met een zachte schaduw
@@ -5123,6 +5129,7 @@ font-weight: 600;
     background:#fff;
     box-shadow:0 2px 6px rgba(40,18,27,.15);
     padding:4px 10px;
+    font-weight:600;
   }
 
   .blog-artikel{
