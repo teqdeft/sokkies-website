@@ -5302,8 +5302,13 @@ font-weight: 600;
   .blog-slot .cta-light{ display:inline-flex; }
 
   .blog-others{
-    background:var(--light-beige);
     text-align:center;
+  }
+  /* Beige achtergrond MET dubbele class: de kale .case-others-regel verderop
+     (background:#fff) won anders op bronvolgorde en de sectie werd wit —
+     precies wat Kulwant op dev zag, terwijl het ontwerp hier beige is. */
+  .case-others.blog-others{
+    background:var(--light-beige);
   }
   /* De sokkenfoto van de slot-CTA steekt boven de CTA uit en zou anders
      over de eerste kaart liggen. BEWUST met dubbele class: de kale
