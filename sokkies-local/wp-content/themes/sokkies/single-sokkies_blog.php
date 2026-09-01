@@ -119,30 +119,31 @@ $andere = get_posts( array(
           <?php endforeach; ?>
         </div>
         <?php endif; ?>
-        <?php if ( ! empty( $sectie['review'] ) ) :
-	        $review_id = (int) $sectie['review'];
-	        $quote     = get_field( 'quote', $review_id );
-	        $functie   = get_field( 'functie', $review_id );
-	        $sterren   = (int) ( get_field( 'sterren', $review_id ) ?: 5 );
-	        $rfoto     = $sectie['review_foto'];
-	        if ( $quote ) :
+        <?php
+        /* Eigen review per blok, rechtstreeks in het CMS getypt (verzoek
+           Kulwant: niet kiezen uit de gedeelde Reviews). */
+        if ( '' !== trim( (string) ( $sectie['review_quote'] ?? '' ) ) ) :
+	        $sterren = (int) ( $sectie['review_sterren'] ?: 5 );
+	        $rfoto   = $sectie['review_foto'];
         ?>
         <div class="blog-review">
-          <p class="blog-review-quote">&ldquo;<?php echo esc_html( $quote ); ?>&rdquo;</p>
+          <p class="blog-review-quote">&ldquo;<?php echo esc_html( $sectie['review_quote'] ); ?>&rdquo;</p>
           <div class="blog-review-persoon">
             <?php if ( $rfoto ) : ?>
             <img src="<?php echo esc_url( $rfoto['url'] ); ?>" alt="<?php echo esc_attr( $rfoto['alt'] ); ?>" loading="lazy">
             <?php endif; ?>
+            <?php if ( ! empty( $sectie['review_naam'] ) || ! empty( $sectie['review_functie'] ) ) : ?>
             <div class="blog-review-wie">
-              <strong><?php echo esc_html( get_the_title( $review_id ) ); ?></strong>
-              <?php if ( $functie ) : ?>
-              <span><?php echo esc_html( $functie ); ?></span>
+              <strong><?php echo esc_html( $sectie['review_naam'] ); ?></strong>
+              <?php if ( ! empty( $sectie['review_functie'] ) ) : ?>
+              <span><?php echo esc_html( $sectie['review_functie'] ); ?></span>
               <?php endif; ?>
             </div>
+            <?php endif; ?>
             <span class="blog-review-sterren"><?php echo esc_html( str_repeat( "★", max( 1, min( 5, $sterren ) ) ) ); ?></span>
           </div>
         </div>
-        <?php endif; endif;
+        <?php endif;
 	        endforeach;
         endif; ?>
 

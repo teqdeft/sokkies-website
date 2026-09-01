@@ -2567,6 +2567,15 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   gerelateerde kaarten, en alle 16 bestaande pagina's nog 200 zonder
   PHP-fouten.
   NOG OPEN: de nav-link "Inspiratie" zelf blijft een #-stub (bestond al).
+  REVIEW PER BLOK IS NU EIGEN INVOER (2026-09-01, verzoek Kulwant): de
+  post_object-keuze uit de Reviews-CPT is vervangen door losse velden
+  (review_quote/naam/functie/sterren + de bestaande foto). Redacteuren
+  typen de review dus rechtstreeks in het artikel. De gekozen review van
+  het Argentinie-artikel is naar de nieuwe velden gemigreerd (ruwe meta,
+  idempotent); rendert identiek. Het VERWIJDEREN van het pickerveld is
+  een uitzondering op de alleen-toevoegen-regel: veilig omdat alleen een
+  SUBveld verdwijnt (achtergebleven meta is onschadelijk) en dev geen
+  reviewkoppelingen had.
 
   ECHTE BLOGDATA GEÏMPORTEERD VAN SOKKIES.COM (2026-08-28, aanwijzing
   Kulwant: "neem de data van sokkies.com/nl/blogs/"). De 12 verzonnen

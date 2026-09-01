@@ -2646,7 +2646,12 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 					array( 'key' => 'field_blog_sectie_kop', 'label' => 'Tussenkop', 'name' => 'kop', 'type' => 'text' ),
 					array( 'key' => 'field_blog_sectie_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 1, 'instructions' => 'Ook losse afbeeldingen kunnen hier, via "Media toevoegen".' ),
 					array( 'key' => 'field_blog_sectie_fotos', 'label' => 'Foto\x27s onder dit blok', 'name' => 'fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Optioneel — een nette fotorij zoals op de huidige site: één foto = volle breedte, twee of drie komen naast elkaar.' ),
-					array( 'key' => 'field_blog_sectie_review', 'label' => 'Review onder dit blok', 'name' => 'review', 'type' => 'post_object', 'post_type' => array( 'sokkies_review' ), 'return_format' => 'id', 'allow_null' => 1, 'ui' => 1, 'instructions' => 'Optioneel — kies een review (naam, quote, functie en sterren beheer je onder Reviews in het menu links).' ),
+					/* Eigen review per blok (verzoek Kulwant 2026-09-01): niet kiezen
+					   uit de bestaande Reviews, maar rechtstreeks hier invullen. */
+					array( 'key' => 'field_blog_sectie_review_quote', 'label' => 'Review onder dit blok — quote', 'name' => 'review_quote', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '', 'instructions' => 'Optioneel — de uitspraak zelf, zonder aanhalingstekens (die zet de site er zelf omheen). Leeg = geen reviewblok.' ),
+					array( 'key' => 'field_blog_sectie_review_naam', 'label' => 'Review — naam', 'name' => 'review_naam', 'type' => 'text' ),
+					array( 'key' => 'field_blog_sectie_review_functie', 'label' => 'Review — functie/organisatie', 'name' => 'review_functie', 'type' => 'text', 'instructions' => 'Bijv. "CEO, OneTreePlanted". Leeg = alleen de naam.' ),
+					array( 'key' => 'field_blog_sectie_review_sterren', 'label' => 'Review — sterren', 'name' => 'review_sterren', 'type' => 'number', 'min' => 1, 'max' => 5, 'step' => 1, 'default_value' => 5 ),
 					array( 'key' => 'field_blog_sectie_review_foto', 'label' => 'Foto\/logo bij de review', 'name' => 'review_foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Optioneel — zoals het OneTreePlanted-logo op de huidige site.' ),
 				),
 			),
