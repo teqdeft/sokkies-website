@@ -5258,6 +5258,9 @@ font-weight: 600;
     object-fit:cover;
     border-radius:15px;
     display:block;
+    /* de algemene .blog-body img-regel geeft 24px marge — in het raster
+       stapelde dat op de 20px gap tot ~70px tussen de rijen */
+    margin:0;
   }
 
   /* Reviewblok in het artikel — de kaartopmaak van de testimonials,
