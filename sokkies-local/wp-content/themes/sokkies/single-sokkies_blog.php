@@ -86,10 +86,13 @@ $andere = get_posts( array(
         <?php endif; ?>
 
         <?php if ( $secties ) : ?>
-        <?php foreach ( $secties as $i => $sectie ) : ?>
+        <?php // Geen automatische nummering: de kop staat er letterlijk zoals
+              // in het CMS getypt. Wie 1. 2. 3. wil, typt dat zelf (verzoek
+              // Kulwant 2026-08-29 — soms genummerd, soms een losse kop).
+        foreach ( $secties as $sectie ) : ?>
         <div class="blog-blok">
           <?php if ( ! empty( $sectie['kop'] ) ) : ?>
-          <h2><?php echo esc_html( ( $i + 1 ) . '. ' . $sectie['kop'] ); ?></h2>
+          <h2><?php echo esc_html( $sectie['kop'] ); ?></h2>
           <?php endif; ?>
           <?php if ( ! empty( $sectie['tekst'] ) ) : ?>
           <?php echo sokkies_rijke_tekst( $sectie['tekst'] ); ?>

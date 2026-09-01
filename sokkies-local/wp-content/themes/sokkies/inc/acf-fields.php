@@ -2627,7 +2627,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				'type'         => 'repeater',
 				'layout'       => 'block',
 				'button_label' => 'Tekstblok toevoegen',
-				'instructions' => 'Elk blok is een tussenkop met tekst eronder. De nummering (1. 2. 3.) telt vanzelf mee — die hoef je niet zelf te typen.',
+				'instructions' => 'Elk blok is een tussenkop met tekst eronder. De kop komt er letterlijk zo op de site — wil je nummering (1. 2. 3.), typ die dan zelf in de kop. Lijstjes maak je gewoon in het tekstveld.',
 				'sub_fields'   => array(
 					array( 'key' => 'field_blog_sectie_kop', 'label' => 'Tussenkop', 'name' => 'kop', 'type' => 'text' ),
 					array( 'key' => 'field_blog_sectie_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0 ),

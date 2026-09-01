@@ -2501,6 +2501,15 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   en 'actief_bij' van Inspiratie bijgewerkt. Voor artikelen is er wél code
   bij gekomen: een sokkies_blog-single telt voor het menu als de
   blogoverzichtspagina, anders licht er op een artikel niets op.
+  NUMMERING VAN DE TEKSTBLOKKEN (2026-08-29, verzoek Kulwant): NIET meer
+  automatisch. De kop rendert letterlijk zoals in het CMS getypt; wie
+  1. 2. 3. wil, typt dat zelf. De import is daarop nagelopen: de
+  bronnummers die eerst werden weggestript staan weer in de opgeslagen
+  koppen. Daarbij ook een importfout gevonden en hersteld: artikelen
+  kunnen MEERDERE div#section-N.content-blokken hebben en alleen de
+  eerste werd gelezen — Ethiopie ging van 2 naar 5 blokken, Kerstsokken
+  van 0 naar 5, Argentinie van 0 naar 3 (koppen op h2-niveau telden
+  eerst ook niet mee).
   DATUM komt uit de publicatiedatum van WordPress (geen apart ACF-veld, dat
   levert twee data die uiteen kunnen lopen) en gaat door sokkies_datum_nl().
   GETEST: 12 testblogs, 4 categorieën, overzicht op 1440/900/375 (3/2/1
