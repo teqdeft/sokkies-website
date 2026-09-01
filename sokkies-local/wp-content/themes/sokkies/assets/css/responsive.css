@@ -2373,6 +2373,10 @@
     background:url(../media/stats-top-bg.png) top left 20% no-repeat;
     top:-20px;
   }
+
+  .case-grid-section.blog-grid-section {
+    padding-bottom: 152px;
+  }
 }
 
 /* ===================================================================
@@ -2695,6 +2699,9 @@
   }
   .case-others.blog-others {
     padding-bottom: 160px;
+  }
+  .case-grid-section.blog-grid-section {
+    padding-bottom: 90px;
   }
   .footer-grid {
     grid-template-columns: 1.32fr auto 1.35fr;
@@ -4358,6 +4365,9 @@
   }
   .case-others.blog-others {
     padding-bottom: 160px;
+  }
+  .case-grid-section.blog-grid-section {
+    padding-bottom: 90px;
   }
   .footer-grid {
     grid-template-columns: 1.32fr auto 1.35fr;
@@ -14584,7 +14594,7 @@
 }
 @media (max-width:520px){
   .case-grid.blog-grid{ grid-template-columns:1fr; gap:16px; }
-  .case-grid-section.blog-grid-section{ padding-bottom:150px; }
+  .case-grid-section.blog-grid-section{ padding-bottom:230px; }
   /* de chips passen niet op één regel: gecentreerd laten afbreken */
   .blog-filter{ justify-content:center; }
   .blog-body{ padding-top:40px; }
@@ -14603,7 +14613,7 @@
    en stijgt hij ~400px boven de CTA uit — de kaartensectie heeft daar meer
    onderruimte nodig, anders ligt de sok over de onderste kaartenrij. */
 @media (min-width:1680px){
-  .case-grid-section.blog-grid-section{ padding-bottom:380px; }
+  .case-grid-section.blog-grid-section{ padding-bottom:250px; }
 }
 
 /* Blogdetail: vanaf 1680px staat de CTA-sokkenfoto op -90% en stijgt hij
