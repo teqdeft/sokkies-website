@@ -14572,7 +14572,8 @@
 /* Blogdetail: fotorijen stapelen in de smalle banden */
 @media (max-width:767px){
   .blog-fotos-2,
-  .blog-fotos-3{ grid-template-columns:1fr; }
+  .blog-fotos-3,
+  .blog-fotos-groot{ grid-template-columns:1fr; }
   .blog-review-sterren{ margin-left:0; width:100%; }
   .blog-review-persoon{ flex-wrap:wrap; }
 }

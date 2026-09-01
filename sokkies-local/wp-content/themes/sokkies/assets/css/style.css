@@ -5236,6 +5236,10 @@ font-weight: 600;
   }
   .blog-fotos-2{ grid-template-columns:repeat(2,1fr); }
   .blog-fotos-3{ grid-template-columns:repeat(3,1fr); }
+  /* 'Eerste foto vol': de eerste over beide kolommen, de rest in paren
+     van 50/50 (voorbeeld Kulwant: 100 en daaronder 50-50). */
+  .blog-fotos-groot{ grid-template-columns:repeat(2,1fr); }
+  .blog-fotos-groot img:first-child{ grid-column:1 / -1; }
   .blog-fotos img{
     width:100%;
     height:100%;

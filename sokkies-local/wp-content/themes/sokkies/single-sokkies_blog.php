@@ -110,10 +110,16 @@ $andere = get_posts( array(
           <?php endif; ?>
         </div>
         <?php if ( ! empty( $sectie['fotos'] ) ) :
-	        // 1 foto = volle breedte, 2-3 naast elkaar (aantal in de class).
-	        $aantal = min( 3, count( $sectie['fotos'] ) );
+	        // Twee indelingen: naast elkaar (1 vol, 2 = 50/50, 3 = drie
+	        // kolommen) of 'eerste vol' — de eerste over de volle breedte en
+	        // de rest in paren van 50/50, zoals in Kulwants voorbeeld.
+	        if ( 'eerste_vol' === ( $sectie['fotos_indeling'] ?? '' ) && count( $sectie['fotos'] ) > 1 ) {
+		        $klasse = 'blog-fotos-groot';
+	        } else {
+		        $klasse = 'blog-fotos-' . min( 3, count( $sectie['fotos'] ) );
+	        }
         ?>
-        <div class="blog-fotos blog-fotos-<?php echo (int) $aantal; ?>">
+        <div class="blog-fotos <?php echo esc_attr( $klasse ); ?>">
           <?php foreach ( $sectie['fotos'] as $foto_item ) : ?>
           <img src="<?php echo esc_url( $foto_item['url'] ); ?>" alt="<?php echo esc_attr( $foto_item['alt'] ); ?>" loading="lazy">
           <?php endforeach; ?>
