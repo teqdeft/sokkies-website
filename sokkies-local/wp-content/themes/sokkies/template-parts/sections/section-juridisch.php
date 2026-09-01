@@ -107,6 +107,29 @@ $heeft_intro = '' !== trim( wp_strip_all_tags( $intro ) );
         <div class="jr-cookiebot">
           <script id="CookieDeclaration" src="https://consent.cookiebot.com/<?php echo esc_attr( $cookiebot ); ?>/cd.js" type="text/javascript" async></script>
         </div>
+        <script>
+        /* Zolang dit domein nog niet in de Cookiebot Manager staat, stuurt
+           Cookiebot een Engelse foutmelding terug. Bezoekers krijgen dan een
+           nette Nederlandse regel; de echte melding blijft in de console
+           staan zodat een beheerder ziet wat er moet gebeuren. */
+        (function () {
+          var vak = document.querySelector(".jr-cookiebot");
+          if (!vak) { return; }
+          function controleer() {
+            var t = vak.textContent || "";
+            if (t.indexOf("not authorized") !== -1) {
+              console.warn("Cookiebot: " + t.trim());
+              vak.innerHTML = "<p>De cookieverklaring wordt geladen via Cookiebot en is voor dit domein nog niet vrijgegeven. Vragen over cookies? Mail naar <a href=\"mailto:info@sokkies.nl\">info@sokkies.nl</a>.</p>";
+              return true;
+            }
+            return false;
+          }
+          var pogingen = 0;
+          var timer = setInterval(function () {
+            if (controleer() || ++pogingen > 20) { clearInterval(timer); }
+          }, 500);
+        })();
+        </script>
         <?php endif; ?>
 
         <?php foreach ( $artikelen as $i => $artikel ) : ?>
