@@ -8752,6 +8752,10 @@ main.contact{
   }
   .jr-article{
     margin-top:32px;
+    /* de topbar (30px) + headerpill zijn sticky en zweven over de inhoud;
+       zonder deze marge landt een indexklik met de kop ONDER de pill
+       (melding Kulwant op de privacyverklaring) */
+    scroll-margin-top:150px;
   }
   .jr-article h3{
     font-family:var(--roc-grotesk);
@@ -8761,6 +8765,25 @@ main.contact{
     font-size:var(--body-lg-font-size);
     color:var(--text);
     margin-bottom:10px;
+  }
+  /* Lijstjes in juridische artikelen: zelfde letter en regelafstand als
+     de alinea's, met een nette inspringing en wat lucht (de bron gebruikt
+     veel opsommingen; die stonden er kaal en krap bij). */
+  .jr-article ul,
+  .jr-article ol,
+  .jr-body > ul,
+  .jr-body > ol{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--text);
+    margin:10px 0 16px;
+    padding-left:24px;
+  }
+  .jr-article li{
+    margin-bottom:6px;
+  }
+  .jr-article li:last-child{
+    margin-bottom:0;
   }
   .jr-article p{
     font-size:var(--body-font-size);
