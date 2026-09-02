@@ -1368,13 +1368,22 @@
   });
 })();
 
-/* Topbar-marquee (mobiel ≤520): items dupliceren voor een naadloze loop;
-   zonder JS blijft de swipebare strip het fallback-gedrag.
-   FIX 2026-08-06: guard stond op 991 (comment/besluit zegt ≤520) — loads
-   op 521-991 kregen gedupliceerde items zonder marquee-CSS → h-scroll.
-   Nu ≤520 mét teardown/re-init bij het kruisen van de grens. */
+/* Topbar-marquee (mobiel én tablet, ≤991): items dupliceren voor een
+   naadloze loop; zonder JS blijft de swipebare strip het fallback-gedrag.
+
+   De grens stond op ≤520, maar de strip past ook op tablet niet: op een
+   verse load is de rij 940px breed, tegen 885px ruimte op 900 en 640px op
+   640 — de laatste items vielen dus buiten beeld. Vanaf 992 past alles wel
+   (1015 om 1015), dus daar blijft het een gewone rij.
+
+   LET OP — dit is precies de grens die op 2026-08-06 is teruggedraaid: de
+   gate stond toen op 991 terwijl de marquee-CSS alleen in het ≤520-blok
+   stond, waardoor 521-991 gedupliceerde items kreeg zonder animatie en dus
+   horizontale scroll. Die CSS staat er inmiddels wel in beide tabletbanden
+   (768-991 en 521-767, inclusief de keyframes en de fade rechts), dus de
+   gate kan nu mee. Wie die CSS weghaalt, moet deze grens terugzetten. */
 (function () {
-  var mql = window.matchMedia('(max-width: 520px)');
+  var mql = window.matchMedia('(max-width: 991px)');
   function setMarquee(on) {
     document.querySelectorAll('.topbar ul').forEach(function (ul) {
       var isOn = ul.classList.contains('topbar-marquee');
