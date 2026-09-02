@@ -9889,3 +9889,13 @@ main.contact{
     margin:0;
   }
   .quote-card .of-postcode.is-zoekend input{ opacity:.6; }
+
+/*═════════════════════════════════════════
+  Voortgangsstreepjes in de sliderbalken
+  Worden door custom.js tussen de twee knoppen gezet en zijn ALLEEN
+  op mobiel zichtbaar (regels in responsive.css, band <=520).
+  Desktop verandert dus niet.
+═════════════════════════════════════════*/
+.nav-dashes{
+  display:none;
+}

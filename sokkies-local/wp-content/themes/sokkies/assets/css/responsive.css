@@ -4003,6 +4003,15 @@
   .collection .collection-grid::-webkit-scrollbar{
     display:none;
   }
+  .collection h2, .gift h2{
+    padding-left: 20px;
+  }
+  .collection .container, .gift .container {
+    max-width: 100%;
+  }
+  .collection .collection-grid, .gift .gift-grid{
+    padding: 0 20px;
+  }
   .collection .collection-grid > *{
     flex:0 0 calc((100% - 40px) / 2.3);
   }
@@ -4057,6 +4066,9 @@
   /* mega-hoverbrug is desktop-only (drawer/sheet heeft geen hover-gat) */
   .mega::before{
     display:none;
+  }
+  .gift h2 {
+    width: 80%;
   }
 
   /* ws-compare-doodle: alleen 1920-ontwerp (zie basis) */
@@ -4208,6 +4220,19 @@
     top: -21%;
     background: url(../media/yellow-shape-1440.svg);
     background-size: cover;
+  }
+
+  .collection h2, .gift h2 {
+    padding-left: 40px;
+  }
+  .collection .container, .gift .container {
+    max-width: 100%;
+    padding: 0;
+  }
+  .collection .collection-grid, .gift .gift-grid{
+    padding: 0 40px;
+    margin: 0;
+    width:100%;
   }
 
   .collection-img {
@@ -6583,6 +6608,27 @@
 }
 
 /* ===================================================================
+   767
+   =================================================================== */
+@media (max-width:767px){
+  .gift h2{
+    padding-left: 20px;
+  }
+  .collection .container, .gift .container {
+    max-width: 100%;
+    padding: 0;
+  }
+  .collection .collection-grid, .gift .gift-grid{
+    padding: 0 20px;
+    margin: 0;
+    width:100%;
+  }
+  .collection-cta {
+    margin: 30px 20px 0;
+  }
+}
+
+/* ===================================================================
    521-767
    =================================================================== */
 @media (min-width:521px) and (max-width:767px){
@@ -6754,6 +6800,7 @@
     margin-top: 22px;
     gap: 20px;
   }
+  
   .collection-grid {
     gap: 20px;
   }
@@ -6875,6 +6922,9 @@
     width: 81px;
     height: auto;
   }
+  .gift h2 {
+    width: 70%;
+  }
 
   .faq-q {
     padding: 14px 4px;
@@ -6935,7 +6985,6 @@
   .footer-pay-inner, .footer-ship-inner {
     gap: 23px;
   }
-  
 
   /* ————— uit oud ≤1300 ————— */
 
@@ -10592,7 +10641,9 @@
     background: url(../media/yellow-shape-1440.svg);
     background-size: cover;
   }
-
+  .collection h2 {
+    padding-left: 20px;
+  }
   .collection-img {
     height: 295px;
   }
@@ -11229,6 +11280,9 @@
   .gift h2{
     font-size:calc(var(--h2-font-size) - 6px);
     text-align:center;
+  }
+  .gift-nav{
+    display: flex;
   }
 
   /* ===== Klantcases ===== */
@@ -14627,4 +14681,68 @@
    stapelen — de volle 380px onderruimte wordt dan lege lucht. */
 @media (max-width:767px){
   .case-others.blog-others{ padding-bottom:190px; }
+}
+
+/* ===================================================================
+   MOBIEL (<=520): gedeelde sliderbalk met voortgangsstreepjes
+   -------------------------------------------------------------------
+   Eén weergave voor alle sliders: knop links, streepjes in het midden,
+   knop rechts. Overgenomen van de tijdlijn op over-ons, die dit al zo
+   deed; de maten (5px hoog, max 26px breed, 6px ertussen) zijn
+   daarvandaan 1:1 aangehouden zodat het overal hetzelfde oogt.
+
+   Staat bewust ACHTERAAN het bestand: de regels moeten winnen van de
+   banden hierboven (o.a. .collection-nav{display:none} uit de basis).
+   =================================================================== */
+@media (max-width:520px){
+  /* de gift- en collectiesectie zijn op mobiel full-bleed (container
+     zonder zijpadding, zodat de kaartenrij de rand in scrollt); de
+     balk zelf krijgt daarom de normale 20px-gutter, anders plakken de
+     knoppen tegen de schermrand */
+  .gift-nav,
+  .collection-nav{
+    padding-left:20px;
+    padding-right:20px;
+  }
+  /* de collectierij is op mobiel óók een scroll-rij; de pijlen stonden
+     hier nog uit terwijl de gift-rij ze wel had */
+  .collection-nav{
+    display:flex;
+  }
+  /* balk over de volle breedte, knoppen aan de randen */
+  .gift-nav,
+  .collection-nav,
+  .cases-nav,
+  .steps-nav,
+  .reviews-nav{
+    align-items:center;
+    gap:14px;
+  }
+  /* knoppen niet laten pletten door de flexibele streepjesbalk */
+  .gift-nav button,
+  .collection-nav button,
+  .cases-nav button,
+  .steps-nav button,
+  .reviews-nav button{
+    flex:0 0 auto;
+  }
+  .nav-dashes{
+    display:flex;
+    flex:1;
+    min-width:0;
+    justify-content:center;
+    align-items:center;
+    gap:6px;
+  }
+  .nav-dashes span{
+    flex:1 1 0;
+    min-width:8px;
+    max-width:26px;
+    height:5px;
+    border-radius:3px;
+    background:#cfc4bb;
+  }
+  .nav-dashes span.is-active{
+    background:var(--text);
+  }
 }

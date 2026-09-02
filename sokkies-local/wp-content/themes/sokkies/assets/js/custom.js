@@ -1558,3 +1558,136 @@
       koppel(vak);
     });
   })();
+
+  /* ===================================================================
+     Voortgangsstreepjes in de sliderbalken — MOBIEL (<=520px)
+     -------------------------------------------------------------------
+     Eén gedeelde weergave voor de hele site, naar het voorbeeld dat al
+     op de tijdlijn van over-ons stond:   [ < ]   — — — —   [ > ]
+
+     De streepjes worden hier in JS toegevoegd en niet in de
+     sectietemplates, zodat de markup van alle secties ongemoeid blijft
+     en er op desktop niets verandert (CSS toont ze alleen <=520px).
+
+     BEWUST NIET op de doorlopende marquees (hero-galerij, merkenstrip,
+     designed-strip, de verticale kolommen): die klonen hun slides tot
+     een veelvoud van het venster, dus "positie X van Y" bestaat daar
+     niet. De tijdlijn houdt zijn eigen streepjes (Swiper-pagination).
+     =================================================================== */
+  (function () {
+    /* Bouwt (of hergebruikt) de streepjes tussen de twee knoppen van een
+       sliderbalk. Geeft het element terug, of null als er niets te tonen
+       valt (één item = geen voortgang). */
+    /* Meer dan dit aantal past niet in de balk: 18 streepjes van minimaal
+       8px met 6px ertussen vragen 246px terwijl er ~212px is, en dan
+       lopen ze over de volgende knop heen. Boven de grens worden het er
+       MAX en geeft de balk de voortgang naar verhouding weer. */
+    var MAX_STREEPJES = 8;
+
+    function bouwStreepjes(nav, aantal) {
+      if (!nav || !aantal || aantal < 2) return null;
+      aantal = Math.min(aantal, MAX_STREEPJES);
+      let vak = nav.querySelector('.nav-dashes');
+      if (!vak) {
+        vak = document.createElement('div');
+        vak.className = 'nav-dashes';
+        /* tussen de knoppen plaatsen; valt terug op achteraan wanneer een
+           balk maar één knop heeft */
+        const knoppen = nav.querySelectorAll('button, a');
+        if (knoppen.length > 1) nav.insertBefore(vak, knoppen[1]);
+        else nav.appendChild(vak);
+      }
+      if (vak.children.length !== aantal) {
+        vak.innerHTML = '';
+        for (let i = 0; i < aantal; i++) vak.appendChild(document.createElement('span'));
+      }
+      return vak;
+    }
+
+    function markeer(vakken, index, aantal) {
+      vakken.forEach((vak) => {
+        if (!vak) return;
+        var streepjes = vak.children.length;
+        /* bij meer items dan streepjes: positie naar verhouding */
+        var doel = (aantal > streepjes && aantal > 1)
+          ? Math.round((index / (aantal - 1)) * (streepjes - 1))
+          : index;
+        Array.from(vak.children).forEach((s, n) => {
+          s.classList.toggle("is-active", n === doel);
+        });
+      });
+    }
+
+    function start() {
+      /* 1. Swiper-sliders met een eigen navigatiebalk in dezelfde sectie.
+            Swiper 11 telt geen loop-duplicaten mee in slides, dus
+            slides.length is het echte aantal. */
+      [
+        { slider: '.cases-swiper',       nav: '.cases-nav' },
+        { slider: '.testimonial-swiper', nav: '.cases-nav' },
+        { slider: '.steps-swiper',       nav: '.steps-nav' },
+        { slider: '.reviews-swiper',     nav: '.reviews-nav' },
+      ].forEach(function (paar) {
+        document.querySelectorAll(paar.slider).forEach((el) => {
+          const sw = el.swiper;
+          if (!sw || el.__streepjes) return;
+          const scope = el.closest('section') || document;
+          /* de cases-slider heeft de balk IN elke slide staan (fade), dus
+             er zijn er meerdere — allemaal bijwerken */
+          const navs = Array.from(scope.querySelectorAll(paar.nav));
+          const aantal = sw.slides.length;
+          const vakken = navs.map((n) => bouwStreepjes(n, aantal));
+          if (!vakken.some(Boolean)) return;
+          el.__streepjes = true;
+          const bij = () => markeer(vakken, sw.realIndex % aantal, aantal);
+          bij();
+          sw.on('slideChange', bij);
+        });
+      });
+
+      /* 2. Scroll-rijen (gift/collectie): dit zijn géén Swipers maar
+            overflow-rijen, dus de positie komt uit scrollLeft. */
+      [
+        { rij: '.gift-grid',       kaart: '.gift-card',       nav: '.gift-nav' },
+        { rij: '.collection-grid', kaart: '.collection-card', nav: '.collection-nav' },
+      ].forEach(function (paar) {
+        document.querySelectorAll(paar.rij).forEach((rij) => {
+          if (rij.__streepjes) return;
+          const scope = rij.closest('section') || document;
+          const nav = scope.querySelector(paar.nav);
+          const kaarten = rij.querySelectorAll(paar.kaart);
+          const vak = bouwStreepjes(nav, kaarten.length);
+          if (!vak) return;
+          rij.__streepjes = true;
+          const bij = () => {
+            const eerste = kaarten[0].getBoundingClientRect().width;
+            const gat = parseFloat(getComputedStyle(rij).columnGap) || 0;
+            const stap = eerste + gat;
+            const index = stap > 0 ? Math.round(rij.scrollLeft / stap) : 0;
+            markeer([vak], Math.max(0, Math.min(kaarten.length - 1, index)), kaarten.length);
+          };
+          bij();
+          rij.addEventListener("scroll", () => {
+            clearTimeout(rij.__dashTimer);
+            rij.__dashTimer = setTimeout(bij, 60);
+          });
+          /* Nazorg na een pijlklik: die scrollt met behavior:"smooth", en
+             daar is het scroll-event niet in elke omgeving betrouwbaar voor
+             (in een verborgen paneel vuurt het niet). Twee metingen na de
+             klik houden de streepjes hoe dan ook gelijk. */
+          nav.querySelectorAll("button").forEach((knop) => {
+            knop.addEventListener("click", () => {
+              setTimeout(bij, 350);
+              setTimeout(bij, 750);
+            });
+          });
+          window.addEventListener("resize", bij);
+        });
+      });
+    }
+
+    /* na 'load' staan alle Swipers zeker; DOMContentLoaded als die al
+       geweest is. bouwStreepjes is idempotent, dus dubbel draaien kan. */
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start);
+  })();
