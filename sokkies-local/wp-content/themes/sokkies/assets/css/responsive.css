@@ -14746,3 +14746,35 @@
     background:var(--text);
   }
 }
+
+/* ===================================================================
+   MOBIEL (<=767): zoekbalk over de volle breedte van de header
+   -------------------------------------------------------------------
+   De balk klapte hier naar 46px open in plaats van over de header.
+   Oorzaak: .nav-search staat absoluut binnen .search-header-icon, en
+   dat is alleen het icoonknopje van circa 40px breed. De regel
+   width:calc(100% - 120px) rekende dus met 40px en werd negatief; wat
+   overbleef was de padding. Op desktop viel het niet op, want daar
+   staat een vaste 457px.
+
+   Nu ankert het formulier op .nav-wrap (de witte balk) en komt de
+   breedte uit left/right. De breedte-animatie van desktop vervalt
+   daarmee op mobiel; openen en sluiten gaat via de fade die er al was.
+   =================================================================== */
+@media (max-width:767px){
+  .nav-wrap{
+    position:relative; /* ankerpunt; stond <=520 al zo, hier voor de zekerheid */
+  }
+  .search-header-icon{
+    position:static; /* anders blijft het icoonknopje het ankerpunt */
+  }
+  .nav-search{
+    left:14px;
+    right:14px;
+    width:auto;
+    transition:opacity .2s ease;
+  }
+  .navbar.search-open .nav-search{
+    width:auto;
+  }
+}
