@@ -24,16 +24,33 @@ if ( 2 === count( $case_ids ) ) {
 // rekenen en verkeerd uitkomen. Ontbraken hier volledig; gemeld door Kulwant
 // 2026-08-25 met een vergelijking naast htmlv. CSS en de twee PNG's zaten al
 // in het thema, alleen de markup niet.
-$duddles = $args['duddles'] ?? ( false !== strpos( (string) $stijl_klasse, 'cases-pdp' ) );
+// htmlv geeft ze aan TWEE varianten: de PDP (product-detail.html) en de
+// configurator (configurator.html, cases-solid). Home heeft de voetjes en
+// collectie heeft niets.
+$duddles = $args['duddles'] ?? (
+	false !== strpos( (string) $stijl_klasse, 'cases-pdp' )
+	|| false !== strpos( (string) $stijl_klasse, 'cases-solid' )
+);
+// De configurator (cases-solid) zet ze in htmlv NIET binnen .case-section-outer
+// maar direct in de sectie. Dat is geen stijlkwestie: beide zijn
+// position:relative, dus de percentages van .dubble-left/-right rekenen tegen
+// een ander blok af en de doodles landen anders. De plaatsing volgt daarom de
+// variant, net als in htmlv.
+$duddles_buiten = $args['duddles_buiten'] ?? ( false !== strpos( (string) $stijl_klasse, 'cases-solid' ) );
+$duddle_blok = '<div class="case-duddle-icons">'
+  . '<img class="dubble-left" src="' . esc_url( get_template_directory_uri() . '/assets/media/sock-duddle-red-l.png' ) . '" alt="" aria-hidden="true">'
+  . '<img class="dubble-right" src="' . esc_url( get_template_directory_uri() . '/assets/media/sock-duddle-red-r.png' ) . '" alt="" aria-hidden="true">'
+  . '</div>';
 $assets = get_template_directory_uri() . '/assets/media/';
 ?>
 <?php $sectie_klasse = $args['sectie_klasse'] ?? ( 'cases' . $stijl_klasse ); ?>
 <section class="<?php echo esc_attr( $sectie_klasse ); ?>">
+  <?php if ( $duddles && $duddles_buiten ) { echo $duddle_blok; } ?>
   <div class="case-section-outer">
   <?php if ( $feet ) : ?>
   <img class="cases-feet" src="<?php echo esc_url( $assets ); ?>Voeten-in-de-lucht.png" alt="" aria-hidden="true">
   <?php endif; ?>
-  <?php if ( $duddles ) : ?>
+  <?php if ( $duddles && ! $duddles_buiten ) : ?>
   <div class="case-duddle-icons">
     <img class="dubble-left" src="<?php echo esc_url( $assets ); ?>sock-duddle-red-l.png" alt="" aria-hidden="true">
     <img class="dubble-right" src="<?php echo esc_url( $assets ); ?>sock-duddle-red-r.png" alt="" aria-hidden="true">
