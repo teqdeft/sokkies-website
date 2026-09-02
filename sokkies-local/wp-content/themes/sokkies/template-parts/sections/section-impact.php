@@ -91,16 +91,18 @@ if ( $fotos ) {
         <p><?php echo nl2br( esc_html( $beschrijving ) ); ?></p>
       </div>
 
-      <div class="impact-gallery">
-        <?php foreach ( $kolommen as $k => $kolom ) : ?>
-        <div class="swiper v-swiper v-swiper-<?php echo (int) ( $k + 1 ); ?>">
-          <div class="swiper-wrapper">
-            <?php foreach ( $kolom as $url ) : ?>
-            <div class="swiper-slide"><img src="<?php echo esc_url( $url ); ?>" alt="Sok"></div>
-            <?php endforeach; ?>
+      <div class="imapact-right-main">
+        <div class="impact-gallery">
+          <?php foreach ( $kolommen as $k => $kolom ) : ?>
+          <div class="swiper v-swiper v-swiper-<?php echo (int) ( $k + 1 ); ?>">
+            <div class="swiper-wrapper">
+              <?php foreach ( $kolom as $url ) : ?>
+              <div class="swiper-slide"><img src="<?php echo esc_url( $url ); ?>" alt="Sok"></div>
+              <?php endforeach; ?>
+            </div>
           </div>
+          <?php endforeach; ?>
         </div>
-        <?php endforeach; ?>
       </div>
     </div>
 

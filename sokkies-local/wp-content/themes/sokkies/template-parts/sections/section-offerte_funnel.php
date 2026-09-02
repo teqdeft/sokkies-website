@@ -39,8 +39,8 @@ $assets_uri = get_template_directory_uri() . '/assets/';
             <div class="quote-aside-divider"></div>
             <h4>Liever direct contact?</h4>
             <ul>
-              <li>Telefoon: <a href="<?php echo esc_attr( sokkies_tel_href() ); ?>">+31 (0)413 410 411</a></li>
-              <li>WhatsApp: <a href="<?php echo esc_url( sokkies_wa_href() ); ?>" target="_blank" rel="noopener">+31 (0)413 410 411</a></li>
+              <li>Telefoon: <a href="<?php echo esc_attr( sokkies_tel_href() ); ?>"><span>+31 (0)413 410 411</span></a></li>
+              <li>WhatsApp: <a href="<?php echo esc_url( sokkies_wa_href() ); ?>" target="_blank" rel="noopener"><span>+31 (0)413 410 411</span></a></li>
               <li><a href="mailto:<?php echo esc_attr( sokkies_optie( 'email', 'info@sokkies.nl' ) ); ?>">info@sokkies.nl</a></li>
             </ul>
           </aside>

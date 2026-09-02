@@ -53,6 +53,20 @@
   .cta-final-feet {
       left: 150px;
   }
+  main.contact {
+    background-size: 100%;
+  }
+  .pt-otp:before {
+    top: -110px;
+    background-size: 100%;
+  }
+  .pt-faq::before {
+    height: 1064px;
+    background-size: 110%;
+  }
+  .cta-final-panel {
+    background-size: 108%;
+  }
 }
 @media (min-width:1920px){
   .collection:before,
@@ -135,14 +149,16 @@
     height:520px;
   }
   /* ═══ Home — impact/collection/process (specs Kulwant 2026-08-12) ═══ */
-  .impact{
-    padding-top:220px;
-  }
+  
   .collection:before{
     top:-70%;
   }
   .process:not(.conf-works) > .container > h2{
     padding-top:80px;
+  }
+  .cases:before {
+    background-size: max(100%, 1920px) 100%;
+    background-position: right;
   }
 }
 
@@ -469,7 +485,7 @@
     padding: 14px 4px;
   }
   .faq-grid {
-    grid-template-columns: 382px 1fr;
+    grid-template-columns: 482px 1fr;
     gap: 135px;
   }
   .faq-left p {
@@ -479,7 +495,7 @@
     max-width: 92%;
   }
   .cta-final-feet {
-    top: -79%;
+    top: -82%;
     left: 69px;
     width: 31%;
   }
@@ -589,13 +605,13 @@
 
   /* Collectie-hero (specs Kulwant 2026-08-03) */
   .coll-hero{
-    height:100vh;
+    /* height:100vh; */
   }
   .coll-hero-left{
-    gap:20vh;
+    /* gap:20vh; */
   }
   .coll-hero-gallery{
-    height:110vh;
+    /* height:110vh; */
   }
   .coll-hero-left p{
     font-size:var(--body-lg-font-size);
@@ -1183,6 +1199,12 @@
   .case-others.blog-others{
     padding-bottom: 260px;
   }
+  .pick-img {
+    height: 140px;
+  }
+  .testimonial-card {
+    height: 250px;
+  }
 }
 
 /* ===================================================================
@@ -1669,15 +1691,7 @@
   /* ═══ Collectie — GEKOPIEERD UIT DE 1440-1679-BAND (verzoek Kulwant
      2026-08-03); band-eigen fijnslijpen volgt ═══ */
   /* Collectie-hero (specs Kulwant 2026-08-03) */
-  .coll-hero{
-    height:100vh;
-  }
-  .coll-hero-left{
-    gap:20vh;
-  }
-  .coll-hero-gallery{
-    height:110vh;
-  }
+  
   .coll-hero-left p{
     font-size:var(--body-lg-font-size);
     line-height:24px;
@@ -2377,6 +2391,12 @@
   .case-grid-section.blog-grid-section {
     padding-bottom: 152px;
   }
+  .pick-img {
+    height: 120px;
+  }
+  .testimonial-card {
+    height: 250px;
+  }
 }
 
 /* ===================================================================
@@ -2953,15 +2973,7 @@
   /* ═══ Collectie — GEKOPIEERD UIT DE 1280-1439-BAND (verzoek Kulwant
      2026-08-03, incl. home-typografie-sync); band-eigen fijnslijpen volgt ═══ */
   /* Collectie-hero (specs Kulwant 2026-08-03) */
-  .coll-hero{
-    height:100vh;
-  }
-  .coll-hero-left{
-    gap:12vh;
-  }
-  .coll-hero-gallery{
-    height:110vh;
-  }
+ 
   .coll-hero-left p{
     font-size:var(--body-lg-font-size);
     line-height:24px;
@@ -4054,7 +4066,12 @@
     transform:translateY(3px);
     display:inline-block;
   }
-
+  .pick-img {
+    height: 140px;
+  }
+  .testimonial-card {
+    height: 260px;
+  }
   }
 
 /* ===================================================================
@@ -4756,7 +4773,7 @@
   }
   /* spec 2026-08-13 */
   .brands h2{
-    margin-bottom:0px;
+    margin-bottom:20px;
   }
   /* stagger op runtime-klassen (de loop husselt de DOM; nth-child-offsets
      van de basis uit) — zelfde patroon als mobiel */
@@ -6400,7 +6417,7 @@
   /* QA #19-vervolg (2026-08-13): statskolom smaller en gecentreerd
      boven de collage */
   .impact-left{
-    max-width:80%;
+    max-width:100%;
     margin:0 auto;
   }
   /* fix 2026-08-13: inner-hoogte was gepind (510) — de 446-collage liep
@@ -6410,14 +6427,19 @@
   }
   /* impact-gallery — SAMENGEVOEGD (2026-08-13, verzoek Kulwant): de 5
      losse lagen uit de rondes zijn hier één effectieve regel geworden */
+  .imapact-right-main{
+    width: 100vw;
+    overflow: hidden;
+    height: 381px;
+  }
   .impact-gallery{
-    width:100%;
-    max-width:100%;
-    margin-left:0;
-    padding-right:0;
-    height:auto;
-    gap:6px;
-    margin-bottom:20px;
+    width: 90%;
+    margin: 0px auto;
+    max-width: 100%;
+    height: auto;
+    gap: 6px;
+    margin-bottom: 20px;
+    margin-top: -25px;
   }
 }
 
@@ -6605,12 +6627,30 @@
   .navbar.sub-open .types{
     grid-template-columns:1fr 1fr;
   }
+  .of-aantal {
+    margin-top: 40px;
+  }
+  .pick-img {
+    height: 140px;
+  }
+  .testimonial-card {
+    height: 270px;
+  }
 }
+
 
 /* ===================================================================
    767
    =================================================================== */
 @media (max-width:767px){
+  .lang-list{
+    z-index: -1;
+    padding: 25px 4px 5px;
+    border-radius: 14px 14px 8px 8px;
+  }
+  .lang.open .lang-trigger{
+    border-radius: 40px;
+  }
   .gift h2{
     padding-left: 20px;
   }
@@ -6626,6 +6666,26 @@
   .collection-cta {
     margin: 30px 20px 0;
   }
+  .gift{
+    overflow: hidden;
+  }
+  .gift:before {
+    content: '';
+    background: #fff;
+    position: absolute;
+    top: 31px;
+    left: -60px;
+    width: 120%;
+    height: 100%;
+    z-index: 0;
+    background-repeat: no-repeat;
+    background-size: max(100%, 1920px) auto;
+    transform: rotate(5deg);
+  }
+  .of-aantal {
+    margin-top: 35px;
+  }
+
 }
 
 /* ===================================================================
@@ -7802,7 +7862,7 @@
    .cases:before{
     background:url(../media/blue-shape-lg.png) 82% top;
     background-size: cover;
-    height: 78%;
+    height: 85%;
     background-repeat: no-repeat;
   }
   .cases-feet {
@@ -8224,7 +8284,7 @@
   }
   /* spec 2026-08-13 */
   .brands h2{
-    margin-bottom:0px;
+    margin-bottom:20px;
   }
   .calculator{
     padding:80px 0 60px;
@@ -8305,21 +8365,28 @@
     font-size:13px;
     white-space:nowrap;
   }
+  .imapact-right-main{
+    width: 106vw;
+    height: 420px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
   .impact-gallery{
     /* rotatie uit de basis (-4°) blijft staan — zelfde hoek als desktop */
     width:100%; /* binnen de 40px-container-gutters (correctie Kulwant) */
     max-width:100%;
     margin-left:0;
     padding-right:0;
-    height:340px;
-    gap:12px;
+    height: 114%;
+    gap: 12px;
+    margin-top: -28px;
   }
   .impact-gallery .v-swiper:nth-child(3){
     display:block;
   }
   .v-swiper .swiper-slide{
     width:100%;
-    height:150px;
+    height:210px;
     border-radius:12px;
   }
   :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul{
@@ -11802,17 +11869,23 @@
     overflow:visible; /* basis-hidden knipte de 120vw-gallery af op de container */
     height:auto; /* 1550-blok fixeert 465px terwijl de content 478px is */
   }
+  .imapact-right-main{
+    width: 102vw;
+    height: 260px;
+    overflow: hidden;
+    margin-bottom: 0px;
+  }
   .impact-gallery{
-    transform:none;
-    width:120vw;
+    width:100%;
     max-width:none;
-    margin-left:0;
-    padding-right:0; /* basis had 20px rechts — trok de foto's uit het midden */
+    margin-left: -10px;
+    padding-right: 0;
+    margin-top: -20px;
   }
   /* impact-marquees: 276px-slides in ~115px-kolommen gaven zoom-crops */
   .v-swiper .swiper-slide{
     width:100%;
-    height:150px;
+    height:181px;
     border-radius:12px;
   }
   .process{
@@ -12146,8 +12219,13 @@
   /* cases-shape: 100%/100%-stretch vervormt op 390 extreem (witte hap rechts)
      — cover toont het solide linkerdeel met de diagonaal bovenin */
   .cases:before{
-    background-size:cover;
-    background-position:left top;
+    background-position: center top;
+    background: var(--blue);
+    transform: rotate(3deg);
+    border-radius: 0 180px 0 0;
+    left: -35px;
+    top: 12px;
+    width: 115%;
   }
   /* USP-chips (specs Kulwant): 2 kolommen × 3 rijen, 60px boven, gap 20,
      boxen 104px hoog, iconen 40×40, labels 17px */
@@ -14601,6 +14679,10 @@
   .calculator .calc-panel.calc-right{
     order:3;
   }
+  .quote-card .gform_page_footer{
+    align-items: center;
+    text-align: center;
+  }
 }
 
 /* ===================================================================
@@ -14738,7 +14820,7 @@
     flex:1 1 0;
     min-width:8px;
     max-width:26px;
-    height:5px;
+    height:4px;
     border-radius:3px;
     background:#cfc4bb;
   }
