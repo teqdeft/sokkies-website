@@ -6,7 +6,16 @@
  * page-scope class). Pluspunten-chips uit = de over-ons-weergave.
  */
 $rijen        = get_sub_field( 'stats' );
-$beschrijving = get_sub_field( 'beschrijving' ) ?: 'Sokkies levert al sinds 2014 aan corporates, MKB en sportclubs in heel Europa.';
+$beschrijving = get_sub_field( 'beschrijving' ) ?: "Sokkies levert al sinds 2014 aan corporates,
+MKB en sportclubs in heel Europa.";
+/* De regel brak alleen waar hij toevallig uitkwam: de waarde ging door
+   esc_html() zonder nl2br(), dus een regelovergang uit het CMS deed niets.
+   Daarom staat er in oude revisies letterlijk <br> in het veld — dat zou
+   als tekst op de pagina komen. Nu telt een Enter in het veld wel.
+   Meerdere lege regels worden tot een overgang teruggebracht, anders geeft
+   de opgeslagen dubbele overgang op over-ons een witregel. */
+$beschrijving = preg_replace( '/\R{2,}/', "
+", $beschrijving );
 $fotos        = get_sub_field( 'fotos' );
 $chips_tonen  = get_sub_field( 'pluspunten_tonen' );
 $chips_tonen  = ( null === $chips_tonen ) ? true : (bool) $chips_tonen;
@@ -79,7 +88,7 @@ if ( $fotos ) {
           </li>
           <?php endforeach; ?>
         </ul>
-        <p><?php echo esc_html( $beschrijving ); ?></p>
+        <p><?php echo nl2br( esc_html( $beschrijving ) ); ?></p>
       </div>
 
       <div class="impact-gallery">
