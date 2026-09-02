@@ -9899,3 +9899,32 @@ main.contact{
 .nav-dashes{
   display:none;
 }
+
+/*═════════════════════════════════════════
+  Minimale funnelkop (offerte): logo links, "Naar de collectie" rechts.
+  De .navbar staat al op space-between, dus er is geen extra layout nodig.
+  Zie sokkies_mini_header() in functions.php voor welke pagina's dit is.
+═════════════════════════════════════════*/
+.nav-terug{
+  display:inline-flex;
+  /* links krijgen sitebreed een onderstreping; in het ontwerp staat deze
+     regel zonder */
+  text-decoration:none;
+  align-items:center;
+  gap:9px;
+  margin-right:14px;
+  font-family:var(--roc-grotesk);
+  font-size:15px;
+  font-weight:600;
+  color:var(--text);
+  white-space:nowrap;
+  transition:opacity .2s;
+}
+.nav-terug:hover{
+  opacity:.65;
+}
+/* de balk is zonder menu een stuk lager; het logo houdt zijn maat */
+.navbar-mini{
+  padding-top:18px;
+  padding-bottom:18px;
+}

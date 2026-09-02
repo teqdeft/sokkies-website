@@ -20,7 +20,7 @@
 <header>
       <div class="container">
         <div class="nav-wrap">
-          <nav class="navbar">
+          <nav class="navbar<?php echo sokkies_mini_header() ? " navbar-mini" : ""; ?>">
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="logo">
             <svg id="Group_235" data-name="Group 235" xmlns="http://www.w3.org/2000/svg" width="134.897" height="42" viewBox="0 0 134.897 42">
             <path id="Path_3662" data-name="Path 3662" d="M133.793,42.057h-8.01a.644.644,0,0,1-.643-.642V1.452a.644.644,0,0,1,.643-.642h8.01a.644.644,0,0,1,.643.642V41.416a.644.644,0,0,1-.643.642" transform="translate(-80.041 -0.517)" fill="#fa4b46"/>
@@ -36,6 +36,14 @@
             </svg>
 
             </a>
+            <?php if ( sokkies_mini_header() ) : ?>
+            <a class="nav-terug" href="<?php echo esc_url( home_url( '/collectie/' ) ); ?>">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="11" viewBox="0 0 14 11" aria-hidden="true">
+                <path d="M13 5.5H1M5.5 1 1 5.5 5.5 10" fill="none" stroke="#28121b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Naar de collectie</span>
+            </a>
+            <?php else : ?>
             <button class="nav-burger" aria-label="Menu" aria-expanded="false">
               <span></span><span></span><span></span>
             </button>
@@ -106,6 +114,7 @@
                   <?php endif; ?>
                 </div>
             </div>
+            <?php endif; ?>
 
           </nav>
           <div class="lang" data-value="nl">
