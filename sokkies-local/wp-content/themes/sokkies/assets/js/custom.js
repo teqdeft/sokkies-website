@@ -371,18 +371,19 @@
       new Swiper(el, {
         slidesPerView: 1.23,
         spaceBetween: 12,
-        loop: false,
+        loop: true,
         grabCursor: true,
+        centeredSlides: true,
         speed: 600,
         navigation: { prevEl: scope.querySelector('.t-prev'), nextEl: scope.querySelector('.t-next') },
         breakpoints: {
-          521:  { slidesPerView: 1.33, spaceBetween: 20 },
-          768:  { slidesPerView: 2.1,  spaceBetween: 20 },
+          521:  { slidesPerView: 1, spaceBetween: 20, centeredSlides: true, loop: true,},
+          768:  { slidesPerView: 2.1,  spaceBetween: 20, centeredSlides: false, loop: false, },
           /* 2026-08-13: 2 vol + 50% van kaart 3 (was 3.5) */
           992:  { slidesPerView: 2.5,  spaceBetween: 20 },
           1200:  { slidesPerView: 3.5,  spaceBetween: 20 },
           1439:  { slidesPerView: 3.5,  spaceBetween: 20 },
-          1680: { slidesPerView: 4,    spaceBetween: 20 },
+          1680: { slidesPerView: 4,    spaceBetween: 20, loop: false, centeredSlides: false },
         },
       });
     });
@@ -1708,4 +1709,40 @@
     }
 
     if (!koppel()) window.addEventListener('load', koppel);
+  })();
+
+  /* ===================================================================
+     Telefoonvelden: letters komen er niet in
+     -------------------------------------------------------------------
+     De serverkant weigert ze al (sokkies_telefoon_validatie in
+     functions.php), maar dan pas ná het verzenden. Hier worden ze
+     meteen tijdens het typen geweerd, zodat je niet eerst een foutmelding
+     krijgt. Dezelfde tekens zijn toegestaan als op de server: cijfers en
+     de gebruikelijke scheidingstekens, want het veld is internationaal
+     (+31 (0)413 410 411 moet gewoon kunnen).
+
+     Werkt ook na een AJAX-herteken van het formulier, want de handler
+     hangt op het document en niet op het veld zelf.
+     =================================================================== */
+  (function () {
+    var TOEGESTAAN = /[^0-9+()/.\s-]/g;
+
+    function schoon(veld) {
+      var voor = veld.value;
+      var na = voor.replace(TOEGESTAAN, '');
+      if (na === voor) return;
+      /* cursorpositie behouden: anders springt hij naar het eind zodra er
+         middenin een geweerd teken wordt getypt */
+      var pos = veld.selectionStart;
+      var verwijderd = voor.slice(0, pos).length - na.slice(0, pos).replace(TOEGESTAAN, '').length;
+      veld.value = na;
+      try { veld.setSelectionRange(pos - verwijderd, pos - verwijderd); } catch (e) {}
+    }
+
+    document.addEventListener('input', function (e) {
+      var veld = e.target;
+      if (!veld || veld.tagName !== 'INPUT' || veld.type !== 'tel') return;
+      if (!veld.closest('.gform_wrapper')) return;
+      schoon(veld);
+    });
   })();

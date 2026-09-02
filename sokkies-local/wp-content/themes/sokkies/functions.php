@@ -795,3 +795,56 @@ function sokkies_mini_header() {
 	$paginas = apply_filters( 'sokkies_mini_header_paginas', array( 'offerte' ) );
 	return is_page( $paginas );
 }
+
+/**
+ * Telefoonvelden accepteren geen letters meer.
+ *
+ * De drie formulieren gebruiken een telefoonveld met formaat "international",
+ * en dat valideert Gravity Forms NIET: in class-gf-field-phone.php draait de
+ * regex-controle op $phone_format['regex'], en het internationale formaat
+ * heeft geen regex. Alles werd dus geaccepteerd, inclusief "sdfsdfsdf5425".
+ *
+ * BEWUST GEEN CIJFERS-ALLEEN: het veld is internationaal en het eigen nummer
+ * van Sokkies staat overal als +31 (0)413 410 411. Plus, spaties, streepjes,
+ * haakjes, punt en schuine streep blijven daarom toegestaan; letters en de
+ * rest niet, en er moet minstens één cijfer in staan. Wil je het strikter
+ * (echt alleen 0-9), dan is dat één regex hieronder.
+ *
+ * In code en niet als formulierinstelling: instellingen staan in de database
+ * en die deployt niet mee.
+ */
+function sokkies_eigen_gf_formulier( $form_of_id ) {
+	$id = is_array( $form_of_id ) ? (int) rgar( $form_of_id, 'id' ) : (int) $form_of_id;
+	if ( ! $id ) {
+		return false;
+	}
+	$ids = array();
+	if ( function_exists( 'sokkies_contactformulier_id' ) ) {
+		$ids[] = sokkies_contactformulier_id();
+	}
+	if ( function_exists( 'sokkies_offerte_form_id' ) ) {
+		$ids[] = sokkies_offerte_form_id();
+	}
+	if ( function_exists( 'sokkies_sample_form_id' ) ) {
+		$ids[] = sokkies_sample_form_id();
+	}
+	return in_array( $id, array_filter( $ids ), true );
+}
+
+function sokkies_telefoon_validatie( $result, $value, $form, $field ) {
+	if ( ! $field || 'phone' !== $field->type || ! sokkies_eigen_gf_formulier( $form ) ) {
+		return $result;
+	}
+	$waarde = trim( (string) $value );
+	if ( '' === $waarde ) {
+		return $result; // leeg afhandelen blijft aan het verplicht-vinkje
+	}
+	$toegestaan = preg_match( '#^[0-9+()/.\s-]+$#', $waarde );
+	$heeft_cijfer = preg_match( '#[0-9]#', $waarde );
+	if ( ! $toegestaan || ! $heeft_cijfer ) {
+		$result['is_valid'] = false;
+		$result['message']  = 'Vul een geldig telefoonnummer in; letters zijn niet toegestaan.';
+	}
+	return $result;
+}
+add_filter( 'gform_field_validation', 'sokkies_telefoon_validatie', 10, 4 );
