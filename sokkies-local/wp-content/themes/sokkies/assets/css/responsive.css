@@ -14712,7 +14712,7 @@
   /* balk over de volle breedte, knoppen aan de randen */
   .gift-nav,
   .collection-nav,
-  .cases-nav,
+  .testimonial .cases-nav,
   .steps-nav,
   .reviews-nav{
     align-items:center;
@@ -14721,7 +14721,7 @@
   /* knoppen niet laten pletten door de flexibele streepjesbalk */
   .gift-nav button,
   .collection-nav button,
-  .cases-nav button,
+  .testimonial .cases-nav button,
   .steps-nav button,
   .reviews-nav button{
     flex:0 0 auto;

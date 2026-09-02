@@ -1573,6 +1573,12 @@
      designed-strip, de verticale kolommen): die klonen hun slides tot
      een veelvoud van het venster, dus "positie X van Y" bestaat daar
      niet. De tijdlijn houdt zijn eigen streepjes (Swiper-pagination).
+
+     OOK NIET op de cases-slider ("Wat we maakten"): op verzoek houdt die
+     alleen de twee pijlen. De balk zit daar IN elke slide, dus de
+     streepjes stonden er in viervoud in de DOM; de sectie oogt rustiger
+     zonder. De reviews-slider deelt de class .cases-nav maar staat in
+     een eigen sectie en houdt zijn streepjes wel.
      =================================================================== */
   (function () {
     /* Bouwt (of hergebruikt) de streepjes tussen de twee knoppen van een
@@ -1623,7 +1629,6 @@
             Swiper 11 telt geen loop-duplicaten mee in slides, dus
             slides.length is het echte aantal. */
       [
-        { slider: '.cases-swiper',       nav: '.cases-nav' },
         { slider: '.testimonial-swiper', nav: '.cases-nav' },
         { slider: '.steps-swiper',       nav: '.steps-nav' },
         { slider: '.reviews-swiper',     nav: '.reviews-nav' },
