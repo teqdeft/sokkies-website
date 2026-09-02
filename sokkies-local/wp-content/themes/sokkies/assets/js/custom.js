@@ -1671,3 +1671,41 @@
     if (document.readyState === 'complete') start();
     else window.addEventListener('load', start);
   })();
+
+  /* ===================================================================
+     Gravity Forms: miniatuur bij een geüpload bestand
+     -------------------------------------------------------------------
+     GF rendert per bestand alleen naam, grootte, voortgang en een
+     verwijderknop (zie gravityforms.js, de markup rond 'ginput_preview').
+     Het ontwerp toont daarnaast een miniatuur van de afbeelding.
+
+     Dat gaat via GF's eigen JS-filter gform_file_upload_markup, zodat de
+     plugin zelf onaangeroerd blijft. De bron is het lokale bestand
+     (plupload's getNative), want tijdens het uploaden bestaat er nog geen
+     URL op de server — in het ontwerp staat de miniatuur er al op 34%.
+
+     De object-URL wordt per bestand ONTHOUDEN: het filter draait bij elke
+     voortgangsstap opnieuw, en zonder cache zou er per procent een nieuwe
+     URL bij komen die nooit wordt vrijgegeven.
+     =================================================================== */
+  (function () {
+    var miniaturen = {};
+
+    function koppel() {
+      if (!window.gform || !gform.addFilter) return false;
+      gform.addFilter('gform_file_upload_markup', function (html, file) {
+        if (!file || !file.id) return html;
+        var type = file.type || '';
+        if (type.indexOf('image/') !== 0) return html; // pdf/ai/eps: geen miniatuur
+        if (!miniaturen[file.id]) {
+          var echt = file.getNative ? file.getNative() : null;
+          if (!echt) return html;
+          try { miniaturen[file.id] = URL.createObjectURL(echt); } catch (e) { return html; }
+        }
+        return '<span class="of-upload-thumb"><img src="' + miniaturen[file.id] + '" alt=""></span>' + html;
+      });
+      return true;
+    }
+
+    if (!koppel()) window.addEventListener('load', koppel);
+  })();
