@@ -37,6 +37,10 @@ $duddles = $args['duddles'] ?? (
 // een ander blok af en de doodles landen anders. De plaatsing volgt daarom de
 // variant, net als in htmlv.
 $duddles_buiten = $args['duddles_buiten'] ?? ( false !== strpos( (string) $stijl_klasse, 'cases-solid' ) );
+// De grote witte sok rechts hoort in htmlv bij dezelfde variant
+// (configurator.html: .case-sock-right, direct in de sectie en vóór de
+// doodles). De CSS stond al in het thema, alleen de markup niet.
+$sok_rechts = $args['sok_rechts'] ?? ( false !== strpos( (string) $stijl_klasse, 'cases-solid' ) );
 $duddle_blok = '<div class="case-duddle-icons">'
   . '<img class="dubble-left" src="' . esc_url( get_template_directory_uri() . '/assets/media/sock-duddle-red-l.png' ) . '" alt="" aria-hidden="true">'
   . '<img class="dubble-right" src="' . esc_url( get_template_directory_uri() . '/assets/media/sock-duddle-red-r.png' ) . '" alt="" aria-hidden="true">'
@@ -45,6 +49,9 @@ $assets = get_template_directory_uri() . '/assets/media/';
 ?>
 <?php $sectie_klasse = $args['sectie_klasse'] ?? ( 'cases' . $stijl_klasse ); ?>
 <section class="<?php echo esc_attr( $sectie_klasse ); ?>">
+  <?php if ( $sok_rechts ) : ?>
+  <img class="case-sock-right" src="<?php echo esc_url( $assets ); ?>sock-img-right.png" alt="" aria-hidden="true">
+  <?php endif; ?>
   <?php if ( $duddles && $duddles_buiten ) { echo $duddle_blok; } ?>
   <div class="case-section-outer">
   <?php if ( $feet ) : ?>
