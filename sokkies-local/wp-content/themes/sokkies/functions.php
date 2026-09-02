@@ -848,3 +848,61 @@ function sokkies_telefoon_validatie( $result, $value, $form, $field ) {
 	return $result;
 }
 add_filter( 'gform_field_validation', 'sokkies_telefoon_validatie', 10, 4 );
+
+/**
+ * Naamvelden accepteren geen cijfers meer.
+ *
+ * "dfgdfg4564564" en "456456456" kwamen er gewoon door: het zijn gewone
+ * tekstvelden en Gravity Forms controleert daar niets op.
+ *
+ * WELKE VELDEN: Voornaam, Achternaam en Contactpersoon. BEWUST NIET
+ * Bedrijfsnaam — een bedrijf mag cijfers in zijn naam hebben (Bouwbedrijf
+ * 2000) — en ook niet Straat/Plaats/Postcode/Huisnummer, die hebben cijfers
+ * juist nodig.
+ *
+ * TOEGESTAAN: letters (ook accenten, want Ümit en Renée moeten kunnen),
+ * spatie, koppelteken, apostrof en punt: Anne-Marie, O'Brien, J. van Dijk.
+ * Cijfers en overige tekens niet, en er moet minstens één letter in staan.
+ *
+ * Herkenning op LABEL (met een filter om aan te passen) plus de cssClass
+ * of-contact van de funnelformulieren. Wordt een label in het CMS hernoemd,
+ * dan vervalt de controle voor dat veld — vandaar het filter.
+ */
+function sokkies_is_naamveld( $field ) {
+	if ( ! $field || 'text' !== $field->type ) {
+		return false;
+	}
+	$labels = apply_filters( 'sokkies_naamvelden', array( 'voornaam', 'achternaam', 'contactpersoon' ) );
+	$label  = strtolower( trim( wp_strip_all_tags( (string) $field->label ) ) );
+	if ( in_array( $label, $labels, true ) ) {
+		return true;
+	}
+	return false !== strpos( (string) $field->cssClass, 'of-contact' );
+}
+
+function sokkies_naam_validatie( $result, $value, $form, $field ) {
+	if ( ! sokkies_eigen_gf_formulier( $form ) || ! sokkies_is_naamveld( $field ) ) {
+		return $result;
+	}
+	$waarde = trim( (string) $value );
+	if ( '' === $waarde ) {
+		return $result; // leeg blijft aan het verplicht-vinkje
+	}
+	$toegestaan  = preg_match( "#^[\p{L}\p{M}\s.'’-]+$#u", $waarde );
+	$heeft_letter = preg_match( '#\p{L}#u', $waarde );
+	if ( ! $toegestaan || ! $heeft_letter ) {
+		$result['is_valid'] = false;
+		$result['message']  = 'Vul een geldige naam in; cijfers zijn niet toegestaan.';
+	}
+	return $result;
+}
+add_filter( 'gform_field_validation', 'sokkies_naam_validatie', 10, 4 );
+
+/** Haakje voor de JS-kant: markeert de naamvelden in de HTML. */
+function sokkies_naam_veld_class( $classes, $field, $form ) {
+	if ( sokkies_eigen_gf_formulier( $form ) && sokkies_is_naamveld( $field ) ) {
+		$classes .= ' sokkies-naamveld';
+	}
+	return $classes;
+}
+add_filter( 'gform_field_css_class', 'sokkies_naam_veld_class', 10, 3 );

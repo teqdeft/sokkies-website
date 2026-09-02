@@ -1746,3 +1746,43 @@
       schoon(veld);
     });
   })();
+
+  /* ===================================================================
+     Naamvelden: cijfers komen er niet in
+     -------------------------------------------------------------------
+     Zelfde opzet als bij het telefoonveld: de serverkant weigert ze al
+     (sokkies_naam_validatie in functions.php), hier worden ze meteen
+     tijdens het typen geweerd zodat je niet pas na het verzenden een
+     foutmelding krijgt.
+
+     Welke velden dat zijn bepaalt PHP, niet deze lijst: die zet de class
+     sokkies-naamveld op het veld (Voornaam, Achternaam, Contactpersoon —
+     bewust niet Bedrijfsnaam of de adresvelden). Zo staat de afbakening
+     op één plek.
+
+     Toegestaan: letters met accenten, spatie, koppelteken, apostrof en
+     punt, voor namen als Anne-Marie, O'Brien en J. van Dijk.
+     =================================================================== */
+  (function () {
+    /* Alleen CIJFERS weren in JS. De volledige regel — welke tekens wél
+       mogen — staat in PHP, waar \p{L} betrouwbaar werkt. Hier zou dat door
+       een JS-string moeten en dan gaat het stil fout: "[^\p{L}...]" wordt bij
+       het inlezen "[^p{L}...]", waarna juist de LETTERS sneuvelden en
+       "Anne-Marie" als "-M" overbleef. Cijfers zijn waar de melding over ging;
+       de rest weigert de server alsnog. */
+    var GEWEERD = /[0-9]/g;
+
+    document.addEventListener('input', function (e) {
+      var veld = e.target;
+      if (!veld || veld.tagName !== 'INPUT') return;
+      var vak = veld.closest ? veld.closest('.sokkies-naamveld') : null;
+      if (!vak) return;
+      var voor = veld.value;
+      var na = voor.replace(GEWEERD, '');
+      if (na === voor) return;
+      var pos = veld.selectionStart;
+      var kwijt = voor.slice(0, pos).length - na.slice(0, pos).replace(GEWEERD, '').length;
+      veld.value = na;
+      try { veld.setSelectionRange(pos - kwijt, pos - kwijt); } catch (er) {}
+    });
+  })();
