@@ -224,103 +224,67 @@
     document.querySelectorAll('.v-swiper-2').forEach((el) => verticalMarquee(el, true));
     document.querySelectorAll('.v-swiper-3').forEach((el) => verticalMarquee(el, false));
 
-    // Brand logos horizontal marquee — continuous, no arrows
-    /* ===== Waakhond voor de doorlopende marquees =====
-       Swiper's autoplay met delay:0 plant de VOLGENDE stap uitsluitend op het
-       transitionend-event van de wrapper (waitForTransition staat standaard
-       aan). Valt die ene event weg, dan plant niemand een volgende stap en
-       staat de strip stil terwijl autoplay.running gewoon true blijft — dat is
-       precies wat er na een paar minuten gebeurde.
-       Twee manieren waarop die event wegvalt:
-       1. slideNext() no-opt zolang Swiper zichzelf als 'animating' ziet
-          (loopPreventsSliding staat standaard aan) — er start dan geen
-          transitie, dus er komt ook geen transitionend;
-       2. een lopende transitie wordt geannuleerd (loopFix/setTransition(0));
-          de browser vuurt dan transitioncancel, waar niets naar luistert.
-       Eén gemiste event is dus fataal en onherstelbaar. Deze waakhond kijkt
-       daarom of de wrapper écht verschuift en trapt de drift opnieuw aan als
-       dat niet zo is. Hij grijpt alleen in bij stilstand, dus een marquee die
-       gewoon loopt merkt er niets van. */
-    function marqueeWaakhond(sw, wrapper) {
-      if (!sw || !wrapper) { return; }
-      var vorige = null, stil = 0;
+    /* ===== Merkenstrip: doorlopende marquee zonder Swiper =====
+       De strip liep hiervoor op Swiper's autoplay met delay:0. Dat is geen
+       doorlopende animatie maar een KETTING van losse transities: Swiper plant
+       elke volgende stap uitsluitend op het transitionend-event van de wrapper
+       (waitForTransition staat aan). Valt die ene event weg — een geannuleerde
+       transitie vuurt transitioncancel, en een achtergrondtab levert hem
+       helemaal niet — dan plant niemand een volgende stap en staat de strip
+       stil terwijl autoplay.running gewoon true blijft. Eén gemiste event is
+       fataal. Daar zat een waakhond omheen die de drift opnieuw aantrapte,
+       maar dat bleef een vangnet onder een mechaniek dat kan blijven hangen.
 
-      var positie = function () {
-        var m = getComputedStyle(wrapper).transform;
-        if (!m || m === 'none') { return '0,0'; }
-        try {
-          var d = new DOMMatrixReadOnly(m);
-          return Math.round(d.m41) + ',' + Math.round(d.m42);
-        } catch (e) {
-          return m;
-        }
-      };
+       Nu draait de strip op dezelfde manier als de topbar: de set wordt
+       verdubbeld en de wrapper schuift met een CSS-animatie naar -50%. Die
+       animatie kent geen events en kan dus niet halverwege stoppen; een
+       achtergrondtab pauzeert hem hooguit en hij loopt daarna gewoon door.
+       Swiper wordt hier niet meer gebruikt, dus ook de Loop Warning en het
+       naad-gehannes van loopFix zijn weg.
 
-      setInterval(function () {
-        if (!sw || sw.destroyed || !sw.autoplay) { return; }
-        // Achtergrondtab: de browser bevriest transities zelf. Niet ingrijpen,
-        // wel de meting resetten zodat we bij terugkomst niet meteen aanslaan.
-        if (document.hidden) { vorige = null; stil = 0; return; }
-
-        var nu = positie();
-        if (vorige !== null && nu === vorige) {
-          stil++;
-          if (stil >= 2) {              // ~4s geen enkele verplaatsing
-            sw.animating = false;       // vastgelopen vlag vrijgeven
-            try { sw.autoplay.stop(); sw.autoplay.start(); } catch (e) {}
-            sw.slideNext(sw.params.speed);
-            stil = 0;
-          }
-        } else {
-          stil = 0;
-        }
-        vorige = nu;
-      }, 2000);
-    }
-
+       De opbouw is exact twee gelijke helften: de originele set wordt herhaald
+       tot één helft breder is dan het venster, daarna wordt die hele helft één
+       keer gekopieerd. Alleen dan is -50% naadloos. */
     document.querySelectorAll('.brands-swiper').forEach((el) => {
-      // Slides klonen tot de strip ruim 2x de viewport vult — Swiper 11's
-      // loop heeft anders te weinig slides ("Loop Warning") en hapert op de naad
       const wrap = el.querySelector('.swiper-wrapper');
-      const originals = Array.from(wrap.children);
-      let stripW = originals.reduce((w, s) => w + s.getBoundingClientRect().width + 40, 0);
-      while (stripW < window.innerWidth * 4 && wrap.children.length < 80) {
-        originals.forEach((s) => wrap.appendChild(s.cloneNode(true)));
-        stripW *= 2;
-      }
-      const sw = new Swiper(el, {
-        slidesPerView: 'auto',
+      if (!wrap) return;
+      const origineel = Array.from(wrap.children).map((s) => s.cloneNode(true));
+      if (!origineel.length) return;
 
-        spaceBetween: 70,
-        loop: true,
-        speed: 4000,
-        loopAdditionalSlides: 4,
-        allowTouchMove: false,
-        autoplay: {
-          delay: 0,
-          disableOnInteraction: false,
-        },
-         breakpoints: {
-        0:    { spaceBetween: 40 },
-        521:  { spaceBetween: 70 },
-        1200:    { spaceBetween: 87},
-        1551:  { spaceBetween: 70 },
-      },
-      });
-      // Naijken met ECHTE maten (fix 2026-08-12): de schatting hierboven meet
-      // de logo's vóór hun definitieve hoogte-geschaalde breedte en stopte op
-      // 1920 één verdubbelronde te vroeg (strip 3.7x viewport) — Swiper's
-      // loopFix annuleerde dan de lopende transition op de naad en de marquee
-      // STOPTE. appendSlide herbouwt de loop zelf; +40 = kleinste band-gap,
-      // dus de echte strip wordt alleen maar langer (veilige richting).
-      const echteStrip = () =>
-        // vloer van 100px per slide: op een koude load meten nog niet geladen
-        // logo's 0px breed en kloonde de lus door tot de 120-cap (2026-08-13)
-        Array.from(wrap.children).reduce((w, s) => w + Math.max(s.getBoundingClientRect().width, 100) + 40, 0);
-      while (echteStrip() < window.innerWidth * 4 && wrap.children.length < 120) {
-        sw.appendSlide(originals.map((s) => s.cloneNode(true)));
+      /* pixels per seconde; komt overeen met het oude tempo (een logo van
+         circa 170px inclusief tussenruimte deed er 4s over) */
+      const TEMPO = 42;
+
+      const gat = () => parseFloat(getComputedStyle(wrap).columnGap) || 0;
+      /* vloer van 100px per slide: op een koude load meten nog niet geladen
+         logo's 0px breed en zou de lus doorklonen (zie 2026-08-13) */
+      const breedte = () =>
+        Array.from(wrap.children).reduce(
+          (w, s) => w + Math.max(s.getBoundingClientRect().width, 100) + gat(), 0);
+
+      function bouw() {
+        wrap.style.animation = 'none';
+        wrap.innerHTML = '';
+        origineel.forEach((s) => wrap.appendChild(s.cloneNode(true)));
+        // helft aanvullen tot hij het venster vult (cap tegen doorslaan)
+        let ronde = 0;
+        while (breedte() < el.getBoundingClientRect().width && ronde++ < 20) {
+          origineel.forEach((s) => wrap.appendChild(s.cloneNode(true)));
+        }
+        const helft = breedte();
+        // tweede, identieke helft — pas dan klopt translateX(-50%)
+        Array.from(wrap.children).forEach((s) => wrap.appendChild(s.cloneNode(true)));
+        wrap.style.animation = '';
+        wrap.style.animationDuration = Math.max(10, Math.round(helft / TEMPO)) + 's';
       }
-      marqueeWaakhond(sw, wrap);
+
+      bouw();
+      // de tussenruimte verschilt per band, dus na een resize opnieuw opbouwen
+      let timer;
+      window.addEventListener('resize', () => {
+        clearTimeout(timer);
+        timer = setTimeout(bouw, 250);
+      });
     });
 
     // Collectie/partners hero: two vertical columns moving in opposite directions
@@ -416,6 +380,8 @@
           768:  { slidesPerView: 2.1,  spaceBetween: 20 },
           /* 2026-08-13: 2 vol + 50% van kaart 3 (was 3.5) */
           992:  { slidesPerView: 2.5,  spaceBetween: 20 },
+          1200:  { slidesPerView: 3.5,  spaceBetween: 20 },
+          1439:  { slidesPerView: 3.5,  spaceBetween: 20 },
           1680: { slidesPerView: 4,    spaceBetween: 20 },
         },
       });

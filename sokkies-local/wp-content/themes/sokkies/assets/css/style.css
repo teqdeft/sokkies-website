@@ -9928,3 +9928,36 @@ main.contact{
   padding-top:18px;
   padding-bottom:18px;
 }
+
+/*═════════════════════════════════════════
+  Merkenstrip: doorlopende marquee (CSS i.p.v. Swiper-autoplay)
+  De wrapper bestaat uit twee identieke helften en schuift naar -50%,
+  dus de naad valt precies samen. Zie custom.js voor de opbouw.
+
+  De tussenruimte kwam eerst uit Swiper's spaceBetween (40/70/87/70 per
+  breakpoint); zonder Swiper staat die hier als gap, met dezelfde
+  grenzen. justify-content:center uit de basisregel is hier inert,
+  want de wrapper is max-content breed.
+═════════════════════════════════════════*/
+.brands-swiper .swiper-wrapper{
+  width:max-content;
+  gap:40px;
+  animation:sokkiesBrandsMarquee linear infinite;
+  will-change:transform;
+}
+@media (min-width:521px){
+  .brands-swiper .swiper-wrapper{ gap:70px; }
+}
+@media (min-width:1200px){
+  .brands-swiper .swiper-wrapper{ gap:87px; }
+}
+@media (min-width:1551px){
+  .brands-swiper .swiper-wrapper{ gap:70px; }
+}
+@keyframes sokkiesBrandsMarquee{
+  to{ transform:translateX(-50%); }
+}
+/* Zonder JS staat de strip stil in plaats van halverwege afgekapt */
+@media (prefers-reduced-motion:reduce){
+  .brands-swiper .swiper-wrapper{ animation:none; }
+}
