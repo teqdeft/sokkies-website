@@ -86,6 +86,9 @@
     height: 966px;
     background-size: 110% 110%;
   }
+  .toepassingen .collection-beige::before {
+    background-size: 89%;
+  }
 }
 @media (min-width:1920px){
   .collection:before,
@@ -4105,6 +4108,9 @@
   .testimonial-card {
     height: 260px;
   }
+  .impact-case-right {
+    height: 410px;
+  }
   }
 
 /* ===================================================================
@@ -6477,6 +6483,9 @@
   .pt-dl-form-card {
     padding: 40px 44px 88px;
   }
+  .impact-case-right {
+    height: 380px;
+  }
 }
 
 /* ===================================================================
@@ -6727,6 +6736,9 @@
   .dz-keur-card h3 {
     font-weight: 600;
     font-size: calc(var(--h3-font-size) - 3px);
+  }
+  .impact-case-right {
+    height: 290px;
   }
 
 }
@@ -11775,7 +11787,7 @@
   .usps{
     flex-direction:column;
     align-items:center;
-    gap:10px;
+    gap:2px;
     margin:16px 0 20px;
   }
   .usps span{
@@ -11892,6 +11904,9 @@
     margin:0;
     /* basis heeft padding-left:36 (desktop-pijl); mobiel: pijl 15 + gap 14 */
     padding-left:29px;
+  }
+  .impact .impact-left p br{
+    display: none;
   }
   .stat-num{
     font-size:26px;
@@ -12265,7 +12280,7 @@
     background-position: center top;
     background: var(--blue);
     transform: rotate(3deg);
-    border-radius: 0 180px 0 0;
+    border-radius: 0 140px 0 0;
     left: -35px;
     top: 12px;
     width: 115%;

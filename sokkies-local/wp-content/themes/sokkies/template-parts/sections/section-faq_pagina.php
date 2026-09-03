@@ -99,6 +99,10 @@ if ( ! $groepen ) { return; }
             <?php endforeach; ?>
           </div>
           <?php endforeach; ?>
+          <?php /* Lege staat bij zoeken: JS toont deze regel zodra geen enkele
+             vraag meer op het zoekwoord matcht. Zelfde patroon als
+             #caseEmpty in het cases-overzicht. */ ?>
+          <p class="faq-empty" hidden>Geen vragen gevonden voor <span class="faq-empty-term"></span>. Probeer een ander zoekwoord of stel je vraag rechtstreeks.</p>
         </div>
       </div>
     </section>

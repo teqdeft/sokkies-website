@@ -732,9 +732,14 @@
       if (!list) return;
       const input = form.querySelector('.faq-search-input');
       const groups = list.querySelectorAll('.faq-cat-group');
+      /* Lege staat: zonder deze melding bleef er bij nul treffers een
+         blanco vlak staan en leek de pagina stuk. */
+      const leeg = list.querySelector('.faq-empty');
+      const leegTerm = leeg ? leeg.querySelector('.faq-empty-term') : null;
 
       input.addEventListener('input', () => {
         const q = input.value.trim().toLowerCase();
+        let totaal = 0;
         groups.forEach(group => {
           let hits = 0;
           group.querySelectorAll('.faq-item').forEach(item => {
@@ -744,7 +749,14 @@
             if (hit) hits++;
           });
           group.classList.toggle('is-hidden', !hits);
+          totaal += hits;
         });
+        if (leeg) {
+          /* alleen tonen als er ECHT gezocht is; een leeg veld toont
+             gewoon alle vragen en dan hoort er geen melding te staan */
+          if (leegTerm) leegTerm.textContent = '\u201c' + input.value.trim() + '\u201d';
+          leeg.hidden = !(q && totaal === 0);
+        }
       });
     })();
 

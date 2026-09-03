@@ -1111,6 +1111,10 @@ font-weight: 600;
     color:var(--text);
   }
 
+  .collection-grid::-webkit-scrollbar{
+    opacity: 0;
+  }
+
   /* ====================== Sokken collectie ========================== */
   .collection{
     background:var(--yellow);
@@ -5392,9 +5396,15 @@ font-weight: 600;
     margin-bottom:20px;
   }
   .case-story-inner{
-    gap: 100px;   
+    gap: 70px;   
     height: 100%; 
   }
+  .impact-case-right {
+    height: 540px;
+    padding-left: 22px;
+    overflow: hidden;
+  }
+
   /* Specs */
   .case-specs{
     background:#fff;
@@ -10092,4 +10102,20 @@ main.contact{
   position:absolute;
   inset:0;
   background:no-repeat center/13px 13px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 13 13'%3E%3Cpath d='M1 1l11 11M12 1L1 12' fill='none' stroke='%23fa4b46' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/*═════════════════════════════════════════
+  FAQ-pagina: melding als het zoeken niets oplevert
+  Zonder deze regel bleef er een blanco vlak staan zodra geen enkele
+  vraag matchte. Zelfde rol als #caseEmpty in het cases-overzicht.
+═════════════════════════════════════════*/
+.faq-empty{
+  margin:10px 0 0;
+  font-size:var(--body-font-size);
+  line-height:1.6;
+  color:var(--text);
+}
+.faq-empty .faq-empty-term{
+  font-weight:600;
+  word-break:break-word;
 }
