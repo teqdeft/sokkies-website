@@ -77,16 +77,18 @@ if ( $story ) {
           </div>
 
           <?php if ( $story_urls ) : $n = count( $story_urls ); ?>
-          <div class="impact-gallery">
-            <?php for ( $k = 0; $k < 3; $k++ ) : ?>
-            <div class="swiper v-swiper v-swiper-<?php echo (int) ( $k + 1 ); ?>">
-              <div class="swiper-wrapper">
-                <?php for ( $i = 0; $i < max( 3, $n ); $i++ ) : ?>
-                <div class="swiper-slide"><img src="<?php echo esc_url( $story_urls[ ( $i + $k ) % $n ] ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>"></div>
-                <?php endfor; ?>
+          <div class="impact-case-right">
+            <div class="impact-gallery">
+              <?php for ( $k = 0; $k < 3; $k++ ) : ?>
+              <div class="swiper v-swiper v-swiper-<?php echo (int) ( $k + 1 ); ?>">
+                <div class="swiper-wrapper">
+                  <?php for ( $i = 0; $i < max( 3, $n ); $i++ ) : ?>
+                  <div class="swiper-slide"><img src="<?php echo esc_url( $story_urls[ ( $i + $k ) % $n ] ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>"></div>
+                  <?php endfor; ?>
+                </div>
               </div>
+              <?php endfor; ?>
             </div>
-            <?php endfor; ?>
           </div>
           <?php endif; ?>
         </div>

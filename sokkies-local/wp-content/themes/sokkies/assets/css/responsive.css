@@ -65,7 +65,26 @@
     background-size: 110%;
   }
   .cta-final-panel {
-    background-size: 108%;
+    background-size: 110%;
+  }
+  .dz-certs::before {
+    background-size: 100% 100%;
+  }
+  .over-ons .cta-final-feet, .duurzaamheid .cta-final-feet {
+    top: -430px;
+  }
+  .timeline::before {
+    background-size: 100% 90%;
+  }
+  .over-ons .impact:before {
+    background-size: 100% 100%;
+  }
+  .overons-values::before {
+    background-size: 100% 100%;
+  }
+  .application-bg-shape {
+    height: 966px;
+    background-size: 110% 110%;
   }
 }
 @media (min-width:1920px){
@@ -1204,6 +1223,13 @@
   }
   .testimonial-card {
     height: 250px;
+  }
+  .pt-partners-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .pt-otp-legs {
+    width: 490px;
+    top: -150px;
   }
 }
 
@@ -2396,6 +2422,13 @@
   }
   .testimonial-card {
     height: 250px;
+  }
+  .pt-partners-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .pt-otp-legs {
+    width: 490px;
+    top: -150px;
   }
 }
 
@@ -3807,7 +3840,7 @@
   }
   /* minmax(0,1fr): kaart-mincontent duwde de 6-koloms grid anders uit beeld */
   .pt-partners-grid{
-    grid-template-columns:repeat(5, minmax(0,1fr));
+    grid-template-columns:repeat(4, minmax(0,1fr));
     gap:15px 10px;
   }
   .pt-otp{
@@ -3826,8 +3859,8 @@
     align-items:center;
   }
   .pt-otp-legs{
-    width:440px;
-    top:-300px;
+    width: 350px;
+    top: -190px;
   }
   .pt-faq:before{
     background-position:right 30% top;
@@ -6441,6 +6474,9 @@
     margin-bottom: 20px;
     margin-top: -25px;
   }
+  .pt-dl-form-card {
+    padding: 40px 44px 88px;
+  }
 }
 
 /* ===================================================================
@@ -6684,6 +6720,13 @@
   }
   .of-aantal {
     margin-top: 35px;
+  }
+  .ch-swiper-2 {
+    margin-top: 0px;
+  }
+  .dz-keur-card h3 {
+    font-weight: 600;
+    font-size: calc(var(--h3-font-size) - 3px);
   }
 
 }
@@ -11414,7 +11457,7 @@
   .cta-final-feet{
         width: 300px;
         left: 10%;
-        top: -58%;
+        top: -54%;
   }
   .cta-final-panel{
     padding:90px 0 70px;
@@ -12162,7 +12205,7 @@
   /* footer-bottom (specs Kulwant): 40px boven/onder, groepen links
      uitgelijnd, 20px label→logo's, 30/lijn/30 tussen de blokken */
   .footer-bottom{
-    padding:40px 0;
+    padding:40px 0 70px;
   }
   .footer-pay{
     flex-direction:column;
@@ -12188,7 +12231,7 @@
   .footer-pay-inner,
   .footer-ship-inner{
     flex-wrap:wrap;
-    justify-content:space-between;
+    justify-content:flex-start;
     gap:12px 16px;
     max-width:100%;
     width: 100%;
@@ -13831,7 +13874,7 @@
   }
   .overons-story-inner{
     grid-template-columns:minmax(0,1fr);
-    gap:10px;
+    gap:15px;
   }
   .over-ons .overons-story-right{
     display:contents;
@@ -14013,11 +14056,12 @@
     padding-top:0px;
     padding-bottom:80px;
   }
+  
   .dz-certs .container > p br{
     display:none;
   }
   .dz-points{
-    padding-top:0px;
+    padding: 0px 0 180px;
   }
   .dz-certs:before{
     background-size:cover;
@@ -14325,11 +14369,12 @@
     font-size:calc(var(--h3-font-size) - 1px);
   }
   .pt-dl-form-card{
-    padding:20px 20px 60px 20px;
+    padding:20px 20px 84px 20px;
     border-radius:15px;
   }
   .pt-dl-sticker{
-    top:192px;
+    top: 212px;
+    transform: rotate(-6deg);
   }
   .pt-dl-grid > :last-child{
     grid-column:1 / -1;
@@ -14682,6 +14727,15 @@
   .quote-card .gform_page_footer{
     align-items: center;
     text-align: center;
+  }
+  .pt-partner-card img {
+    max-width: 110px;
+  }
+  .pt-partner-card {
+    height: 120px;
+  }
+  .mini-footer {
+    padding: 42px 0 80px;
   }
 }
 

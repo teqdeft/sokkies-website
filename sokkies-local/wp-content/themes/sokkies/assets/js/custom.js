@@ -891,8 +891,8 @@
         breakpoints: {
           /* ≤520: 1 volledig + 25% van kaart 2 (spec Kulwant 2026-08-10;
              1.35 compenseert de gutter-offset op de gemeten geometrie) */
-          0:    { slidesPerView: 1.35, spaceBetween: 14 },
-          768:  { slidesPerView: 2.2,  spaceBetween: 20 },
+          0:    { slidesPerView: 1.35, spaceBetween: 14, centeredSlides: true },
+          768:  { slidesPerView: 2.2,  spaceBetween: 20, centeredSlides: false },
           1025: { slidesPerView: 3.2,  spaceBetween: 24 },
           1551: { slidesPerView: 3.9,  spaceBetween: 30 },
           /* 1681+ (spec 2026-08-12): 4 vol + 10% van kaart 5 op 1920 —

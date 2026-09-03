@@ -5392,7 +5392,8 @@ font-weight: 600;
     margin-bottom:20px;
   }
   .case-story-inner{
-    gap: 100px;    
+    gap: 100px;   
+    height: 100%; 
   }
   /* Specs */
   .case-specs{
