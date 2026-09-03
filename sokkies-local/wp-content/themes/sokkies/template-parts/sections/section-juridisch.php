@@ -75,7 +75,10 @@ $heeft_intro = '' !== trim( wp_strip_all_tags( $intro ) );
 <?php if ( $artikelen || $heeft_intro || '' !== $cookiebot ) : ?>
 <section class="jr-content">
   <div class="container-md">
-    <div class="jr-inner">
+    <?php /* Zonder artikelen is er geen index: dan is dit een eenvoudige
+             juridische pagina (bv. de disclaimer) en loopt de tekst over
+             een kolom in plaats van naast de indexkaart. */ ?>
+    <div class="jr-inner<?php echo $artikelen ? '' : ' jr-inner-simpel'; ?>">
       <?php if ( $print_knop ) : ?>
       <button type="button" class="jr-print" aria-label="Print deze pagina">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#28121b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
