@@ -314,6 +314,7 @@
   }
   .mega {
     padding: 30px;
+    border-radius: 15px 15px 45px 45px;
   }
   .prod-card .prod-img-card {
     height: 150px;
@@ -673,7 +674,7 @@
     justify-content:center;
   }
   .types-grid{
-    gap:60px 40px;
+    gap:50px 30px;
   }
   .compare-inner-main{
     background-position:right top;
@@ -705,7 +706,8 @@
   }
   /* spec 2026-08-13 (Collectie-ronde) */
   .process-split-inner{
-    gap:80px;
+    gap:80px;    
+    grid-template-columns: 46.2% 1fr;
   }
   .process-left h2{
     font-size:calc(var(--h2-font-size) + 8px);
@@ -718,6 +720,9 @@
   }
   .process-btn a{
     margin-inline-start:137px;
+  }
+  .process-left ul li {
+    padding: 20px 0 30px;
   }
   .case-inner-page:before{
     content:"";
