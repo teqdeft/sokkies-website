@@ -10119,3 +10119,60 @@ main.contact{
   font-weight:600;
   word-break:break-word;
 }
+
+/*═════════════════════════════════════════
+  Contactformulier: keuzerondjes uit Gravity Forms
+  Het radioveld is opnieuw toegevoegd in GF en kwam er onopgemaakt uit
+  (kale browserrondjes). Deze regels leggen het gelijk met de statische
+  kaart in htmlv/contact.html: een kop in dezelfde stijl als de andere
+  kaartkoppen, daaronder de keuzes naast elkaar met 18px-rondjes in de
+  donkere huiskleur.
+
+  De maten komen 1:1 uit .ct-radios hierboven, zodat beide varianten
+  hetzelfde ogen. (De GF-regels hiervoor zijn op 2026-08-25 verwijderd
+  toen het veld uit het formulier ging; dit vervangt ze.)
+═════════════════════════════════════════*/
+/* htmlv houdt 28px tussen de keuzes en de eerste veldrij. Het
+   veldenraster geeft er via row-gap al 20 van, dus hier 8 erbij. Als
+   fieldset geschreven omdat .ct-form-card fieldset.gfield de marge op 0
+   zet en anders wint. */
+.ct-form-card fieldset.gfield--type-radio{
+  margin-bottom:8px;
+}
+/* GF zet het veldlabel in een legend; die krijgt de kaartkopstijl.
+   Staat het label in GF op verborgen, dan blijft hij gewoon weg. */
+.ct-form-card .gfield--type-radio legend{
+  display:block;
+  padding:0;
+  font-family:var(--roc-grotesk);
+  font-weight:700;
+  font-size:calc(var(--h5-font-size) - 1px);
+  color:var(--text);
+  margin-bottom:18px;
+}
+.ct-form-card .gfield_radio{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px 40px;
+}
+.ct-form-card .gfield_radio .gchoice{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+.ct-form-card .gfield_radio label{
+  margin:0;
+  font-family:var(--roc-grotesk);
+  font-size:var(--body-font-size);
+  font-weight:400;
+  color:var(--text);
+  cursor:pointer;
+}
+.ct-form-card .gfield_radio input[type="radio"]{
+  width:18px;
+  height:18px;
+  margin:0;
+  flex:0 0 auto;
+  accent-color:var(--dark);
+  cursor:pointer;
+}
