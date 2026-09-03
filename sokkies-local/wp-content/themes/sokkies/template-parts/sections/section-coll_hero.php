@@ -93,15 +93,17 @@ $render_kolom = function ( $fotos, $standaard ) use ( $assets ) {
             </div>
 
           </div>
-          <div class="coll-hero-gallery">
-            <div class="swiper ch-swiper ch-swiper-1">
-              <div class="swiper-wrapper">
-                <?php $render_kolom( $kolom_1, $standaard_1 ); ?>
+          <div class="coll-gallery-main">
+            <div class="coll-hero-gallery">
+              <div class="swiper ch-swiper ch-swiper-1">
+                <div class="swiper-wrapper">
+                  <?php $render_kolom( $kolom_1, $standaard_1 ); ?>
+                </div>
               </div>
-            </div>
-            <div class="swiper ch-swiper ch-swiper-2">
-              <div class="swiper-wrapper">
-                <?php $render_kolom( $kolom_2, $standaard_2 ); ?>
+              <div class="swiper ch-swiper ch-swiper-2">
+                <div class="swiper-wrapper">
+                  <?php $render_kolom( $kolom_2, $standaard_2 ); ?>
+                </div>
               </div>
             </div>
           </div>
