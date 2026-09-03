@@ -16,6 +16,16 @@ MKB en sportclubs in heel Europa.";
    de opgeslagen dubbele overgang op over-ons een witregel. */
 $beschrijving = preg_replace( '/\R{2,}/', "
 ", $beschrijving );
+/* Op live staat de opgeslagen tekst nog op EEN regel: een veldwaarde
+   staat in de database en die deployt niet mee, dus daar bleef de
+   regelovergang uit. Zelfde aanpak als bij de CTA-labels
+   (sokkies_cta_tekst): de bekende eenregelige zin wordt alsnog
+   opgedeeld, zodat het klopt zonder dat iemand het veld op live hoeft
+   te openen. Schrijft de redacteur eigen copy, dan blijft die ongemoeid,
+   en staat de overgang er al, dan verandert er niets (\s+ vangt de
+   bestaande regelovergang mee, dus dit is herhaalbaar). */
+$beschrijving = preg_replace( '/aan corporates,\s+MKB/u', "aan corporates,
+MKB", $beschrijving );
 $fotos        = get_sub_field( 'fotos' );
 $chips_tonen  = get_sub_field( 'pluspunten_tonen' );
 $chips_tonen  = ( null === $chips_tonen ) ? true : (bool) $chips_tonen;
