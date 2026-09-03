@@ -8811,6 +8811,18 @@ main.contact{
     line-height:26px;
     color:var(--text);
   }
+  /* Links in de lopende tekst stonden op het browserblauw; dat viel buiten
+     het palet. Nu zwart met onderstreping, en coral bij hover — hetzelfde
+     accent als de index-links hierboven. */
+  .jr-body a{
+    color:var(--text);
+    text-decoration:underline;
+    text-underline-offset:2px;
+    transition:color .2s;
+  }
+  .jr-body a:hover{
+    color:var(--coral);
+  }
   .jr-article{
     margin-top:32px;
     /* de topbar (30px) + headerpill zijn sticky en zweven over de inhoud;
@@ -8850,6 +8862,34 @@ main.contact{
     font-size:var(--body-font-size);
     line-height:26px;
     color:var(--text);
+  }
+  /* Eenvoudige juridische pagina zonder index (bv. de disclaimer): de
+     tekst loopt gecentreerd over de volle breedte in plaats van naast de
+     indexkaart. Dubbele klasse omdat de banden in responsive.css hun eigen
+     .jr-inner/.jr-body-kolommen zetten. */
+  .jr-inner.jr-inner-simpel{
+    grid-template-columns:minmax(0,1fr);
+    gap:0;
+  }
+  .jr-inner.jr-inner-simpel .jr-body{
+    grid-column:1;
+    grid-row:1;
+    max-width:845px;
+    margin:0 auto;
+  }
+  /* de printknop deelt de cel met de tekst (zoals in de banden), anders
+     maakt grid-row:2 uit de bandregels een lege tweede rij */
+  .jr-inner.jr-inner-simpel .jr-print{
+    grid-column:1;
+    grid-row:1;
+    justify-self:end;
+    align-self:start;
+  }
+  /* de alinea's staan hier los onder elkaar en hebben zelf lucht nodig —
+     .jr-body > p heeft geen ondermarge (bij de andere pagina's is de
+     intro maar een alinea, gevolgd door een artikel met margin-top) */
+  .jr-inner.jr-inner-simpel .jr-body > p + p{
+    margin-top:18px;
   }
 
 
