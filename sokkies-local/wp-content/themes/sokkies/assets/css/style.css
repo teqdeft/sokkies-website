@@ -5959,6 +5959,38 @@ font-weight: 600;
     background-size:cover;
     padding: 234px 0 50px;
   }
+  /* Roze sok-doodles in de specs-sectie (uit het ontwerp). De sectie stond
+     op static, dus die krijgt hier position:relative als anker. De wikkel
+     zelf is 0x0 en pointer-events:none, zodat hij niets afdekt of opduwt;
+     de plaatjes hangen absoluut binnen de sectie. */
+  .specs-section{
+    position:relative;
+  }
+  .specs-duddle-icons{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+  }
+  /* De inhoud komt er bovenop: groeit de accordeon met CMS-tekst, dan schuift
+     er nooit een doodle over de vragen heen. */
+  .specs-section-inner{
+    position:relative;
+    z-index:2;
+  }
+  .specs-duddle-icons img{
+    position:absolute;
+  }
+  .specs-duddle-icons .dubble-right{
+    top:-90px;
+    right:30px;
+    width:250px;
+  }
+  .specs-duddle-icons .dubble-left{
+    bottom:-165px;
+    left:34%;
+    width:190px;
+  }
  
   .specs-section-inner h2{
     color:var(--pink);
@@ -10338,6 +10370,7 @@ main.contact{
   display:flex;
   width:100%;
   text-align:center;
+  justify-content: center;
 }
 /* achtergrond niet meescrollen zolang de popup open staat */
 body.pdp-calc-open{

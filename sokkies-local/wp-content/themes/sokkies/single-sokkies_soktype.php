@@ -220,6 +220,13 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
     </section>
 
 <section class="specs-section" id="specs">
+      <?php /* Roze sok-doodles uit het ontwerp: een paar rechtsboven dat over de
+         schuine rand valt en een paar links onderin bij de vergelijking. Ze staan
+         absoluut binnen de sectie, dus ze duwen niets op. */ ?>
+      <div class="specs-duddle-icons" aria-hidden="true">
+        <img class="dubble-right" src="<?php echo esc_url( get_template_directory_uri() . "/assets/media/specs-duddle-r.png" ); ?>" alt="">
+        <img class="dubble-left" src="<?php echo esc_url( get_template_directory_uri() . "/assets/media/sock-duddle-pink-l.png" ); ?>" alt="">
+      </div>
       <div class="specs-section-inner">
         <div class="container">
           <h2>De specs</h2>

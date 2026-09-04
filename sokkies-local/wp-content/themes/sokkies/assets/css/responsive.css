@@ -162,6 +162,14 @@
   .versus-dubble-left{
     top:-20%;
   }
+  .specs-duddle-icons .dubble-right{
+    width:250px;
+    top:-90px;
+  }
+  .specs-duddle-icons .dubble-left{
+    width:190px;
+    bottom:-165px;
+  }
   .versus{
     padding-top:160px;
   }
@@ -756,7 +764,7 @@
   }
   .usecase-img-lg{
     width:100%;
-    height:353px;
+    height:291px;
     border-radius:15px;
   }
   .cases-pdp.cases:before{
@@ -814,6 +822,7 @@
   }
   .prod-thumb{
     height:110px;
+    border-radius: 15px;
   }
   .prod-info{
     width:auto;
@@ -890,6 +899,14 @@
     width:231px;
     top:-17%;
   }
+  .specs-duddle-icons .dubble-right{
+    width:220px;
+    top:-80px;
+  }
+  .specs-duddle-icons .dubble-left{
+    width:170px;
+    bottom:-150px;
+  }
   .versus{
     padding-top:80px;
   }
@@ -913,6 +930,9 @@
   .conf-preview-card{
     height:572px;
   }
+  .usecase-body h5 {
+    font-size: var(--body-font-size);
+  }
   .usecases{
     padding-top:80px;
   }
@@ -924,7 +944,7 @@
   }
   .usecase-img-md{
     border-radius:15px;
-    height:253px;
+    height:207px;
   }
   /* container-md was in deze band nooit geschaald (basis 1430 lekte door en
      werd BREDER dan .container — inversie, melding Kulwant 2026-08-04):
@@ -1979,6 +1999,14 @@
   .versus-dubble-left{
     width:231px;
     top:-17%;
+  }
+  .specs-duddle-icons .dubble-right{
+    width:220px;
+    top:-80px;
+  }
+  .specs-duddle-icons .dubble-left{
+    width:170px;
+    bottom:-150px;
   }
   .versus{
     padding-top:80px;
@@ -3283,6 +3311,14 @@
   .versus-dubble-left{
     width:190px;
     top:-17%;
+  }
+  .specs-duddle-icons .dubble-right{
+    width:190px;
+    top:-70px;
+  }
+  .specs-duddle-icons .dubble-left{
+    width:150px;
+    bottom:-135px;
   }
   .versus{
     padding-top:60px;
@@ -5563,6 +5599,14 @@
   .versus-dubble-left{
     width:170px;
     top:-17%;
+  }
+  .specs-duddle-icons .dubble-right{
+    width:170px;
+    top:-65px;
+  }
+  .specs-duddle-icons .dubble-left{
+    width:140px;
+    bottom:-125px;
   }
   .versus{
     padding-top:60px;
@@ -9166,6 +9210,14 @@
   .versus-dubble-left{
     width:170px;
     top:-17%;
+  }
+  .specs-duddle-icons .dubble-right{
+    width:150px;
+    top:-60px;
+  }
+  .specs-duddle-icons .dubble-left{
+    width:125px;
+    bottom:-115px;
   }
   .versus{
     padding-top:60px;
@@ -12980,6 +13032,14 @@
   .versus-dubble-left{
     width:170px;
     top:-17%;
+  }
+  .specs-duddle-icons .dubble-right{
+    width:120px;
+    top:-50px;
+  }
+  .specs-duddle-icons .dubble-left{
+    width:105px;
+    bottom:-95px;
   }
   .versus{
     padding-top:60px;
