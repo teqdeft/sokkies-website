@@ -586,6 +586,10 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
       </div>
     </section>
 
+    <?php /* Knop en popup in EEN wikkel, zodat de popup opent op de plek
+             waar geklikt wordt: de wikkel draagt de zwevende positie en de
+             popup hangt er absoluut boven. */ ?>
+    <div class="prod-cost-wrap">
     <div class="prod-cost">
       <span class="prod-cost-title">Wat kost het?</span>
       <button type="button" class="cta" data-calc-open>Bereken je prijs</button>
@@ -652,6 +656,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
       </div>
     </div>
     <?php endif; ?>
+    </div>
 
     <div class="pdp-sticky">
       <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>

@@ -10233,6 +10233,13 @@ main.contact{
   De rekenmachine erin is de bestaande calculator (zelfde id's), alleen
   compacter: zonder staffeltabel, want die staat al naast de foto's.
 ═════════════════════════════════════════*/
+/* LET OP: display:flex hieronder verslaat het hidden-attribuut (de
+   UA-regel [hidden]{display:none} heeft lagere specificiteit), waardoor
+   de popup permanent openstond. Deze regel zet dat recht en moet blijven
+   staan zolang .pdp-calc een eigen display heeft. */
+.pdp-calc[hidden]{
+  display:none;
+}
 .pdp-calc{
   position:fixed;
   inset:0;
@@ -10324,6 +10331,9 @@ main.contact{
 .pdp-calc .calc-hint{
   width:100%;
   margin-bottom:22px;
+  /* de tip staat in de grote calculator op een vaste 140px; in de
+     popup gaf dat een half lege groene balk, dus hier op inhoud */
+  height:auto;
 }
 .pdp-calc-uitkomst{
   margin:20px 0 22px;
@@ -10356,4 +10366,74 @@ main.contact{
 /* achtergrond niet meescrollen zolang de popup open staat */
 body.pdp-calc-open{
   overflow:hidden;
+}
+
+/*═════════════════════════════════════════
+  Productpagina: knop en popup in dezelfde wikkel
+  De popup hoort te openen op de plek waar je klikt, niet midden in het
+  scherm. De wikkel neemt daarom de zwevende positie over die .prod-cost
+  had (linksonder, 20/20) en de popup hangt daar absoluut bovenop.
+  De overlay blijft wél schermvullend: die dimt de pagina en vangt de
+  klik ernaast.
+═════════════════════════════════════════*/
+.prod-cost-wrap{
+  position:fixed;
+  left:20px;
+  bottom:20px;
+  z-index:99;
+}
+/* de wikkel draagt nu de positie; het blok zelf staat gewoon in de wikkel */
+.prod-cost-wrap .prod-cost{
+  position:static;
+  left:auto;
+  bottom:auto;
+  z-index:auto;
+}
+.prod-cost-wrap .pdp-calc{
+  position:absolute;
+  inset:auto auto 100% 0;
+  margin-bottom:14px;
+  display:block;
+  padding:0;
+  width:min(430px, calc(100vw - 40px));
+}
+.prod-cost-wrap .pdp-calc-overlay{
+  position:fixed;
+  inset:0;
+}
+.prod-cost-wrap .pdp-calc-card{
+  position:relative; /* boven de overlay */
+  z-index:1;
+  max-width:none;
+  width:100%;
+  max-height:calc(100vh - 120px);
+}
+/* Mobiel: het blok met de knop staat op display:none (de sticky balk
+   vervangt hem), dus daar is er geen plek om aan te haken — de popup
+   blijft daar gewoon gecentreerd in beeld staan. */
+@media (max-width:520px){
+  .prod-cost-wrap{
+    position:static;
+  }
+  .prod-cost-wrap .pdp-calc{
+    position:fixed;
+    inset:0;
+    margin:0;
+    display:flex;
+    padding:20px;
+    width:auto;
+  }
+  .prod-cost-wrap .pdp-calc-card{
+    max-width:430px;
+    max-height:90vh;
+  }
+}
+/* Elke display-regel hierboven verslaat het hidden-attribuut, dus de
+   verbergregel staat als laatste én met hogere specificiteit. Dit is de
+   tweede keer dat dit misging: wie hier een display toevoegt, moet deze
+   regel laten staan. Controleer na een wijziging de COMPUTED display,
+   niet alleen het hidden-attribuut — dat blijft namelijk gewoon kloppen. */
+.prod-cost-wrap .pdp-calc[hidden],
+.pdp-calc[hidden]{
+  display:none;
 }
