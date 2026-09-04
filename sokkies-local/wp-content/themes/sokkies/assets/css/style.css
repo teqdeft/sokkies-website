@@ -10286,47 +10286,23 @@ main.contact{
   align-items:center;
   justify-content:center;
 }
-.pdp-calc-label{
-  display:block;
-  font-family:var(--roc-grotesk);
-  font-weight:600;
-  font-size:var(--body-font-size);
-  color:var(--text);
-  margin-bottom:10px;
+/* De rekenmachine binnen de popup gebruikt exact de markup en classes van
+   de gewone calculator, dus alle opmaak (grote prijs per paar, hoofdletter-
+   disclaimer, rijlijnen) komt daar vandaan. Alleen de tweekoloms .calc-mid
+   past niet in een kaart van 430px: tip en dropdown stapelen hier. */
+.pdp-calc .calc-mid{
+  grid-template-columns:1fr;
+  gap:24px;
 }
-.pdp-calc-rij{
-  display:flex;
-  align-items:center;
-  gap:14px;
+.pdp-calc .calc-field{
+  margin-bottom:24px;
 }
-.pdp-calc-rij #qtyRange{
-  flex:1;
-  min-width:0;
+.pdp-calc .calc-result{
+  padding-top:20px;
+  margin-bottom:24px;
 }
-.pdp-calc-rij #qtyInput{
-  width:92px;
-  height:44px;
-  padding:0 12px;
-  border:1px solid var(--input-border);
-  border-radius:8px;
-  font-family:var(--roc-grotesk);
-  font-size:var(--body-font-size);
-  color:var(--text);
-  text-align:center;
-}
-.pdp-calc-eenheid{
-  font-family:var(--roc-grotesk);
-  font-size:var(--body-sm-font-size);
-  text-transform:uppercase;
-  letter-spacing:.04em;
-  color:#8a8079;
-}
-.pdp-calc-schaal{
-  display:flex;
-  justify-content:space-between;
-  margin:6px 0 18px;
-  font-size:var(--body-sm-font-size);
-  color:#8a8079;
+.pdp-calc .calc-row{
+  margin-bottom:18px;
 }
 .pdp-calc .calc-hint{
   width:100%;
@@ -10335,31 +10311,9 @@ main.contact{
      popup gaf dat een half lege groene balk, dus hier op inhoud */
   height:auto;
 }
-.pdp-calc-uitkomst{
-  margin:20px 0 22px;
-}
-.pdp-calc-regel{
-  display:flex;
-  align-items:baseline;
-  justify-content:space-between;
-  margin-bottom:8px;
-  font-family:var(--roc-grotesk);
-  font-size:var(--body-font-size);
-  color:var(--text);
-}
-.pdp-calc-regel strong{
-  font-size:var(--h4-font-size);
-  font-weight:700;
-}
-.pdp-calc-uitkomst small{
-  display:block;
-  text-align:right;
-  font-size:var(--body-sm-font-size);
-  text-transform:uppercase;
-  letter-spacing:.03em;
-  color:#8a8079;
-}
 .pdp-calc-card .cta{
+  /* .cta is een inline <a>; zonder eigen display doet width:100% niets. */
+  display:block;
   width:100%;
   text-align:center;
 }

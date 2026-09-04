@@ -606,6 +606,8 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
        die staat al naast de foto's. De JS is daarop aangepast en slaat een
        ontbrekende tabel nu over. */
     $calc_sleutel = isset( $matrix[ $sleutel ] ) ? $sleutel : ( $matrix ? array_key_first( $matrix ) : '' );
+    /* Ondergrens = de eerste staffelregel, net als in de gewone calculator. */
+    $staffel_min = ( $calc_sleutel && ! empty( $matrix[ $calc_sleutel ]["rows"][0][0] ) ) ? $matrix[ $calc_sleutel ]["rows"][0][0] : 50;
     if ( $matrix ) : ?>
     <div class="pdp-calc" hidden>
       <div class="pdp-calc-overlay" data-calc-close></div>
@@ -615,41 +617,61 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
         </button>
         <h3>Bereken jouw prijs</h3>
 
-        <label class="pdp-calc-label" for="qtyInput">Aantal paar</label>
-        <div class="pdp-calc-rij">
-          <input type="range" id="qtyRange" min="50" max="5000" step="50" value="250">
-          <input type="number" id="qtyInput" min="50" value="250">
-          <span class="pdp-calc-eenheid">paar</span>
+
+        <div class="calc-field">
+          <label class="calc-label" for="qtyInput">Aantal paar</label>
+          <div class="calc-slider-row">
+            <div class="calc-slider-progress">
+              <input type="range" id="qtyRange" min="<?php echo (int) $staffel_min; ?>" max="5000" step="10" value="250">
+              <div class="calc-scale"><span><?php echo (int) $staffel_min; ?></span><span>5.000+</span></div>
+            </div>
+            <div class="qty-input">
+              <input type="number" id="qtyInput" min="<?php echo (int) $staffel_min; ?>" value="250">
+              <span>paar</span>
+            </div>
+          </div>
         </div>
-        <div class="pdp-calc-schaal"><span>50</span><span>5.000+</span></div>
 
-        <button type="button" class="calc-hint" id="calcHint" aria-pressed="false">
-          <span class="calc-hint-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#1DD665" stroke-width="1.6" stroke-linecap="round"><path d="M3 11L11 3M5 3h6v6"/></svg>
-          </span>
-          <span class="calc-hint-tekst">
-            <span id="hintTop">Bij 500 paar betaal je</span> <strong id="hintPrice"></strong>
-            <small id="hintSub"></small>
-          </span>
-        </button>
-
-        <label class="pdp-calc-label">Type sok / pre-set</label>
-        <div class="dropdown" id="sockType" data-value="<?php echo esc_attr( $calc_sleutel ); ?>">
-          <button type="button" class="dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
-            <span class="dropdown-value"><?php echo esc_html( ucfirst( $matrix[ $calc_sleutel ]['label'] ) ); ?></span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="7" viewBox="0 0 11.414 6.414"><path d="M482.224,63.112l5,5,5-5" transform="translate(-481.517 -62.405)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/></svg>
+        <div class="calc-mid">
+          <button type="button" class="calc-hint" id="calcHint">
+            <span class="hint-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="21.798" height="16.63" viewBox="0 0 21.798 16.63">                       <g id="Group_481" data-name="Group 481" transform="translate(4758.98 -199.975) rotate(90)">                         <g id="Group_480" data-name="Group 480" transform="translate(0 -1.768)">                           <path id="Path_3670" data-name="Path 3670" d="M0,0H20" transform="translate(208.272 4759.999) rotate(-90)" fill="none" stroke="#1dd665" stroke-linecap="round" stroke-width="1.5"/>                           <path id="Path_3671" data-name="Path 3671" d="M0,0C.712.411,7.272,7.272,7.272,7.272L0,14.544" transform="translate(201 4747.272) rotate(-90)" fill="none" stroke="#1dd665" stroke-linecap="round" stroke-width="1.5"/>                         </g>                       </g>                     </svg>
+              </span>
+            <span class="hint-body">
+              <span class="hint-top" id="hintTop">Bij 500 paar betaal je</span>
+              <span class="hint-price" id="hintPrice">&euro;4,49 per paar</span>
+              <span class="hint-sub" id="hintSub">&euro;0,50 per paar minder dan bij 250 paar</span>
+            </span>
           </button>
-          <ul class="dropdown-list" role="listbox">
-            <?php foreach ( $matrix as $k => $rij ) : ?>
-            <li class="dropdown-option<?php echo $k === $calc_sleutel ? ' is-selected' : ''; ?>" role="option" data-value="<?php echo esc_attr( $k ); ?>"><?php echo esc_html( ucfirst( $rij['label'] ) ); ?></li>
-            <?php endforeach; ?>
-          </ul>
+
+          <div class="calc-type">
+            <label class="calc-label" id="sockTypeLabel">Type sok / pre-set</label>
+            <div class="dropdown" id="sockType" data-value="<?php echo esc_attr( $calc_sleutel ); ?>">
+              <button type="button" class="dropdown-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="sockTypeLabel">
+                <span class="dropdown-value"><?php echo esc_html( ucfirst( $matrix[ $calc_sleutel ]['label'] ) ); ?></span>
+                <span class="dropdown-caret">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="11.414" height="6.414" viewBox="0 0 11.414 6.414">                           <g id="chevron" transform="translate(0.707 0.707)">                             <path id="Path_218" data-name="Path 218" d="M482.224,63.112l5,5,5-5" transform="translate(-482.224 -63.112)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                           </g>                         </svg>
+                  </span>
+              </button>
+              <ul class="dropdown-list" role="listbox" aria-label="Type sok">
+                <?php foreach ( $matrix as $k => $rij ) : ?>
+                <li class="dropdown-option<?php echo $k === $calc_sleutel ? ' is-selected' : ''; ?>" role="option" data-value="<?php echo esc_attr( $k ); ?>"><?php echo esc_html( ucfirst( $rij['label'] ) ); ?></li>
+                <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <div class="pdp-calc-uitkomst">
-          <div class="pdp-calc-regel"><span>Schatting per paar</span><strong id="perPair"></strong></div>
-          <div class="pdp-calc-regel"><span>Totaal</span><strong id="totalPrice"></strong></div>
-          <small>Indicatieve prijs excl. btw en verzending</small>
+        <div class="calc-result">
+          <div class="calc-row">
+            <span>Schatting per paar</span>
+            <span class="calc-perpair" id="perPair">&euro;4,99</span>
+          </div>
+          <div class="calc-row calc-total-row">
+            <span>Totaal</span>
+            <span class="calc-total" id="totalPrice">&euro;1.247,50</span>
+          </div>
+          <p>Indicatieve prijs excl. btw en verzending</p>
         </div>
 
         <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
