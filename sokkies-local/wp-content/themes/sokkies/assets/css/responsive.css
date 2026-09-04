@@ -89,6 +89,12 @@
   .toepassingen .collection-beige::before {
     background-size: 89%;
   }
+  .conf-bg {
+    height: 1812px;
+    top: -66%;
+    background-size: 100% 100%;
+    background-position: bottom;
+  }
 }
 @media (min-width:1920px){
   .collection:before,
@@ -901,11 +907,11 @@
   }
   .specs-duddle-icons .dubble-right{
     width:220px;
-    top:-80px;
   }
   .specs-duddle-icons .dubble-left{
-    width:170px;
-    bottom:-150px;
+    bottom: -29%;
+    width: 250px;
+    left: 40%;
   }
   .versus{
     padding-top:80px;
@@ -2002,7 +2008,6 @@
   }
   .specs-duddle-icons .dubble-right{
     width:220px;
-    top:-80px;
   }
   .specs-duddle-icons .dubble-left{
     width:170px;
@@ -3314,7 +3319,6 @@
   }
   .specs-duddle-icons .dubble-right{
     width:190px;
-    top:-70px;
   }
   .specs-duddle-icons .dubble-left{
     width:150px;
@@ -5497,6 +5501,7 @@
   /* pin: basis-padding-top ging 2026-08-12 naar 120px (1920) — band houdt 60 */
   .promises{
     padding-top:60px;
+    margin-bottom: 20px;
   }
 
   .pdp-usps-main ul{
@@ -5536,7 +5541,7 @@
     grid-template-columns:1fr;
   }
   .weave-inner h2{
-    margin-bottom:30px;
+    margin-bottom:60px;
   }
   /* spec 2026-08-13 */
   .promises-grid{
@@ -5601,12 +5606,14 @@
     top:-17%;
   }
   .specs-duddle-icons .dubble-right{
-    width:170px;
-    top:-65px;
+    width:150px;
+    top: -1%;
+    right: 1%;
   }
   .specs-duddle-icons .dubble-left{
-    width:140px;
-    bottom:-125px;
+    width: 140px;
+    bottom: -23%;
+    left: 66%;
   }
   .versus{
     padding-top:60px;
@@ -13022,6 +13029,9 @@
   .weave-body{
     padding:25px 20px;
   }
+  .weave-inner h2 br{
+    display: block;
+  }
   /* versus-tabel per tablet-mock: label 58% / SOKKIES 20% / De rest 22% */
   .versus-table{
     table-layout:fixed;
@@ -13034,12 +13044,14 @@
     top:-17%;
   }
   .specs-duddle-icons .dubble-right{
-    width:120px;
-    top:-50px;
+    width: 120px;
+    top: -6%;
+    right: 4%;
   }
   .specs-duddle-icons .dubble-left{
-    width:105px;
-    bottom:-95px;
+    width: 115px;
+    bottom: -18%;
+    left: 63%;
   }
   .versus{
     padding-top:60px;
@@ -13324,10 +13336,10 @@
     padding-bottom:40px;
   }
   .conf-bg{
-    background-size:cover;
-    height:1200px;
-    top:-60%;
-    background-position:37% top;
+    background-size: cover;
+    height: 1180px;
+    top: -50%;
+    background-position: 88%;
   }
   .conf-types:after{
     content: '';

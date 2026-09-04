@@ -5982,14 +5982,17 @@ font-weight: 600;
     position:absolute;
   }
   .specs-duddle-icons .dubble-right{
-    top:-90px;
-    right:30px;
-    width:250px;
+    top: 2%;
+    right: 5%;
+    width: 300px;
   }
   .specs-duddle-icons .dubble-left{
-    bottom:-165px;
-    left:34%;
-    width:190px;
+    bottom: -172px;
+    left: 43%;
+    width: 331px;
+  }
+  .weave-inner h2 br{
+    display: none;
   }
  
   .specs-section-inner h2{
@@ -8486,6 +8489,7 @@ font-weight: 600;
     display:flex;
     align-items:center;
     justify-content:center;
+    overflow: hidden;
   }
   .dl-card-body{
     padding-right:24px;
