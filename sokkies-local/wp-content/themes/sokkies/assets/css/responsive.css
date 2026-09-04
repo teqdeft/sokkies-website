@@ -14965,3 +14965,32 @@
     width:auto;
   }
 }
+
+/* ===================================================================
+   MOBIEL/TABLET (<=991): labelkolom van de vergelijkingstabel blijft staan
+   -------------------------------------------------------------------
+   De tabel is hier 1320px breed in een smallere scrollbak, dus je schoof
+   de rijlabels mee uit beeld en wist bij de rechterkolommen niet meer
+   waar je naar keek. De eerste kolom plakt nu links; alleen de waarden
+   schuiven.
+
+   De labelcellen hadden niet allemaal een eigen achtergrond: de ONEVEN
+   rijen wel (#FA5F5A), de even rijen en de lege hoek niet. Die zijn
+   doorzichtig en dan schuiven de waarden er zichtbaar onderdoor. Ze
+   krijgen daarom de kleur die er achter de tabel zit — gemeten op de
+   pagina is dat var(--coral), rgb(250,75,70).
+
+   Staat achteraan het bestand zodat het van de bandregels hierboven wint.
+   =================================================================== */
+@media (max-width:991px){
+  .compare-table thead th:first-child,
+  .compare-table tbody th{
+    position:sticky;
+    left:0;
+    z-index:2;
+  }
+  .compare-table thead th:first-child,
+  .compare-table tbody tr:nth-child(even) th{
+    background:var(--coral);
+  }
+}
