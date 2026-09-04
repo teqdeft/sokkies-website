@@ -1345,6 +1345,23 @@
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
   });
+
+  /* Klik naast het menu sluit het (verzoek Kulwant, 768-1279).
+     Alleen in die band: daaronder is het menu een schermvullend paneel
+     waar "naast" niet bestaat, en daarboven staat de gewone navigatie.
+     De burger en de menulijst zitten allebei IN .navbar, dus een klik
+     daarbinnen telt niet als buiten — de burger houdt zo zijn eigen
+     toggle en klapt niet meteen weer dicht. */
+  document.addEventListener('click', function (e) {
+    if (!window.matchMedia('(min-width:768px) and (max-width:1279px)').matches) return;
+    document.querySelectorAll('.navbar.menu-open').forEach(function (navbar) {
+      if (navbar.contains(e.target)) return;
+      navbar.classList.remove('menu-open');
+      navbar.classList.remove('sub-open');
+      var btn = navbar.querySelector('.nav-burger');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    });
+  });
 })();
 
 /* Topbar-marquee (mobiel én tablet, ≤991): items dupliceren voor een
