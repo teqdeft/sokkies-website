@@ -8491,6 +8491,11 @@ font-weight: 600;
     justify-content:center;
     overflow: hidden;
   }
+  .dl-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
   .dl-card-body{
     padding-right:24px;
   }
