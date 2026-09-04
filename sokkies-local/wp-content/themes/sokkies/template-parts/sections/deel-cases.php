@@ -76,11 +76,23 @@ $assets = get_template_directory_uri() . '/assets/media/';
             $link    = get_field( 'link', $case_id );
             $link_url   = ! empty( $link['url'] ) ? $link['url'] : get_permalink( $case_id );
             $link_label = ! empty( $link['title'] ) ? $link['title'] : 'Bekijk case';
-            $punten  = array(
-              'Probleem'  => get_field( 'probleem', $case_id ),
-              'Aanpak'    => get_field( 'aanpak', $case_id ),
-              'Resultaat' => get_field( 'resultaat', $case_id ),
-            );
+            /* Opschrift per case instelbaar (velden *_label); leeg = het oude
+               vaste woord. Een LIJST en geen label => waarde-map, want twee
+               gelijke opschriften zouden elkaar in een map overschrijven en
+               dan verdween er stilletjes een regel van de kaart. */
+            $punten = array();
+            foreach ( array(
+              array( 'probleem',  'Probleem' ),
+              array( 'aanpak',    'Aanpak' ),
+              array( 'resultaat', 'Resultaat' ),
+            ) as $punt ) {
+              $waarde = get_field( $punt[0], $case_id );
+              if ( ! $waarde ) {
+                continue;
+              }
+              $eigen  = trim( (string) get_field( $punt[0] . '_label', $case_id ) );
+              $punten[] = array( '' !== $eigen ? $eigen : $punt[1], $waarde );
+            }
           ?>
           <div class="swiper-slide">
             <div class="case-inner">
@@ -97,8 +109,8 @@ $assets = get_template_directory_uri() . '/assets/media/';
                 <span class="case-badge"><?php echo esc_html( $badge ); ?></span>
                 <h3><?php echo sokkies_kop( get_the_title( $case_id ) ); ?></h3>
                 <ul>
-                  <?php foreach ( $punten as $label => $waarde ) : if ( ! $waarde ) { continue; } ?>
-                  <li><strong><?php echo esc_html( $label ); ?>:</strong> <?php echo esc_html( $waarde ); ?></li>
+                  <?php foreach ( $punten as $punt ) : ?>
+                  <li><strong><?php echo esc_html( $punt[0] ); ?>:</strong> <?php echo esc_html( $punt[1] ); ?></li>
                   <?php endforeach; ?>
                 </ul>
                 <a href="<?php echo esc_url( $link_url ); ?>" class="case-link">

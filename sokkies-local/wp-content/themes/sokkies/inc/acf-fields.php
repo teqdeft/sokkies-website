@@ -2572,6 +2572,13 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 			array( 'key' => 'field_case_foto_klein_1', 'label' => 'Kleine foto (boven)', 'name' => 'foto_klein_1', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 			array( 'key' => 'field_case_foto_klein_2', 'label' => 'Kleine foto (onder)', 'name' => 'foto_klein_2', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 			array( 'key' => 'field_case_badge', 'label' => 'Badge', 'name' => 'badge', 'type' => 'text', 'instructions' => 'Leeg = "Klantcase".' ),
+			/* De drie regels op de kaart stonden met een vast opschrift in de
+			   template (Probleem/Aanpak/Resultaat). Deze velden maken dat
+			   opschrift per case aanpasbaar; leeg laten houdt het oude woord.
+			   Alleen VELDEN TOEGEVOEGD, de bestaande blijven ongemoeid. */
+			array( 'key' => 'field_case_probleem_label', 'label' => 'Opschrift bij Probleem', 'name' => 'probleem_label', 'type' => 'text', 'placeholder' => 'Probleem', 'instructions' => 'Leeg = Probleem.' ),
+			array( 'key' => 'field_case_aanpak_label', 'label' => 'Opschrift bij Aanpak', 'name' => 'aanpak_label', 'type' => 'text', 'placeholder' => 'Aanpak', 'instructions' => 'Leeg = Aanpak.' ),
+			array( 'key' => 'field_case_resultaat_label', 'label' => 'Opschrift bij Resultaat', 'name' => 'resultaat_label', 'type' => 'text', 'placeholder' => 'Resultaat', 'instructions' => 'Leeg = Resultaat.' ),
 			array( 'key' => 'field_case_probleem', 'label' => 'Probleem', 'name' => 'probleem', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
 			array( 'key' => 'field_case_aanpak', 'label' => 'Aanpak', 'name' => 'aanpak', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
 			array( 'key' => 'field_case_resultaat', 'label' => 'Resultaat', 'name' => 'resultaat', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),

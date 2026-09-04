@@ -14814,6 +14814,12 @@
   .collectie .coll-hero-btns{
     display: none;
   }
+  .conf-types .container{
+    padding: 0;
+  }
+  .conf-types .collection-grid, .conf-types h2{
+    padding:0 20px;
+  }
 }
 
 /* ===================================================================
