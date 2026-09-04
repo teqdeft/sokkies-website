@@ -1052,6 +1052,15 @@ font-weight: 600;
     transform: rotate(356deg);
     padding-right: 20px;
   }
+  /* De verticale fotokolommen zijn versiering: ze draaien vanzelf en staan
+     op allowTouchMove:false. Swiper zet op een verticale slider echter
+     touch-action:pan-x, en dat verbiedt de BROWSER om er verticaal overheen
+     te scrollen -- op mobiel bleef de pagina dus staan zodra je met je duim
+     op de fotos begon. Terug op auto, zodat de pagina gewoon meescrollt. */
+  .v-swiper,
+  .ch-swiper{
+    touch-action:auto;
+  }
   .v-swiper{
     height:100%;
     width:100%;
