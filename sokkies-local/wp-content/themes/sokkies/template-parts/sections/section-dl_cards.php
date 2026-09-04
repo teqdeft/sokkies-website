@@ -10,6 +10,17 @@ $standaard = array(
 	array( 'titel' => 'Prijslijst en staffels', 'tekst' => 'Actuele prijzen per oplage.', 'link_label' => 'Bekijk meer', 'link_url' => '#' ),
 	array( 'titel' => 'Garenboek', 'tekst' => 'Alle beschikbare kleuren en garens op een rij.', 'link_label' => 'Download', 'link_url' => '#' ),
 );
+/* Alleen echte bestanden en externe links in een nieuw tabblad. Een anker
+   (#mis-niets scrollt naar het formulier) of een nog lege stub (#) moet in
+   HETZELFDE tabblad blijven: anders opent er een tweede kopie van de pagina
+   in plaats van dat er iets gebeurt. */
+/* function_exists-guard: de sectie kan in de bouwer twee keer op een
+   pagina staan, en een tweede declaratie is een fatale fout. */
+if ( ! function_exists( 'sokkies_dl_tabblad' ) ) {
+function sokkies_dl_tabblad( $href ) {
+	return ( '' !== $href && '#' !== substr( $href, 0, 1 ) ) ? ' target="_blank" rel="noopener"' : '';
+}
+}
 ?>
 <section class="dl-cards">
   <div class="container">
@@ -31,7 +42,7 @@ $standaard = array(
         <div class="dl-card-body">
           <h3><?php echo esc_html( $rij['titel'] ); ?></h3>
           <p><?php echo esc_html( $rij['tekst'] ); ?></p>
-          <a href="<?php echo esc_url( $href ); ?>" class="dl-link"<?php echo $download; ?>>
+          <a href="<?php echo esc_url( $href ); ?>"<?php echo sokkies_dl_tabblad( $href ); ?> class="dl-link"<?php echo $download; ?>>
             <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">                   <g transform="translate(0.5 0.683)">                     <path d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                     <path d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                   </g>                 </svg>
             <?php echo esc_html( $label ); ?>
           </a>
@@ -43,7 +54,7 @@ $standaard = array(
         <div class="dl-card-body">
           <h3><?php echo esc_html( $rij['titel'] ); ?></h3>
           <p><?php echo esc_html( $rij['tekst'] ); ?></p>
-          <a href="<?php echo esc_url( $rij['link_url'] ); ?>" class="dl-link">
+          <a href="<?php echo esc_url( $rij['link_url'] ); ?>"<?php echo sokkies_dl_tabblad( $rij['link_url'] ); ?> class="dl-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">                   <g transform="translate(0.5 0.683)">                     <path d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                     <path d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                   </g>                 </svg>
             <?php echo esc_html( $rij['link_label'] ); ?>
           </a>
