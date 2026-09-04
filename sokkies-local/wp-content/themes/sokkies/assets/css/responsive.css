@@ -3347,7 +3347,7 @@
   .conf-bg{
     background-size:cover;
     height:1200px;
-    top:-48%;
+    top:-46%;
     background-position:right top;
   }
   /* cases-solid-gescoped: PDP heeft dezelfde duddle-structuur */
@@ -6498,6 +6498,10 @@
   .impact-case-right {
     height: 380px;
   }
+  .menu .menu-link .type-item{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 /* ===================================================================
@@ -6658,8 +6662,8 @@
     gap:14px;
   }
   .navbar.sub-open .type-item .type-img{
-    width:50px;
-    height:50px;
+    width:60px;
+    height:60px;
   }
 
   /* pijl bij Sokkencollectie (submenu-indicator, zoals in het mobiele menu) */
@@ -6752,7 +6756,9 @@
   .impact-case-right {
     height: 290px;
   }
-  
+  .process-row-body h3 {
+    font-size: var(--h6-font-size);
+  }
 
 }
 
@@ -8751,6 +8757,8 @@
   }
   .coll-hero-left{
     gap:45px;
+    margin: 0 20px;
+    margin-left: 0;
   }
   .coll-hero-btns{
     margin-bottom:45px;
@@ -12186,7 +12194,7 @@
   /* footer (specs Kulwant, deel 2) */
   .footer-links-cols{
     display:grid;
-    grid-template-columns:40% 60%;
+    grid-template-columns:50% 50%;
     gap:0;
     justify-content: space-between;
   }
@@ -12488,6 +12496,7 @@
     margin-bottom: 40px;
     position: relative;
     left: -20px;
+    margin-top: 10px;
   }
   .coll-hero-gallery{
     height: 450px;
@@ -12659,6 +12668,12 @@
   .testimonial{
     padding-bottom:80px;
   }
+  .testimonial .nav-dashes span{
+    background: rgb(255 255 255 / 30%);
+  }
+  .testimonial .nav-dashes span.is-active{
+      background: var(--white);
+  }
   .case-inner-page:before{
     content:"";
     background:url(../media/sock-element-up.svg) no-repeat center / contain;
@@ -12697,13 +12712,20 @@
     border-radius:15px;
   }
   .cases-pdp.cases:before{
-    height:100%;
-    top:-240px;
-    background-position:70% top;
+    height: 100%;
+    top: -240px;
+    background-position: 70% top;
+    background: var(--yellow);
+    transform: rotate(0deg);
+    border-radius: 0 0px 0 0;
+    width: 100%;
+    left: 0;
+    clip-path: polygon(0 0, 100% 5%, 100% 100%, 0 100%);
   }
   .cases.cases-pdp{
     padding-top:150px;
     padding-bottom:20px;
+    overflow: hidden;
   }
   .cases.cases-pdp:after{
     content:"";
@@ -12998,6 +13020,7 @@
     display:none;
   }
   .weave-card{
+    border-radius: 15px;
     flex:0 0 calc((100% - 10px)/1.3);
   }
   /* versus: vaste tabelbreedte, scrollt in de wrapper */
@@ -14787,6 +14810,9 @@
   }
   .mini-footer {
     padding: 42px 0 80px;
+  }
+  .collectie .coll-hero-btns{
+    display: none;
   }
 }
 

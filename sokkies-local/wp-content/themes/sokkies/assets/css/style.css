@@ -563,6 +563,7 @@ body{
     font-weight: 600;
     color: var(--dark);
     text-decoration: none;
+    transform: translateY(0px);
   }
   .cta:hover{
     background:var(--yellow-hover);
@@ -596,6 +597,7 @@ body{
     cursor:pointer;
     transition:.2s ease-in-out;
     font-weight: 600;
+    text-align: center;
   }
   .cta-transparent:hover{
     background:var(--light-beige);
