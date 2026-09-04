@@ -60,7 +60,12 @@ $render_kolom = function ( $fotos, $standaard ) use ( $assets ) {
                 // paginatitel (bijv. "Partner" op de pagina "Partners") blijft één niveau.
                 $bc_norm  = mb_strtolower( trim( $breadcrumb ) );
                 $tit_norm = mb_strtolower( trim( get_the_title() ) );
-                $is_variant = ( '' === $bc_norm || 0 === mb_strpos( $tit_norm, $bc_norm ) || 0 === mb_strpos( $bc_norm, $tit_norm ) );
+                // De vergelijking keek eerst alleen naar het BEGIN van de tekst.
+                // Daardoor gold "Sokkencollectie" op de pagina "Collectie" als een
+                // eigen niveau en stond er "Collectie • Sokkencollectie" — twee keer
+                // hetzelfde. Nu telt het ook als variant als het woord verderop in
+                // de titel zit.
+                $is_variant = ( '' === $bc_norm || false !== mb_strpos( $tit_norm, $bc_norm ) || false !== mb_strpos( $bc_norm, $tit_norm ) );
                 if ( ! $is_variant ) : ?>
                 <a href="<?php echo esc_url( get_permalink() ); ?>" class="breadcrumb-link"><?php echo esc_html( get_the_title() ); ?></a>
                 <span>&nbsp;&bull;&nbsp;</span>
