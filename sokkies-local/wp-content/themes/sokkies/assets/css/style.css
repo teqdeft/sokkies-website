@@ -296,13 +296,14 @@ body{
 }
   /* WP-toevoeging 2026-08-20: 'Bekijk collectie' in de mega is in WP een <a>
      (statisch een <button>-stub) — de menu-link-tekstregels (0-2-1) wonnen
-     anders van .cta-light:hover (0-2-0): donkere tekst op donkere hover. */
+     anders van .cta-light:hover (0-2-0). Beide regels zetten nu --dark:
+     de hover-achtergrond is --light-beige, dus witte tekst was daar zo goed
+     als onleesbaar (contrast 1,2 tegen 13,8 nu). */
   .menu .menu-link .mega a.cta-light{
     color:var(--dark);
-    font-weight:inherit;
   }
   .menu .menu-link .mega a.cta-light:hover{
-    color:var(--white);
+    color:var(--dark);
   }
   .mega-usps .cta-light{ /* statisch stond de 6px op .mega-usps button */
     margin-top:6px;
@@ -476,9 +477,10 @@ body{
     gap:10px 41px;
   }
   .menu .menu-link .type-item {
-    display:flex;
+    display: grid;
+    grid-template-columns: auto 1fr;
     align-items:center;
-    gap:20px;
+    gap:19px;
     text-decoration:none;
     color:var(--text);
     font-size: var(--body-font-size);
@@ -730,6 +732,7 @@ font-weight: 600;
     font-size:clamp(40px, 6vw, var(--h1-font-size));
     color:var(--white);
     text-transform:uppercase;
+    line-height: 0.86;
   }
   .usps{
     display:flex;
