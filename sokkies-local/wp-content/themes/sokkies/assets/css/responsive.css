@@ -10640,6 +10640,12 @@
   .case-card{
     border-radius:15px;
   }
+  .prod-cost-wrap .pdp-calc {
+    width: min(520px, calc(100vw - 40px));
+  }
+  .prod-cost-wrap .pdp-calc-card {
+    padding: 40px;
+  }
 }
 
 /* ===================================================================
@@ -13129,7 +13135,8 @@
     z-index:90;
   }
   .pdp-sticky-row{
-    display:flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap:9px;
     margin-top:7px;
   }
@@ -14841,6 +14848,22 @@
   .cases.conf-designed:before{
     transform: rotate(0deg);
     border-radius: 0 0px 0 0;
+  }
+  .prod-cost-wrap{
+    position:static;
+  }
+  .prod-cost-wrap .pdp-calc{
+    position:fixed;
+    inset: 0 0 -16% 0;
+    margin:0;
+    display:flex;
+    padding:20px;
+    width:auto;
+  }
+  .prod-cost-wrap .pdp-calc-card{
+    max-width:430px;
+    max-height:90vh;
+    padding: 30px;
   }
   
 }

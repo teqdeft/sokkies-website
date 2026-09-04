@@ -5689,7 +5689,7 @@ font-weight: 600;
     bottom:20px;
     z-index:99;
     background:#fff;
-    border-radius:14px;
+    border-radius:25px;
     box-shadow:0 16px 36px rgba(0,0,0,.14);
     padding:18px 20px;
     width:240px;
@@ -10252,16 +10252,15 @@ main.contact{
 .pdp-calc-overlay{
   position:absolute;
   inset:0;
-  background:rgba(40,18,27,.45);
+  background:rgba(40,18,27,0);
 }
 .pdp-calc-card{
   position:relative;
   width:100%;
   max-width:430px;
   max-height:90vh;
-  overflow-y:auto;
   background:#fff;
-  border-radius:20px;
+  border-radius:25px;
   padding:30px 32px 32px;
   box-shadow:0 20px 60px rgba(0,0,0,.25);
 }
@@ -10274,8 +10273,8 @@ main.contact{
 }
 .pdp-calc-sluit{
   position:absolute;
-  top:18px;
-  right:18px;
+  top:8px;
+  right:8px;
   width:30px;
   height:30px;
   padding:0;
@@ -10286,40 +10285,63 @@ main.contact{
   align-items:center;
   justify-content:center;
 }
+.pdp-calc-card .hint-body .hint-sub .sub-price{
+  font-weight: 600;
+}
 /* De rekenmachine binnen de popup gebruikt exact de markup en classes van
    de gewone calculator, dus alle opmaak (grote prijs per paar, hoofdletter-
    disclaimer, rijlijnen) komt daar vandaan. Alleen de tweekoloms .calc-mid
    past niet in een kaart van 430px: tip en dropdown stapelen hier. */
 .pdp-calc .calc-mid{
   grid-template-columns:1fr;
-  gap:24px;
+  gap:20px;
+}
+.pdp-calc-card h3 {
+    font-size: var(--h5-font-size);
+    margin-bottom: 18px;
 }
 .pdp-calc .calc-field{
-  margin-bottom:24px;
+  margin-bottom:20px;
 }
 .pdp-calc .calc-result{
   padding-top:20px;
   margin-bottom:24px;
 }
 .pdp-calc .calc-row{
-  margin-bottom:18px;
+  margin-bottom:0px;
+  border-bottom:none
+}
+.pdp-calc .calc-row.calc-total-row {
+    padding-bottom: 4px;
 }
 .pdp-calc .calc-hint{
   width:100%;
-  margin-bottom:22px;
-  /* de tip staat in de grote calculator op een vaste 140px; in de
-     popup gaf dat een half lege groene balk, dus hier op inhoud */
+  margin-bottom:0px;
   height:auto;
+  padding: 6px 18px;
+}
+.pdp-calc .calc-perpair {
+  font-size: var(--h3-font-size);
+}
+.pdp-calc .calc-label{
+  font-size: var(--body-font-size);
+}
+.pdp-calc .hint-body{
+  gap: 3px;
+}
+.pdp-calc .hint-icon{
+  width: 40px;
+  height:40px
 }
 .pdp-calc-card .cta{
   /* .cta is een inline <a>; zonder eigen display doet width:100% niets. */
-  display:block;
+  display:flex;
   width:100%;
   text-align:center;
 }
 /* achtergrond niet meescrollen zolang de popup open staat */
 body.pdp-calc-open{
-  overflow:hidden;
+  overflow:visible;
 }
 
 /*═════════════════════════════════════════
@@ -10332,7 +10354,7 @@ body.pdp-calc-open{
 ═════════════════════════════════════════*/
 .prod-cost-wrap{
   position:fixed;
-  left:20px;
+  left:60px;
   bottom:20px;
   z-index:99;
 }
@@ -10345,11 +10367,11 @@ body.pdp-calc-open{
 }
 .prod-cost-wrap .pdp-calc{
   position:absolute;
-  inset:auto auto 100% 0;
-  margin-bottom:14px;
+  inset:auto auto 0% 0;
+  margin-bottom:0px;
   display:block;
   padding:0;
-  width:min(430px, calc(100vw - 40px));
+  width:min(580px, calc(100vw - 40px));
 }
 .prod-cost-wrap .pdp-calc-overlay{
   position:fixed;
@@ -10361,27 +10383,9 @@ body.pdp-calc-open{
   max-width:none;
   width:100%;
   max-height:calc(100vh - 120px);
+  padding: 50px;
 }
-/* Mobiel: het blok met de knop staat op display:none (de sticky balk
-   vervangt hem), dus daar is er geen plek om aan te haken — de popup
-   blijft daar gewoon gecentreerd in beeld staan. */
-@media (max-width:520px){
-  .prod-cost-wrap{
-    position:static;
-  }
-  .prod-cost-wrap .pdp-calc{
-    position:fixed;
-    inset:0;
-    margin:0;
-    display:flex;
-    padding:20px;
-    width:auto;
-  }
-  .prod-cost-wrap .pdp-calc-card{
-    max-width:430px;
-    max-height:90vh;
-  }
-}
+
 /* Elke display-regel hierboven verslaat het hidden-attribuut, dus de
    verbergregel staat als laatste én met hogere specificiteit. Dit is de
    tweede keer dat dit misging: wie hier een display toevoegt, moet deze

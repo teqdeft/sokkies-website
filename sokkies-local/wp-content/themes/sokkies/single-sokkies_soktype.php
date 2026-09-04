@@ -613,7 +613,12 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
       <div class="pdp-calc-overlay" data-calc-close></div>
       <div class="pdp-calc-card" role="dialog" aria-modal="true" aria-label="Bereken jouw prijs">
         <button type="button" class="pdp-calc-sluit" data-calc-close aria-label="Sluiten">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#28121b" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15.414" height="15.414" viewBox="0 0 15.414 15.414">
+            <g id="Close" transform="translate(0.707 0.707)">
+              <line id="Line_90" data-name="Line 90" x2="14" y2="14" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
+              <line id="Line_91" data-name="Line 91" x1="14" y2="14" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
+            </g>
+          </svg>
         </button>
         <h3>Bereken jouw prijs</h3>
 
@@ -638,8 +643,10 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                 <svg xmlns="http://www.w3.org/2000/svg" width="21.798" height="16.63" viewBox="0 0 21.798 16.63">                       <g id="Group_481" data-name="Group 481" transform="translate(4758.98 -199.975) rotate(90)">                         <g id="Group_480" data-name="Group 480" transform="translate(0 -1.768)">                           <path id="Path_3670" data-name="Path 3670" d="M0,0H20" transform="translate(208.272 4759.999) rotate(-90)" fill="none" stroke="#1dd665" stroke-linecap="round" stroke-width="1.5"/>                           <path id="Path_3671" data-name="Path 3671" d="M0,0C.712.411,7.272,7.272,7.272,7.272L0,14.544" transform="translate(201 4747.272) rotate(-90)" fill="none" stroke="#1dd665" stroke-linecap="round" stroke-width="1.5"/>                         </g>                       </g>                     </svg>
               </span>
             <span class="hint-body">
-              <span class="hint-top" id="hintTop">Bij 500 paar betaal je</span>
-              <span class="hint-price" id="hintPrice">&euro;4,49 per paar</span>
+              <span class="hint-sub">
+                <span class="" id="hintTop">Bij 500 paar betaal je</span>
+                <span class="sub-price" id="hintPrice">&euro;4,49 per paar</span>
+              </span>
               <span class="hint-sub" id="hintSub">&euro;0,50 per paar minder dan bij 250 paar</span>
             </span>
           </button>
