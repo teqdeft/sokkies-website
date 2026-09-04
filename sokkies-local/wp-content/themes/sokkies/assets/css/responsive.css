@@ -12496,7 +12496,7 @@
     margin-bottom: 40px;
     position: relative;
     left: -20px;
-    margin-top: 10px;
+    margin-top: 30px;
   }
   .coll-hero-gallery{
     height: 450px;
@@ -12673,6 +12673,12 @@
   }
   .testimonial .nav-dashes span.is-active{
       background: var(--white);
+  }
+  .testimonial.testimonial-light .nav-dashes span{
+    background: rgb(40 18 27 / 30%);
+  }
+  .testimonial.testimonial-light .nav-dashes span.is-active{
+    background: var(--text);
   }
   .case-inner-page:before{
     content:"";

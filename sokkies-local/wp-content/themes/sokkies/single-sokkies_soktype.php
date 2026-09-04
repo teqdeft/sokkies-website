@@ -588,13 +588,75 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
 
     <div class="prod-cost">
       <span class="prod-cost-title">Wat kost het?</span>
-      <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta">Bereken je prijs</a>
+      <button type="button" class="cta" data-calc-open>Bereken je prijs</button>
     </div>
+
+    <?php
+    /* Prijscalculator in een popup. Draait op dezelfde IIFE als de
+       calculatorsectie (custom.js zoekt op de id's qtyRange/sockType/…),
+       dus de markup gebruikt bewust die id's. Dat kan hier veilig: op de
+       productpagina staat verder geen calculator, en die IIFE ondersteunt
+       er maar één per pagina.
+
+       De staffeltabel uit de gewone calculator ontbreekt hier met opzet —
+       die staat al naast de foto's. De JS is daarop aangepast en slaat een
+       ontbrekende tabel nu over. */
+    $calc_sleutel = isset( $matrix[ $sleutel ] ) ? $sleutel : ( $matrix ? array_key_first( $matrix ) : '' );
+    if ( $matrix ) : ?>
+    <div class="pdp-calc" hidden>
+      <div class="pdp-calc-overlay" data-calc-close></div>
+      <div class="pdp-calc-card" role="dialog" aria-modal="true" aria-label="Bereken jouw prijs">
+        <button type="button" class="pdp-calc-sluit" data-calc-close aria-label="Sluiten">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#28121b" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </button>
+        <h3>Bereken jouw prijs</h3>
+
+        <label class="pdp-calc-label" for="qtyInput">Aantal paar</label>
+        <div class="pdp-calc-rij">
+          <input type="range" id="qtyRange" min="50" max="5000" step="50" value="250">
+          <input type="number" id="qtyInput" min="50" value="250">
+          <span class="pdp-calc-eenheid">paar</span>
+        </div>
+        <div class="pdp-calc-schaal"><span>50</span><span>5.000+</span></div>
+
+        <button type="button" class="calc-hint" id="calcHint" aria-pressed="false">
+          <span class="calc-hint-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#1DD665" stroke-width="1.6" stroke-linecap="round"><path d="M3 11L11 3M5 3h6v6"/></svg>
+          </span>
+          <span class="calc-hint-tekst">
+            <span id="hintTop">Bij 500 paar betaal je</span> <strong id="hintPrice"></strong>
+            <small id="hintSub"></small>
+          </span>
+        </button>
+
+        <label class="pdp-calc-label">Type sok / pre-set</label>
+        <div class="dropdown" id="sockType" data-value="<?php echo esc_attr( $calc_sleutel ); ?>">
+          <button type="button" class="dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+            <span class="dropdown-value"><?php echo esc_html( ucfirst( $matrix[ $calc_sleutel ]['label'] ) ); ?></span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="7" viewBox="0 0 11.414 6.414"><path d="M482.224,63.112l5,5,5-5" transform="translate(-481.517 -62.405)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/></svg>
+          </button>
+          <ul class="dropdown-list" role="listbox">
+            <?php foreach ( $matrix as $k => $rij ) : ?>
+            <li class="dropdown-option<?php echo $k === $calc_sleutel ? ' is-selected' : ''; ?>" role="option" data-value="<?php echo esc_attr( $k ); ?>"><?php echo esc_html( ucfirst( $rij['label'] ) ); ?></li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+
+        <div class="pdp-calc-uitkomst">
+          <div class="pdp-calc-regel"><span>Schatting per paar</span><strong id="perPair"></strong></div>
+          <div class="pdp-calc-regel"><span>Totaal</span><strong id="totalPrice"></strong></div>
+          <small>Indicatieve prijs excl. btw en verzending</small>
+        </div>
+
+        <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
+      </div>
+    </div>
+    <?php endif; ?>
 
     <div class="pdp-sticky">
       <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
       <div class="pdp-sticky-row">
-        <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta-dark">Bereken je prijs</a>
+        <button type="button" class="cta-dark" data-calc-open>Bereken je prijs</button>
         <a href="<?php echo esc_url( home_url( '/sample-request/' ) ); ?>" class="cta-light">Sample aanvraag</a>
       </div>
     </div>

@@ -2058,7 +2058,7 @@ font-weight: 600;
     height:40px;
     border:1.5px solid #fff;
     background:transparent;
-    border-radius:8px;
+    border-radius:5px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -2302,7 +2302,7 @@ font-weight: 600;
   }
   .faq-left p{
     font-size: var(--body-font-size);
-    line-height:1.6;
+    line-height:1.4;
     color:var(--text);
     max-width:70%;
     margin-bottom:16px;
@@ -2775,7 +2775,7 @@ font-weight: 600;
   }
   .coll-hero-left p{
     font-size: var(--body-font-size);
-    line-height:1.6;
+    line-height:1.4;
     color:var(--text);
     max-width:70%;
     margin-bottom:15px;
@@ -3299,7 +3299,7 @@ font-weight: 600;
   }
   .testimonial-card p{
     font-size: var(--body-lg-font-size);
-    line-height:1.55;
+    line-height:1.35;
     color:var(--text);
     flex:1;
     text-align: center;
@@ -10226,4 +10226,134 @@ main.contact{
   flex:0 0 auto;
   accent-color:var(--dark);
   cursor:pointer;
+}
+
+/*═════════════════════════════════════════
+  Productpagina: prijscalculator in een popup
+  De rekenmachine erin is de bestaande calculator (zelfde id's), alleen
+  compacter: zonder staffeltabel, want die staat al naast de foto's.
+═════════════════════════════════════════*/
+.pdp-calc{
+  position:fixed;
+  inset:0;
+  z-index:210; /* boven de nl-popup (200) en de sticky balk */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.pdp-calc-overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(40,18,27,.45);
+}
+.pdp-calc-card{
+  position:relative;
+  width:100%;
+  max-width:430px;
+  max-height:90vh;
+  overflow-y:auto;
+  background:#fff;
+  border-radius:20px;
+  padding:30px 32px 32px;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+.pdp-calc-card h3{
+  font-family:var(--roc-grotesk);
+  font-weight:700;
+  font-size:var(--h4-font-size);
+  color:var(--text);
+  margin-bottom:22px;
+}
+.pdp-calc-sluit{
+  position:absolute;
+  top:18px;
+  right:18px;
+  width:30px;
+  height:30px;
+  padding:0;
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.pdp-calc-label{
+  display:block;
+  font-family:var(--roc-grotesk);
+  font-weight:600;
+  font-size:var(--body-font-size);
+  color:var(--text);
+  margin-bottom:10px;
+}
+.pdp-calc-rij{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.pdp-calc-rij #qtyRange{
+  flex:1;
+  min-width:0;
+}
+.pdp-calc-rij #qtyInput{
+  width:92px;
+  height:44px;
+  padding:0 12px;
+  border:1px solid var(--input-border);
+  border-radius:8px;
+  font-family:var(--roc-grotesk);
+  font-size:var(--body-font-size);
+  color:var(--text);
+  text-align:center;
+}
+.pdp-calc-eenheid{
+  font-family:var(--roc-grotesk);
+  font-size:var(--body-sm-font-size);
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:#8a8079;
+}
+.pdp-calc-schaal{
+  display:flex;
+  justify-content:space-between;
+  margin:6px 0 18px;
+  font-size:var(--body-sm-font-size);
+  color:#8a8079;
+}
+.pdp-calc .calc-hint{
+  width:100%;
+  margin-bottom:22px;
+}
+.pdp-calc-uitkomst{
+  margin:20px 0 22px;
+}
+.pdp-calc-regel{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:8px;
+  font-family:var(--roc-grotesk);
+  font-size:var(--body-font-size);
+  color:var(--text);
+}
+.pdp-calc-regel strong{
+  font-size:var(--h4-font-size);
+  font-weight:700;
+}
+.pdp-calc-uitkomst small{
+  display:block;
+  text-align:right;
+  font-size:var(--body-sm-font-size);
+  text-transform:uppercase;
+  letter-spacing:.03em;
+  color:#8a8079;
+}
+.pdp-calc-card .cta{
+  width:100%;
+  text-align:center;
+}
+/* achtergrond niet meescrollen zolang de popup open staat */
+body.pdp-calc-open{
+  overflow:hidden;
 }

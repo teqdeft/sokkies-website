@@ -1217,7 +1217,11 @@
                    '<span class="staffel-price">' + euro(price) + '</span>' +
                  '</div>';
         }).join('');
-        document.getElementById('staffelRows').innerHTML = html;
+        /* De popup op de productpagina toont geen staffeltabel; zonder
+           deze controle liep de calculator daar stuk op een ontbrekend
+           element en werkte hij helemaal niet. */
+        var tabel = document.getElementById('staffelRows');
+        if (tabel) tabel.innerHTML = html;
       }
 
       function paintRange() {
@@ -1234,7 +1238,8 @@
 
         document.getElementById('perPair').textContent = euro(perPair);
         document.getElementById('totalPrice').textContent = euroGroup(qty * perPair);
-        document.getElementById('staffelType').textContent = data.label;
+        var typeEl = document.getElementById('staffelType');
+        if (typeEl) typeEl.textContent = data.label;
 
         // Savings hint — a toggle button for the 500-paar tier (always visible)
         const hint = document.getElementById('calcHint');
@@ -1813,5 +1818,49 @@
       var kwijt = voor.slice(0, pos).length - na.slice(0, pos).replace(GEWEERD, '').length;
       veld.value = na;
       try { veld.setSelectionRange(pos - kwijt, pos - kwijt); } catch (er) {}
+    });
+  })();
+
+  /* ===================================================================
+     Productpagina: prijscalculator in een popup
+     -------------------------------------------------------------------
+     De rekenmachine zelf is de bestaande calculator-IIFE; die vindt zijn
+     velden op id en draait dus gewoon in deze popup mee. Hier staat
+     alleen het openen en sluiten.
+
+     De popup blijft in de DOM (alleen hidden), zodat de calculator bij
+     het laden al initialiseert en de bedragen meteen kloppen als hij
+     opengaat.
+     =================================================================== */
+  (function () {
+    var popup = document.querySelector('.pdp-calc');
+    if (!popup) return;
+    /* Twee knoppen: het blok onder de foto's (desktop) en de mobiele
+       balk onderaan — dat blok staat op mobiel op display:none, dus
+       zonder de tweede was de popup daar niet te openen. */
+    var openers = document.querySelectorAll('[data-calc-open]');
+    if (!openers.length) return;
+    var laatsteOpener = openers[0];
+
+    function open() {
+      popup.hidden = false;
+      document.body.classList.add('pdp-calc-open');
+      var veld = popup.querySelector('#qtyInput');
+      if (veld) setTimeout(function () { veld.focus(); }, 50);
+    }
+    function close() {
+      popup.hidden = true;
+      document.body.classList.remove('pdp-calc-open');
+      if (laatsteOpener) laatsteOpener.focus();
+    }
+
+    openers.forEach(function (knop) {
+      knop.addEventListener('click', function () { laatsteOpener = knop; open(); });
+    });
+    popup.querySelectorAll('[data-calc-close]').forEach(function (el) {
+      el.addEventListener('click', close);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !popup.hidden) close();
     });
   })();
