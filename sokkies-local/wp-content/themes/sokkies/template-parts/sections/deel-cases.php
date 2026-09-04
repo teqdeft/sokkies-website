@@ -81,17 +81,32 @@ $assets = get_template_directory_uri() . '/assets/media/';
                gelijke opschriften zouden elkaar in een map overschrijven en
                dan verdween er stilletjes een regel van de kaart. */
             $punten = array();
-            foreach ( array(
-              array( 'probleem',  'Probleem' ),
-              array( 'aanpak',    'Aanpak' ),
-              array( 'resultaat', 'Resultaat' ),
-            ) as $punt ) {
-              $waarde = get_field( $punt[0], $case_id );
-              if ( ! $waarde ) {
-                continue;
+            /* Repeater wint zodra er een rij met tekst in staat; anders de
+               drie vaste velden, zodat bestaande cases (en live) blijven
+               werken. Een leeg opschrift geeft alleen de tekst. */
+            $rijen = get_field( 'punten', $case_id );
+            if ( $rijen ) {
+              foreach ( (array) $rijen as $rij ) {
+                $tekst = trim( (string) ( $rij['tekst'] ?? '' ) );
+                if ( '' === $tekst ) {
+                  continue;
+                }
+                $punten[] = array( trim( (string) ( $rij['label'] ?? '' ) ), $tekst );
               }
-              $eigen  = trim( (string) get_field( $punt[0] . '_label', $case_id ) );
-              $punten[] = array( '' !== $eigen ? $eigen : $punt[1], $waarde );
+            }
+            if ( ! $punten ) {
+              foreach ( array(
+                array( 'probleem',  'Probleem' ),
+                array( 'aanpak',    'Aanpak' ),
+                array( 'resultaat', 'Resultaat' ),
+              ) as $punt ) {
+                $waarde = get_field( $punt[0], $case_id );
+                if ( ! $waarde ) {
+                  continue;
+                }
+                $eigen  = trim( (string) get_field( $punt[0] . '_label', $case_id ) );
+                $punten[] = array( '' !== $eigen ? $eigen : $punt[1], $waarde );
+              }
             }
           ?>
           <div class="swiper-slide">
@@ -110,7 +125,7 @@ $assets = get_template_directory_uri() . '/assets/media/';
                 <h3><?php echo sokkies_kop( get_the_title( $case_id ) ); ?></h3>
                 <ul>
                   <?php foreach ( $punten as $punt ) : ?>
-                  <li><strong><?php echo esc_html( $punt[0] ); ?>:</strong> <?php echo esc_html( $punt[1] ); ?></li>
+                  <li><?php if ( '' !== $punt[0] ) : ?><strong><?php echo esc_html( $punt[0] ); ?>:</strong> <?php endif; ?><?php echo esc_html( $punt[1] ); ?></li>
                   <?php endforeach; ?>
                 </ul>
                 <a href="<?php echo esc_url( $link_url ); ?>" class="case-link">

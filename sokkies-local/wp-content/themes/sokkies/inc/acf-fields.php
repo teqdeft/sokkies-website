@@ -2572,6 +2572,24 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 			array( 'key' => 'field_case_foto_klein_1', 'label' => 'Kleine foto (boven)', 'name' => 'foto_klein_1', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 			array( 'key' => 'field_case_foto_klein_2', 'label' => 'Kleine foto (onder)', 'name' => 'foto_klein_2', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 			array( 'key' => 'field_case_badge', 'label' => 'Badge', 'name' => 'badge', 'type' => 'text', 'instructions' => 'Leeg = "Klantcase".' ),
+			/* De drie punten op de kaart als REPEATER, zodat er ook meer of
+			   minder dan drie kunnen staan en het opschrift vrij is.
+
+			   De drie vaste velden hieronder BLIJVEN staan en blijven werken:
+			   ze bevatten de inhoud van alle bestaande cases, ook op live. Een
+			   veldtype omzetten zou een schemawijziging zijn en de repeater
+			   leest andere meta — code deployt wel, de database niet, dus dan
+			   stond live zonder kaarttekst (zie de blog-les van 2026-08-29).
+			   Staat er minstens één rij in de repeater, dan wint die. */
+			array(
+				'key' => 'field_case_punten', 'label' => 'Punten op de kaart', 'name' => 'punten',
+				'type' => 'repeater', 'layout' => 'block', 'button_label' => 'Punt toevoegen',
+				'instructions' => 'Laat leeg om de drie vaste velden hieronder te blijven gebruiken. Zodra hier een rij staat, bepaalt deze lijst de regels op de kaart.',
+				'sub_fields' => array(
+					array( 'key' => 'field_case_punt_label', 'label' => 'Opschrift', 'name' => 'label', 'type' => 'text', 'placeholder' => 'Probleem', 'instructions' => 'Leeg = alleen de tekst, zonder opschrift.' ),
+					array( 'key' => 'field_case_punt_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
+				),
+			),
 			/* De drie regels op de kaart stonden met een vast opschrift in de
 			   template (Probleem/Aanpak/Resultaat). Deze velden maken dat
 			   opschrift per case aanpasbaar; leeg laten houdt het oude woord.
