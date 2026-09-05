@@ -5247,7 +5247,20 @@ font-weight: 600;
     color:var(--text);
   }
   .blog-body li{ margin-bottom:6px; }
-  .blog-body a{ color:var(--text); text-decoration:underline; }
+  .blog-body a{ 
+    color:var(--text); 
+    text-decoration:underline;
+    transition: 0.2s ease-in-out;
+   }
+  .blog-body a:hover{
+    color: var(--coral);
+  }
+  .blog-body a.cta-light{
+    text-decoration: none;
+  }
+  .blog-body a.cta-light:hover{
+    color: var(--text);
+  }
   /* Afbeeldingen uit de editor (media_upload staat aan op de blogvelden).
      Zelfde afronding als de uitgelichte foto, nooit breder dan de kolom. */
   .blog-body img{
@@ -5297,7 +5310,7 @@ font-weight: 600;
   /* Eén foto (of de grote eerste van 'eerste vol') in een breed 2:1-kader,
      zoals in het ontwerp — anders wordt een staande of vierkante foto
      schermvullend hoog (melding Kulwant met drone-foto). */
-  .blog-fotos-1 img,
+  .blog-fotos.blog-fotos-1 img,
   .blog-fotos-groot img:first-child{
     aspect-ratio:2 / 1;
     /* height:auto verslaat de algemene height:100% van .blog-fotos img —
@@ -5313,6 +5326,7 @@ font-weight: 600;
     /* de algemene .blog-body img-regel geeft 24px marge — in het raster
        stapelde dat op de 20px gap tot ~70px tussen de rijen */
     margin:0;
+    aspect-ratio: 1;
   }
 
   /* Reviewblok in het artikel — de kaartopmaak van de testimonials,
