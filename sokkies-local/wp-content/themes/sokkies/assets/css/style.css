@@ -10744,6 +10744,15 @@ body.pdp-calc-open{
   .process.process-landing .process-left li{
     border-bottom-color:rgba(255,255,255,.35);
   }
+  /* De rijen zijn space-between (nummer links, tekstblok rechts), dus zonder
+     vaste breedte verschoof de chevron per rij mee met de titelbreedte
+     (melding Kulwant: stap 03 stond ver naar links). Zelfde oplossing als
+     de configurator: een vast tekstblok, dan staan chevrons en titels in
+     één kolom en breken de titels gelijk af. */
+  .process.process-landing .process-inner{
+    width:66%;
+    padding:0;
+  }
   /* de beige actiekaart is de DERDE cel van de fotocollage, even hoog en
      even rond als de foto's, met de tekst gecentreerd (ontwerp) */
   .process-land-kaart{
