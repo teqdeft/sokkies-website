@@ -22,10 +22,11 @@ if ( '' === $titel && ! $heeft_tekst && ! $foto ) {
 	return; // niets ingevuld: sectie helemaal overslaan
 }
 
-// Geen foto gekozen: de hardloopfoto uit het ontwerp (witte sokken in het
-// gras). Het thema heeft hem alleen staand; het kader snijdt hem liggend
-// uit op de benen. De brede versie kan als eigen foto worden geüpload.
-$standaard_foto = get_template_directory_uri() . '/assets/media/slider3.png';
+// Geen foto gekozen: de liggende hardloopfoto uit het ontwerp (lp-geweven.jpg,
+// aangeleverd door Kulwant als uitsnede van het ontwerp, 676px breed — het
+// origineel is scherper en kan als eigen foto worden geüpload). Het thema
+// had dit beeld alleen staand, en dat kader sneed hem af tot de schoenen.
+$standaard_foto = get_template_directory_uri() . '/assets/media/lp-geweven.jpg';
 
 $klassen = 'lp-media';
 if ( 'rechts' === $positie ) { $klassen .= ' lp-media-omgekeerd'; }

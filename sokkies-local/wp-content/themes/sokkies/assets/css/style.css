@@ -10549,10 +10549,12 @@ body.pdp-calc-open{
     padding-bottom:calc(13% + 70px);
   }
   .lp-media-beige{ background:var(--light-beige); }
+  /* Ontwerp: foto iets breder dan de tekst, en een ruime goot ertussen
+     (±115px op 1440, ±150px op 1920) — 70px was te krap. */
   .lp-media-inner{
     display:grid;
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-    gap:70px;
+    grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);
+    gap:clamp(60px, 8vw, 150px);
     align-items:center;
   }
   /* foto rechts: dezelfde markup, alleen de kolomvolgorde draait om */
