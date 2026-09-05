@@ -10036,6 +10036,31 @@ main.contact{
   justify-content: space-between;
 }
 
+/* Landingsheader (pagina-optie "Header: landingsheader"): logo links,
+   rechts het telefoonnummer en de gele knop — geen menu. Deelt de compacte
+   pill-hoogte van .navbar-mini. */
+.navbar-landing{
+  justify-content:space-between;
+}
+.nav-landing{
+  display:flex;
+  align-items:center;
+  gap:22px;
+  margin-left:auto;
+}
+.nav-bel{
+  font-family:var(--roc-grotesk);
+  font-weight:600;
+  font-size:var(--body-font-size);
+  color:var(--text);
+  text-decoration:none;
+  white-space:nowrap;
+  transition:color .2s;
+}
+.nav-bel:hover{
+  color:var(--coral);
+}
+
 /*═════════════════════════════════════════
   Merkenstrip: doorlopende marquee (CSS i.p.v. Swiper-autoplay)
   De wrapper bestaat uit twee identieke helften en schuift naar -50%,
@@ -10427,3 +10452,445 @@ body.pdp-calc-open{
 .pdp-calc[hidden]{
   display:none;
 }
+
+
+/* ==========================================================================
+   LANDINGSPAGINA — page-scope: main.landing
+   Vier eigen blokken (.lp-hero, .lp-media, .lp-usps, .lp-keur) plus de
+   landingsvariant van het bestaande stappenblok (.process-landing). De
+   overige secties zijn ongewijzigd hergebruikt.
+   ========================================================================== */
+
+/* ===== Landingskop — tekst links, fotocollage rechts ===== */
+  .lp-hero{
+    background:var(--coral);
+    color:var(--white);
+    /* geen marges: de galerij valt (net als op werkwijze) meteen vanaf de
+       headerpill over de rand en wordt onder precies op de rode rand
+       afgesneden (ontwerp); de tekstkolom regelt zijn eigen lucht */
+    padding:0;
+    overflow:hidden;
+  }
+  .lp-hero-text{
+    padding:70px 0 20px;
+  }
+  .lp-hero-beige{ background:var(--light-beige); color:var(--text); }
+  .lp-hero-wit{ background:var(--white); color:var(--text); }
+  .lp-hero-inner{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+    gap:60px;
+    align-items:center;
+    /* de headerpill zweeft over de bovenrand; met deze ruimte begint de
+       gecentreerde tekst er altijd ruim onder */
+    padding-top:24px;
+  }
+  /* zelfde koptypografie als de bestaande paginakop (condensed, uppercase,
+     fluïde tot 40px), zodat de landingskop niet uit de toon valt */
+  .lp-hero-text h1{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    font-size:clamp(40px, 5vw, var(--h1-font-size));
+    text-transform:uppercase;
+    line-height:0.86;
+    color:inherit;
+    margin-bottom:22px;
+  }
+  .lp-hero-text > p{
+    font-size:var(--body-lg-font-size);
+    line-height:1.55;
+    color:inherit;
+    /* zo breed als de kop, niet smaller (ontwerp) */
+    max-width:620px;
+    margin-bottom:30px;
+  }
+  .lp-hero-btns{
+    margin-bottom:30px;
+  }
+  /* de knop in de kop is in het ontwerp een maat groter dan de gewone .cta */
+  .lp-hero-btns .cta{
+    padding:15px 32px;
+    font-size:var(--body-lg-font-size);
+  }
+  /* de reviewregel is dezelfde .rating-outer als in de paginakop; alleen
+     de uitlijning verschilt (daar gecentreerd, hier links) */
+  .lp-hero .rating-outer{
+    justify-content:flex-start;
+    margin:0;
+  }
+
+  /* De galerij is de .coll-hero-gallery van de paginakop met fotokolommen
+     (twee gedraaide, tegengesteld lopende kolommen die over de randen
+     vallen). Al haar maten en banden komen uit die bestaande regels; hier
+     alleen wat het rode vlak anders doet: de kolommen mogen aan de
+     bovenkant over de rand, en het vlak knipt ze af. */
+  /* De kophoogte schaalt mee met het scherm (ontwerp: ±560px op 1440,
+     ±650px op 1920). Een vaste 470px zette op brede schermen de kop
+     tegen de headerpill aan (melding Kulwant met schermafdruk). */
+  .lp-hero-gallery{
+    height:clamp(560px, 34vw, 660px);
+    overflow:hidden;
+  }
+  .lp-hero .coll-hero-gallery{
+    height:calc(100% + 140px);
+    top:-70px;
+    gap:14px;
+  }
+  .lp-hero .ch-swiper .swiper-slide{
+    height:clamp(320px, 25vw, 480px);
+  }
+
+/* ===== Landingspagina — aanpassingen aan hergebruikte secties ===== */
+  /* Merkenstrip: de titel staat in het ontwerp ±75px onder de rode rand;
+     de bandregels van .brands zetten 40-60px, dus hier de eigen maat. */
+  .landing .brands{
+    padding-top:75px;
+  }
+  /* Reviews: in het ontwerp begint het blok op wit en lopen de kaarten
+     over in het beige dat daarna doorloopt (keurmerken, vragen). Zelfde
+     verloop-truc als de blogfoto-band: omgevingsonafhankelijk. */
+  .landing .testimonial-light{
+    background:linear-gradient(to bottom, var(--white) 46%, var(--light-beige) 46%);
+  }
+  /* Ontwerp: de reviewkaarten hebben een dunne donkere omlijning (zelfde
+     lijn als de reviewkaart op het blog). Alleen hier — de andere
+     reviews-varianten zijn in hun ontwerpen zonder rand. */
+  .landing .testimonial-card{
+    border:1px solid var(--text);
+  }
+
+/* ===== Foto naast tekst (50/50) ===== */
+  .lp-media{
+    background:var(--white);
+    padding:90px 0;
+  }
+  /* Staat het gele pluspunten-vlak er direct onder, dan steekt zijn golf in
+     dit blok. Die ruimte wordt hier gereserveerd met dezelfde procentuele
+     basis als de golf zelf (13% van de breedte), plus wat lucht — zo botst
+     het op geen enkele schermbreedte met de tekst. Géén z-index hier: dan
+     zou dit witte vlak de golf juist afdekken. */
+  .lp-media:has(+ .lp-usps){
+    padding-bottom:calc(13% + 70px);
+  }
+  .lp-media-beige{ background:var(--light-beige); }
+  /* Ontwerp: foto iets breder dan de tekst, en een ruime goot ertussen
+     (±115px op 1440, ±150px op 1920) — 70px was te krap. */
+  .lp-media-inner{
+    display:grid;
+    grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);
+    gap:clamp(60px, 8vw, 150px);
+    align-items:center;
+  }
+  /* foto rechts: dezelfde markup, alleen de kolomvolgorde draait om */
+  .lp-media-omgekeerd .lp-media-foto{ order:2; }
+  .lp-media-foto img{
+    width:100%;
+    aspect-ratio:16 / 10;
+    object-fit:cover;
+    border-radius:35px;
+    display:block;
+  }
+  /* koppen op de landingspagina: dezelfde condensed uppercase als alle
+     sectiekoppen op de site (stappenblok, soktypes, toepassingen) */
+  .lp-media-tekst h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1.1;
+    color:var(--text);
+    margin-bottom:18px;
+  }
+  .lp-media-tekst p{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--text);
+    margin-bottom:14px;
+  }
+  .lp-media-tekst p:last-of-type{ margin-bottom:0; }
+  .lp-media-link{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    margin-top:24px;
+    font-size:var(--body-font-size);
+    font-weight:600;
+    /* ontwerp: donkere tekstlink met pijl, coral pas bij hover */
+    color:var(--text);
+    text-decoration:none;
+    transition:color .2s;
+  }
+  .lp-media-link:hover{ color:var(--coral); }
+
+/* ===== Pluspunten-raster op geel ===== */
+  .lp-usps{
+    background:var(--yellow);
+    padding:40px 0 60px;
+    position:relative;
+    /* eigen stapelcontext, zodat de ONDERSTE golf over de volgende sectie
+       heen valt in plaats van erachter te verdwijnen — die sectie heeft een
+       eigen achtergrond en staat later in de DOM */
+    z-index:1;
+  }
+  /* Golvende boven- en onderrand. BEWUST de losse kap-afbeeldingen en niet
+     bg-yellow-shape.png zoals bij de collectiestrook: die vorm is een heel
+     vlak dat met top:-76% naar boven steekt en dan over de vorige sectie
+     heen valt (de tekst van het blok erboven verdween erachter). Deze twee
+     zijn gele golven op transparant, precies zo hoog als hun eigen
+     verhouding, en raken de inhoud niet. */
+  .lp-usps:before,
+  .lp-usps:after{
+    content:'';
+    position:absolute;
+    left:0;
+    width:100%;
+    height:0;
+    background-repeat:no-repeat;
+    background-size:100% 100%;
+    z-index:0;
+    pointer-events:none;
+  }
+  .lp-usps:before{
+    bottom:100%;
+    /* bewust vlakker dan de eigen verhouding (27%): op volle hoogte steekt
+       de golf ~390px de vorige sectie in en loopt daar over de tekst heen */
+    padding-top:13%;
+    background-image:url(../media/bg-yellow-shapeTop.png);
+  }
+  /* Onderrand: bg-yellow-shapeBottom.png uitgerekt over de breedte werd een
+     rechte diagonaal met een knik rechts (melding Kulwant). Nu een getekend
+     pad in de gele kleur: links hoog, in een zachte boog naar rechtsonder,
+     steiler links en vlakker rechts — de rand uit het ontwerp. */
+  .lp-usps:after{
+    top:100%;
+    padding-top:6.15%;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 100' preserveAspectRatio='none'><path d='M0 0 L1000 0 L1000 100 C 660 96 330 34 0 0 Z' fill='%23FAE16E'/></svg>");
+  }
+  .lp-usps-wit{ background:var(--white); }
+  .lp-usps-wit:before,
+  .lp-usps-wit:after{ display:none; }
+  .lp-usps > .container{
+    position:relative;
+    z-index:2;
+  }
+  /* De doodles horen in de vrije marge NAAST het raster (dat is 1140px breed
+     binnen een bredere container). Onder 1300px is die marge er niet meer en
+     zouden ze over de pluspunten heen vallen, dus daar verdwijnen ze. */
+  /* Ontwerp: de twee sokkenparen staan op de BOVENSTE golf, half op het
+     witte blok erboven en half op het geel, links en rechts in de marge. */
+  .lp-usps-duddle{
+    position:absolute;
+    width:260px;
+    height:auto;
+    z-index:0;
+    pointer-events:none;
+  }
+  .lp-usps-duddle-l{ left:24px;  top:-200px; }
+  .lp-usps-duddle-r{ right:24px; top:-250px; }
+  @media (max-width:1299px){
+    .lp-usps-duddle{ display:none; }
+  }
+  .lp-usps h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1.1;
+    color:var(--text);
+    text-align:center;
+    margin-bottom:50px;
+  }
+  .lp-usps-grid{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:50px 60px;
+    max-width:1140px;
+    margin:0 auto;
+  }
+  /* maten 1:1 uit het ontwerp: icoonvak 120px, titel 22px */
+  .lp-usp-icoon{
+    width:120px;
+    height:120px;
+    margin-bottom:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .lp-usp-icoon:empty,
+  .lp-usp-icoon:not(:has(img)){
+    /* nog geen icoon gekozen: een rustig kader in plaats van een gat */
+    border:1.5px dashed rgba(40,18,27,.35);
+    border-radius:14px;
+  }
+  .lp-usp-icoon img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    display:block;
+  }
+  .lp-usp h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:22px;
+    line-height:1.2;
+    color:var(--coral);
+    margin-bottom:14px;
+  }
+  .lp-usp p{
+    font-size:var(--body-font-size);
+    line-height:24px;
+    color:var(--text);
+  }
+
+/* ===== Stappenblok, landingsvariant (rood vlak + actiekaart) ===== */
+  .process.process-landing{
+    background:var(--coral);
+    padding:80px 0 90px;
+  }
+  /* staat het gele vlak er direct boven, dan hangt zijn onderste golf over
+     deze sectie heen; die ruimte reserveren we op dezelfde basis (6,15%) */
+  .lp-usps + .process.process-landing{
+    padding-top:calc(6.15% + 45px);
+  }
+  /* Ontwerp: witte tekst; de titel (met geel accent) linksboven de stappen;
+     de chevrons geel — de standaard coral verdwijnt op het rode vlak. */
+  .process.process-landing .process-left h2,
+  .process.process-landing .process-row-body h3,
+  .process.process-landing .process-num,
+  .process.process-landing .process-row-body p{
+    color:var(--white);
+  }
+  .process.process-landing .process-left h2{
+    /* een regel in de linkerkolom (ontwerp); op 46px brak hij af */
+    font-size:clamp(30px, 2.8vw, 40px);
+    line-height:1.05;
+    margin-bottom:26px;
+  }
+  .process.process-landing .process-chev svg path{
+    fill:var(--yellow);
+  }
+  /* De scheidingslijnen zijn in het ontwerp licht (wit op het rood). De
+     basisrij tekent ze met border-TOP; de eerdere override zat op bottom
+     en deed niets (melding Kulwant). */
+  .process.process-landing .process-left li{
+    border-top-color:rgba(255,255,255,.5);
+  }
+  /* De rijen zijn space-between (nummer links, tekstblok rechts), dus zonder
+     vaste breedte verschoof de chevron per rij mee met de titelbreedte
+     (melding Kulwant: stap 03 stond ver naar links). Zelfde oplossing als
+     de configurator: een vast tekstblok, dan staan chevrons en titels in
+     één kolom en breken de titels gelijk af. */
+  .process.process-landing .process-inner{
+    width:66%;
+    padding:0;
+  }
+  /* de beige actiekaart is de DERDE cel van de fotocollage, even hoog en
+     even rond als de foto's, met de tekst gecentreerd (ontwerp) */
+  .process-land-kaart{
+    background:var(--light-beige);
+    border-radius:35px;
+    height:415px;
+    padding:30px 28px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:22px;
+  }
+  .process.process-landing .process-collage > :nth-child(3){
+    margin-top:-60px; /* zelfde ritme als img:nth-child(3) */
+  }
+  /* minmax(0,…): de kaart mag zijn kolom nooit opblazen — met 1fr 1fr trok
+     de nowrap-knop de eerste kolom breed en kregen de foto's rechts nog
+     99px (1024) of 22px (390) */
+  .process.process-landing .process-collage{
+    grid-template-columns:repeat(2, minmax(0,1fr));
+  }
+  .process-land-kaart h5{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:800;
+    text-transform:uppercase;
+    font-size:var(--h2-font-size);
+    line-height:1;
+    color:var(--text);
+  }
+  .process-land-kaart .cta{
+    white-space:nowrap; /* "Vraag gratis proefdesign aan" op een regel */
+    padding:12px 22px;
+  }
+  /* het rode vlak eindigt linksonder in een witte golf die het volgende
+     (witte) blok inleidt — getekend, geen afbeelding nodig */
+  .process.process-landing{
+    position:relative;
+    overflow:hidden;
+    padding-bottom:230px;
+  }
+  /* De rand uit het ontwerp: links ±190px hoog, dan een zachte holle boog
+     die rond de helft van de breedte de onderrand raakt en verder vlak
+     loopt. Een border-radius-ellips gaf een bolle bult in de hoek (melding
+     Kulwant); dit pad tekent de curve zelf en schaalt met de breedte. */
+  .process.process-landing:after{
+    content:'';
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:-1px;
+    height:190px;
+    /* startpunt (0,0) met meteen een dalende helling — een vlakke start gaf
+       een S-vorm met een bultje links (melding Kulwant); het pad zakt
+       gelijkmatig en loopt bij ±50% tangentieel in de onderrand uit */
+    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 190' preserveAspectRatio='none'><path d='M0 0 C 150 75 330 190 520 190 L1000 190 L0 190 Z' fill='%23ffffff'/></svg>") no-repeat left bottom;
+    background-size:100% 100%;
+    pointer-events:none;
+  }
+  .process.process-landing > .container{
+    position:relative;
+    z-index:1;
+  }
+
+/* ===== Keurmerkenstrip ===== */
+  .lp-keur{
+    background:var(--light-beige);
+    padding:70px 0;
+  }
+  .lp-keur-inner{
+    max-width:900px;
+    margin:0 auto;
+    text-align:center;
+  }
+  /* Ontwerp: hier juist GEEN condensed uppercase — de ronde vette letter in
+     gewone kast, zoals de merkenstrip-titel. */
+  .lp-keur-inner h2{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    text-transform:none;
+    font-size:22px;
+    line-height:1.2;
+    color:var(--text);
+    margin-bottom:14px;
+  }
+  .lp-keur-inner > p{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--text);
+    margin:0 auto 34px;
+    max-width:720px;
+  }
+  .lp-keur-logos{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:80px;
+  }
+  .lp-keur-logos img{
+    height:100px;
+    width:auto;
+    max-width:150px;
+    object-fit:contain;
+    display:block;
+    /* dezelfde witte keurmerk-PNG's als in de footer; op dit lichte vlak
+       donker gemaakt, precies zoals bij de keurmerk-kaarten */
+    filter:brightness(0);
+  }

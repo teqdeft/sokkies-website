@@ -15264,3 +15264,138 @@
     width:auto;
   }
 }
+
+
+/* ==========================================================================
+   LANDINGSPAGINA — responsive
+   De blokken zijn op desktop een raster van twee (kop, foto/tekst) of drie
+   (pluspunten) kolommen; hieronder vallen ze per band terug naar minder
+   kolommen en uiteindelijk naar één. Aan het einde van het bestand, zodat
+   deze regels de basisopmaak uit style.css winnen.
+   ========================================================================== */
+
+@media (min-width:1280px) and (max-width:1439px){
+  .lp-hero-inner{ gap:45px; }
+  .lp-hero-gallery{ height:440px; }
+  .lp-hero .ch-swiper .swiper-slide{ height:330px; }
+  .lp-media-inner{ gap:50px; }
+  .lp-usps-grid{ gap:40px 45px; }
+}
+
+@media (min-width:992px) and (max-width:1279px){
+  .lp-hero{ padding:45px 0 70px; }
+  .lp-hero-inner{ gap:35px; }
+  .lp-hero-gallery{ height:400px; }
+  .lp-hero .coll-hero-gallery{ height:520px; top:-50px; }
+  .lp-hero .ch-swiper .swiper-slide{ height:300px; }
+  .lp-media{ padding:70px 0; }
+  .lp-media-inner{ gap:40px; }
+  .lp-usps-grid{ gap:36px 40px; }
+  .lp-keur-logos{ gap:38px; }
+  .lp-keur-logos img{ height:62px; }
+  /* collagekolom is hier ±200px: de kaartknop mag afbreken en de kaart
+     krijgt minder binnenruimte, anders past "Vraag gratis proefdesign
+     aan" niet in de kaart */
+  .process-land-kaart{ padding:24px 18px; }
+  .process-land-kaart .cta{ white-space:normal; padding:12px 18px; }
+  .process-land-kaart h5{ font-size:34px; }
+}
+
+@media (min-width:768px) and (max-width:991px){
+  .lp-hero{ padding:40px 0 60px; }
+  /* tekst boven de collage: naast elkaar wordt de kop hier te smal */
+  .lp-hero-inner{
+    grid-template-columns:minmax(0,1fr);
+    gap:40px;
+  }
+  .lp-hero-text > p{ max-width:none; }
+  /* de headerpill hangt over de sectierand; zonder deze lucht plakt de
+     kop eraan vast */
+  .lp-hero-text{ padding:75px 0 10px; }
+  /* gestapeld: de galerij neemt de bestaande tabletmaten van
+     .coll-gallery-main over (volle breedte, 540px hoog) */
+  .lp-hero-gallery{ height:460px; margin-bottom:0; }
+  .lp-media{ padding:60px 0; }
+  .lp-media-inner{
+    grid-template-columns:minmax(0,1fr);
+    gap:32px;
+  }
+  /* gestapeld staat de foto altijd boven, ook in de omgekeerde variant */
+  .lp-media-omgekeerd .lp-media-foto{ order:0; }
+  .lp-usps-grid{
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:34px 36px;
+  }
+  .lp-usps h2{ margin-bottom:38px; }
+  .process-land-kaart{ max-width:none; }
+  .lp-keur{ padding:55px 0; }
+  .lp-keur-logos{ gap:34px; }
+  .lp-keur-logos img{ height:56px; }
+}
+
+@media (max-width:767px){
+  .lp-hero{ padding:30px 0 45px; }
+  .lp-hero-inner{
+    grid-template-columns:minmax(0,1fr);
+    gap:32px;
+  }
+  .lp-hero-text > p{ max-width:none; margin-bottom:24px; }
+  .lp-hero-btns{ margin-bottom:22px; }
+  .lp-hero-btns .cta{ display:inline-block; }
+  .lp-hero-text{ padding:60px 0 6px; }
+  /* de galerij volgt hier de mobiele maten van .coll-gallery-main */
+  .lp-hero-gallery{ height:420px; margin-bottom:0; }
+
+  .lp-media{ padding:48px 0; }
+  .lp-media:has(+ .lp-usps){ padding-bottom:calc(13% + 40px); }
+  .lp-media-inner{
+    grid-template-columns:minmax(0,1fr);
+    gap:26px;
+  }
+  .lp-media-omgekeerd .lp-media-foto{ order:0; }
+  .lp-media-foto img{ border-radius:18px; }
+  .lp-media-link{ margin-top:18px; }
+
+  .lp-usps{ padding:20px 0 40px; }
+  .lp-usps-grid{
+    grid-template-columns:minmax(0,1fr);
+    gap:28px;
+    max-width:none;
+  }
+  .lp-usps h2{ margin-bottom:30px; }
+  .lp-usp-icoon{ width:52px; height:52px; margin-bottom:12px; }
+
+  .lp-usps + .process.process-landing{ padding-top:calc(6.15% + 30px); }
+  .process.process-landing{ padding-bottom:60px; }
+  /* Collage op telefoons: twee gelijke kolommen die NIET meer kunnen
+     opzwellen (minmax(0,1fr)) — de nowrap-knop in de actiekaart dwong de
+     eerste kolom eerder naar 303px en liet 22px over voor de tweede,
+     waardoor twee foto's tot een streepje samenvielen. De kaart spant
+     beide kolommen, krijgt zijn eigen hoogte en de knop mag afbreken. */
+  .process.process-landing .process-collage{
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:14px;
+  }
+  .process.process-landing .process-collage > *{ margin-top:0; }
+  .process-land-kaart{
+    grid-column:1 / -1;
+    height:auto;
+    min-height:220px;
+    padding:28px 22px;
+    border-radius:18px;
+  }
+  .process-land-kaart .cta{ white-space:normal; }
+  .process.process-landing{ padding-bottom:150px; }
+  .process.process-landing:after{ height:110px; } /* het SVG-pad schaalt mee over de volle breedte */
+
+  .lp-keur{ padding:45px 0; }
+  .lp-keur-inner > p{ margin-bottom:26px; }
+  .lp-keur-logos{ gap:26px; }
+  .lp-keur-logos img{ height:48px; max-width:110px; }
+}
+
+@media (max-width:520px){
+  .lp-hero-gallery{ height:360px; }
+  .lp-keur-logos{ gap:22px; }
+  .lp-keur-logos img{ height:42px; max-width:92px; }
+}

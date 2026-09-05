@@ -485,11 +485,21 @@ add_action( 'acf/init', function () {
 								'instructions'  => 'Leeg = de 8 nieuwste. Tip: kies hier de ándere types dan die op de pagina zelf staan.',
 							),
 							array(
-								'key'          => 'field_cs_knop',
-								'label'        => 'Knop rechtsboven',
-								'name'         => 'knop',
-								'type'         => 'link',
-								'instructions' => 'Leeg = "Bekijk alle sokken" naar de collectiepagina.',
+								'key'           => 'field_cs_knop_tonen',
+								'label'         => 'Knop rechtsboven tonen',
+								'name'          => 'knop_tonen',
+								'type'          => 'true_false',
+								'ui'            => 1,
+								'default_value' => 1,
+								'instructions'  => 'Uit = alleen de titel boven de kaarten (landingspagina).',
+							),
+							array(
+								'key'               => 'field_cs_knop',
+								'label'             => 'Knop rechtsboven',
+								'name'              => 'knop',
+								'type'              => 'link',
+								'instructions'      => 'Leeg = "Bekijk alle sokken" naar de collectiepagina.',
+								'conditional_logic' => array( array( array( 'field' => 'field_cs_knop_tonen', 'operator' => '==', 'value' => '1' ) ) ),
 							),
 						),
 					),
@@ -676,6 +686,7 @@ add_action( 'acf/init', function () {
 								'choices'       => array(
 									'standaard'    => 'Standaard (knop onder de stappen)',
 									'configurator' => 'Configurator (titel boven + contactblok)',
+									'landing'      => 'Landingspagina (rood vlak + actiekaart)',
 								),
 								'default_value' => 'standaard',
 							),
@@ -724,6 +735,22 @@ add_action( 'acf/init', function () {
 								'type'              => 'text',
 								'instructions'      => 'De contactknoppen (e-mail/bellen/WhatsApp) gebruiken Website-instellingen.',
 								'conditional_logic' => array( array( array( 'field' => 'field_ps_stijl', 'operator' => '==', 'value' => 'configurator' ) ) ),
+							),
+							array(
+								'key'               => 'field_ps_land_kop',
+								'label'             => 'Actiekaart — kop',
+								'name'              => 'land_kop',
+								'type'              => 'text',
+								'instructions'      => 'De beige kaart onder de stappen. Leeg = "Klaar voor je ontwerp?". Het rode deel zet je tussen [ ].',
+								'conditional_logic' => array( array( array( 'field' => 'field_ps_stijl', 'operator' => '==', 'value' => 'landing' ) ) ),
+							),
+							array(
+								'key'               => 'field_ps_land_knop',
+								'label'             => 'Actiekaart — knop',
+								'name'              => 'land_knop',
+								'type'              => 'link',
+								'instructions'      => 'Leeg = de standaardknop naar de offertepagina.',
+								'conditional_logic' => array( array( array( 'field' => 'field_ps_stijl', 'operator' => '==', 'value' => 'landing' ) ) ),
 							),
 							array(
 								'key'           => 'field_ps_collage',
@@ -1878,6 +1905,87 @@ add_action( 'acf/init', function () {
 						),
 					),
 
+					/* ── Landingspagina's ──────────────────────────────────────
+					   Vier losse blokken, bewust generiek gehouden zodat een
+					   volgende landingspagina ze met andere inhoud opnieuw kan
+					   gebruiken. Alles wat het ontwerp toont is een veld; leeg
+					   laten geeft de tekst van het ontwerp terug. De overige
+					   secties van de landingspagina zijn bestaande layouts
+					   (merkenstrip, soktypes-slider, reviews, veelgestelde
+					   vragen, afsluitend actieblok en de stappen met
+					   fotocollage in de landingsvariant). */
+
+					'layout_lp_hero' => array(
+						'key'        => 'layout_lp_hero',
+						'name'       => 'lp_hero',
+						'label'      => 'Landingskop (tekst + fotocollage)',
+						'display'    => 'block',
+						'acfe_flexible_category'  => array( 'Paginakoppen' ),
+						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/lp_hero.png',
+						'sub_fields' => array(
+							array( 'key' => 'field_lph_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Tekst tussen [haken] wordt geel. Leeg = "Sokken [bedrukken] vanaf 30 paar" (het aantal komt uit Website-instellingen).' ),
+							array( 'key' => 'field_lph_subtekst', 'label' => 'Tekst onder de titel', 'name' => 'subtekst', 'type' => 'textarea', 'rows' => 3, 'new_lines' => '', 'instructions' => 'Leeg = de standaardzin van het ontwerp.' ),
+							array( 'key' => 'field_lph_knop', 'label' => 'Knop', 'name' => 'knop', 'type' => 'link', 'instructions' => 'Leeg = de standaardknop naar de offertepagina.' ),
+							array( 'key' => 'field_lph_rating', 'label' => 'Reviewregel tonen', 'name' => 'rating', 'type' => 'true_false', 'ui' => 1, 'default_value' => 1, 'instructions' => 'De score en het aantal reviews komen uit Website-instellingen.' ),
+							array( 'key' => 'field_lph_kolom_1', 'label' => 'Fotogalerij — kolom 1', 'name' => 'fotos_kolom_1', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'De linkerkolom van de doorlopende galerij rechts (zelfde mechaniek als de paginakop met fotokolommen). 4 foto\'s is het ritme; leeg = de standaardset uit het thema.' ),
+							array( 'key' => 'field_lph_kolom_2', 'label' => 'Fotogalerij — kolom 2', 'name' => 'fotos_kolom_2', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'De rechterkolom; loopt tegengesteld aan kolom 1. Leeg = de standaardset uit het thema.' ),
+							array( 'key' => 'field_lph_stijl', 'label' => 'Achtergrond', 'name' => 'stijl', 'type' => 'button_group', 'choices' => array( 'coral' => 'Rood', 'beige' => 'Beige', 'wit' => 'Wit' ), 'default_value' => 'coral' ),
+						),
+					),
+
+					'layout_lp_media' => array(
+						'key'        => 'layout_lp_media',
+						'name'       => 'lp_media',
+						'label'      => 'Foto naast tekst (50/50)',
+						'display'    => 'block',
+						'acfe_flexible_category'  => array( 'Tekstblokken' ),
+						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/lp_media.png',
+						'sub_fields' => array(
+							array( 'key' => 'field_lpm_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+							array( 'key' => 'field_lpm_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Tekst tussen [haken] wordt geel.' ),
+							array( 'key' => 'field_lpm_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual' ),
+							array( 'key' => 'field_lpm_knop', 'label' => 'Link onder de tekst', 'name' => 'knop', 'type' => 'link', 'instructions' => 'Leeg = geen link.' ),
+							array( 'key' => 'field_lpm_positie', 'label' => 'Foto staat', 'name' => 'foto_positie', 'type' => 'button_group', 'choices' => array( 'links' => 'Links', 'rechts' => 'Rechts' ), 'default_value' => 'links' ),
+							array( 'key' => 'field_lpm_stijl', 'label' => 'Achtergrond', 'name' => 'stijl', 'type' => 'button_group', 'choices' => array( 'wit' => 'Wit', 'beige' => 'Beige' ), 'default_value' => 'wit' ),
+						),
+					),
+
+					'layout_lp_usps' => array(
+						'key'        => 'layout_lp_usps',
+						'name'       => 'lp_usps',
+						'label'      => 'Pluspunten-raster (geel vlak)',
+						'display'    => 'block',
+						'acfe_flexible_category'  => array( 'Waarom Sokkies' ),
+						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/lp_usps.png',
+						'sub_fields' => array(
+							array( 'key' => 'field_lpu_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Leeg = "Waarom Sokkies?". Tekst tussen [haken] wordt geel.' ),
+							array(
+								'key' => 'field_lpu_punten', 'label' => 'Pluspunten', 'name' => 'punten', 'type' => 'repeater', 'layout' => 'block', 'button_label' => 'Pluspunt toevoegen',
+								'instructions' => 'Het raster loopt in drie kolommen; zes punten vullen precies twee rijen. Leeg = de zes punten van het ontwerp.',
+								'sub_fields' => array(
+									array( 'key' => 'field_lpu_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Klein vierkant icoon. Leeg = alleen tekst.' ),
+									array( 'key' => 'field_lpu_titel_r', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
+									array( 'key' => 'field_lpu_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
+								),
+							),
+							array( 'key' => 'field_lpu_stijl', 'label' => 'Achtergrond', 'name' => 'stijl', 'type' => 'button_group', 'choices' => array( 'geel' => 'Geel vlak met golfranden', 'wit' => 'Wit' ), 'default_value' => 'geel' ),
+						),
+					),
+
+					'layout_lp_keurmerken' => array(
+						'key'        => 'layout_lp_keurmerken',
+						'name'       => 'lp_keurmerken',
+						'label'      => 'Keurmerkenstrip (logo\'s op een rij)',
+						'display'    => 'block',
+						'acfe_flexible_category'  => array( 'Duurzaamheid' ),
+						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/lp_keurmerken.png',
+						'sub_fields' => array(
+							array( 'key' => 'field_lpk_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Leeg = "Duurzaam met certificaat".' ),
+							array( 'key' => 'field_lpk_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '', 'instructions' => 'Een regel onder de titel. Leeg = de standaardzin.' ),
+							array( 'key' => 'field_lpk_logos', 'label' => 'Logo\'s', 'name' => 'logos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Leeg = de vier keurmerken uit het thema (BSCI, GOTS, OEKO-TEX, One Tree Planted).' ),
+						),
+					),
+
 					'layout_juridisch' => array(
 						'key'        => 'layout_juridisch',
 						'name'       => 'juridisch',
@@ -2058,6 +2166,18 @@ add_action( 'acf/init', function () {
 				),
 				'default_value' => 'geen',
 				'instructions'  => 'De balk die op telefoons onder in beeld blijft staan.',
+			),
+			array(
+				'key'           => 'field_sokkies_header_variant',
+				'label'         => 'Header',
+				'name'          => 'header_variant',
+				'type'          => 'button_group',
+				'choices'       => array(
+					'volledig' => 'Volledige header (menu)',
+					'landing'  => 'Landingsheader (logo, telefoon en knop — geen menu)',
+				),
+				'default_value' => 'volledig',
+				'instructions'  => 'De landingsheader houdt bezoekers op de pagina: geen menu, wel het telefoonnummer en de gele knop uit Website-instellingen.',
 			),
 			array(
 				'key'           => 'field_sokkies_footer_variant',

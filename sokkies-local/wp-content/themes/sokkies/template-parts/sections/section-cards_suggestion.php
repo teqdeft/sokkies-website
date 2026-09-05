@@ -16,7 +16,9 @@ if ( ! $type_ids ) {
   <div class="container">
     <div class="cards-suggestion-head">
       <h2><?php echo sokkies_kop( $titel ); ?></h2>
+      <?php $knop_tonen = get_sub_field( 'knop_tonen' ); if ( null === $knop_tonen || $knop_tonen ) : ?>
       <a href="<?php echo esc_url( $knop_url ); ?>" class="cta-light"><?php echo esc_html( $knop_label ); ?></a>
+      <?php endif; ?>
     </div>
     <div class="swiper cards-suggestion-swiper">
       <div class="swiper-wrapper">
