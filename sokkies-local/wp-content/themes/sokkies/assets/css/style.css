@@ -10409,3 +10409,316 @@ body.pdp-calc-open{
 .pdp-calc[hidden]{
   display:none;
 }
+
+
+/* ==========================================================================
+   LANDINGSPAGINA — page-scope: main.landing
+   Vier eigen blokken (.lp-hero, .lp-media, .lp-usps, .lp-keur) plus de
+   landingsvariant van het bestaande stappenblok (.process-landing). De
+   overige secties zijn ongewijzigd hergebruikt.
+   ========================================================================== */
+
+/* ===== Landingskop — tekst links, fotocollage rechts ===== */
+  .lp-hero{
+    background:var(--coral);
+    color:var(--white);
+    padding:60px 0 90px;
+    overflow:hidden;
+  }
+  .lp-hero-beige{ background:var(--light-beige); color:var(--text); }
+  .lp-hero-wit{ background:var(--white); color:var(--text); }
+  .lp-hero-inner{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+    gap:60px;
+    align-items:center;
+  }
+  /* zelfde koptypografie als de bestaande paginakop (condensed, uppercase,
+     fluïde tot 40px), zodat de landingskop niet uit de toon valt */
+  .lp-hero-text h1{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    font-size:clamp(40px, 5vw, var(--h1-font-size));
+    text-transform:uppercase;
+    line-height:0.86;
+    color:inherit;
+    margin-bottom:22px;
+  }
+  .lp-hero-text > p{
+    font-size:var(--body-lg-font-size);
+    line-height:1.55;
+    color:inherit;
+    max-width:520px;
+    margin-bottom:30px;
+  }
+  .lp-hero-btns{
+    margin-bottom:28px;
+  }
+  /* de reviewregel is dezelfde .rating-outer als in de paginakop; alleen
+     de uitlijning verschilt (daar gecentreerd, hier links) */
+  .lp-hero .rating-outer{
+    justify-content:flex-start;
+    margin:0;
+  }
+
+  .lp-hero-collage{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  .lp-hero-collage img{
+    width:100%;
+    height:270px;
+    object-fit:cover;
+    border-radius:25px;
+    display:block;
+  }
+  /* zelfde versprongen ritme als de fotocollage bij het stappenblok */
+  .lp-hero-collage img:nth-child(2){ margin-top:45px; }
+  .lp-hero-collage img:nth-child(3){ margin-top:-45px; }
+
+/* ===== Foto naast tekst (50/50) ===== */
+  .lp-media{
+    background:var(--white);
+    padding:90px 0;
+  }
+  /* Staat het gele pluspunten-vlak er direct onder, dan steekt zijn golf in
+     dit blok. Die ruimte wordt hier gereserveerd met dezelfde procentuele
+     basis als de golf zelf (13% van de breedte), plus wat lucht — zo botst
+     het op geen enkele schermbreedte met de tekst. Géén z-index hier: dan
+     zou dit witte vlak de golf juist afdekken. */
+  .lp-media:has(+ .lp-usps){
+    padding-bottom:calc(13% + 70px);
+  }
+  .lp-media-beige{ background:var(--light-beige); }
+  .lp-media-inner{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:70px;
+    align-items:center;
+  }
+  /* foto rechts: dezelfde markup, alleen de kolomvolgorde draait om */
+  .lp-media-omgekeerd .lp-media-foto{ order:2; }
+  .lp-media-foto img{
+    width:100%;
+    aspect-ratio:16 / 10;
+    object-fit:cover;
+    border-radius:25px;
+    display:block;
+  }
+  .lp-media-tekst h2{
+    font-size:var(--h2-font-size);
+    margin-bottom:18px;
+  }
+  .lp-media-tekst p{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--text);
+    margin-bottom:14px;
+  }
+  .lp-media-tekst p:last-of-type{ margin-bottom:0; }
+  .lp-media-link{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    margin-top:24px;
+    font-size:var(--body-font-size);
+    font-weight:600;
+    color:var(--coral);
+    text-decoration:none;
+    transition:color .2s;
+  }
+  .lp-media-link:hover{ color:var(--text); }
+
+/* ===== Pluspunten-raster op geel ===== */
+  .lp-usps{
+    background:var(--yellow);
+    padding:40px 0 60px;
+    position:relative;
+    /* eigen stapelcontext, zodat de ONDERSTE golf over de volgende sectie
+       heen valt in plaats van erachter te verdwijnen — die sectie heeft een
+       eigen achtergrond en staat later in de DOM */
+    z-index:1;
+  }
+  /* Golvende boven- en onderrand. BEWUST de losse kap-afbeeldingen en niet
+     bg-yellow-shape.png zoals bij de collectiestrook: die vorm is een heel
+     vlak dat met top:-76% naar boven steekt en dan over de vorige sectie
+     heen valt (de tekst van het blok erboven verdween erachter). Deze twee
+     zijn gele golven op transparant, precies zo hoog als hun eigen
+     verhouding, en raken de inhoud niet. */
+  .lp-usps:before,
+  .lp-usps:after{
+    content:'';
+    position:absolute;
+    left:0;
+    width:100%;
+    height:0;
+    background-repeat:no-repeat;
+    background-size:100% 100%;
+    z-index:0;
+    pointer-events:none;
+  }
+  .lp-usps:before{
+    bottom:100%;
+    /* bewust vlakker dan de eigen verhouding (27%): op volle hoogte steekt
+       de golf ~390px de vorige sectie in en loopt daar over de tekst heen */
+    padding-top:13%;
+    background-image:url(../media/bg-yellow-shapeTop.png);
+  }
+  .lp-usps:after{
+    top:100%;
+    padding-top:6.15%; /* 118/1920 */
+    background-image:url(../media/bg-yellow-shapeBottom.png);
+  }
+  .lp-usps-wit{ background:var(--white); }
+  .lp-usps-wit:before,
+  .lp-usps-wit:after{ display:none; }
+  .lp-usps > .container{
+    position:relative;
+    z-index:2;
+  }
+  /* De doodles horen in de vrije marge NAAST het raster (dat is 1140px breed
+     binnen een bredere container). Onder 1300px is die marge er niet meer en
+     zouden ze over de pluspunten heen vallen, dus daar verdwijnen ze. */
+  .lp-usps-duddle{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:130px;
+    height:auto;
+    z-index:0;
+    pointer-events:none;
+  }
+  .lp-usps-duddle-l{ left:8px; }
+  .lp-usps-duddle-r{ right:8px; }
+  @media (max-width:1299px){
+    .lp-usps-duddle{ display:none; }
+  }
+  .lp-usps h2{
+    font-size:var(--h2-font-size);
+    text-align:center;
+    margin-bottom:50px;
+  }
+  .lp-usps-grid{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:45px 60px;
+    max-width:1140px;
+    margin:0 auto;
+  }
+  .lp-usp-icoon{
+    width:62px;
+    height:62px;
+    margin-bottom:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .lp-usp-icoon:empty,
+  .lp-usp-icoon:not(:has(img)){
+    /* nog geen icoon gekozen: een rustig kader in plaats van een gat */
+    border:1.5px dashed rgba(40,18,27,.35);
+    border-radius:14px;
+  }
+  .lp-usp-icoon img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    display:block;
+  }
+  .lp-usp h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:var(--body-lg-font-size);
+    color:var(--coral);
+    margin-bottom:8px;
+  }
+  .lp-usp p{
+    font-size:var(--body-font-size);
+    line-height:24px;
+    color:var(--text);
+  }
+
+/* ===== Stappenblok, landingsvariant (rood vlak + actiekaart) ===== */
+  .process.process-landing{
+    background:var(--coral);
+    padding:80px 0 90px;
+  }
+  /* staat het gele vlak er direct boven, dan hangt zijn onderste golf over
+     deze sectie heen; die ruimte reserveren we op dezelfde basis (6,15%) */
+  .lp-usps + .process.process-landing{
+    padding-top:calc(6.15% + 45px);
+  }
+  .process.process-landing > .container > h2,
+  .process.process-landing .process-row-body h3,
+  .process.process-landing .process-num{
+    color:var(--white);
+  }
+  .process.process-landing > .container > h2{
+    font-size:var(--h2-font-size);
+    margin-bottom:45px;
+  }
+  .process.process-landing .process-row-body p{
+    color:var(--white);
+  }
+  .process.process-landing .process-left li{
+    border-bottom-color:rgba(255,255,255,.35);
+  }
+  .process-land-kaart{
+    background:var(--light-beige);
+    border-radius:25px;
+    padding:30px 34px;
+    margin-top:34px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:18px;
+    max-width:420px;
+  }
+  .process-land-kaart h5{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:800;
+    text-transform:uppercase;
+    font-size:var(--h3-font-size);
+    line-height:1.05;
+    color:var(--text);
+  }
+
+/* ===== Keurmerkenstrip ===== */
+  .lp-keur{
+    background:var(--light-beige);
+    padding:70px 0;
+  }
+  .lp-keur-inner{
+    max-width:900px;
+    margin:0 auto;
+    text-align:center;
+  }
+  .lp-keur-inner h2{
+    font-size:var(--h3-font-size);
+    margin-bottom:12px;
+  }
+  .lp-keur-inner > p{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--text);
+    margin:0 auto 34px;
+    max-width:720px;
+  }
+  .lp-keur-logos{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:50px;
+  }
+  .lp-keur-logos img{
+    height:72px;
+    width:auto;
+    max-width:150px;
+    object-fit:contain;
+    display:block;
+    /* dezelfde witte keurmerk-PNG's als in de footer; op dit lichte vlak
+       donker gemaakt, precies zoals bij de keurmerk-kaarten */
+    filter:brightness(0);
+  }

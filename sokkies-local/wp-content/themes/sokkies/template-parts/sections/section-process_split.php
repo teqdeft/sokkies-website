@@ -6,7 +6,12 @@
  */
 $stijl  = get_sub_field( 'stijl' ) ?: 'standaard';
 $is_conf = ( 'configurator' === $stijl );
-$titel  = get_sub_field( 'titel' ) ?: ( $is_conf ? 'Zo werkt het' : 'Hoe wij tot de perfecte sokken komen' );
+/* Landingsvariant: rood vlak, titel boven de kolommen en onder de stappen
+   een beige actiekaart met kop + knop, in plaats van het contactblok van
+   de configurator. Verder identiek — zelfde stappen, zelfde collage. */
+$is_land   = ( 'landing' === $stijl );
+$kop_boven = $is_conf || $is_land;
+$titel  = get_sub_field( 'titel' ) ?: ( $is_conf ? 'Zo werkt het' : ( $is_land ? 'In drie stappen naar jouw sokken' : 'Hoe wij tot de perfecte sokken komen' ) );
 $rijen  = get_sub_field( 'stappen' );
 if ( $rijen ) {
 	// Lege rijen niet renderen als blanco kaart; herindexeren zodat de nummers kloppen.
@@ -31,25 +36,30 @@ $conf_stappen = array(
 	array( 'titel' => 'Vraag offerte aan of bestel direct', 'tekst' => 'Klaar met ontwerpen? Vraag een offerte aan voor advies en staffelprijs, of bestel direct vanaf 30 paar.' ),
 );
 if ( ! $rijen ) {
-	$rijen = $is_conf ? $conf_stappen : $standaard_stappen;
+	$rijen = ( $is_conf || $is_land ) ? $conf_stappen : $standaard_stappen;
 }
 $assets = get_template_directory_uri() . '/assets/media/';
-$standaard_collage = $is_conf
+$standaard_collage = ( $is_conf || $is_land )
 	? array( 'FLEUROPP_LARGE_2.png', 'FLEUROPP_LARGE_13.png', 'FLEUROPP_LARGE_8.png', 'FLEUROPP_LARGE_3.png' )
 	: array( 'uc-process-1.png', 'uc-process-2.png', 'uc-process-3.png', 'uc-process-4.png' );
+
+$land_kop        = get_sub_field( 'land_kop' ) ?: 'Klaar voor je ontwerp?';
+$land_knop       = get_sub_field( 'land_knop' );
+$land_knop_url   = ! empty( $land_knop['url'] ) ? $land_knop['url'] : home_url( '/offerte/' );
+$land_knop_label = sokkies_cta_tekst( $land_knop['title'] ?? '', $land_knop['url'] ?? '' );
 
 $contact_kop   = get_sub_field( 'contact_kop' ) ?: '[Gratis controle] door onze ontwerper';
 $contact_tekst = get_sub_field( 'contact_tekst' ) ?: 'Voordat je sokken in productie gaan, kijkt een van onze ontwerpers je bestand na op drukbaarheid, kleur en formaat. Dan mens dus, geen script.';
 $contact_sub   = get_sub_field( 'contact_sub' ) ?: 'Vragen over je ontwerp? Bereik de ontwerper direct:';
 ?>
-<section class="process process-split<?php echo $is_conf ? ' conf-works' : ''; ?>">
+<section class="process process-split<?php echo $is_conf ? ' conf-works' : ''; ?><?php echo $is_land ? ' process-landing' : ''; ?>">
   <div class="container">
-    <?php if ( $is_conf ) : ?>
+    <?php if ( $kop_boven ) : ?>
     <h2><?php echo sokkies_kop( $titel ); ?></h2>
     <?php endif; ?>
     <div class="process-split-inner">
       <div class="process-left">
-        <?php if ( ! $is_conf ) : ?>
+        <?php if ( ! $kop_boven ) : ?>
         <h2><?php echo sokkies_kop( $titel ); ?></h2>
         <?php endif; ?>
         <ul>
@@ -91,6 +101,11 @@ $contact_sub   = get_sub_field( 'contact_sub' ) ?: 'Vragen over je ontwerp? Bere
               Chat
             </a>
           </div>
+        </div>
+        <?php elseif ( $is_land ) : ?>
+        <div class="process-land-kaart">
+          <h5><?php echo sokkies_kop( $land_kop, 'text-coral' ); ?></h5>
+          <a href="<?php echo esc_url( $land_knop_url ); ?>" class="cta"><?php echo esc_html( $land_knop_label ); ?></a>
         </div>
         <?php else : ?>
         <div class="process-btn">
