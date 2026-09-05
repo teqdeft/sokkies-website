@@ -37,7 +37,13 @@ if ( 'beige' === $stijl )    { $klassen .= ' lp-media-beige'; }
     <div class="lp-media-inner">
 
       <div class="lp-media-foto">
+        <?php if ( ! $foto && 'placeholder' === get_sub_field( 'leeg' ) ) : ?>
+        <?php /* Nog geen foto gekozen en de redacteur wil een neutraal vak
+                 (ontwerp flexibele pagina) in plaats van de themafoto. */ ?>
+        <div class="lp-media-placeholder" aria-hidden="true"><span>Image placeholder</span></div>
+        <?php else : ?>
         <img src="<?php echo esc_url( $foto ? $foto['url'] : $standaard_foto ); ?>" alt="<?php echo esc_attr( $foto ? $foto['alt'] : '' ); ?>" loading="lazy">
+        <?php endif; ?>
       </div>
 
       <div class="lp-media-tekst">
