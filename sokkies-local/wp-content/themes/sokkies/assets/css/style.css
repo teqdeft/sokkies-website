@@ -10534,6 +10534,12 @@ body.pdp-calc-open{
   .landing .testimonial-light{
     background:linear-gradient(to bottom, var(--white) 46%, var(--light-beige) 46%);
   }
+  /* Ontwerp: de reviewkaarten hebben een dunne donkere omlijning (zelfde
+     lijn als de reviewkaart op het blog). Alleen hier — de andere
+     reviews-varianten zijn in hun ontwerpen zonder rand. */
+  .landing .testimonial-card{
+    border:1px solid var(--text);
+  }
 
 /* ===== Foto naast tekst (50/50) ===== */
   .lp-media{
