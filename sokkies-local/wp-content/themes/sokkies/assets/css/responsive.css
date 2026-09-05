@@ -6692,6 +6692,13 @@
     grid-template-columns:1fr;
     gap:14px;
   }
+  /* De band zette het item op twee gelijke kolommen; met de types nu
+     onder elkaar knelde het label in de halve breedte en brak een naam
+     als Yoga & pilates over twee regels. Vierkantje op eigen maat, het
+     label krijgt de rest - net als in de basis. */
+  .menu .menu-link .type-item{
+    grid-template-columns:auto 1fr;
+  }
   .navbar.sub-open .type-item .type-img{
     width:60px;
     height:60px;
@@ -7327,6 +7334,13 @@
   .navbar.sub-open .types{
     grid-template-columns:1fr;
     gap:14px;
+  }
+  /* De band zette het item op twee gelijke kolommen; met de types nu
+     onder elkaar knelde het label in de halve breedte en brak een naam
+     als Yoga & pilates over twee regels. Vierkantje op eigen maat, het
+     label krijgt de rest - net als in de basis. */
+  .menu .menu-link .type-item{
+    grid-template-columns:auto 1fr;
   }
   .navbar.sub-open .type-item .type-img{
     width:50px;
@@ -10397,6 +10411,13 @@
     grid-template-columns:1fr;
     gap:14px;
   }
+  /* De band zette het item op twee gelijke kolommen; met de types nu
+     onder elkaar knelde het label in de halve breedte en brak een naam
+     als Yoga & pilates over twee regels. Vierkantje op eigen maat, het
+     label krijgt de rest - net als in de basis. */
+  .menu .menu-link .type-item{
+    grid-template-columns:auto 1fr;
+  }
   .navbar.sub-open .type-item .type-img{
     width:50px;
     height:50px;
@@ -10555,6 +10576,13 @@
     grid-template-rows:repeat(3, auto);
     grid-auto-flow:column;
     gap:16px 18px;
+  }
+  /* De band zette het item op twee gelijke kolommen; met de types nu
+     onder elkaar knelde het label in de halve breedte en brak een naam
+     als Yoga & pilates over twee regels. Vierkantje op eigen maat, het
+     label krijgt de rest - net als in de basis. */
+  .menu .menu-link .type-item{
+    grid-template-columns:auto 1fr;
   }
   .navbar.sub-open .type-item .type-img{
     width:45px;
@@ -11205,6 +11233,13 @@
     grid-template-columns:1fr;
     gap:14px;
   }
+  /* De band zette het item op twee gelijke kolommen; met de types nu
+     onder elkaar knelde het label in de halve breedte en brak een naam
+     als Yoga & pilates over twee regels. Vierkantje op eigen maat, het
+     label krijgt de rest - net als in de basis. */
+  .menu .menu-link .type-item{
+    grid-template-columns:auto 1fr;
+  }
   .navbar.sub-open .type-item .type-img{
     width:50px;
     height:50px;
@@ -11802,6 +11837,13 @@
     grid-template-rows:repeat(3, auto);
     grid-auto-flow:column;
     gap:16px 18px;
+  }
+  /* De band zette het item op twee gelijke kolommen; met de types nu
+     onder elkaar knelde het label in de halve breedte en brak een naam
+     als Yoga & pilates over twee regels. Vierkantje op eigen maat, het
+     label krijgt de rest - net als in de basis. */
+  .menu .menu-link .type-item{
+    grid-template-columns:auto 1fr;
   }
   .navbar.sub-open .type-item .type-img{
     width:45px;
@@ -15097,5 +15139,47 @@
   .compare-table thead th:first-child,
   .compare-table tbody tr:nth-child(even) th{
     background:var(--coral);
+  }
+}
+
+/* ===================================================================
+   TABLETMENU 768-991 — subpaneel volgens het 768-ontwerp
+   Staat BEWUST achteraan: de gedeelde subpaneelregels hierboven lopen
+   van 768 t/m 1279 en hebben hetzelfde gewicht, dus alleen een later
+   blok wint. De 992-1279-band houdt daarmee zijn eigen goedgekeurde
+   indeling (50/50 met de types in twee kolommen); hier krijgen de
+   bestsellers de brede kolom en staan de types onder elkaar.
+   =================================================================== */
+@media (min-width:768px) and (max-width:991px){
+  .navbar.sub-open .mega{
+    grid-template-columns:1.72fr 1fr;
+    gap:0 54px;
+  }
+  .navbar.sub-open .bestsellers{
+    grid-template-columns:1fr 1fr;
+    gap:30px 20px;
+  }
+  .navbar.sub-open .types{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+  /* De band zette het item op twee gelijke kolommen; met de types nu
+     onder elkaar knelde het label in de halve breedte en brak een naam
+     als Yoga & pilates over twee regels. Vierkantje op eigen maat, het
+     label krijgt de rest - net als in de basis. */
+  .menu .menu-link .type-item{
+    grid-template-columns:auto 1fr;
+  }
+  .navbar.sub-open .type-item .type-img{
+    width:50px;
+    height:50px;
+  }
+  .navbar.sub-open .mega-usps span{
+    font-size:13px;
+  }
+  /* de knop krimpt mee met zijn tekst i.p.v. de hele kolom te vullen */
+  .navbar.sub-open .mega-usps .cta-light{
+    align-self:flex-start;
+    width:auto;
   }
 }
