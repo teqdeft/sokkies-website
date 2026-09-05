@@ -22,9 +22,10 @@ if ( '' === $titel && ! $heeft_tekst && ! $foto ) {
 	return; // niets ingevuld: sectie helemaal overslaan
 }
 
-// Geen foto gekozen: een foto uit het thema, zodat het blok nooit als een
-// halve kolom op een leeg vlak staat.
-$standaard_foto = get_template_directory_uri() . '/assets/media/slider5.png';
+// Geen foto gekozen: de hardloopfoto uit het ontwerp (witte sokken in het
+// gras). Het thema heeft hem alleen staand; het kader snijdt hem liggend
+// uit op de benen. De brede versie kan als eigen foto worden geüpload.
+$standaard_foto = get_template_directory_uri() . '/assets/media/slider3.png';
 
 $klassen = 'lp-media';
 if ( 'rechts' === $positie ) { $klassen .= ' lp-media-omgekeerd'; }

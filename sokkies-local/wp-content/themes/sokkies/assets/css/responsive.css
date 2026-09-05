@@ -15195,7 +15195,8 @@
 
 @media (min-width:1280px) and (max-width:1439px){
   .lp-hero-inner{ gap:45px; }
-  .lp-hero-gallery{ height:600px; }
+  .lp-hero-gallery{ height:440px; }
+  .lp-hero .ch-swiper .swiper-slide{ height:330px; }
   .lp-media-inner{ gap:50px; }
   .lp-usps-grid{ gap:40px 45px; }
 }
@@ -15203,8 +15204,9 @@
 @media (min-width:992px) and (max-width:1279px){
   .lp-hero{ padding:45px 0 70px; }
   .lp-hero-inner{ gap:35px; }
-  .lp-hero-gallery{ height:540px; }
-  .lp-hero .coll-hero-gallery{ height:700px; top:-70px; }
+  .lp-hero-gallery{ height:400px; }
+  .lp-hero .coll-hero-gallery{ height:520px; top:-50px; }
+  .lp-hero .ch-swiper .swiper-slide{ height:300px; }
   .lp-media{ padding:70px 0; }
   .lp-media-inner{ gap:40px; }
   .lp-usps-grid{ gap:36px 40px; }
@@ -15225,7 +15227,7 @@
   .lp-hero-text{ padding:75px 0 10px; }
   /* gestapeld: de galerij neemt de bestaande tabletmaten van
      .coll-gallery-main over (volle breedte, 540px hoog) */
-  .lp-hero-gallery{ height:540px; margin-bottom:0; }
+  .lp-hero-gallery{ height:460px; margin-bottom:0; }
   .lp-media{ padding:60px 0; }
   .lp-media-inner{
     grid-template-columns:minmax(0,1fr);
@@ -15278,11 +15280,17 @@
 
   .lp-usps + .process.process-landing{ padding-top:calc(6.15% + 30px); }
   .process.process-landing{ padding-bottom:60px; }
+  /* de actiekaart staat in de collage; gestapeld in een kolom vervalt het
+     versprongen ritme en krijgt hij zijn eigen hoogte */
   .process-land-kaart{
-    max-width:none;
-    padding:24px 22px;
+    height:auto;
+    min-height:260px;
+    padding:28px 22px;
     border-radius:18px;
   }
+  .process.process-landing .process-collage > :nth-child(3){ margin-top:0; }
+  .process.process-landing{ padding-bottom:150px; }
+  .process.process-landing:after{ height:110px; width:70%; }
 
   .lp-keur{ padding:45px 0; }
   .lp-keur-inner > p{ margin-bottom:26px; }

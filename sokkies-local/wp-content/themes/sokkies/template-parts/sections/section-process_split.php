@@ -10,7 +10,9 @@ $is_conf = ( 'configurator' === $stijl );
    een beige actiekaart met kop + knop, in plaats van het contactblok van
    de configurator. Verder identiek — zelfde stappen, zelfde collage. */
 $is_land   = ( 'landing' === $stijl );
-$kop_boven = $is_conf || $is_land;
+// Landing: de titel staat in de linkerkolom boven de stappen (ontwerp), dus
+// alleen de configurator zet hem boven beide kolommen.
+$kop_boven = $is_conf;
 $titel  = get_sub_field( 'titel' ) ?: ( $is_conf ? 'Zo werkt het' : ( $is_land ? 'In drie stappen naar jouw sokken' : 'Hoe wij tot de perfecte sokken komen' ) );
 $rijen  = get_sub_field( 'stappen' );
 if ( $rijen ) {
@@ -39,9 +41,14 @@ if ( ! $rijen ) {
 	$rijen = ( $is_conf || $is_land ) ? $conf_stappen : $standaard_stappen;
 }
 $assets = get_template_directory_uri() . '/assets/media/';
-$standaard_collage = ( $is_conf || $is_land )
-	? array( 'FLEUROPP_LARGE_2.png', 'FLEUROPP_LARGE_13.png', 'FLEUROPP_LARGE_8.png', 'FLEUROPP_LARGE_3.png' )
-	: array( 'uc-process-1.png', 'uc-process-2.png', 'uc-process-3.png', 'uc-process-4.png' );
+if ( $is_land ) {
+	// Ontwerp landingspagina: drie foto's, de vierde cel is de actiekaart.
+	$standaard_collage = array( 'FLEUROPP_LARGE_2.png', 'slider2.png', 'slider9.png' );
+} elseif ( $is_conf ) {
+	$standaard_collage = array( 'FLEUROPP_LARGE_2.png', 'FLEUROPP_LARGE_13.png', 'FLEUROPP_LARGE_8.png', 'FLEUROPP_LARGE_3.png' );
+} else {
+	$standaard_collage = array( 'uc-process-1.png', 'uc-process-2.png', 'uc-process-3.png', 'uc-process-4.png' );
+}
 
 $land_kop        = get_sub_field( 'land_kop' ) ?: 'Klaar voor je ontwerp?';
 $land_knop       = get_sub_field( 'land_knop' );
@@ -107,10 +114,8 @@ $contact_sub   = get_sub_field( 'contact_sub' ) ?: 'Vragen over je ontwerp? Bere
           </div>
         </div>
         <?php elseif ( $is_land ) : ?>
-        <div class="process-land-kaart">
-          <h5><?php echo sokkies_kop( $land_kop, 'text-coral' ); ?></h5>
-          <a href="<?php echo esc_url( $land_knop_url ); ?>" class="cta"><?php echo esc_html( $land_knop_label ); ?></a>
-        </div>
+        <?php /* Landing: geen knop onder de stappen — de actiekaart staat in
+                 de fotocollage (derde cel), zie hieronder. */ ?>
         <?php else : ?>
         <div class="process-btn">
           <a href="<?php echo esc_url( $knop_url ); ?>" class="cta"><?php echo esc_html( $knop_label ); ?></a>
@@ -119,11 +124,26 @@ $contact_sub   = get_sub_field( 'contact_sub' ) ?: 'Vragen over je ontwerp? Bere
       </div>
 
       <div class="process-collage">
-        <?php if ( $fotos ) : foreach ( $fotos as $foto ) : ?>
-        <img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ); ?>">
-        <?php endforeach; else : foreach ( $standaard_collage as $bestand ) : ?>
-        <img src="<?php echo esc_url( $assets . $bestand ); ?>" alt="">
-        <?php endforeach; endif; ?>
+        <?php
+        /* Landing: de beige actiekaart is de DERDE cel van het raster (ontwerp:
+           links onder de eerste foto), de foto's vullen de andere drie. */
+        $kaart = function () use ( $is_land, $land_kop, $land_knop_url, $land_knop_label ) {
+	        if ( ! $is_land ) { return; }
+	        echo '<div class="process-land-kaart">';
+	        echo '<h5>' . sokkies_kop( $land_kop, 'text-coral' ) . '</h5>';
+	        echo '<a href="' . esc_url( $land_knop_url ) . '" class="cta">' . esc_html( $land_knop_label ) . '</a>';
+	        echo '</div>';
+        };
+        $lijst = $fotos ? $fotos : $standaard_collage;
+        foreach ( array_values( $lijst ) as $i => $item ) :
+	        if ( 2 === $i ) { $kaart(); }
+	        $src = is_array( $item ) ? $item['url'] : $assets . $item;
+	        $alt = is_array( $item ) ? $item['alt'] : '';
+        ?>
+        <img src="<?php echo esc_url( $src ); ?>" alt="<?php echo esc_attr( $alt ); ?>">
+        <?php endforeach;
+        if ( count( $lijst ) < 3 ) { $kaart(); } // minder dan drie foto's: kaart als laatste
+        ?>
       </div>
     </div>
   </div>
