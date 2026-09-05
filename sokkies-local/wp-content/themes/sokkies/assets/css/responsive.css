@@ -4393,6 +4393,7 @@
     padding: 8px 20px;
     height: 36px;
   }
+  
   .gift {
     padding: 100px 0 0px;
   }
@@ -4611,11 +4612,23 @@
     display:grid;
   }
   /* calculator: vaste 560/440-kolommen pasten niet — stapelen */
-  .calc-grid{
-    grid-template-columns:1fr;
-  }
   .calc-mid{
     grid-template-columns:1fr 1fr;
+  }
+  .calc-panel.calc-right {
+    order: 3;
+  }
+  .calc-cta{
+    margin-top: 10px;
+    margin-bottom: 35px;
+  }
+  .calc-box{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .calc-grid{
+    display: contents;
   }
   /* FAQ-grid: 382px + 135px gap werd te krap */
   .faq-grid{
@@ -7538,12 +7551,20 @@
   }
 
   /* ===== Prijscalculator ===== */
+  .calc-panel.calc-right {
+    order: 3;
+  }
+  .calc-cta{
+    margin-top: 10px;
+    margin-bottom: 35px;
+  }
   .calc-box{
-    padding:24px 16px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
   .calc-grid{
-    grid-template-columns:1fr;
-    gap:18px;
+    display: contents;
   }
   .calc-panel{
     padding:22px 18px;
@@ -15105,6 +15126,39 @@
   .nav-search{
     left:14px;
     right:14px;
+    width:auto;
+    transition:opacity .2s ease;
+  }
+  .navbar.search-open .nav-search{
+    width:auto;
+  }
+}
+
+/* ===================================================================
+   TABLET (768-991): zoekbalk binnen de witte pil
+   -------------------------------------------------------------------
+   Zelfde oorzaak als op mobiel hierboven: .nav-search staat absoluut
+   binnen .search-header-icon, en dat is alleen het icoonknopje van 44px.
+   Deze band had daar geen eigen regel, dus gold de desktopmaat van vaste
+   457px. Die past niet naast een pil van 525px: het veld klapte vanaf het
+   icoon naar LINKS open, schoof over het logo heen en stak op 768 tot 161px
+   buiten het scherm.
+
+   Het formulier ankert nu op .nav-wrap. BEWUST NIET op .navbar: het
+   burgermenu en de uitklaplade hangen daar absoluut aan .nav-wrap, en die
+   zouden meeverspringen zodra .navbar zelf een positie krijgt.
+
+   De rechtermarge houdt de wereldbol en het burgermenu vrij (allebei 68px
+   plus wat lucht ertussen), zodat die klikbaar blijven terwijl er gezocht
+   wordt. Gemeten op 768 en 900: die 140px is in de hele band gelijk.
+   =================================================================== */
+@media (min-width:768px) and (max-width:991px){
+  .search-header-icon{
+    position:static; /* anders blijft het icoonknopje het ankerpunt */
+  }
+  .nav-search{
+    left:8px;
+    right:calc(140px + 16px);
     width:auto;
     transition:opacity .2s ease;
   }
