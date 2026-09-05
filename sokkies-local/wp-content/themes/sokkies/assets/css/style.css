@@ -10018,6 +10018,31 @@ main.contact{
   padding-bottom:18px;
 }
 
+/* Landingsheader (pagina-optie "Header: landingsheader"): logo links,
+   rechts het telefoonnummer en de gele knop — geen menu. Deelt de compacte
+   pill-hoogte van .navbar-mini. */
+.navbar-landing{
+  justify-content:space-between;
+}
+.nav-landing{
+  display:flex;
+  align-items:center;
+  gap:22px;
+  margin-left:auto;
+}
+.nav-bel{
+  font-family:var(--roc-grotesk);
+  font-weight:600;
+  font-size:var(--body-font-size);
+  color:var(--text);
+  text-decoration:none;
+  white-space:nowrap;
+  transition:color .2s;
+}
+.nav-bel:hover{
+  color:var(--coral);
+}
+
 /*═════════════════════════════════════════
   Merkenstrip: doorlopende marquee (CSS i.p.v. Swiper-autoplay)
   De wrapper bestaat uit twee identieke helften en schuift naar -50%,
@@ -10422,8 +10447,13 @@ body.pdp-calc-open{
   .lp-hero{
     background:var(--coral);
     color:var(--white);
-    padding:60px 0 90px;
+    /* geen bovenmarge: de galerij valt (net als op werkwijze) meteen vanaf
+       de headerpill over de rand; de tekstkolom regelt zijn eigen lucht */
+    padding:0 0 60px;
     overflow:hidden;
+  }
+  .lp-hero-text{
+    padding:70px 0 20px;
   }
   .lp-hero-beige{ background:var(--light-beige); color:var(--text); }
   .lp-hero-wit{ background:var(--white); color:var(--text); }
@@ -10461,21 +10491,19 @@ body.pdp-calc-open{
     margin:0;
   }
 
-  .lp-hero-collage{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
+  /* De galerij is de .coll-hero-gallery van de paginakop met fotokolommen
+     (twee gedraaide, tegengesteld lopende kolommen die over de randen
+     vallen). Al haar maten en banden komen uit die bestaande regels; hier
+     alleen wat het rode vlak anders doet: de kolommen mogen aan de
+     bovenkant over de rand, en het vlak knipt ze af. */
+  .lp-hero-gallery{
+    height:640px;
+    overflow:hidden;
   }
-  .lp-hero-collage img{
-    width:100%;
-    height:270px;
-    object-fit:cover;
-    border-radius:25px;
-    display:block;
+  .lp-hero .coll-hero-gallery{
+    height:830px;
+    top:-90px;
   }
-  /* zelfde versprongen ritme als de fotocollage bij het stappenblok */
-  .lp-hero-collage img:nth-child(2){ margin-top:45px; }
-  .lp-hero-collage img:nth-child(3){ margin-top:-45px; }
 
 /* ===== Foto naast tekst (50/50) ===== */
   .lp-media{
@@ -10506,8 +10534,15 @@ body.pdp-calc-open{
     border-radius:25px;
     display:block;
   }
+  /* koppen op de landingspagina: dezelfde condensed uppercase als alle
+     sectiekoppen op de site (stappenblok, soktypes, toepassingen) */
   .lp-media-tekst h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
     font-size:var(--h2-font-size);
+    line-height:1.1;
+    color:var(--text);
     margin-bottom:18px;
   }
   .lp-media-tekst p{
@@ -10595,7 +10630,12 @@ body.pdp-calc-open{
     .lp-usps-duddle{ display:none; }
   }
   .lp-usps h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
     font-size:var(--h2-font-size);
+    line-height:1.1;
+    color:var(--text);
     text-align:center;
     margin-bottom:50px;
   }
@@ -10695,7 +10735,12 @@ body.pdp-calc-open{
     text-align:center;
   }
   .lp-keur-inner h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
     font-size:var(--h3-font-size);
+    line-height:1.1;
+    color:var(--text);
     margin-bottom:12px;
   }
   .lp-keur-inner > p{

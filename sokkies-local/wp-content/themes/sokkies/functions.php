@@ -797,6 +797,20 @@ function sokkies_mini_header() {
 }
 
 /**
+ * Landingsheader: logo, telefoonnummer en de gele knop — geen menu.
+ *
+ * Per pagina te kiezen via het veld "Header" (pagina-opties), zodat elke
+ * volgende landingspagina dezelfde kop krijgt zonder codewijziging. De
+ * offertepagina houdt haar eigen mini-header (sokkies_mini_header).
+ */
+function sokkies_landing_header() {
+	if ( ! function_exists( 'get_field' ) || ! is_singular() ) {
+		return false;
+	}
+	return 'landing' === get_field( 'header_variant' );
+}
+
+/**
  * Telefoonvelden accepteren geen letters meer.
  *
  * De drie formulieren gebruiken een telefoonveld met formaat "international",

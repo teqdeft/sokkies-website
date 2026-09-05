@@ -1,12 +1,14 @@
 <?php
 /**
- * Sectie: Landingskop (tekst links + fotocollage rechts) — .lp-hero.
+ * Sectie: Landingskop (tekst links + fotogalerij rechts) — .lp-hero.
  *
- * Nieuw voor de landingspagina: de bestaande paginakoppen (hero /
- * coll_hero / simple_hero) zetten de tekst gecentreerd of boven een
- * fotoslider, en dit ontwerp zet de tekst links naast een collage van
- * vier foto's. Alleen dat deel is nieuw; de reviewbadge is letterlijk
- * de .rating-outer uit section-hero.php, zodat die opmaak gedeeld blijft.
+ * De galerij is LETTERLIJK de fotokolommen van de paginakop met
+ * fotokolommen (coll_hero, zie werkwijze/collectie): twee verticale
+ * kolommen die als marquee tegengesteld doorlopen, licht gedraaid, en over
+ * de boven- en onderrand van het vlak heen vallen. custom.js pakt de
+ * klassen ch-swiper-1/2 vanzelf op, en de bestaande CSS van
+ * .coll-hero-gallery (inclusief alle banden in responsive.css) doet de
+ * rest. Alleen het rode vlak, de tekstkolom en de reviewregel zijn eigen.
  *
  * Elk onderdeel verschijnt alleen als het gevuld is; leeg = de
  * standaardtekst van het ontwerp.
@@ -20,19 +22,42 @@ if ( '' === trim( (string) $subtekst ) ) {
 $knop   = get_sub_field( 'knop' );
 $rating = get_sub_field( 'rating' );
 if ( null === $rating ) { $rating = true; }
-$fotos  = get_sub_field( 'collage' );
 $stijl  = get_sub_field( 'stijl' ) ?: 'coral';
 
 $knop_url = ! empty( $knop['url'] ) ? $knop['url'] : home_url( '/offerte/' );
-/* Bewust zonder eigen terugval: sokkies_cta_tekst() normaliseert de oude
-   knopteksten (waaronder "Gratis ontwerp binnen 24 uur" uit het ontwerp)
-   naar het ene sitebrede label. Een afwijkende tekst typen mag gewoon in
-   het CMS — die blijft staan. */
-$knop_label = sokkies_cta_tekst( $knop['title'] ?? '', $knop['url'] ?? '' );
+/* De knoptekst uit het ontwerp ("Gratis ontwerp binnen 24 uur") staat in de
+   opruimlijst van sokkies_cta_tekst() en zou daar naar het sitebrede label
+   worden omgezet. Op de landingspagina wint de tekst zoals getypt in het
+   CMS (verzoek Kulwant: exact het ontwerp); leeg = het sitebrede label. */
+$knop_label = trim( (string) ( $knop['title'] ?? '' ) );
+if ( '' === $knop_label ) { $knop_label = sokkies_cta_label(); }
 
-$assets = get_template_directory_uri() . '/assets/media/';
-// Vier foto's is het ritme van het ontwerp; deze set staat al in het thema.
-$standaard_collage = array( 'slider1.png', 'slider4.png', 'slider7.png', 'slider2.png' );
+$kolom_1 = get_sub_field( 'fotos_kolom_1' );
+$kolom_2 = get_sub_field( 'fotos_kolom_2' );
+
+$assets      = get_template_directory_uri() . '/assets/media/';
+$standaard_1 = array( 'slider1.png', 'slider4.png', 'slider7.png', 'slider2.png' );
+$standaard_2 = array( 'slider5.png', 'slider8.png', 'slider3.png', 'slider6.png' );
+
+// Zelfde kolomopbouw als coll_hero: minimaal vier slides zodat de loop
+// nooit hapert, een kortere galerij wordt herhaald.
+$render_kolom = function ( $fotos, $standaard ) use ( $assets ) {
+	if ( $fotos ) {
+		$doel = max( 4, count( $fotos ) );
+		for ( $i = 0; $i < $doel; $i++ ) {
+			$foto = $fotos[ $i % count( $fotos ) ];
+			printf(
+				'<div class="swiper-slide"><img src="%s" alt="%s"></div>',
+				esc_url( $foto['url'] ),
+				esc_attr( $foto['alt'] ?: 'Sok' )
+			);
+		}
+	} else {
+		foreach ( $standaard as $bestand ) {
+			printf( '<div class="swiper-slide"><img src="%s" alt="Sok"></div>', esc_url( $assets . $bestand ) );
+		}
+	}
+};
 
 $klassen = array(
 	'coral' => '',
@@ -49,7 +74,7 @@ $klassen = array(
         <p><?php echo nl2br( esc_html( $subtekst ) ); ?></p>
 
         <div class="lp-hero-btns">
-          <a href="<?php echo esc_url( $knop_url ); ?>" class="cta"><?php echo esc_html( $knop_label ); ?></a>
+          <a href="<?php echo esc_url( $knop_url ); ?>" class="cta"<?php echo ! empty( $knop['target'] ) ? ' target="' . esc_attr( $knop['target'] ) . '" rel="noopener"' : ''; ?>><?php echo esc_html( $knop_label ); ?></a>
         </div>
 
         <?php if ( $rating ) : ?>
@@ -82,12 +107,20 @@ $klassen = array(
         <?php endif; ?>
       </div>
 
-      <div class="lp-hero-collage">
-        <?php if ( $fotos ) : foreach ( $fotos as $foto ) : ?>
-        <img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ); ?>">
-        <?php endforeach; else : foreach ( $standaard_collage as $bestand ) : ?>
-        <img src="<?php echo esc_url( $assets . $bestand ); ?>" alt="">
-        <?php endforeach; endif; ?>
+      <?php /* Galerij: markup 1:1 uit section-coll_hero.php */ ?>
+      <div class="coll-gallery-main lp-hero-gallery">
+        <div class="coll-hero-gallery">
+          <div class="swiper ch-swiper ch-swiper-1">
+            <div class="swiper-wrapper">
+              <?php $render_kolom( $kolom_1, $standaard_1 ); ?>
+            </div>
+          </div>
+          <div class="swiper ch-swiper ch-swiper-2">
+            <div class="swiper-wrapper">
+              <?php $render_kolom( $kolom_2, $standaard_2 ); ?>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>

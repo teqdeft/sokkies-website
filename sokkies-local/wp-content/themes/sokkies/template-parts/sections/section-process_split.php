@@ -46,7 +46,11 @@ $standaard_collage = ( $is_conf || $is_land )
 $land_kop        = get_sub_field( 'land_kop' ) ?: 'Klaar voor je ontwerp?';
 $land_knop       = get_sub_field( 'land_knop' );
 $land_knop_url   = ! empty( $land_knop['url'] ) ? $land_knop['url'] : home_url( '/offerte/' );
-$land_knop_label = sokkies_cta_tekst( $land_knop['title'] ?? '', $land_knop['url'] ?? '' );
+/* Landingspagina volgt het ontwerp letterlijk ("Vraag gratis proefdesign
+   aan"); die tekst staat in de opruimlijst van sokkies_cta_tekst() en zou
+   anders sitebreed genormaliseerd worden. Leeg = het sitebrede label. */
+$land_knop_label = trim( (string) ( $land_knop['title'] ?? '' ) );
+if ( '' === $land_knop_label ) { $land_knop_label = sokkies_cta_label(); }
 
 $contact_kop   = get_sub_field( 'contact_kop' ) ?: '[Gratis controle] door onze ontwerper';
 $contact_tekst = get_sub_field( 'contact_tekst' ) ?: 'Voordat je sokken in productie gaan, kijkt een van onze ontwerpers je bestand na op drukbaarheid, kleur en formaat. Dan mens dus, geen script.';

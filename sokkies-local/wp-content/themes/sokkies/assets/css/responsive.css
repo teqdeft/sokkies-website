@@ -15195,7 +15195,7 @@
 
 @media (min-width:1280px) and (max-width:1439px){
   .lp-hero-inner{ gap:45px; }
-  .lp-hero-collage img{ height:230px; }
+  .lp-hero-gallery{ height:600px; }
   .lp-media-inner{ gap:50px; }
   .lp-usps-grid{ gap:40px 45px; }
 }
@@ -15203,10 +15203,8 @@
 @media (min-width:992px) and (max-width:1279px){
   .lp-hero{ padding:45px 0 70px; }
   .lp-hero-inner{ gap:35px; }
-  .lp-hero-collage{ gap:16px; }
-  .lp-hero-collage img{ height:195px; }
-  .lp-hero-collage img:nth-child(2){ margin-top:32px; }
-  .lp-hero-collage img:nth-child(3){ margin-top:-32px; }
+  .lp-hero-gallery{ height:540px; }
+  .lp-hero .coll-hero-gallery{ height:700px; top:-70px; }
   .lp-media{ padding:70px 0; }
   .lp-media-inner{ gap:40px; }
   .lp-usps-grid{ gap:36px 40px; }
@@ -15222,7 +15220,12 @@
     gap:40px;
   }
   .lp-hero-text > p{ max-width:none; }
-  .lp-hero-collage img{ height:210px; }
+  /* de headerpill hangt over de sectierand; zonder deze lucht plakt de
+     kop eraan vast */
+  .lp-hero-text{ padding:75px 0 10px; }
+  /* gestapeld: de galerij neemt de bestaande tabletmaten van
+     .coll-gallery-main over (volle breedte, 540px hoog) */
+  .lp-hero-gallery{ height:540px; margin-bottom:0; }
   .lp-media{ padding:60px 0; }
   .lp-media-inner{
     grid-template-columns:minmax(0,1fr);
@@ -15250,11 +15253,9 @@
   .lp-hero-text > p{ max-width:none; margin-bottom:24px; }
   .lp-hero-btns{ margin-bottom:22px; }
   .lp-hero-btns .cta{ display:inline-block; }
-  .lp-hero-collage{ gap:14px; }
-  .lp-hero-collage img{ height:165px; border-radius:18px; }
-  /* geen versprongen ritme meer: op een smal scherm oogt dat als een fout */
-  .lp-hero-collage img:nth-child(2),
-  .lp-hero-collage img:nth-child(3){ margin-top:0; }
+  .lp-hero-text{ padding:60px 0 6px; }
+  /* de galerij volgt hier de mobiele maten van .coll-gallery-main */
+  .lp-hero-gallery{ height:420px; margin-bottom:0; }
 
   .lp-media{ padding:48px 0; }
   .lp-media:has(+ .lp-usps){ padding-bottom:calc(13% + 40px); }
@@ -15290,10 +15291,7 @@
 }
 
 @media (max-width:520px){
-  .lp-hero-collage{
-    grid-template-columns:minmax(0,1fr);
-  }
-  .lp-hero-collage img{ height:200px; }
+  .lp-hero-gallery{ height:360px; }
   .lp-keur-logos{ gap:22px; }
   .lp-keur-logos img{ height:42px; max-width:92px; }
 }
