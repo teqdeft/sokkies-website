@@ -5419,6 +5419,25 @@
     /* pin: basis-margin ging 2026-08-12 naar 50px (1920) — band houdt 20 */
     margin-top:20px;
   }
+  /* Volgorde volgens het 768-ontwerp: kop, tekst, beoordeling, galerij,
+     USP-strip, staffel, knoppen. De strip staat in de DOM NA .prod-top -
+     dat is met opzet, want binnen de galerijkolom viel hij op 1920 over de
+     sampleknop. Om hem hier ertussen te krijgen zonder de DOM te wijzigen
+     wordt .prod-top doorzichtig gemaakt: zijn kinderen worden flex-items
+     van .container en de order-waarden die er al stonden bepalen de rij.
+     De strip had zelf al order 5, precies de plek uit het ontwerp. */
+  .prod-hero .container{
+    display:flex;
+    flex-direction:column;
+  }
+  .prod-top{
+    display:contents;
+  }
+  /* .prod-top droeg de 20px lucht onder het kruimelpad; met display:contents
+     valt die weg, dus staat hij nu op de titel zelf. */
+  .prod-info h1{
+    margin-top:20px;
+  }
   .prod-gallery-col,
   .prod-info{
     display:contents;
@@ -6043,7 +6062,7 @@
      2026-08-10); de duurz-regels staan in het SEED-blok hieronder;
      band-eigen fijnslijpen volgt ═══ */
   .timeline{
-    padding-bottom:0px;
+    padding-bottom:50px;
   }
   /* Hero-gallery: 2 slides volledig + 2 half zichtbaar — zie 1440-band */
   .over-ons .gallery-swiper .swiper-slide{
@@ -13015,7 +13034,8 @@
     padding-top:120px;
     padding-bottom:30px;
     position:relative;
-    background-position:left top;
+    background-position: left top;
+    background-size: 100%;
   }
   .specs-section:after{
     content:"";
@@ -13023,7 +13043,7 @@
     left:0;
     right:0;
     bottom:0;
-    height:45%;
+    height:80%;
     background:var(--blue);
     z-index:0;
   }
