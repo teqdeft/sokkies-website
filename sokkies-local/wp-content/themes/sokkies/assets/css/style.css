@@ -10633,10 +10633,14 @@ body.pdp-calc-open{
     padding-top:13%;
     background-image:url(../media/bg-yellow-shapeTop.png);
   }
+  /* Onderrand: bg-yellow-shapeBottom.png uitgerekt over de breedte werd een
+     rechte diagonaal met een knik rechts (melding Kulwant). Nu een getekend
+     pad in de gele kleur: links hoog, in een zachte boog naar rechtsonder,
+     steiler links en vlakker rechts — de rand uit het ontwerp. */
   .lp-usps:after{
     top:100%;
-    padding-top:6.15%; /* 118/1920 */
-    background-image:url(../media/bg-yellow-shapeBottom.png);
+    padding-top:6.15%;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 100' preserveAspectRatio='none'><path d='M0 0 L1000 0 L1000 100 C 660 96 330 34 0 0 Z' fill='%23FAE16E'/></svg>");
   }
   .lp-usps-wit{ background:var(--white); }
   .lp-usps-wit:before,
@@ -10741,8 +10745,11 @@ body.pdp-calc-open{
   .process.process-landing .process-chev svg path{
     fill:var(--yellow);
   }
+  /* De scheidingslijnen zijn in het ontwerp licht (wit op het rood). De
+     basisrij tekent ze met border-TOP; de eerdere override zat op bottom
+     en deed niets (melding Kulwant). */
   .process.process-landing .process-left li{
-    border-bottom-color:rgba(255,255,255,.35);
+    border-top-color:rgba(255,255,255,.5);
   }
   /* De rijen zijn space-between (nummer links, tekstblok rechts), dus zonder
      vaste breedte verschoof de chevron per rij mee met de titelbreedte
@@ -10800,7 +10807,10 @@ body.pdp-calc-open{
     right:0;
     bottom:-1px;
     height:190px;
-    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 190' preserveAspectRatio='none'><path d='M0 0 C 200 18 370 190 520 190 L1000 190 L0 190 Z' fill='%23ffffff'/></svg>") no-repeat left bottom;
+    /* startpunt (0,0) met meteen een dalende helling — een vlakke start gaf
+       een S-vorm met een bultje links (melding Kulwant); het pad zakt
+       gelijkmatig en loopt bij ±50% tangentieel in de onderrand uit */
+    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 190' preserveAspectRatio='none'><path d='M0 0 C 150 75 330 190 520 190 L1000 190 L0 190 Z' fill='%23ffffff'/></svg>") no-repeat left bottom;
     background-size:100% 100%;
     pointer-events:none;
   }
