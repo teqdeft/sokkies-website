@@ -10789,15 +10789,19 @@ body.pdp-calc-open{
     overflow:hidden;
     padding-bottom:230px;
   }
+  /* De rand uit het ontwerp: links ±190px hoog, dan een zachte holle boog
+     die rond de helft van de breedte de onderrand raakt en verder vlak
+     loopt. Een border-radius-ellips gaf een bolle bult in de hoek (melding
+     Kulwant); dit pad tekent de curve zelf en schaalt met de breedte. */
   .process.process-landing:after{
     content:'';
     position:absolute;
     left:0;
-    bottom:-2px;
-    width:58%;
+    right:0;
+    bottom:-1px;
     height:190px;
-    background:var(--white);
-    border-top-right-radius:100% 100%;
+    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 190' preserveAspectRatio='none'><path d='M0 0 C 200 18 370 190 520 190 L1000 190 L0 190 Z' fill='%23ffffff'/></svg>") no-repeat left bottom;
+    background-size:100% 100%;
     pointer-events:none;
   }
   .process.process-landing > .container{

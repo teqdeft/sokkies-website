@@ -15290,7 +15290,7 @@
   }
   .process.process-landing .process-collage > :nth-child(3){ margin-top:0; }
   .process.process-landing{ padding-bottom:150px; }
-  .process.process-landing:after{ height:110px; width:70%; }
+  .process.process-landing:after{ height:110px; } /* het SVG-pad schaalt mee over de volle breedte */
 
   .lp-keur{ padding:45px 0; }
   .lp-keur-inner > p{ margin-bottom:26px; }
