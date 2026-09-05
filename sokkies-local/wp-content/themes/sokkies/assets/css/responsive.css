@@ -9316,7 +9316,7 @@
     max-width:860px;
   }
   .conf-preview-card{
-    height:600px;
+    height:410px;
   }
   .usecases{
     padding-top:100px;
@@ -12973,6 +12973,15 @@
     text-align:right;
   }
   .staffel-table.prod-staffel{ order:7; width:100%; margin-bottom:35px; }
+  /* Ontwerp mobiel: de meest gekozen staffel krijgt een geel vlak, net als
+     de actieve regel in de calculator. De rij is te herkennen aan de badge,
+     dus hiervoor hoeft er niets aan de template te veranderen. De scheidings-
+     lijn eronder gaat weg, anders loopt er een streep door het gele blok. */
+  .prod-staffel .staffel-row:has(.staffel-badge){
+    background:var(--yellow);
+    border-radius:5px;
+    border-bottom-color:transparent;
+  }
   .prod-actions{
     order:8;
     display:none;
@@ -13245,10 +13254,10 @@
     background-image:url(../media/configurator-bg-ipad.png);
     aspect-ratio:769/1203;
     background-size:300%;
-    background-position:right top;
+    background-position:59% top;
     /* spec 2026-08-13 */
     top:-80px;
-    background-size:140%;
+    background-size:121%;
   }
   .design-duddle-sock{
     display:none;
@@ -13257,7 +13266,7 @@
     max-width:860px;
   }
   .conf-preview-card{
-    height:565px;
+    height:275px;
   }
   .usecases{
     padding-top:100px;
