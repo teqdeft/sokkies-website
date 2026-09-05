@@ -10463,6 +10463,9 @@ body.pdp-calc-open{
     grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
     gap:60px;
     align-items:center;
+    /* de headerpill zweeft over de bovenrand; met deze ruimte begint de
+       gecentreerde tekst er altijd ruim onder */
+    padding-top:24px;
   }
   /* zelfde koptypografie als de bestaande paginakop (condensed, uppercase,
      fluïde tot 40px), zodat de landingskop niet uit de toon valt */
@@ -10503,18 +10506,20 @@ body.pdp-calc-open{
      vallen). Al haar maten en banden komen uit die bestaande regels; hier
      alleen wat het rode vlak anders doet: de kolommen mogen aan de
      bovenkant over de rand, en het vlak knipt ze af. */
+  /* De kophoogte schaalt mee met het scherm (ontwerp: ±560px op 1440,
+     ±650px op 1920). Een vaste 470px zette op brede schermen de kop
+     tegen de headerpill aan (melding Kulwant met schermafdruk). */
   .lp-hero-gallery{
-    /* compacter dan werkwijze: het ontwerp houdt de kop op ±480px */
-    height:470px;
+    height:clamp(560px, 34vw, 660px);
     overflow:hidden;
   }
   .lp-hero .coll-hero-gallery{
-    height:600px;
-    top:-60px;
+    height:calc(100% + 140px);
+    top:-70px;
     gap:14px;
   }
   .lp-hero .ch-swiper .swiper-slide{
-    height:360px;
+    height:clamp(320px, 25vw, 480px);
   }
 
 /* ===== Landingspagina — aanpassingen aan hergebruikte secties ===== */
