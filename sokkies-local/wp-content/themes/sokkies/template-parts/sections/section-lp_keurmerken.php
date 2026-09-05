@@ -18,7 +18,9 @@ if ( '' === trim( (string) $tekst ) ) {
 $logos = get_sub_field( 'logos' );
 
 $assets = get_template_directory_uri() . '/assets/media/';
-$standaard = array( 'BSCI.png', 'GOTS.png', 'OEKO-TEX.png', 'otp-logo.svg' );
+// One Tree Planted als het vierkante badge (ontwerp), niet het liggende
+// woordmerk uit de footer — zo hebben de vier keurmerken dezelfde maat.
+$standaard = array( 'BSCI.png', 'GOTS.png', 'OEKO-TEX.png', 'one-tree-planted.png' );
 ?>
 <section class="lp-keur">
   <div class="container">
