@@ -1600,7 +1600,7 @@
        MAX en geeft de balk de voortgang naar verhouding weer. */
     var MAX_STREEPJES = 8;
 
-    function bouwStreepjes(nav, aantal) {
+    function bouwStreepjes(nav, aantal, opKlik) {
       if (!nav || !aantal || aantal < 2) return null;
       aantal = Math.min(aantal, MAX_STREEPJES);
       let vak = nav.querySelector('.nav-dashes');
@@ -1615,7 +1615,33 @@
       }
       if (vak.children.length !== aantal) {
         vak.innerHTML = '';
-        for (let i = 0; i < aantal; i++) vak.appendChild(document.createElement('span'));
+        for (let i = 0; i < aantal; i++) {
+          const s = document.createElement('span');
+          /* Bedienbaar met muis en toetsenbord. Het blijven <span>'s, zodat
+             alle bestaande .nav-dashes span-opmaak blijft gelden. */
+          s.setAttribute('role', 'button');
+          s.setAttribute('tabindex', '0');
+          s.setAttribute('aria-label', 'Ga naar ' + (i + 1));
+          vak.appendChild(s);
+        }
+      }
+      /* Eén handler op het vak zelf: de streepjes worden bij een resize
+         opnieuw opgebouwd, dus losse handlers per streepje zouden stapelen. */
+      if (opKlik && !vak.__klik) {
+        vak.__klik = true;
+        const kies = (streepje) => {
+          const n = Array.prototype.indexOf.call(vak.children, streepje);
+          if (n >= 0) opKlik(n, vak.children.length);
+        };
+        vak.addEventListener('click', (e) => {
+          const s = e.target.closest('span');
+          if (s && s.parentElement === vak) kies(s);
+        });
+        vak.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          const s = e.target.closest('span');
+          if (s && s.parentElement === vak) { e.preventDefault(); kies(s); }
+        });
       }
       return vak;
     }
@@ -1651,7 +1677,32 @@
              er zijn er meerdere — allemaal bijwerken */
           const navs = Array.from(scope.querySelectorAll(paar.nav));
           const aantal = sw.slides.length;
-          const vakken = navs.map((n) => bouwStreepjes(n, aantal));
+          /* Klik op streepje n: bij meer slides dan streepjes wordt de
+             verhouding teruggerekend, zodat het eerste streepje altijd de
+             eerste slide is en het laatste de laatste. */
+          const naarSlide = (streepje, streepjes) => {
+            const doel = (aantal > streepjes && streepjes > 1)
+              ? Math.round((streepje / (streepjes - 1)) * (aantal - 1))
+              : streepje;
+            if (doel === sw.realIndex) return;
+            if (!sw.params.loop) { sw.slideTo(doel); return; }
+            /* BEWUST NIET slideToLoop: op deze sliders (lus, kleine
+               loopbuffer, gebroken slidesPerView) landt die niet op de
+               gevraagde slide - gemeten kwam hij bij elke waarde ergens
+               anders uit. Stap voor stap tellen realIndex wel correct door,
+               inclusief het omslaan aan het eind. */
+            const totaal = aantal;
+            let stap = doel - sw.realIndex;
+            if (stap >  totaal / 2) stap -= totaal;   /* kortste weg */
+            if (stap < -totaal / 2) stap += totaal;
+            const kant = stap > 0 ? 'slideNext' : 'slidePrev';
+            const n = Math.abs(stap);
+            /* de tussenstappen zonder animatie, de laatste schuift zichtbaar
+               zodat je ziet welke kant het op gaat */
+            for (let i = 0; i < n - 1; i++) sw[kant](0);
+            sw[kant]();
+          };
+          const vakken = navs.map((n) => bouwStreepjes(n, aantal, naarSlide));
           if (!vakken.some(Boolean)) return;
           el.__streepjes = true;
           const bij = () => markeer(vakken, sw.realIndex % aantal, aantal);
@@ -1671,7 +1722,22 @@
           const scope = rij.closest('section') || document;
           const nav = scope.querySelector(paar.nav);
           const kaarten = rij.querySelectorAll(paar.kaart);
-          const vak = bouwStreepjes(nav, kaarten.length);
+          /* Zelfde terugrekening als bij de sliders, maar hier scrollt de
+             rij zelf. bij() wordt hieronder gedefinieerd; op het moment van
+             klikken bestaat hij. */
+          const naarKaart = (streepje, streepjes) => {
+            const doel = (kaarten.length > streepjes && streepjes > 1)
+              ? Math.round((streepje / (streepjes - 1)) * (kaarten.length - 1))
+              : streepje;
+            const eerste = kaarten[0].getBoundingClientRect().width;
+            const gat = parseFloat(getComputedStyle(rij).columnGap) || 0;
+            rij.scrollTo({ left: doel * (eerste + gat), behavior: 'smooth' });
+            /* zelfde nazorg als bij de pijlen: smooth scrollen levert niet
+               overal een betrouwbaar scroll-event op */
+            setTimeout(bij, 350);
+            setTimeout(bij, 750);
+          };
+          const vak = bouwStreepjes(nav, kaarten.length, naarKaart);
           if (!vak) return;
           rij.__streepjes = true;
           const bij = () => {
