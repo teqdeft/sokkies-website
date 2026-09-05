@@ -903,6 +903,7 @@ font-weight: 600;
      een lichte sprong omhoog. De tekst hierboven beschreef nog de oude
      staat en is bijgewerkt, zodat commentaar en code weer hetzelfde
      zeggen. */
+  .suggestion-nav button,
   .gallery-nav button,
   .collection-nav button,
   .gift-nav button,
@@ -912,6 +913,7 @@ font-weight: 600;
   .reviews-nav button{
     transition: 0.2s ease-in-out;
   }
+  .suggestion-nav button:hover,
   .gallery-nav button:hover,
   .collection-nav button:hover,
   .gift-nav button:hover,
@@ -923,6 +925,7 @@ font-weight: 600;
     border-color:var(--dark);
     transform: translateY(-2px);
   }
+  .suggestion-nav button:hover svg path,
   .gallery-nav button:hover svg path,
   .collection-nav button:hover svg path,
   .gift-nav button:hover svg path,
@@ -4558,7 +4561,7 @@ font-weight: 600;
     justify-content: center;
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(0, -50%);
     bottom: -22px;
     background: var(--yellow);
     border: none;
@@ -4569,6 +4572,7 @@ font-weight: 600;
     font-family: var(--roc-grotesk);
     transition: 0.2s ease-in-out;
     cursor: pointer;
+    text-decoration: none;
   }
   .conf-preview-button:hover{
     background: #F3CF4D;
@@ -6776,6 +6780,16 @@ font-weight: 600;
     gap:10px;
     margin-top:24px;
   }
+  /* Navigatiebalk onder de suggestieslider (ontwerp mobiel): zelfde
+     knoppen en streepjes als de andere rijen. Basis uit, net als de
+     andere balken; de mobiele band zet hem aan. */
+  .suggestion-nav{
+    display:none;
+    justify-content:center;
+    gap:10px;
+    margin-top:24px;
+  }
+  .suggestion-nav button,
   .gift-nav button,
   .collection-nav button{
     width:55px;

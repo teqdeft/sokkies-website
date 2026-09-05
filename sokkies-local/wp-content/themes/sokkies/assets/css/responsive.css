@@ -12956,6 +12956,7 @@
     align-items:baseline;
     justify-content:space-between;
     gap:10px;
+    width: 100%;
   }
   /* Het ontwerp laat (ex. BTW) op mobiel weg; met de typenaam erbij past
      de regel anders niet -- met de langste naam (Yoga & pilates sokken)
@@ -12989,6 +12990,7 @@
     width:100%;
     height:auto;
     aspect-ratio:1/1;
+    border-radius: 15px;
   }
   .prod-thumbs{
     gap:6px;
@@ -12996,6 +12998,7 @@
   .prod-thumb{
     height:90px;
     border-radius:15px;
+    border-radius: 10px;
   }
   .prod-thumbs{
     position:static;
@@ -13177,8 +13180,15 @@
     max-width:100%;
     min-width:0;
   }
-  .cards-suggestion-head .cta-light{
+  /* De balk hoort tussen de slider en de knop. Zonder eigen order valt
+     hij op 0 en dus BOVEN de kop -- de knop schuift daarom een plek op. */
+  .cards-suggestion .suggestion-nav{
     order:3;
+    padding: 0;
+    margin: 0;
+  }
+  .cards-suggestion-head .cta-light{
+    order:4;
     margin-top:30px;
   }
   .design-now{
@@ -15022,6 +15032,9 @@
     padding-left: 10px;
     padding-right: 10px;
   }
+  .cards-suggestion-swiper .collection-card {
+    border-radius: 15px;
+  }
 }
 
 /* ===================================================================
@@ -15125,12 +15138,20 @@
     padding-left:20px;
     padding-right:20px;
   }
+  /* Suggestieslider had helemaal geen navigatie; het ontwerp toont op
+     mobiel dezelfde balk met pijlen en streepjes als de andere rijen. */
+  .suggestion-nav{
+    display:flex;
+    padding-left:20px;
+    padding-right:20px;
+  }
   /* de collectierij is op mobiel óók een scroll-rij; de pijlen stonden
      hier nog uit terwijl de gift-rij ze wel had */
   .collection-nav{
     display:flex;
   }
   /* balk over de volle breedte, knoppen aan de randen */
+  .suggestion-nav,
   .gift-nav,
   .collection-nav,
   .testimonial .cases-nav,
@@ -15140,12 +15161,14 @@
     gap:14px;
   }
   /* knoppen niet laten pletten door de flexibele streepjesbalk */
+  .suggestion-nav button,
   .gift-nav button,
   .collection-nav button,
   .testimonial .cases-nav button,
   .steps-nav button,
   .reviews-nav button{
     flex:0 0 auto;
+    border-radius: 5px;
   }
   .nav-dashes{
     display:flex;

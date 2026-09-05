@@ -683,11 +683,16 @@
 
       // "Bekijk ook deze" slider — per instantie
       document.querySelectorAll('.cards-suggestion-swiper').forEach((also) => {
+        const sectie = also.closest('.cards-suggestion') || document;
         new Swiper(also, {
           slidesPerView: 1.325,
           spaceBetween: 20,
           grabCursor: true,
           speed: 600,
+          navigation: {
+            prevEl: sectie.querySelector('.suggestion-prev'),
+            nextEl: sectie.querySelector('.suggestion-next'),
+          },
           breakpoints: {
             521:  { slidesPerView: 2.15 },
             992:  { slidesPerView: 3.29 },
@@ -1668,6 +1673,7 @@
         { slider: '.testimonial-swiper', nav: '.cases-nav' },
         { slider: '.steps-swiper',       nav: '.steps-nav' },
         { slider: '.reviews-swiper',     nav: '.reviews-nav' },
+        { slider: '.cards-suggestion-swiper', nav: '.suggestion-nav' },
       ].forEach(function (paar) {
         document.querySelectorAll(paar.slider).forEach((el) => {
           const sw = el.swiper;
