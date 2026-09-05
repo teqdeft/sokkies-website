@@ -15399,3 +15399,35 @@
   .lp-keur-logos{ gap:22px; }
   .lp-keur-logos img{ height:42px; max-width:92px; }
 }
+
+
+/* ==========================================================================
+   FLEXIBELE PAGINA — responsive
+   ========================================================================== */
+
+@media (max-width:1299px){
+  .fp-citaat-duddle{ display:none; } /* geen marge meer naast de kaart */
+}
+
+@media (min-width:768px) and (max-width:991px){
+  .fp-kolommen{ padding:60px 0; }
+  .fp-kolommen-grid{ gap:0 36px; }
+  .fp-lees-ook-grid{ grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; }
+  .fp-lees-ook{ padding-bottom:90px; }
+  .fp-citaat-kaart{ max-width:84%; }
+}
+
+@media (max-width:767px){
+  .fp-kolommen{ padding:48px 0; }
+  .fp-kolommen-grid{ grid-template-columns:minmax(0,1fr); gap:14px 0; }
+  .fp-citaat{ padding:50px 0 30px; }
+  .fp-citaat-kaart{ max-width:none; margin-top:-20px; padding:38px 22px 26px; border-radius:18px; } /* 60% is op een telefoon te smal; de V-kap is hier laag */
+  .fp-lees-ook{ padding:40px 0 70px; }
+  .fp-citaat + .fp-lees-ook{ padding-top:30px; }
+  .fp-lees-ook-grid{ grid-template-columns:minmax(0,1fr); gap:14px; }
+  .fp-lees-ook-kaart{ padding:22px 22px 20px; border-radius:16px; }
+}
+
+@media (max-width:767px){
+  .lp-media-placeholder{ border-radius:18px; }
+}

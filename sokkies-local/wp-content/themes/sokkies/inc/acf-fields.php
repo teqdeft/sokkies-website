@@ -1942,6 +1942,7 @@ add_action( 'acf/init', function () {
 						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/lp_media.png',
 						'sub_fields' => array(
 							array( 'key' => 'field_lpm_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+							array( 'key' => 'field_lpm_leeg', 'label' => 'Zonder foto', 'name' => 'leeg', 'type' => 'button_group', 'choices' => array( 'standaardfoto' => 'Themafoto tonen', 'placeholder' => 'Neutraal vak (image placeholder)' ), 'default_value' => 'standaardfoto', 'instructions' => 'Wat er staat zolang er geen foto is gekozen. Zodra je een foto kiest, geldt die.', 'conditional_logic' => array( array( array( 'field' => 'field_lpm_foto', 'operator' => '==empty' ) ) ) ),
 							array( 'key' => 'field_lpm_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Tekst tussen [haken] wordt geel.' ),
 							array( 'key' => 'field_lpm_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual' ),
 							array( 'key' => 'field_lpm_knop', 'label' => 'Link onder de tekst', 'name' => 'knop', 'type' => 'link', 'instructions' => 'Leeg = geen link.' ),
@@ -1983,6 +1984,64 @@ add_action( 'acf/init', function () {
 							array( 'key' => 'field_lpk_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Leeg = "Duurzaam met certificaat".' ),
 							array( 'key' => 'field_lpk_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '', 'instructions' => 'Een regel onder de titel. Leeg = de standaardzin.' ),
 							array( 'key' => 'field_lpk_logos', 'label' => 'Logo\'s', 'name' => 'logos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Leeg = de vier keurmerken uit het thema (BSCI, GOTS, OEKO-TEX, One Tree Planted).' ),
+						),
+					),
+
+					/* ── Flexibele pagina ─────────────────────────────────────
+					   Drie blokken uit het ontwerp voor vrij samen te stellen
+					   pagina's. De paginakop (simple_hero), foto-naast-tekst
+					   (lp_media) en het afsluitende actieblok (cta_final)
+					   bestonden al en worden hergebruikt. Leeg = de
+					   voorbeeldtekst van het ontwerp. */
+
+					'layout_fp_tekst_kolommen' => array(
+						'key'        => 'layout_fp_tekst_kolommen',
+						'name'       => 'fp_tekst_kolommen',
+						'label'      => 'Kop met intro en twee tekstkolommen',
+						'display'    => 'block',
+						'acfe_flexible_category'  => array( 'Tekstblokken' ),
+						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/fp_tekst_kolommen.png',
+						'sub_fields' => array(
+							array( 'key' => 'field_fpk_kop', 'label' => 'Sectiekop', 'name' => 'kop', 'type' => 'text', 'instructions' => 'Tekst tussen [haken] wordt geel. Leeg = "Sectiekop".' ),
+							array( 'key' => 'field_fpk_intro', 'label' => 'Intro', 'name' => 'intro', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual', 'instructions' => 'Een korte inleiding over de volle breedte, onder de kop.' ),
+							array( 'key' => 'field_fpk_kolom_1', 'label' => 'Linkerkolom', 'name' => 'kolom_1', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual' ),
+							array( 'key' => 'field_fpk_kolom_2', 'label' => 'Rechterkolom', 'name' => 'kolom_2', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual', 'instructions' => 'Op smalle schermen komt deze kolom onder de linker.' ),
+						),
+					),
+
+					'layout_fp_citaat' => array(
+						'key'        => 'layout_fp_citaat',
+						'name'       => 'fp_citaat',
+						'label'      => 'Citaat (kaart op geel vlak)',
+						'display'    => 'block',
+						'acfe_flexible_category'  => array( 'Tekstblokken' ),
+						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/fp_citaat.png',
+						'sub_fields' => array(
+							array( 'key' => 'field_fpc_citaat', 'label' => 'Citaat', 'name' => 'citaat', 'type' => 'textarea', 'rows' => 3, 'new_lines' => '', 'instructions' => 'Zonder aanhalingstekens; de kaart zet ze er zelf omheen. Leeg = de voorbeeldzin.' ),
+							array( 'key' => 'field_fpc_naam', 'label' => 'Naam / bron', 'name' => 'naam', 'type' => 'text', 'instructions' => 'Optioneel, komt onder het citaat.' ),
+							array( 'key' => 'field_fpc_stijl', 'label' => 'Achtergrond', 'name' => 'stijl', 'type' => 'button_group', 'choices' => array( 'geel' => 'Geel vlak met golfrand', 'wit' => 'Wit' ), 'default_value' => 'geel', 'instructions' => 'Zet je hierna een "Lees ook" in het geel, dan lopen de twee als één band door.' ),
+						),
+					),
+
+					'layout_fp_lees_ook' => array(
+						'key'        => 'layout_fp_lees_ook',
+						'name'       => 'fp_lees_ook',
+						'label'      => 'Lees ook (kaartenrij met links)',
+						'display'    => 'block',
+						'acfe_flexible_category'  => array( 'Extra\'s' ),
+						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/fp_lees_ook.png',
+						'sub_fields' => array(
+							array( 'key' => 'field_fpl_kop', 'label' => 'Kop', 'name' => 'kop', 'type' => 'text', 'instructions' => 'Leeg = "Lees ook".' ),
+							array(
+								'key' => 'field_fpl_kaarten', 'label' => 'Kaarten', 'name' => 'kaarten', 'type' => 'repeater', 'layout' => 'block', 'button_label' => 'Kaart toevoegen',
+								'instructions' => 'Drie kaarten is het ritme van het ontwerp. Leeg = drie voorbeeldkaarten.',
+								'sub_fields' => array(
+									array( 'key' => 'field_fpl_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
+									array( 'key' => 'field_fpl_tekst', 'label' => 'Korte omschrijving', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
+									array( 'key' => 'field_fpl_link', 'label' => 'Link', 'name' => 'link', 'type' => 'link', 'instructions' => 'De linktekst wordt het "Lees meer"-label; leeg = "Lees meer".' ),
+								),
+							),
+							array( 'key' => 'field_fpl_stijl', 'label' => 'Achtergrond', 'name' => 'stijl', 'type' => 'button_group', 'choices' => array( 'geel' => 'Geel', 'wit' => 'Wit' ), 'default_value' => 'geel' ),
 						),
 					),
 

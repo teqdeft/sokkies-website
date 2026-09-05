@@ -10592,6 +10592,12 @@ body.pdp-calc-open{
   }
   /* koppen op de landingspagina: dezelfde condensed uppercase als alle
      sectiekoppen op de site (stappenblok, soktypes, toepassingen) */
+  /* leesbare regellengte (±60 tekens, ontwerp): de kolom volgt de
+     container, maar de tekst loopt niet verder dan dit — anders werden de
+     regels op brede schermen ±95 tekens (melding Kulwant) */
+  .lp-media-tekst{
+    max-width:34em;
+  }
   .lp-media-tekst h2{
     font-family:var(--roc-grotesk-condensed);
     font-weight:700;
@@ -10700,12 +10706,12 @@ body.pdp-calc-open{
     text-align:center;
     margin-bottom:50px;
   }
+  /* volle containerbreedte, zoals elke sectie op de site (Kulwant: de
+     smallere 1140px-kolom viel uit de toon naast de andere pagina's) */
   .lp-usps-grid{
     display:grid;
     grid-template-columns:repeat(3, minmax(0,1fr));
-    gap:50px 60px;
-    max-width:1140px;
-    margin:0 auto;
+    gap:50px 80px;
   }
   /* maten 1:1 uit het ontwerp: icoonvak 120px, titel 22px */
   .lp-usp-icoon{
@@ -10854,9 +10860,10 @@ body.pdp-calc-open{
     background:var(--light-beige);
     padding:70px 0;
   }
+  /* volle containerbreedte (site-standaard); alleen de alinea houdt een
+     leesbare regellengte */
   .lp-keur-inner{
-    max-width:900px;
-    margin:0 auto;
+    width:100%;
     text-align:center;
   }
   /* Ontwerp: hier juist GEEN condensed uppercase — de ronde vette letter in
@@ -10893,4 +10900,227 @@ body.pdp-calc-open{
     /* dezelfde witte keurmerk-PNG's als in de footer; op dit lichte vlak
        donker gemaakt, precies zoals bij de keurmerk-kaarten */
     filter:brightness(0);
+  }
+
+
+/* ==========================================================================
+   FLEXIBELE PAGINA — drie eigen blokken (.fp-kolommen, .fp-citaat,
+   .fp-lees-ook). Paginakop, foto-naast-tekst en het actieblok zijn
+   bestaande secties.
+   ========================================================================== */
+
+/* ===== Kop met intro en twee tekstkolommen ===== */
+  .fp-kolommen{
+    background:var(--white);
+    padding:80px 0;
+  }
+  /* volle containerbreedte, zoals de andere secties op de site */
+  .fp-kolommen-inner{
+    width:100%;
+  }
+  /* sectiekoppen in de condensed kapitalen van het ontwerp */
+  .fp-kolommen h2,
+  .fp-lees-ook h2{
+    font-family:var(--roc-grotesk-condensed);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:var(--h3-font-size);
+    line-height:1.05;
+    color:var(--text);
+  }
+  .fp-kolommen h2{
+    margin-bottom:18px;
+  }
+  .fp-kolommen-intro{
+    max-width:600px;
+    margin-bottom:26px;
+  }
+  .fp-kolommen-intro p,
+  .fp-kolom p{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    color:var(--text);
+    margin-bottom:14px;
+  }
+  .fp-kolommen-intro p:last-child,
+  .fp-kolom p:last-child{ margin-bottom:0; }
+  .fp-kolommen-grid{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:0 60px;
+  }
+  .fp-kolom ul, .fp-kolom ol{
+    font-size:var(--body-font-size);
+    line-height:26px;
+    margin:10px 0 16px;
+    padding-left:24px;
+  }
+
+/* ===== Citaat op geel vlak ===== */
+  .fp-citaat{
+    background:var(--yellow);
+    position:relative;
+    padding:24px 0 60px;
+    z-index:1;
+    /* de V-kap (20% van de breedte hoog) staat BOVEN de sectie; deze marge
+       reserveert die ruimte, anders valt de kap over de tekst van het
+       blok erboven (zelfde val als eerder op de landingspagina) */
+    margin-top:calc(20% + 24px);
+  }
+  /* bovenrand: wit dat van linksboven naar rechtsonder afloopt (ontwerp);
+     getekend pad, zelfde aanpak als de golven op de landingspagina */
+  .fp-citaat:before{
+    content:'';
+    position:absolute;
+    left:0;
+    width:100%;
+    height:0;
+    bottom:100%;
+    /* Ontwerp: een V — links steil omlaag naar een afgeronde inkeping op
+       ±24% van de breedte, dan een vlakke stijging naar rechts. Hoogte 20%
+       van de breedte; het pad schaalt mee. */
+    padding-top:20%;
+    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 200' preserveAspectRatio='none'><path d='M0 0 L215 190 Q237 206 262 197 L1000 94 L1000 200 L0 200 Z' fill='%23FAE16E'/></svg>") no-repeat left bottom;
+    background-size:100% 100%;
+    pointer-events:none;
+  }
+  .fp-citaat-wit{ background:var(--white); margin-top:0; }
+  .fp-citaat-wit:before{ display:none; }
+  /* het sokkenpaar linksboven, groot en boven de V (ontwerp); vw omdat de
+     kaphoogte van de breedte afhangt en top-% dat niet kan */
+  .fp-citaat-duddle{
+    position:absolute;
+    left:70px;
+    top:calc(-20vw - 48px);
+    width:16vw;
+    height:auto;
+    pointer-events:none;
+    z-index:0;
+  }
+  .fp-citaat > .container{ position:relative; z-index:1; }
+  .fp-citaat-kaart{
+    position:relative;
+    /* meeschalend met de container (ontwerp: ±60% van de breedte), geen
+       vaste pixelmaat die op brede schermen te smal oogt */
+    max-width:66%; /* ontwerp: 60% van de paginabreedte = 66% van de container */
+    /* de kaart staat volledig op het wit, in de V-kap boven het geel
+       (ontwerp): ±35px onder de bovenrand van de kap */
+    margin:calc(-20vw + 36px) auto 0;
+    background:var(--white);
+    border:1px solid var(--text);
+    border-radius:25px;
+    padding:44px 40px 34px;
+    text-align:center;
+  }
+  .fp-citaat-wit .fp-citaat-kaart{ background:transparent; }
+  .fp-citaat-badge{
+    position:absolute;
+    top:-30px;
+    left:50%;
+    transform:translateX(-50%);
+    width:60px;   /* ontwerp: 60px-cirkel */
+    height:60px;
+    border-radius:50%;
+    background:var(--coral);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    /* het aanhalingsteken van het lettertype (ontwerp): vet en optisch
+       iets omlaag, omdat het teken in de bovenhelft van zijn kader zit */
+    font-family:var(--roc-grotesk);
+    font-weight:800;
+    font-size:54px;
+    line-height:1;
+    color:var(--white);
+    padding-top:16px;
+  }
+  .fp-citaat-kaart blockquote{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:var(--body-lg-font-size);
+    line-height:1.5;
+    color:var(--text);
+    margin:0;
+  }
+  .fp-citaat-kaart figcaption{
+    margin-top:12px;
+    font-size:var(--body-sm-font-size);
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--text);
+  }
+
+/* ===== Lees ook ===== */
+  .fp-lees-ook{
+    background:var(--yellow);
+    padding:60px 0 120px;
+  }
+  .fp-lees-ook-wit{ background:var(--white); }
+  /* volgt op het citaat: de twee gele vlakken lopen als één band door */
+  .fp-citaat + .fp-lees-ook{ padding-top:40px; }
+  .fp-lees-ook h2{
+    margin-bottom:24px;
+  }
+  .fp-lees-ook-grid{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:24px;
+  }
+  .fp-lees-ook-kaart{
+    display:block;
+    background:var(--white);
+    border-radius:20px;
+    padding:28px 30px 26px;
+    color:var(--text);
+    text-decoration:none;
+    transition:transform .2s;
+  }
+  a.fp-lees-ook-kaart:hover{ transform:translateY(-3px); }
+  .fp-lees-ook-kaart h3{
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    font-size:var(--body-lg-font-size);
+    line-height:1.3;
+    margin-bottom:8px;
+  }
+  .fp-lees-ook-kaart p{
+    font-size:15px;
+    line-height:22px;
+    color:var(--text);
+    margin-bottom:16px;
+  }
+  .fp-lees-ook-link{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:15px;
+    font-weight:600;
+    color:var(--text);
+  }
+  a.fp-lees-ook-kaart:hover .fp-lees-ook-link{ color:var(--coral); }
+  /* volgt het actieblok direct op de gele kaartenrij, dan rijst het rode
+     paneel uit het geel op (ontwerp) in plaats van uit een beige strook */
+  .fp-lees-ook + .cta-final{ background:var(--yellow); }
+
+/* ===== Foto naast tekst: neutraal vak zolang er geen foto is ===== */
+  /* zelfde maat en hoekradius als de foto, beige met een klein label
+     (ontwerp flexibele pagina) — verdwijnt zodra er een foto gekozen is */
+  .lp-media-placeholder{
+    width:100%;
+    aspect-ratio:16 / 10;
+    background:var(--light-beige);
+    border-radius:35px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .lp-media-placeholder span{
+    font-size:10px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--text);
+    background:var(--white);
+    border:1px solid var(--text);
+    border-radius:3px;
+    padding:3px 6px;
   }
