@@ -15212,6 +15212,12 @@
   .lp-usps-grid{ gap:36px 40px; }
   .lp-keur-logos{ gap:38px; }
   .lp-keur-logos img{ height:62px; }
+  /* collagekolom is hier ±200px: de kaartknop mag afbreken en de kaart
+     krijgt minder binnenruimte, anders past "Vraag gratis proefdesign
+     aan" niet in de kaart */
+  .process-land-kaart{ padding:24px 18px; }
+  .process-land-kaart .cta{ white-space:normal; padding:12px 18px; }
+  .process-land-kaart h5{ font-size:34px; }
 }
 
 @media (min-width:768px) and (max-width:991px){
@@ -15280,15 +15286,24 @@
 
   .lp-usps + .process.process-landing{ padding-top:calc(6.15% + 30px); }
   .process.process-landing{ padding-bottom:60px; }
-  /* de actiekaart staat in de collage; gestapeld in een kolom vervalt het
-     versprongen ritme en krijgt hij zijn eigen hoogte */
+  /* Collage op telefoons: twee gelijke kolommen die NIET meer kunnen
+     opzwellen (minmax(0,1fr)) — de nowrap-knop in de actiekaart dwong de
+     eerste kolom eerder naar 303px en liet 22px over voor de tweede,
+     waardoor twee foto's tot een streepje samenvielen. De kaart spant
+     beide kolommen, krijgt zijn eigen hoogte en de knop mag afbreken. */
+  .process.process-landing .process-collage{
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:14px;
+  }
+  .process.process-landing .process-collage > *{ margin-top:0; }
   .process-land-kaart{
+    grid-column:1 / -1;
     height:auto;
-    min-height:260px;
+    min-height:220px;
     padding:28px 22px;
     border-radius:18px;
   }
-  .process.process-landing .process-collage > :nth-child(3){ margin-top:0; }
+  .process-land-kaart .cta{ white-space:normal; }
   .process.process-landing{ padding-bottom:150px; }
   .process.process-landing:after{ height:110px; } /* het SVG-pad schaalt mee over de volle breedte */
 

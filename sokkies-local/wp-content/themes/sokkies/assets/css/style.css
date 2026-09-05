@@ -10783,6 +10783,12 @@ body.pdp-calc-open{
   .process.process-landing .process-collage > :nth-child(3){
     margin-top:-60px; /* zelfde ritme als img:nth-child(3) */
   }
+  /* minmax(0,…): de kaart mag zijn kolom nooit opblazen — met 1fr 1fr trok
+     de nowrap-knop de eerste kolom breed en kregen de foto's rechts nog
+     99px (1024) of 22px (390) */
+  .process.process-landing .process-collage{
+    grid-template-columns:repeat(2, minmax(0,1fr));
+  }
   .process-land-kaart h5{
     font-family:var(--roc-grotesk-condensed);
     font-weight:800;
