@@ -5914,6 +5914,11 @@ font-weight: 600;
     color:var(--text);
     margin-bottom:12px;
   }
+  /* De typenaam naast de staffelkop staat ALLEEN op mobiel (ontwerp);
+     op de bredere schermen staat de naam al als h1 boven de pagina. */
+  .prod-price-type{
+    display:none;
+  }
   /* Hergebruikt de staffel-tabel van de calculator */
   .prod-staffel{
     margin-bottom:30px;

@@ -12927,7 +12927,12 @@
   .prod-hero .breadcrumb{
     padding-top:10px;
   }
-  .prod-info h1{ order:1; margin-bottom:12px; text-align:center; }
+  .prod-info h1{ 
+    order:1; 
+    margin-bottom:12px; 
+    text-align:center;
+    width: 100%;
+   }
   .prod-info > p{ order:2; text-align:center; }
   /* Ook de blokken die een redacteur via de wysiwyg in Beschrijving kan
      zetten meenemen: zonder eigen order krijgen ze 0 en springen ze op
@@ -12938,7 +12943,34 @@
   .prod-rating{ order:3; justify-content:center; margin-left:auto; margin-right:auto; }
   .prod-gallery{ order:4; }
   .pdp-usps-main{ order:5; }
-  .prod-price-title{ order:6; margin-bottom:18px; }
+  .prod-price-title{ 
+    order:6; 
+    margin-bottom:18px; 
+    margin-top: 40px;
+  }
+  /* Ontwerp mobiel: de typenaam rechts naast Staffelprijzen, in coral en
+     kleine letters. De kop wordt hier een rij; op bredere schermen blijft
+     hij een gewoon blok en is de naam verborgen. */
+  .prod-price-title{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:10px;
+  }
+  /* Het ontwerp laat (ex. BTW) op mobiel weg; met de typenaam erbij past
+     de regel anders niet -- met de langste naam (Yoga & pilates sokken)
+     liep de kop over drie regels. Op tablet en desktop blijft hij staan. */
+  .prod-price-btw{
+    display:none;
+  }
+  .prod-price-type{
+    display:inline;
+    color:var(--coral);
+    text-transform:lowercase;
+    font-family:var(--roc-grotesk);
+    font-weight:700;
+    text-align:right;
+  }
   .staffel-table.prod-staffel{ order:7; width:100%; margin-bottom:35px; }
   .prod-actions{
     order:8;
@@ -13005,6 +13037,7 @@
   }
   .prod-info p{
     margin-bottom:20px;
+    width: 100%;
   }
   .prod-info .staffel-row{
     padding:5px 20px;

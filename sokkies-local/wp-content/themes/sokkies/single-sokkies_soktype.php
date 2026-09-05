@@ -145,7 +145,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
              </div>
 
              <?php if ( $staffel ) : $laatste = count( $staffel ) - 1; ?>
-             <span class="prod-price-title">Staffelprijzen (ex. BTW)</span>
+             <span class="prod-price-title">Staffelprijzen<span class="prod-price-btw"> (ex. BTW)</span><span class="prod-price-type"><?php echo esc_html( get_the_title() ); ?></span></span>
              <div class="staffel-table prod-staffel">
                <div class="staffel-row staffel-head-row">
                  <span>Aantal</span>
