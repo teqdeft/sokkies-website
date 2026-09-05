@@ -652,7 +652,6 @@
   }
   .coll-hero-left p{
     font-size:var(--body-lg-font-size);
-    line-height:24px;
   }
   .coll-hero-btns .cta,
   .coll-hero-btns .cta-transparent{
@@ -1754,7 +1753,6 @@
   
   .coll-hero-left p{
     font-size:var(--body-lg-font-size);
-    line-height:24px;
   }
   .coll-hero-content ul{
     gap:12px 20px;
@@ -3050,7 +3048,6 @@
  
   .coll-hero-left p{
     font-size:var(--body-lg-font-size);
-    line-height:24px;
   }
   .coll-hero-content ul{
     gap:12px 20px;
@@ -3925,11 +3922,7 @@
   }
   .dl-card{
     gap:20px;
-  }
-  .dl-card-body p{
-    line-height:21px;
-  }
-  /* ═══ Contact — GEKOPIEERD UIT DE 1280-1439-BAND (verzoek Kulwant
+  }  /* ═══ Contact — GEKOPIEERD UIT DE 1280-1439-BAND (verzoek Kulwant
      2026-08-10); band-eigen fijnslijpen volgt ═══ */
   .ct-form-grid{
     gap:20px 26px;
@@ -3998,11 +3991,7 @@
     grid-column:1;
     grid-row:2;
     max-width:none;
-  }
-  .jr-body > p{
-    line-height:22px;
-  }
-  /* print-knop sticky binnen de sectie (body-cel-overlap) */
+  }  /* print-knop sticky binnen de sectie (body-cel-overlap) */
   .jr-print{
     position:sticky;
     top:130px;
@@ -5215,7 +5204,6 @@
   }
   .coll-hero-left p{
     font-size:var(--body-lg-font-size);
-    line-height:24px;
     max-width:520px;
   }
   .coll-hero-content ul{
@@ -6414,11 +6402,7 @@
   .dl-card-img{
     flex:0 0 auto;
     width:100%;
-  }
-  .dl-card-body p{
-    line-height:21px;
-  }
-  /* ═══ Contact — GEKOPIEERD UIT DE 992-1279-BAND (verzoek Kulwant
+  }  /* ═══ Contact — GEKOPIEERD UIT DE 992-1279-BAND (verzoek Kulwant
      2026-08-10); band-eigen fijnslijpen volgt ═══ */
   .ct-form-grid{
     gap:20px 26px;
@@ -6487,11 +6471,7 @@
     grid-column:1;
     grid-row:2;
     max-width:none;
-  }
-  .jr-body > p{
-    line-height:22px;
-  }
-  .jr-print{
+  }  .jr-print{
     position:sticky;
     top:130px;
     grid-column:1;
@@ -8830,7 +8810,6 @@
   }
   .coll-hero-left p{
     font-size:var(--body-lg-font-size);
-    line-height:24px;
     max-width:520px;
   }
   .coll-hero-content ul{
@@ -10151,11 +10130,7 @@
   .dl-card-img{
     flex:0 0 auto;
     width:100%;
-  }
-  .dl-card-body p{
-    line-height:21px;
-  }
-  /* Mis niets-formulier: velden onder elkaar */
+  }  /* Mis niets-formulier: velden onder elkaar */
   .dl-niets-card{
     grid-template-columns:1fr;
   }
@@ -10229,11 +10204,7 @@
     grid-column:1;
     grid-row:2;
     max-width:none;
-  }
-  .jr-body > p{
-    line-height:22px;
-  }
-  .jr-print{
+  }  .jr-print{
     position:sticky;
     top:130px;
     grid-column:1;
@@ -12454,7 +12425,6 @@
   }
   .process-step p{
     font-size:var(--body-font-size);
-    line-height:22px;
   }
   .step-num{
     font-size:15px;
@@ -12572,7 +12542,6 @@
   }
   .coll-hero-left p{
     font-size:var(--body-lg-font-size);
-    line-height:24px;
     max-width:520px;
   }
   .coll-hero-content ul{
@@ -12599,7 +12568,10 @@
   .type-card-price{
     border-radius:15px;
   }
-  .type-card-content p,
+  /* De p volgt de gedeelde 1,41; prijs en item houden hun eigen 20px. */
+  .type-card-content p{
+    font-size:calc(var(--body-font-size) - 2px);
+  }
   .type-card-price,
   .type-card-item{
     font-size:calc(var(--body-font-size) - 2px);
@@ -13228,11 +13200,7 @@
   }
   .banner-section.configurator-banner{
     padding-bottom:40px;
-  }
-  .configurator-banner p{
-    line-height:22px;
-  }
-  /* Sticky CTA-knop onderin (mock 2026-08-06; markup vlak vóór de footer) */
+  }  /* Sticky CTA-knop onderin (mock 2026-08-06; markup vlak vóór de footer) */
   .conf-sticky{
     display:flex;
     justify-content:center;
@@ -13316,11 +13284,7 @@
   }
   .conf-works .process-inner{
     width:82%;
-  }
-  .conf-works .process-row-body p{
-    line-height:22px;
-  }
-  .conf-works .process-collage{
+  }  .conf-works .process-collage{
     width:100%;
   }
   /* collage: page-scoped via .conf-works (gedeeld met Collectie/toepassingen);
@@ -14149,11 +14113,7 @@
   .overons-values ul{
     gap:10px;
     grid-template-columns:repeat(2,1fr);
-  }
-  .overons-values ul p{
-    line-height:22px;
-  }
-  /* 17px = het h6-token op mobiel */
+  }  /* 17px = het h6-token op mobiel */
   .overons-values ul h3{
     font-size:var(--h6-font-size);
   }
@@ -14582,7 +14542,6 @@
   }
   .dl-card-body p{
     font-size:calc(var(--body-font-size) - 2px);
-    line-height:20px;
   }
   .pt-dl-ph,
   .dl-ph{
@@ -14698,11 +14657,7 @@
     grid-column:1;
     grid-row:2;
     max-width:none;
-  }
-  .jr-body > p{
-    line-height:22px;
-  }
-  .jr-print{
+  }  .jr-print{
     position:sticky;
     top:130px;
     grid-column:1;

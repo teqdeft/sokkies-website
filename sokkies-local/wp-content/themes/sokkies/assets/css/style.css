@@ -70,7 +70,9 @@ h6{
   font-size: var(--h6-font-size);
   line-height: 1;
 }
-
+p{
+  line-height:1.41;
+}
 
 /* Font Family */
 
@@ -301,9 +303,12 @@ body{
      als onleesbaar (contrast 1,2 tegen 13,8 nu). */
   .menu .menu-link .mega a.cta-light{
     color:var(--dark);
+    font-weight: 600;
+    transition: 0.2s ease-in-out;
   }
   .menu .menu-link .mega a.cta-light:hover{
     color:var(--dark);
+    transform: translateY(-2px);
   }
   .mega-usps .cta-light{ /* statisch stond de 6px op .mega-usps button */
     margin-top:6px;
@@ -806,6 +811,7 @@ font-weight: 600;
     font-family: var(--roc-grotesk);
     font-size: var(--body-font-size);
     margin-top: 18px;
+    font-weight: 600;
 }
 .hero-btns {
     display: flex;
@@ -816,6 +822,7 @@ font-weight: 600;
   color:var(--white);
   font-family: var(--roc-grotesk);
   transition: 0.2s ease-in-out;
+  font-weight: 400;
 }
 .banner-bottom-info a:hover{
   color: var(--yellow);
@@ -1041,7 +1048,6 @@ font-weight: 600;
   .impact .impact-left p{
     margin-top:32px;
     font-size: var(--body-font-size);
-    line-height:1.6;
     color:var(--text);
     padding-inline-start:36px;
   }
@@ -1257,13 +1263,14 @@ font-weight: 600;
     display:inline-flex;
     align-items:center;
     gap:8px;
+    background:var(--white);
     border:1.5px solid var(--text);
     border-radius:30px;
     padding:11px 24px;
     font-size: var(--body-font-size);
-    font-weight:500;
+    font-weight:600;
     white-space:nowrap;
-    transition:background .2s, color .2s;
+    transition:.2s ease-in-out;
     font-family: var(--roc-grotesk);
     margin-top: auto;
   }
@@ -1271,11 +1278,11 @@ font-weight: 600;
     transition:stroke .2s;
   }
   .collection-card:hover .collection-btn{
-    background:var(--text);
-    color:#fff;
+    background:var(--light-beige);
+    transform: translateY(-2px);
   }
   .collection-card:hover .collection-btn svg path{
-    stroke:#fff;
+    stroke:var(--text);
   }
   .collection-cta{
     display:flex;
@@ -1362,7 +1369,6 @@ font-weight: 600;
   }
   .process-step p{
     font-size: var(--body-font-size);
-    line-height:1.55;
   }
   .process-cta{
     display:flex;
@@ -2207,11 +2213,10 @@ font-weight: 600;
     text-transform:uppercase;
     font-size:var(--h2-font-size);
     margin-bottom:20px;
-    line-height:1;
+    line-height:0.92;
   }
   .brand-intro-inner p{
     font-size: var(--body-font-size);
-    line-height:1.6;
     margin-bottom:25px;
   }
   .brand-intro-inner h6{
@@ -2308,13 +2313,12 @@ font-weight: 600;
     font-family:var(--roc-grotesk-condensed);
     font-weight: 700;
     text-transform:uppercase;
-    line-height: 1;
+    line-height: 0.92;
     color:var(--text);
     margin-bottom:22px;
   }
   .faq-left p{
     font-size: var(--body-font-size);
-    line-height:1.4;
     color:var(--text);
     max-width:70%;
     margin-bottom:16px;
@@ -2383,7 +2387,6 @@ font-weight: 600;
   }
   .faq-a-inner p{
     font-size: var(--body-font-size);
-    line-height:1.21;
     color:var(--text);
     max-width:92%;
   }
@@ -2437,7 +2440,7 @@ font-weight: 600;
     font-weight: 700;
     text-transform:uppercase;
     font-size:calc(var(--h1-font-size) - 10px);
-    line-height:0.95;
+    line-height:1;
     margin-bottom:10px;
   }
   .cta-final-panel > .container > p{
@@ -2494,7 +2497,6 @@ font-weight: 600;
   }
   .footer-brand p{
     font-size: var(--body-font-size);
-    line-height:1.6;
     max-width:70%;
     margin-bottom:145px;
   }
@@ -2787,7 +2789,6 @@ font-weight: 600;
   }
   .coll-hero-left p{
     font-size: var(--body-font-size);
-    line-height:1.4;
     color:var(--text);
     max-width:70%;
     margin-bottom:15px;
@@ -2941,7 +2942,6 @@ font-weight: 600;
   .type-card-content p{
     font-size: var(--body-font-size);
     color:var(--text);
-    line-height:1;
     margin-bottom:20px;
   }
   .type-card-price{
@@ -3189,7 +3189,6 @@ font-weight: 600;
   }
   .process-row-body p{
     font-size: var(--body-font-size);
-    line-height:1.25;
     color:var(--text);
     max-width:375px;
   }
@@ -3311,7 +3310,6 @@ font-weight: 600;
   }
   .testimonial-card p{
     font-size: var(--body-lg-font-size);
-    line-height:1.35;
     color:var(--text);
     flex:1;
     text-align: center;
@@ -3918,7 +3916,6 @@ font-weight: 600;
   }
   .application-step p{
     font-size:var(--body-font-size);
-    line-height:1.55;
     color:var(--text);
     margin:0 auto;
   }
@@ -4153,12 +4150,17 @@ font-weight: 600;
     pointer-events:none;
     z-index:1;
   }
-  .thanks-hero .offerte-nav,
-  
-  .thanks-hero p{
+  /* De p volgt de gedeelde regelafstand van 1,41; alleen de terugkeerlink
+     houdt zijn eigen 1,55. */
+  .thanks-hero .offerte-nav{
     color:#fff;
     font-size:var(--body-font-size);
     line-height:1.55;
+    margin-bottom:8px;
+  }
+  .thanks-hero p{
+    color:#fff;
+    font-size:var(--body-font-size);
     margin-bottom:8px;
   }
   .thanks-ref{
@@ -4234,7 +4236,6 @@ font-weight: 600;
   }
   .thanks-step p{
     font-size:var(--body-font-size);
-    line-height:1.55;
     color:var(--text);
     margin:0 auto;
   }
@@ -4451,7 +4452,6 @@ font-weight: 600;
   .configurator-banner p{
     color:#fff;
     font-size:var(--body-font-size);
-    line-height:1.55;
     margin-bottom:24px;
   }
   .conf-hero-btns{
@@ -4623,7 +4623,6 @@ font-weight: 600;
   }
   .conf-check p{
     font-size:var(--body-font-size);
-    line-height:1.5;
     color:var(--text);
     margin-bottom:25px;
   }
@@ -4855,7 +4854,6 @@ font-weight: 600;
   }
   .step-card-body p{
     font-size:var(--body-font-size);
-    line-height:1.5;
     color:var(--text);
   }
   .steps-nav{
@@ -4947,7 +4945,6 @@ font-weight: 600;
   }
   .simple-hero-content p{
     font-size:var(--body-font-size);
-    line-height:1.55;
     color:var(--text);
     width: 50%;
     margin: 0px auto;
@@ -5210,7 +5207,6 @@ font-weight: 600;
   }
   .blog-body p{
     font-size:var(--body-font-size);
-    line-height:1.65;
     color:var(--text);
     margin-bottom:18px;
   }
@@ -5411,7 +5407,6 @@ font-weight: 600;
   
   .case-story-left p{
     font-size:var(--body-font-size);
-    line-height:1.6;
     color:var(--text);
     margin-bottom:20px;
   }
@@ -5821,7 +5816,6 @@ font-weight: 600;
   }
   .prod-info p{
     font-size:var(--body-font-size);
-    line-height:1.28;
     color:var(--text);
     margin-bottom:25px;
   }
@@ -5958,7 +5952,6 @@ font-weight: 600;
   }
   .promise-card p{
     font-size:var(--body-font-size);
-    line-height:1.21;
     color:var(--text);
   }
 
@@ -6064,7 +6057,6 @@ font-weight: 600;
     color:#fff;
     /* spec 2026-08-12: 17px op 1920 = exact het body-token (was body-sm) */
     font-size:var(--body-font-size);
-    line-height:1.6;
     opacity:.9;
   }
 
@@ -6407,7 +6399,6 @@ font-weight: 600;
   }
   .design-now-left p{
     font-size:var(--body-sm-font-size);
-    line-height:1.55;
     color:#6a6157;
   }
   .design-now-preview{
@@ -6530,7 +6521,6 @@ font-weight: 600;
   }
   .usecase-body p{
     font-size:var(--body-font-size);
-    line-height:1.2;
     margin-bottom:20px;
   }
   .usecase-link{
@@ -6609,7 +6599,7 @@ font-weight: 600;
     padding:10px;
     background:var(--white);
     border:1px solid #ececec;
-    border-radius:20px;
+    border-radius:25px;
     box-shadow:0 12px 32px rgba(0,0,0,.12);
   }
   .promo-float-img{
@@ -6639,7 +6629,6 @@ font-weight: 600;
   }
   .promo-float-body p{
     font-size:var(--body-font-size);
-    line-height:1.4;
     color:var(--text);
   }
   .promo-float-link{
@@ -6989,7 +6978,6 @@ font-weight: 600;
     margin:0 auto 50px;
     text-align:center;
     font-size:var(--body-font-size);
-    line-height:24px;
     color:var(--text);
   }
   .usecase-why ul{
@@ -7025,7 +7013,6 @@ font-weight: 600;
   }
   .usecase-why ul li p{
     font-size:var(--body-font-size);
-    line-height:1.5;
     color:var(--text);
   }
 
@@ -7294,7 +7281,6 @@ font-weight: 600;
   .over-ons .banner-section p{
     color:var(--white);
     font-size:var(--body-lg-font-size);
-    line-height:1.55;
     max-width:620px;
     margin:26px auto 0;
   }
@@ -7384,7 +7370,6 @@ font-weight: 600;
   }
   .overons-story-text p{
     font-size:var(--body-font-size);
-    line-height:24px;
     color:var(--text);
     margin-bottom:24px;
   }
@@ -7485,7 +7470,6 @@ font-weight: 600;
   }
   .timeline-swiper p{
     font-size:var(--body-font-size);
-    line-height:24px;
     color:var(--text);
     margin-bottom:24px;
   }
@@ -7580,7 +7564,6 @@ font-weight: 600;
   }
   .overons-values ul p{
     font-size:var(--body-font-size);
-    line-height:26px;
     color:var(--white);
   }
 
@@ -7645,7 +7628,6 @@ font-weight: 600;
   .review-card p{
     font-weight:700;
     font-size:calc(var(--body-font-size) + 3px);
-    line-height:1.4;
     color:var(--text);
     max-width:330px;
   }
@@ -7744,7 +7726,6 @@ font-weight: 600;
   }
   .duurz-text p{
     font-size:var(--body-font-size);
-    line-height:26px;
     color:var(--text);
   }
   .duurz-link{
@@ -7795,7 +7776,6 @@ font-weight: 600;
   .duurzaamheid .banner-section p{
     color:var(--white);
     font-size:var(--body-lg-font-size);
-    line-height:1.55;
     max-width:880px;
     margin:26px auto 0;
   }
@@ -7820,7 +7800,6 @@ font-weight: 600;
     font-family:var(--roc-grotesk);
     font-weight:700;
     font-size:calc(var(--body-font-size) + 9px);
-    line-height:1.3;
     color:var(--white);
     margin-bottom:28px;
   }
@@ -7912,7 +7891,6 @@ font-weight: 600;
   }
   .dz-pane-text p{
     font-size:var(--body-font-size);
-    line-height:26px;
     color:var(--white);
     margin-bottom:24px;
   }
@@ -8028,7 +8006,6 @@ font-weight: 600;
   }
   .dz-keur-card p{
     font-size:var(--body-font-size);
-    line-height:24px;
     color:var(--text);
   }
 
@@ -8057,7 +8034,6 @@ font-weight: 600;
   }
   .dz-points-text > p:first-of-type{
     font-size:var(--body-font-size);
-    line-height:24px;
     color:var(--text);
     margin-bottom:30px;
   }
@@ -8089,7 +8065,6 @@ font-weight: 600;
   .dz-points-text ol p{
     font-weight:700;
     font-size:var(--body-lg-font-size);
-    line-height:1.35;
     color:var(--text);
     padding-top:4px;
   }
@@ -8139,7 +8114,6 @@ font-weight: 600;
   }
   .pt-perks-card p{
     font-size:var(--body-font-size);
-    line-height:26px;
     color:var(--text);
   }
 
@@ -8282,7 +8256,6 @@ font-weight: 600;
   }
   .pt-otp-text p{
     font-size:var(--body-font-size);
-    line-height:26px;
     color:var(--white);
   }
 
@@ -8345,7 +8318,6 @@ font-weight: 600;
   }
   .pt-dl .container-md > p{
     font-size:var(--body-font-size);
-    line-height:24px;
     color:var(--text);
     margin-bottom:40px;
   }
@@ -8394,7 +8366,6 @@ font-weight: 600;
   }
   .pt-dl-card > p{
     font-size:var(--body-font-size);
-    line-height:24px;
     color:var(--text);
     margin:0 8px 16px;
   }
@@ -8469,7 +8440,6 @@ font-weight: 600;
   }
   .downloads .banner-section p{
     font-size:var(--body-lg-font-size);
-    line-height:1.6;
     color:var(--text);
     margin:22px auto 0;
   }
@@ -8522,7 +8492,6 @@ font-weight: 600;
   }
   .dl-card-body p{
     font-size:var(--body-font-size);
-    line-height:24px;
     color:var(--text);
     margin-bottom:16px;
   }
@@ -8608,7 +8577,6 @@ font-weight: 600;
   .contact .banner-section p{
     color:var(--white);
     font-size:var(--body-lg-font-size);
-    line-height:1.55;
     max-width:880px;
     margin:24px auto 0;
   }
@@ -8694,7 +8662,6 @@ main.contact{
   }
   .ct-form-foot p{
     font-size:calc(var(--body-font-size) - 2px);
-    line-height:1.5;
     color:var(--text);
   }
   .ct-form-foot p a{
@@ -8755,7 +8722,6 @@ main.contact{
   }
   .ct-direct p{
     font-size:var(--body-font-size);
-    line-height:1.75;
     color:var(--text);
   }
   .ct-direct a{
@@ -8872,7 +8838,6 @@ main.contact{
   }
   .jr-body > p{
     font-size:var(--body-font-size);
-    line-height:26px;
     color:var(--text);
   }
   /* Links in de lopende tekst stonden op het browserblauw; dat viel buiten
@@ -8924,7 +8889,6 @@ main.contact{
   }
   .jr-article p{
     font-size:var(--body-font-size);
-    line-height:26px;
     color:var(--text);
   }
   /* Eenvoudige juridische pagina zonder index (bv. de disclaimer): de
@@ -8991,7 +8955,6 @@ main.contact{
   }
   .er-hero p{
     font-size:var(--body-font-size);
-    line-height:1.45;
     color:var(--text);
     margin-top:12px;
   }
@@ -9083,7 +9046,6 @@ main.contact{
   }
   .ws-intro-head p{
     font-size:var(--body-lg-font-size);
-    line-height:1.55;
     color:var(--text);
     max-width:465px;
     margin:16px 0 0 auto;
@@ -9137,7 +9099,6 @@ main.contact{
   }
   .ws-card-body p{
     font-size:var(--body-font-size);
-    line-height:24px;
     color:var(--text);
   }
 
@@ -9355,7 +9316,6 @@ main.contact{
   .home .banner-section p{
     color:var(--white);
     font-size:var(--body-lg-font-size);
-    line-height:1.55;
     max-width:880px;
     margin:26px auto 0;
   }
