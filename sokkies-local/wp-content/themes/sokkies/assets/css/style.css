@@ -4561,7 +4561,7 @@ font-weight: 600;
     justify-content: center;
     position: absolute;
     left: 50%;
-    transform: translate(0, -50%);
+    transform: translate(-50%, 0);
     bottom: -22px;
     background: var(--yellow);
     border: none;
@@ -4573,6 +4573,7 @@ font-weight: 600;
     transition: 0.2s ease-in-out;
     cursor: pointer;
     text-decoration: none;
+    color: var(--dark);
   }
   .conf-preview-button:hover{
     background: #F3CF4D;
