@@ -987,6 +987,7 @@
   }
   .case-sock-right{
     width:360px;
+    top: 30%;
   }
   .brand-intro-yellow .brand-duddle-icons .dubble-left{
     width:140px;
@@ -3401,6 +3402,7 @@
   }
   .case-sock-right{
     width:210px;
+    top: 30%;
   }
   .cases.conf-designed{
     padding-top:120px;
@@ -5735,6 +5737,7 @@
   }
   .case-sock-right{
     width:210px;
+    top: 22%;
   }
   .cases.conf-designed{
     padding-top:120px;
@@ -11596,7 +11599,7 @@
   .cta-final-feet{
         width: 300px;
         left: 10%;
-        top: -54%;
+        top: -59%;
   }
   .cta-final-panel{
     padding:90px 0 70px;
@@ -14962,7 +14965,10 @@
     max-height:90vh;
     padding: 30px;
   }
-  
+  .usecases .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 }
 
 /* ===================================================================
