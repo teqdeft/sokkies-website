@@ -860,9 +860,16 @@
   }
   .prod-info .staffel-row.staffel-head-row{
     padding:6px 20px;
+    height: 32px;
+  }
+  .prod-price-title {
+    margin-bottom: 8px;
+  }
+  .prod-staffel .staffel-row:not(.staffel-head-row):not(.is-active) {
+    padding: 6px 20px;
   }
   .prod-actions .cta{
-    height:49px;
+    height:48px;
     display:inline-flex;
     align-items:center;
     justify-content:center;

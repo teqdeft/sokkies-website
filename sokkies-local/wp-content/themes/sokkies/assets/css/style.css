@@ -881,7 +881,7 @@ font-weight: 600;
 
   /* Navigation arrows */
   .gallery-nav{
-    display:flex;
+    display:none;
     justify-content:center;
     gap:10px;
     margin-top:6px;
@@ -897,8 +897,21 @@ font-weight: 600;
     display:flex;align-items:center;justify-content:center;
     transition:all .2s;
   }
-  /* QA #12 (2026-08-13): echte hover — donkere knop + witte pijl; geldt
-     voor alle pijl-nav-families (cases-nav heeft z'n eigen witte hover) */
+  /* Hover op de pijl-nav-families (cases-nav heeft z'n eigen witte hover).
+     QA #12 van 2026-08-13 vroeg om een donkere knop met een witte pijl;
+     dat is later omgedraaid naar een beige knop met een donkere pijl plus
+     een lichte sprong omhoog. De tekst hierboven beschreef nog de oude
+     staat en is bijgewerkt, zodat commentaar en code weer hetzelfde
+     zeggen. */
+  .gallery-nav button,
+  .collection-nav button,
+  .gift-nav button,
+  .designed-nav button,
+  .steps-nav button,
+  .timeline-nav button,
+  .reviews-nav button{
+    transition: 0.2s ease-in-out;
+  }
   .gallery-nav button:hover,
   .collection-nav button:hover,
   .gift-nav button:hover,
@@ -906,8 +919,9 @@ font-weight: 600;
   .steps-nav button:hover,
   .timeline-nav button:hover,
   .reviews-nav button:hover{
-    background:var(--dark);
+    background:var(--light-beige);
     border-color:var(--dark);
+    transform: translateY(-2px);
   }
   .gallery-nav button:hover svg path,
   .collection-nav button:hover svg path,
@@ -916,7 +930,7 @@ font-weight: 600;
   .steps-nav button:hover svg path,
   .timeline-nav button:hover svg path,
   .reviews-nav button:hover svg path{
-    stroke:#fff;
+    stroke:var(--dark);
   }
   .gallery-nav button:disabled{
     opacity:.4;
@@ -1784,6 +1798,9 @@ font-weight: 600;
     display:flex;
     justify-content:center;
     margin-top:30px;
+  }
+  .calc-middle-cta{
+    display: none;
   }
 
   /* ====================== Maak je sokkengeschenk compleet ====================== */
@@ -10013,9 +10030,10 @@ main.contact{
   opacity:.65;
 }
 /* de balk is zonder menu een stuk lager; het logo houdt zijn maat */
-.navbar-mini{
-  padding-top:18px;
-  padding-bottom:18px;
+.navbar.navbar-mini{
+  padding-top:13px;
+  padding-bottom:13px;
+  justify-content: space-between;
 }
 
 /*═════════════════════════════════════════
