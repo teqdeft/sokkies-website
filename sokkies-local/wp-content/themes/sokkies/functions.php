@@ -795,14 +795,19 @@ add_filter( 'gettext_with_context', function ( $vertaald, $origineel, $context, 
  *
  * Bewust op de SLUG en niet op een CMS-veld zoals footer_variant: een
  * veldwaarde staat in de database en die deployt niet mee, dus live zou de
- * volledige kop houden tot iemand het daar aanzet. Sample-request en bedankt
- * tonen in het XD dezelfde kop maar staan er nog niet bij, omdat alleen de
- * offertepagina gevraagd is — een slug toevoegen (of de filter gebruiken) is
- * genoeg. Contact heeft wel de mini-FOOTER maar houdt het volledige menu, dus
- * meeliften op footer_variant kan niet.
+ * volledige kop houden tot iemand het daar aanzet. Naast de offertepagina
+ * staan nu ook de drie bedankpagina-s in de lijst: die horen bij dezelfde
+ * trechter en tonen in het XD dezelfde kop. SAMPLE-REQUEST staat er nog
+ * NIET bij — dat is een formulierpagina en is niet gevraagd; een slug
+ * toevoegen (of de filter gebruiken) is genoeg. Contact heeft wel de
+ * mini-FOOTER maar houdt het volledige menu, dus meeliften op
+ * footer_variant kan niet.
  */
 function sokkies_mini_header() {
-	$paginas = apply_filters( 'sokkies_mini_header_paginas', array( 'offerte' ) );
+	$paginas = apply_filters(
+		'sokkies_mini_header_paginas',
+		array( 'offerte', 'bedankt', 'bedankt-contact', 'bedankt-sample' )
+	);
 	return is_page( $paginas );
 }
 
