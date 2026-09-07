@@ -328,7 +328,7 @@ function sokkies_hoofdmenu() {
 		// Fallback = de statische nav uit htmlv, 1:1.
 		return array(
 			array( 'label' => 'Home',            'url' => home_url( '/' ),               'mega' => false, 'alleen_mobiel' => true,  'actief' => is_front_page() ),
-			array( 'label' => 'Sokkencollectie', 'url' => home_url( '/collectie/' ),     'mega' => true,  'alleen_mobiel' => false, 'actief' => is_page( 'collectie' ) ),
+			array( 'label' => 'Sokkencollectie', 'url' => home_url( '/collectie/' ),     'mega' => true,  'alleen_mobiel' => false, 'actief' => is_page( 'collectie' ) || is_singular( 'sokkies_soktype' ) ),
 			array( 'label' => 'Configurator',    'url' => home_url( '/configurator/' ),  'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( 'configurator' ) ),
 			array( 'label' => 'Inspiratie',      'url' => '#',                           'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( array( 'toepassingen', 'reviews-en-cases', 'downloads', 'blogs' ) ) || is_singular( 'sokkies_blog' ) ),
 			array( 'label' => 'Werkwijze',       'url' => home_url( '/werkwijze/' ),     'mega' => false, 'alleen_mobiel' => false, 'actief' => is_page( 'werkwijze' ) ),
@@ -348,6 +348,16 @@ function sokkies_hoofdmenu() {
 			$huidig = $overzicht->ID;
 		}
 	}
+
+		// Zelfde verhaal voor een productpagina: die hoort bij Sokkencollectie.
+		// Zonder dit licht er op /collectie/{soktype}/ geen enkel menu-item op,
+		// terwijl het ontwerp daar juist het onderstreepte item toont.
+		if ( is_singular( 'sokkies_soktype' ) ) {
+			$overzicht = get_page_by_path( 'collectie' );
+			if ( $overzicht ) {
+				$huidig = $overzicht->ID;
+			}
+		}
 
 	$items  = array();
 

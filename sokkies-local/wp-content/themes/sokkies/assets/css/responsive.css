@@ -6585,6 +6585,16 @@
    staat op 1280.)
    =================================================================== */
 @media (min-width:768px) and (max-width:1279px){
+  /* Geen corale streep in de lade / het telefoonmenu: die is alleen voor
+     het horizontale menu (ontwerp desktop). */
+  .menu > .menu-link > a:hover,
+  .menu > .menu-link.active > a{
+    text-decoration:none;
+  }
+  /* de lade hield zijn corale actieve item */
+  .menu .menu-link.active > a{
+    color:var(--coral);
+  }
   /* ===== Mobiel menu (hamburger + subpaneel, 768-XD 2026-07-28) ===== */
   /* burger = losse donkere cirkel rechts naast de globe (buiten de pill);
      navbar wordt static zodat burger en drawer op .nav-wrap ankeren */
@@ -6784,6 +6794,12 @@
    767
    =================================================================== */
 @media (max-width:767px){
+  /* Geen corale streep in de lade / het telefoonmenu: die is alleen voor
+     het horizontale menu (ontwerp desktop). */
+  .menu > .menu-link > a:hover,
+  .menu > .menu-link.active > a{
+    text-decoration:none;
+  }
   .lang-list{
     z-index: -1;
     padding: 25px 4px 5px;

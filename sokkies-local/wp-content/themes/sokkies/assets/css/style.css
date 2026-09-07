@@ -315,8 +315,21 @@ body{
   }
   /* actieve pagina in het menu (li krijgt per pagina de class "active") */
   .menu .menu-link.active > a{
-    color:var(--coral);
-    font-weight: 500;
+    color:var(--text);
+  }
+  /* Ontwerp: huidige pagina en hover krijgen een corale streep ONDER de
+     tekst; de tekst zelf blijft donker (was coral). Alleen op het
+     horizontale menu - de selector pakt daarom de directe link van het
+     item, zodat de links in het uitklapmenu er niet ook een krijgen. De
+     caret staat op inline-block en valt daardoor buiten de streep, net
+     als in het ontwerp. De lade- en telefoonmenu-s zetten hem uit; zie
+     responsive.css. */
+  .menu > .menu-link > a:hover,
+  .menu > .menu-link.active > a{
+    text-decoration:underline;
+    text-decoration-color:var(--coral);
+    text-decoration-thickness:2px;
+    text-underline-offset:8px;
   }
   .caret{font-size:10px;margin-left:3px;display:inline-block;transition:transform .25s;}
   .has-mega:hover .caret{transform:rotate(180deg);}
