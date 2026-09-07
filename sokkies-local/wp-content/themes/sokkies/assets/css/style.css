@@ -294,7 +294,6 @@ body{
   }
   .menu .menu-link a:hover{
     color:var(--text);
-    font-weight: 500;
 }
   /* WP-toevoeging 2026-08-20: 'Bekijk collectie' in de mega is in WP een <a>
      (statisch een <button>-stub) — de menu-link-tekstregels (0-2-1) wonnen
@@ -328,8 +327,8 @@ body{
   .menu > .menu-link.active > a{
     text-decoration:underline;
     text-decoration-color:var(--coral);
-    text-decoration-thickness:2px;
-    text-underline-offset:8px;
+    text-decoration-thickness:1.5px;
+    text-underline-offset:11px;
   }
   .caret{font-size:10px;margin-left:3px;display:inline-block;transition:transform .25s;}
   .has-mega:hover .caret{transform:rotate(180deg);}
