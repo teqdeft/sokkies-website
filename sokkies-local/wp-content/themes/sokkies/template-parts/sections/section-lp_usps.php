@@ -41,8 +41,8 @@ $assets = get_template_directory_uri() . '/assets/media/';
   <?php if ( 'geel' === $stijl ) : ?>
   <?php /* De sok-doodles links en rechts staan los van de inhoud en zijn
            decoratief; ze verdwijnen op smalle schermen via de CSS. */ ?>
-  <img class="lp-usps-duddle lp-usps-duddle-l" src="<?php echo esc_url( $assets ); ?>sock-duddle-red-l.png" alt="" aria-hidden="true">
-  <img class="lp-usps-duddle lp-usps-duddle-r" src="<?php echo esc_url( $assets ); ?>sock-duddle-red-r.png" alt="" aria-hidden="true">
+  <img class="lp-usps-duddle lp-usps-duddle-l" src="<?php echo esc_url( $assets ); ?>red-sock-shape-left.svg" alt="" aria-hidden="true">
+  <img class="lp-usps-duddle lp-usps-duddle-r" src="<?php echo esc_url( $assets ); ?>red-sock-shape-right.svg" alt="" aria-hidden="true">
   <?php endif; ?>
 
   <div class="container">

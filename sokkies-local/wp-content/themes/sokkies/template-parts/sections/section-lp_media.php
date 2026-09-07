@@ -33,7 +33,7 @@ if ( 'rechts' === $positie ) { $klassen .= ' lp-media-omgekeerd'; }
 if ( 'beige' === $stijl )    { $klassen .= ' lp-media-beige'; }
 ?>
 <section class="<?php echo esc_attr( $klassen ); ?>">
-  <div class="container">
+  <div class="container-md">
     <div class="lp-media-inner">
 
       <div class="lp-media-foto">

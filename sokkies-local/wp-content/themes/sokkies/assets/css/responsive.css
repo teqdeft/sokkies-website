@@ -332,7 +332,15 @@
   }
   .mega {
     padding: 30px;
-    border-radius: 15px 15px 45px 45px;
+    border-radius: 15px 15px 35px 35px;
+    width: calc(100% + 78px);
+    grid-template-columns: auto 29.5% auto;
+  }
+  .mega-usps span {
+    font-size: 15px;
+  }
+  .prod-card .prod-price {
+    font-size: 14px;
   }
   .prod-card .prod-img-card {
     height: 150px;
@@ -1275,6 +1283,9 @@
   .pt-otp-legs {
     width: 490px;
     top: -150px;
+  }
+  .process.process-landing:after {
+    height: 1111px;
   }
 }
 
@@ -2473,6 +2484,7 @@
   }
   .testimonial-card {
     height: 250px;
+    padding: 35px;
   }
   .pt-partners-grid {
     grid-template-columns: repeat(5, 1fr);
@@ -2480,6 +2492,22 @@
   .pt-otp-legs {
     width: 490px;
     top: -150px;
+  }
+  .lp-usps-duddle-l {
+    left: 24px;
+    top: -26%;
+    width: 24%;
+  }
+  .lp-usps-duddle-r {
+    right: 24px;
+    top: -32%;
+    width: 21%;
+  }
+  .lp-usps-grid {
+    width: 88%;
+  }
+  .process.process-landing:after {
+    height: 1000px;
   }
 }
 
@@ -4157,6 +4185,19 @@
   }
   .impact-case-right {
     height: 410px;
+  }
+  .lp-usps-duddle-l {
+    left: 24px;
+    top: -26%;
+    width: 24%;
+  }
+  .lp-usps-duddle-r {
+    right: 24px;
+    top: -32%;
+    width: 21%;
+  }
+  .lp-usps-grid {
+    width: 100%;
   }
   }
 
@@ -6579,6 +6620,30 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
+
+  .lp-usps-duddle-l {
+    left: 24px;
+    top: -26%;
+    width: 24%;
+  }
+  .lp-usps-duddle-r {
+    right: 24px;
+    top: -32%;
+    width: 21%;
+  }
+  .lp-usps-grid {
+    width: 100%;
+  }
+  .lp-usps-duddle-l {
+    left: 24px;
+    top: -13%;
+    width: 31%;
+    }
+  .lp-usps-duddle-r {
+    right: 24px;
+    top: -13%;
+    width: 24%;
+  }
 }
 
 /* ===================================================================
@@ -6858,6 +6923,34 @@
   }
   .process-row-body h3 {
     font-size: var(--h6-font-size);
+  }
+  menu .menu-link .type-item{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .lp-usps-duddle-l {
+    left: 24px;
+    top: -26%;
+    width: 24%;
+  }
+  .lp-usps-duddle-r {
+    right: 24px;
+    top: -7%;
+    width: 21%;
+  }
+  .lp-usps-grid {
+    width: 100%;
+  }
+  .lp-usps-duddle-l {
+    left: 24px;
+    top: -7%;
+    width: 31%;
+    }
+  .lp-usps-duddle-r {
+    right: 24px;
+    top: -13%;
+    width: 24%;
   }
 
 }
@@ -12812,7 +12905,7 @@
   .testimonial-card{
     padding:30px;
     border-radius:20px;
-    height:225px;
+    height:100%;
   }
   .testimonial{
     padding-bottom:80px;
@@ -15316,6 +15409,14 @@
    Staat achteraan het bestand zodat het van de bandregels hierboven wint.
    =================================================================== */
 @media (max-width:991px){
+  /* De foto in de vragen-sectie is een desktopelement: hij hangt absoluut
+     linksonder en zou hier over het laatste vraagitem heen vallen (gemeten
+     op 390: 42px overlap). Vanaf 992px houdt de linkerkolom onderaan ruimte
+     vrij, daaronder niet. Er is voor tablet en telefoon geen ontwerp met
+     deze foto, dus daar blijft hij weg. */
+  .landing .faq::after{
+    display:none;
+  }
   .compare-table thead th:first-child,
   .compare-table tbody th{
     position:sticky;
@@ -15388,7 +15489,7 @@
 }
 
 @media (min-width:992px) and (max-width:1279px){
-  .lp-hero{ padding:45px 0 70px; }
+  .lp-hero{ padding:45px 0 0px; }
   .lp-hero-inner{ gap:35px; }
   .lp-hero-gallery{ height:400px; }
   .lp-hero .coll-hero-gallery{ height:520px; top:-50px; }
@@ -15404,6 +15505,14 @@
   .process-land-kaart{ padding:24px 18px; }
   .process-land-kaart .cta{ white-space:normal; padding:12px 18px; }
   .process-land-kaart h5{ font-size:34px; }
+
+  .process.process-landing .process-left li{
+    justify-content: flex-start;
+    gap: 61px;
+  }
+  .process.process-landing .process-split-inner {
+      gap: 50px;
+  }
 }
 
 @media (min-width:768px) and (max-width:991px){
@@ -15444,19 +15553,32 @@
     grid-template-columns:minmax(0,1fr);
     gap:32px;
   }
-  .lp-hero-text > p{ max-width:none; margin-bottom:24px; }
+  .lp-hero-text h1 {
+    text-align: center;
+  }
+  .lp-hero-text > p{ 
+    max-width:none; 
+    margin-bottom:24px;
+    text-align: center; 
+  }
   .lp-hero-btns{ margin-bottom:22px; }
-  .lp-hero-btns .cta{ display:inline-block; }
-  .lp-hero-text{ padding:60px 0 6px; }
+  .lp-hero-btns .cta{ 
+    display:inline-block;
+    padding: 11px 32px;
+   }
+  .lp-hero-text{ padding:110px 0 6px; }
   /* de galerij volgt hier de mobiele maten van .coll-gallery-main */
   .lp-hero-gallery{ height:420px; margin-bottom:0; }
-
+  
   .lp-media{ padding:48px 0; }
   .lp-media:has(+ .lp-usps){ padding-bottom:calc(13% + 40px); }
   .lp-media-inner{
     grid-template-columns:minmax(0,1fr);
     gap:26px;
   }
+  .process.process-landing .process-collage > :nth-child(3) {
+    margin-top: 0px;
+    }
   .lp-media-omgekeerd .lp-media-foto{ order:0; }
   .lp-media-foto img{ border-radius:18px; }
   .lp-media-link{ margin-top:18px; }
@@ -15491,12 +15613,21 @@
   }
   .process-land-kaart .cta{ white-space:normal; }
   .process.process-landing{ padding-bottom:150px; }
-  .process.process-landing:after{ height:110px; } /* het SVG-pad schaalt mee over de volle breedte */
+  .process.process-landing:after{ 
+    height: 70%;
+    background-size: auto;
+    } /* het SVG-pad schaalt mee over de volle breedte */
 
   .lp-keur{ padding:45px 0; }
   .lp-keur-inner > p{ margin-bottom:26px; }
   .lp-keur-logos{ gap:26px; }
   .lp-keur-logos img{ height:48px; max-width:110px; }
+  .lp-hero-text{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+  }
 }
 
 @media (max-width:520px){

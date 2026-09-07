@@ -381,7 +381,7 @@
           768:  { slidesPerView: 2.1,  spaceBetween: 20, centeredSlides: false, loop: false, },
           /* 2026-08-13: 2 vol + 50% van kaart 3 (was 3.5) */
           992:  { slidesPerView: 2.5,  spaceBetween: 20 },
-          1200:  { slidesPerView: 3.5,  spaceBetween: 20 },
+          1200:  { slidesPerView: 3,  spaceBetween: 20 },
           1439:  { slidesPerView: 3.5,  spaceBetween: 20 },
           1680: { slidesPerView: 4,    spaceBetween: 20, loop: false, centeredSlides: false },
         },

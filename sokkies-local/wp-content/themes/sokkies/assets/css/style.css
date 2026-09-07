@@ -15,14 +15,6 @@
     --cyan-bright:#7CE7F1;
     --input-border:#c9c2ba;
     
-    /* --roc-grotesk-regular: 'Roc Grotesk Regular', sans-serif;
-    --roc-grotesk-medium: 'Roc Grotesk Medium', sans-serif;
-    --roc-grotesk-bold: 'Roc Grotesk Bold', sans-serif;
-    --roc-grotesk-CondensedMedium: 'Roc Grotesk CondensedMedium', sans-serif;
-    --roc-grotesk-ExtraBold: 'Roc Grotesk ExtraBold', sans-serif;
-    --roc-grotesk-CondensedBold: 'Roc Grotesk CondensedBold', sans-serif;
-    --roc-grotesk-CondensedExtraBold: 'Roc Grotesk CondensedExtraBold', sans-serif;
-    --roc-grotesk-CondensedBlack: 'Roc Grotesk CondensedBlack', sans-serif; */
     
     /* Font Family */
     --roc-grotesk: "roc-grotesk", sans-serif;
@@ -82,73 +74,6 @@ p{
   box-sizing: border-box;
 }
 
-/* @font-face {
-    font-family: 'Roc Grotesk Regular';
-    src: url('../fonts/RocGrotesk-Regular.woff2') format('woff2'),
-        url('../fonts/RocGrotesk-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Roc Grotesk Medium';
-    src: url('../fonts/RocGrotesk-Medium.woff2') format('woff2'),
-        url('../fonts/RocGrotesk-Medium.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Roc Grotesk Bold';
-    src: url('../fonts/RocGrotesk-Bold.woff2') format('woff2'),
-        url('../fonts/RocGrotesk-Bold.woff') format('woff');
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Roc Grotesk ExtraBold';
-    src: url('../fonts/RocGrotesk-ExtraBold.woff2') format('woff2'),
-        url('../fonts/RocGrotesk-ExtraBold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'Roc Grotesk CondensedMedium';
-    src: url('../fonts/RocGrotesk-CondensedMedium.woff2') format('woff2'),
-        url('../fonts/RocGrotesk-CondensedMedium.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'Roc Grotesk CondensedBold';
-    src: url('../fonts/RocGrotesk-CondensedBold.woff2') format('woff2'),
-        url('../fonts/RocGrotesk-CondensedBold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'Roc Grotesk CondensedExtraBold';
-    src: url('../fonts/RocGrotesk-CondensedExtraBold.woff2') format('woff2'),
-        url('../fonts/RocGrotesk-CondensedExtraBold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'Roc Grotesk CondensedBlack';
-    src: url('../fonts/RocGrotesk-CondensedBlack.woff2') format('woff2'),
-        url('../fonts/RocGrotesk-CondensedBlack.woff') format('woff');
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap;
-} */
 @font-face {
     font-family: 'Juniper Bay';
     src: url('../fonts/JuniperBay-Regular.woff2') format('woff2'),
@@ -173,6 +98,11 @@ body{
 }
 .container-md{
     max-width: min(1430px, 100% - 40px);
+    width: 100%;
+    margin: 0px auto;
+}
+.container-sm{
+    max-width: min(1140px, 100% - 40px);
     width: 100%;
     margin: 0px auto;
 }
@@ -10540,10 +10470,10 @@ body.pdp-calc-open{
     text-transform:uppercase;
     line-height:0.86;
     color:inherit;
-    margin-bottom:22px;
+    margin-bottom:15px;
   }
   .lp-hero-text > p{
-    font-size:var(--body-lg-font-size);
+    font-size:var(--body-font-size);
     line-height:1.55;
     color:inherit;
     /* zo breed als de kop, niet smaller (ontwerp) */
@@ -10563,6 +10493,7 @@ body.pdp-calc-open{
   .lp-hero .rating-outer{
     justify-content:flex-start;
     margin:0;
+    padding-top: 15px;
   }
 
   /* De galerij is de .coll-hero-gallery van de paginakop met fotokolommen
@@ -10575,7 +10506,7 @@ body.pdp-calc-open{
      tegen de headerpill aan (melding Kulwant met schermafdruk). */
   .lp-hero-gallery{
     height:clamp(560px, 34vw, 660px);
-    overflow:hidden;
+    overflow:visible;
   }
   .lp-hero .coll-hero-gallery{
     height:calc(100% + 140px);
@@ -10677,7 +10608,7 @@ body.pdp-calc-open{
 /* ===== Pluspunten-raster op geel ===== */
   .lp-usps{
     background:var(--yellow);
-    padding:40px 0 60px;
+    padding:40px 0 80px;
     position:relative;
     /* eigen stapelcontext, zodat de ONDERSTE golf over de volgende sectie
        heen valt in plaats van erachter te verdwijnen — die sectie heeft een
@@ -10703,21 +10634,23 @@ body.pdp-calc-open{
     pointer-events:none;
   }
   .lp-usps:before{
-    bottom:100%;
+    bottom:99%;
     /* bewust vlakker dan de eigen verhouding (27%): op volle hoogte steekt
        de golf ~390px de vorige sectie in en loopt daar over de tekst heen */
     padding-top:13%;
-    background-image:url(../media/bg-yellow-shapeTop.png);
+    background-image:url(../media/landing-yellow-bgTop.png);
   }
   /* Onderrand: bg-yellow-shapeBottom.png uitgerekt over de breedte werd een
      rechte diagonaal met een knik rechts (melding Kulwant). Nu een getekend
      pad in de gele kleur: links hoog, in een zachte boog naar rechtsonder,
      steiler links en vlakker rechts — de rand uit het ontwerp. */
-  .lp-usps:after{
+  /* .lp-usps:after{
     top:100%;
     padding-top:6.15%;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 100' preserveAspectRatio='none'><path d='M0 0 L1000 0 L1000 100 C 660 96 330 34 0 0 Z' fill='%23FAE16E'/></svg>");
-  }
+    background-image:url(../media/landing-yellow-bgBottom.png);
+    background-size: 100%;
+    background-position: bottom;
+  } */
   .lp-usps-wit{ background:var(--white); }
   .lp-usps-wit:before,
   .lp-usps-wit:after{ display:none; }
@@ -10732,16 +10665,14 @@ body.pdp-calc-open{
      witte blok erboven en half op het geel, links en rechts in de marge. */
   .lp-usps-duddle{
     position:absolute;
-    width:260px;
+    width:380px;
     height:auto;
     z-index:0;
     pointer-events:none;
   }
-  .lp-usps-duddle-l{ left:24px;  top:-200px; }
-  .lp-usps-duddle-r{ right:24px; top:-250px; }
-  @media (max-width:1299px){
-    .lp-usps-duddle{ display:none; }
-  }
+  .lp-usps-duddle-l{ left:24px;  top:-34%; }
+  .lp-usps-duddle-r{ right:24px; top:-48%; }
+  
   .lp-usps h2{
     font-family:var(--roc-grotesk-condensed);
     font-weight:700;
@@ -10750,7 +10681,7 @@ body.pdp-calc-open{
     line-height:1.1;
     color:var(--text);
     text-align:center;
-    margin-bottom:50px;
+    margin-bottom:30px;
   }
   /* volle containerbreedte, zoals elke sectie op de site (Kulwant: de
      smallere 1140px-kolom viel uit de toon naast de andere pagina's) */
@@ -10758,6 +10689,8 @@ body.pdp-calc-open{
     display:grid;
     grid-template-columns:repeat(3, minmax(0,1fr));
     gap:50px 80px;
+    width: 66.3%;
+    margin: 0px auto;
   }
   /* maten 1:1 uit het ontwerp: icoonvak 120px, titel 22px */
   .lp-usp-icoon{
@@ -10796,7 +10729,7 @@ body.pdp-calc-open{
 
 /* ===== Stappenblok, landingsvariant (rood vlak + actiekaart) ===== */
   .process.process-landing{
-    background:var(--coral);
+    background:transparent;
     padding:80px 0 90px;
   }
   /* staat het gele vlak er direct boven, dan hangt zijn onderste golf over
@@ -10819,7 +10752,7 @@ body.pdp-calc-open{
     margin-bottom:26px;
   }
   .process.process-landing .process-chev svg path{
-    fill:var(--yellow);
+    fill:var(--white);
   }
   /* De scheidingslijnen zijn in het ontwerp licht (wit op het rood). De
      basisrij tekent ze met border-TOP; de eerdere override zat op bottom
@@ -10875,24 +10808,38 @@ body.pdp-calc-open{
      (witte) blok inleidt — getekend, geen afbeelding nodig */
   .process.process-landing{
     position:relative;
-    overflow:hidden;
-    padding-bottom:230px;
+    overflow:visible;
+    padding-bottom:40px;
+  }
+  .landing .cards-suggestion{
+    padding-top: 0;
   }
   /* De rand uit het ontwerp: links ±190px hoog, dan een zachte holle boog
      die rond de helft van de breedte de onderrand raakt en verder vlak
      loopt. Een border-radius-ellips gaf een bolle bult in de hoek (melding
      Kulwant); dit pad tekent de curve zelf en schaalt met de breedte. */
+  .process.process-landing:before{
+    content:'';
+    position:absolute;
+    left:0;
+    right:0;
+    top: 0;
+    height:190px;
+    background:var(--yellow);
+    background-size:100% 100%;
+    pointer-events:none;
+  }
   .process.process-landing:after{
     content:'';
     position:absolute;
     left:0;
     right:0;
-    bottom:-1px;
-    height:190px;
+    top:0px;
+    height:1271px;
     /* startpunt (0,0) met meteen een dalende helling — een vlakke start gaf
        een S-vorm met een bultje links (melding Kulwant); het pad zakt
        gelijkmatig en loopt bij ±50% tangentieel in de onderrand uit */
-    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 190' preserveAspectRatio='none'><path d='M0 0 C 150 75 330 190 520 190 L1000 190 L0 190 Z' fill='%23ffffff'/></svg>") no-repeat left bottom;
+    background:url(../media/bg-landing-red.png);
     background-size:100% 100%;
     pointer-events:none;
   }
@@ -11003,6 +10950,33 @@ body.pdp-calc-open{
   }
 
 /* ===== Citaat op geel vlak ===== */
+  /* Landingspagina: de foto linksonder in de vragen-sectie (ontwerp).
+     Ligt tegen de linkerrand van het scherm en dus buiten de container;
+     het beige in de foto loopt door in de sectie, waardoor die rand niet
+     opvalt. Alleen op deze pagina: de vragen-sectie staat ook op home,
+     collectie en werkwijze en heeft daar geen beeld.
+     De linkerkolom houdt onderaan al ruimte vrij (de regel die voorkomt
+     dat de voetjes van het actieblok over de tekst vallen), dus de foto
+     komt niet tegen de tekst aan. */
+  .landing .faq{
+    position:relative;
+  }
+  .landing .faq::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    /* Krimpt mee met het scherm. Met een vaste 580px liep de foto op 1100
+       nog 71px over de linkerrand van het accordeon heen; 44vw houdt hem
+       op elke breedte links van de vragen. */
+    width:min(580px, 44vw);
+    aspect-ratio:762 / 570;
+    background:url(../media/lg-faq-landing.png) no-repeat left bottom / contain;
+    pointer-events:none;
+  }
+  .landing .cta-final-feet {
+      display: none;
+  }
   .fp-citaat{
     background:var(--yellow);
     position:relative;
