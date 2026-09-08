@@ -11039,7 +11039,7 @@
     padding-left: 20px;
   }
   .collection-img {
-    height: 295px;
+    height: 200px;
   }
   .collection-name {
     font-size: 17px;
@@ -11278,9 +11278,12 @@
     top:50%;
     transform:translateY(-50%);
   }
-  .sub-open .nav-burger {
-      top: 0%;
-  }
+  /* De sluitknop houdt in het subpaneel dezelfde plek als de burger in de
+     kopbalk. Er stond hier top:0%, maar de translateY(-50%) hierboven bleef
+     staan: de knop schoof daardoor 22px omhoog en lag half over de topbalk
+     (de balk staat op scrollpositie 0 op y=30 door de body-padding). Het
+     paneel scrolt zelf (.menu is fixed met overflow-y:auto en de
+     paginascroll ligt vast), dus de knop staat hiermee vast bovenin. */
   .navbar{
     position:static;
     justify-content:flex-start;
@@ -12618,7 +12621,7 @@
     gap:10px;
   }
   .collection-card{
-    flex:0 0 75%;
+    flex:0 0 220px;
   }
   .collection-cta .cta-light{
     display:flex;
@@ -12687,9 +12690,7 @@
      sheet schuift mee naar de bovenrand. Body krijgt dezelfde 30px als
      padding zodat de balk-controls niet omhoog springen, en gaat op
      overflow:hidden — alleen het menu zelf scrollt nog. */
-  body:has(.navbar.menu-open) .topbar{
-    display:none;
-  }
+
   body:has(.navbar.menu-open){
     padding-top:30px;
     overflow:hidden;
