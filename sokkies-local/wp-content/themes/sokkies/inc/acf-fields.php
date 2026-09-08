@@ -158,7 +158,7 @@ add_action( 'acf/init', function () {
 								'return_format' => 'array',
 								'preview_size'  => 'thumbnail',
 								'insert'        => 'append',
-								'instructions'  => 'Optioneel — de schuine fotoslider zoals op de homepage. Foto\'s hier plaatsen zet hem aan.',
+								'instructions'  => 'Optioneel — de schuine fotoslider zoals op de homepage. Foto\'s hier plaatsen zet hem aan. Aanbevolen: 850 x 1120 px per foto (staand, 3:4).',
 							),
 						),
 					),
@@ -233,7 +233,7 @@ add_action( 'acf/init', function () {
 								'return_format' => 'array',
 								'preview_size'  => 'thumbnail',
 								'insert'        => 'append',
-								'instructions'  => 'Verticale fotoslider links. Leeg = standaardset. 4 foto\'s is het ritme van het origineel.',
+								'instructions'  => 'Verticale fotoslider links. Leeg = standaardset. 4 foto\'s is het ritme van het origineel. Aanbevolen: 910 x 1160 px per foto (staand, 4:5).',
 							),
 							array(
 								'key'           => 'field_collhero_fotos_2',
@@ -243,7 +243,7 @@ add_action( 'acf/init', function () {
 								'return_format' => 'array',
 								'preview_size'  => 'thumbnail',
 								'insert'        => 'append',
-								'instructions'  => 'Verticale fotoslider rechts (loopt tegengesteld). Leeg = standaardset.',
+								'instructions'  => 'Verticale fotoslider rechts (loopt tegengesteld). Leeg = standaardset. Aanbevolen: 910 x 1160 px per foto (staand, 4:5).',
 							),
 						),
 					),
@@ -648,7 +648,7 @@ add_action( 'acf/init', function () {
 								'button_label' => 'Stap toevoegen',
 								'instructions' => 'Leeg = de vier standaardstappen. Nummers (01, 02, …) tellen vanzelf.',
 								'sub_fields'   => array(
-									array( 'key' => 'field_pr_stap_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Vierkant icoon (SVG of PNG).' ),
+									array( 'key' => 'field_pr_stap_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Vierkant icoon (SVG of PNG). Aanbevolen: 200 x 200 px, of een SVG.' ),
 									array( 'key' => 'field_pr_stap_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_pr_stap_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
 								),
@@ -760,7 +760,7 @@ add_action( 'acf/init', function () {
 								'return_format' => 'array',
 								'preview_size'  => 'thumbnail',
 								'insert'        => 'append',
-								'instructions'  => '4 foto\'s is het ritme van het origineel. Leeg = de standaardset van de gekozen variant.',
+								'instructions'  => '4 foto\'s is het ritme van het origineel. Leeg = de standaardset van de gekozen variant. Aanbevolen: 830 x 830 px per foto (vierkant).',
 							),
 						),
 					),
@@ -803,7 +803,7 @@ add_action( 'acf/init', function () {
 								'return_format' => 'array',
 								'preview_size'  => 'thumbnail',
 								'insert'        => 'append',
-								'instructions'  => 'Leeg = standaardset. Foto\'s worden automatisch over de 3 kolommen verdeeld.',
+								'instructions'  => 'Leeg = standaardset. Foto\'s worden automatisch over de 3 kolommen verdeeld. Aanbevolen: 580 x 840 px per foto (staand, 7:10).',
 							),
 							array(
 								'key'           => 'field_im_chips_tonen',
@@ -825,7 +825,7 @@ add_action( 'acf/init', function () {
 								'instructions'      => 'Maximaal 6 (het ontwerp is één rij). Leeg = de zes standaardchips met hun iconen.',
 								'conditional_logic' => array( array( array( 'field' => 'field_im_chips_tonen', 'operator' => '==', 'value' => '1' ) ) ),
 								'sub_fields'        => array(
-									array( 'key' => 'field_im_chip_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+									array( 'key' => 'field_im_chip_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'instructions' => 'Aanbevolen: 100 x 100 px, of een SVG.', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_im_chip_label', 'label' => 'Tekst', 'name' => 'label', 'type' => 'text' ),
 								),
 							),
@@ -894,7 +894,7 @@ add_action( 'acf/init', function () {
 								'max'          => 4,
 								'instructions' => 'Maximaal 4 kaarten (het ontwerp is één rij van vier). Leeg = de vier standaardkaarten (labels, doosjes, wikkels, kaartjes).',
 								'sub_fields'   => array(
-									array( 'key' => 'field_gift_kaart_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+									array( 'key' => 'field_gift_kaart_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'instructions' => 'Aanbevolen: 800 x 800 px (vierkant).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_gift_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array(
 										'key'          => 'field_gift_kaart_punten',
@@ -1087,7 +1087,7 @@ add_action( 'acf/init', function () {
 								'return_format'     => 'array',
 								'preview_size'      => 'thumbnail',
 								'insert'            => 'append',
-								'instructions'      => 'Leeg = standaardset.',
+								'instructions'      => 'Leeg = standaardset. Aanbevolen: 820 x 820 px per foto (vierkant).',
 								'conditional_logic' => array( array( array( 'field' => 'field_cs2_strip', 'operator' => '==', 'value' => '1' ) ) ),
 							),
 						),
@@ -1123,7 +1123,7 @@ add_action( 'acf/init', function () {
 								'return_format' => 'array',
 								'preview_size'  => 'thumbnail',
 								'insert'        => 'append',
-								'instructions'  => 'Leeg = standaardset. De strip schuift langzaam vanzelf door.',
+								'instructions'  => 'Leeg = standaardset. De strip schuift langzaam vanzelf door. Aanbevolen: 820 x 820 px per foto (vierkant).',
 							),
 						),
 					),
@@ -1299,7 +1299,7 @@ add_action( 'acf/init', function () {
 								'button_label' => 'Stap toevoegen',
 								'instructions' => 'Nummers tellen vanzelf. Zonder foto toont de kaart een nette plek voor de foto (zoals het ontwerp). Leeg = de vier standaardstappen.',
 								'sub_fields'   => array(
-									array( 'key' => 'field_st2_stap_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+									array( 'key' => 'field_st2_stap_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'instructions' => 'Aanbevolen: 1600 x 1000 px (liggend, 8:5).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_st2_stap_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_st2_stap_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 3, 'new_lines' => '' ),
 								),
@@ -1324,7 +1324,7 @@ add_action( 'acf/init', function () {
 								'instructions'      => 'Maximaal 6 (het ontwerp is één rij). Leeg = de zes standaardchips.',
 								'conditional_logic' => array( array( array( 'field' => 'field_st2_chips_tonen', 'operator' => '==', 'value' => '1' ) ) ),
 								'sub_fields'        => array(
-									array( 'key' => 'field_st2_chip_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+									array( 'key' => 'field_st2_chip_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'instructions' => 'Aanbevolen: 100 x 100 px, of een SVG.', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_st2_chip_label', 'label' => 'Tekst', 'name' => 'label', 'type' => 'text' ),
 								),
 							),
@@ -1400,7 +1400,7 @@ add_action( 'acf/init', function () {
 								'type'         => 'image',
 								'return_format' => 'array',
 								'preview_size' => 'thumbnail',
-								'instructions' => 'Leeg = de standaard demo-afbeelding.',
+								'instructions' => 'Leeg = de standaard demo-afbeelding. Aanbevolen: 1200 x 1100 px (bijna vierkant).',
 							),
 							array(
 								'key'          => 'field_cd_punten',
@@ -1435,7 +1435,7 @@ add_action( 'acf/init', function () {
 								'button_label' => 'Kaart toevoegen',
 								'instructions' => 'Leeg = de vier standaardkaarten. Upload een bestand \u00f3f kies een link; een bestand wint en opent als download.',
 								'sub_fields'   => array(
-									array( 'key' => 'field_dl_kaart_foto', 'label' => 'Afbeelding', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Leeg = nette placeholder (zoals het ontwerp).' ),
+									array( 'key' => 'field_dl_kaart_foto', 'label' => 'Afbeelding', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Leeg = nette placeholder (zoals het ontwerp). Aanbevolen: 400 x 400 px (vierkant).' ),
 									array( 'key' => 'field_dl_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_dl_kaart_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
 									array( 'key' => 'field_dl_kaart_bestand', 'label' => 'Bestand (PDF e.d.)', 'name' => 'bestand', 'type' => 'file', 'return_format' => 'array' ),
@@ -1506,7 +1506,7 @@ add_action( 'acf/init', function () {
 								'button_label' => 'Kaart toevoegen',
 								'instructions' => 'Leeg = de zes standaardkaarten.',
 								'sub_fields'   => array(
-									array( 'key' => 'field_uf_kaart_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+									array( 'key' => 'field_uf_kaart_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'instructions' => 'Aanbevolen: 1060 x 840 px (liggend, 5:4).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_uf_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_uf_kaart_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
 									array( 'key' => 'field_uf_kaart_link', 'label' => 'Link', 'name' => 'link', 'type' => 'link', 'instructions' => 'Leeg = de vaste "Bekijk"-regel zonder doel (zoals het ontwerp).' ),
@@ -1537,8 +1537,8 @@ add_action( 'acf/init', function () {
 									array( 'key' => 'field_dzc_tab_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_dzc_tab_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'all', 'instructions' => 'Verdeel de tekst in alinea\'s met Enter. Vet, cursief, opsommingen en links kunnen hier; gebruik vet voor tussenkopjes zoals "Milieuaspect". Koppen en afbeeldingen verschijnen niet op de site.' ),
 									array( 'key' => 'field_dzc_tab_noot', 'label' => 'Certificaatregel (optioneel)', 'name' => 'noot', 'type' => 'text' ),
-									array( 'key' => 'field_dzc_tab_keurmerk', 'label' => 'Certificaatlogo (optioneel)', 'name' => 'keurmerk', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Het zegel of logo van het certificaat, komt onder de tekst te staan. PNG met transparante achtergrond werkt het beste op het corale vlak. Leeg = geen logo.' ),
-									array( 'key' => 'field_dzc_tab_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'De grote foto rechts naast de tekst.' ),
+									array( 'key' => 'field_dzc_tab_keurmerk', 'label' => 'Certificaatlogo (optioneel)', 'name' => 'keurmerk', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Het zegel of logo van het certificaat, komt onder de tekst te staan. PNG met transparante achtergrond werkt het beste op het corale vlak. Leeg = geen logo. Aanbevolen: 520 px breed, of een SVG.' ),
+									array( 'key' => 'field_dzc_tab_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'De grote foto rechts naast de tekst. Aanbevolen: 1120 x 870 px (liggend, 13:10).' ),
 									array( 'key' => 'field_dzc_tab_foto_logo', 'label' => 'Beeld rechts is een logo', 'name' => 'foto_logo', 'type' => 'true_false', 'ui' => 1, 'default_value' => 0, 'instructions' => 'AAN voor een logo of zegel: het beeld wordt dan helemaal getoond op zijn eigen formaat. UIT (standaard) voor een foto: die vult het vlak en wordt bijgesneden. Zet dit aan als een logo er uitvergroot of afgesneden uitziet.' ),
 								),
 							),
@@ -1563,7 +1563,7 @@ add_action( 'acf/init', function () {
 								'button_label' => 'Kaart toevoegen',
 								'instructions' => 'Leeg = de drie standaardkaarten (OEKO-TEX/GOTS/BSCI).',
 								'sub_fields'   => array(
-									array( 'key' => 'field_dzk_kaart_logo', 'label' => 'Logo', 'name' => 'logo', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+									array( 'key' => 'field_dzk_kaart_logo', 'label' => 'Logo', 'name' => 'logo', 'type' => 'image', 'instructions' => 'Aanbevolen: 180 px hoog, of een SVG.', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_dzk_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_dzk_kaart_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
 								),
@@ -1581,8 +1581,8 @@ add_action( 'acf/init', function () {
 						'sub_fields' => array(
 							array( 'key' => 'field_dzp_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Leeg = standaardtitel.' ),
 							array( 'key' => 'field_dzp_intro', 'label' => 'Introregel', 'name' => 'intro', 'type' => 'text' ),
-							array( 'key' => 'field_dzp_foto_klein', 'label' => 'Foto (klein)', 'name' => 'foto_klein', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
-							array( 'key' => 'field_dzp_foto_groot', 'label' => 'Foto (groot)', 'name' => 'foto_groot', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+							array( 'key' => 'field_dzp_foto_klein', 'label' => 'Foto (klein)', 'name' => 'foto_klein', 'type' => 'image', 'instructions' => 'Aanbevolen: 660 x 840 px (staand, 4:5).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+							array( 'key' => 'field_dzp_foto_groot', 'label' => 'Foto (groot)', 'name' => 'foto_groot', 'type' => 'image', 'instructions' => 'Aanbevolen: 930 x 1250 px (staand, 3:4).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 							array(
 								'key'          => 'field_dzp_punten',
 								'label'        => 'Punten',
@@ -1657,8 +1657,8 @@ add_action( 'acf/init', function () {
 						'sub_fields' => array(
 							array( 'key' => 'field_po_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Leeg = standaard. Regelafbraak met <br>.' ),
 							array( 'key' => 'field_po_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 3, 'new_lines' => '' ),
-							array( 'key' => 'field_po_foto_klein', 'label' => 'Foto (klein)', 'name' => 'foto_klein', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
-							array( 'key' => 'field_po_foto_groot', 'label' => 'Foto (groot)', 'name' => 'foto_groot', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+							array( 'key' => 'field_po_foto_klein', 'label' => 'Foto (klein)', 'name' => 'foto_klein', 'type' => 'image', 'instructions' => 'Aanbevolen: 670 x 710 px (bijna vierkant).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+							array( 'key' => 'field_po_foto_groot', 'label' => 'Foto (groot)', 'name' => 'foto_groot', 'type' => 'image', 'instructions' => 'Aanbevolen: 920 x 710 px (liggend, 13:10).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 						),
 					),
 
@@ -1683,7 +1683,7 @@ add_action( 'acf/init', function () {
 								'button_label' => 'Kaart toevoegen',
 								'instructions' => 'Leeg = de twee standaardkaarten. Upload een bestand óf kies een link.',
 								'sub_fields'   => array(
-									array( 'key' => 'field_pd_kaart_foto', 'label' => 'Afbeelding', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+									array( 'key' => 'field_pd_kaart_foto', 'label' => 'Afbeelding', 'name' => 'foto', 'type' => 'image', 'instructions' => 'Aanbevolen: 880 x 690 px (liggend, 5:4).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_pd_kaart_tag', 'label' => 'Label', 'name' => 'tag', 'type' => 'text' ),
 									array( 'key' => 'field_pd_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_pd_kaart_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'text' ),
@@ -1717,7 +1717,7 @@ add_action( 'acf/init', function () {
 								'button_label' => 'Kaart toevoegen',
 								'instructions' => 'De collage heeft 6 vaste posities. Leeg = de standaardkaarten.',
 								'sub_fields'   => array(
-									array( 'key' => 'field_wi_kaart_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+									array( 'key' => 'field_wi_kaart_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'instructions' => 'Aanbevolen: 930 x 750 px (liggend, 5:4).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_wi_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_wi_kaart_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
 								),
@@ -1772,7 +1772,7 @@ add_action( 'acf/init', function () {
 									array( 'key' => 'field_wg_punt_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'text' ),
 								),
 							),
-							array( 'key' => 'field_wg_fotos', 'label' => 'Collage (4 foto\'s)', 'name' => 'fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Kolom 1 = foto 1 en 3, kolom 2 = foto 2 en 4. Leeg = de standaardset.' ),
+							array( 'key' => 'field_wg_fotos', 'label' => 'Collage (4 foto\'s)', 'name' => 'fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Kolom 1 = foto 1 en 3, kolom 2 = foto 2 en 4. Leeg = de standaardset. Aanbevolen: 830 x 840 px per foto (vierkant).' ),
 						),
 					),
 
@@ -1783,7 +1783,7 @@ add_action( 'acf/init', function () {
 						'sub_fields' => array(
 							array( 'key' => 'field_os_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Leeg = "Hoe het begon".' ),
 							array( 'key' => 'field_os_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'tabs' => 'all', 'toolbar' => 'basic', 'media_upload' => 0, 'instructions' => 'Leeg = de standaardtekst (twee alinea\'s).' ),
-							array( 'key' => 'field_os_fotos', 'label' => 'Collage (4 foto\'s)', 'name' => 'fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Dambord: klein/groot/klein/groot. Leeg = de standaardset.' ),
+							array( 'key' => 'field_os_fotos', 'label' => 'Collage (4 foto\'s)', 'name' => 'fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Dambord: klein/groot/klein/groot. Leeg = de standaardset. Aanbevolen: 920 x 1240 px per foto (staand, 3:4).' ),
 						),
 					),
 
@@ -1797,7 +1797,7 @@ add_action( 'acf/init', function () {
 								'key' => 'field_tl_slides', 'label' => 'Kaarten', 'name' => 'slides', 'type' => 'repeater', 'layout' => 'block', 'button_label' => 'Kaart toevoegen',
 								'instructions' => 'Leeg = de acht standaardkaarten (2025 t/m 2016). Elke regel in het tekstveld wordt een eigen alinea.',
 								'sub_fields' => array(
-									array( 'key' => 'field_tl_slide_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+									array( 'key' => 'field_tl_slide_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'instructions' => 'Aanbevolen: 800 x 800 px (vierkant).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_tl_slide_jaar', 'label' => 'Jaar', 'name' => 'jaar', 'type' => 'text' ),
 									array( 'key' => 'field_tl_slide_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_tl_slide_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 3, 'new_lines' => '' ),
@@ -1816,7 +1816,7 @@ add_action( 'acf/init', function () {
 								'key' => 'field_ov_waarden', 'label' => 'Waarden', 'name' => 'waarden', 'type' => 'repeater', 'layout' => 'block', 'button_label' => 'Waarde toevoegen',
 								'instructions' => 'Nummers tellen vanzelf. Zonder icoon blijft het vak leeg (zoals het ontwerp, tot de icoon-exports er zijn). Leeg = de vier standaardwaarden.',
 								'sub_fields' => array(
-									array( 'key' => 'field_ov_waarde_icoon', 'label' => 'Icoon/foto', 'name' => 'icoon', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+									array( 'key' => 'field_ov_waarde_icoon', 'label' => 'Icoon/foto', 'name' => 'icoon', 'type' => 'image', 'instructions' => 'Aanbevolen: 240 x 240 px, of een SVG.', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_ov_waarde_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_ov_waarde_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
 								),
@@ -1842,7 +1842,7 @@ add_action( 'acf/init', function () {
 							array( 'key' => 'field_od_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Leeg = "Met oog voor duurzaamheid".' ),
 							array( 'key' => 'field_od_kop', 'label' => 'Tussenkop', 'name' => 'kop', 'type' => 'text' ),
 							array( 'key' => 'field_od_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 3, 'new_lines' => '' ),
-							array( 'key' => 'field_od_fotos', 'label' => 'Collage (3 foto\'s)', 'name' => 'fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Foto 1 = groot, 2 en 3 = klein. Leeg = de standaardset.' ),
+							array( 'key' => 'field_od_fotos', 'label' => 'Collage (3 foto\'s)', 'name' => 'fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Foto 1 = groot, 2 en 3 = klein. Leeg = de standaardset. Aanbevolen: 800 x 880 px per foto (staand, 9:10).' ),
 							array( 'key' => 'field_od_link', 'label' => 'Link', 'name' => 'link', 'type' => 'link', 'instructions' => 'Leeg = "Lees over onze duurzaamheid" naar de duurzaamheidspagina.' ),
 						),
 					),
@@ -1893,7 +1893,7 @@ add_action( 'acf/init', function () {
 								'key' => 'field_bd_kaarten', 'label' => 'Kaarten', 'name' => 'kaarten', 'type' => 'repeater', 'layout' => 'block', 'button_label' => 'Kaart toevoegen',
 								'instructions' => 'Suggesties om te lezen tijdens het wachten. Ook hier zijn DRIE kaarten de bedoeling; de sok-achtergrond eronder is op die hoogte afgestemd. Leeg = de standaardkaarten.',
 								'sub_fields' => array(
-									array( 'key' => 'field_bd_kaart_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+									array( 'key' => 'field_bd_kaart_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'instructions' => 'Aanbevolen: 890 x 680 px (liggend, 13:10).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 									array( 'key' => 'field_bd_kaart_tag', 'label' => 'Label', 'name' => 'tag', 'type' => 'text', 'instructions' => 'Het woordje boven de titel, bijvoorbeeld "Brochure".' ),
 									array( 'key' => 'field_bd_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_bd_kaart_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
@@ -1927,8 +1927,8 @@ add_action( 'acf/init', function () {
 							array( 'key' => 'field_lph_subtekst', 'label' => 'Tekst onder de titel', 'name' => 'subtekst', 'type' => 'textarea', 'rows' => 3, 'new_lines' => '', 'instructions' => 'Leeg = de standaardzin van het ontwerp.' ),
 							array( 'key' => 'field_lph_knop', 'label' => 'Knop', 'name' => 'knop', 'type' => 'link', 'instructions' => 'Leeg = de standaardknop naar de offertepagina.' ),
 							array( 'key' => 'field_lph_rating', 'label' => 'Reviewregel tonen', 'name' => 'rating', 'type' => 'true_false', 'ui' => 1, 'default_value' => 1, 'instructions' => 'De score en het aantal reviews komen uit Website-instellingen.' ),
-							array( 'key' => 'field_lph_kolom_1', 'label' => 'Fotogalerij — kolom 1', 'name' => 'fotos_kolom_1', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'De linkerkolom van de doorlopende galerij rechts (zelfde mechaniek als de paginakop met fotokolommen). 4 foto\'s is het ritme; leeg = de standaardset uit het thema.' ),
-							array( 'key' => 'field_lph_kolom_2', 'label' => 'Fotogalerij — kolom 2', 'name' => 'fotos_kolom_2', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'De rechterkolom; loopt tegengesteld aan kolom 1. Leeg = de standaardset uit het thema.' ),
+							array( 'key' => 'field_lph_kolom_1', 'label' => 'Fotogalerij — kolom 1', 'name' => 'fotos_kolom_1', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'De linkerkolom van de doorlopende galerij rechts (zelfde mechaniek als de paginakop met fotokolommen). 4 foto\'s is het ritme; leeg = de standaardset uit het thema. Aanbevolen: 890 x 1040 px per foto (staand, 6:7).' ),
+							array( 'key' => 'field_lph_kolom_2', 'label' => 'Fotogalerij — kolom 2', 'name' => 'fotos_kolom_2', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'De rechterkolom; loopt tegengesteld aan kolom 1. Leeg = de standaardset uit het thema. Aanbevolen: 890 x 1040 px per foto (staand, 6:7).' ),
 							array( 'key' => 'field_lph_stijl', 'label' => 'Achtergrond', 'name' => 'stijl', 'type' => 'button_group', 'choices' => array( 'coral' => 'Rood', 'beige' => 'Beige', 'wit' => 'Wit' ), 'default_value' => 'coral' ),
 						),
 					),
@@ -1941,7 +1941,7 @@ add_action( 'acf/init', function () {
 						'acfe_flexible_category'  => array( 'Tekstblokken' ),
 						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/lp_media.png',
 						'sub_fields' => array(
-							array( 'key' => 'field_lpm_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+							array( 'key' => 'field_lpm_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'instructions' => 'Aanbevolen: 1340 x 840 px (liggend, 8:5).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 							array( 'key' => 'field_lpm_leeg', 'label' => 'Zonder foto', 'name' => 'leeg', 'type' => 'button_group', 'choices' => array( 'standaardfoto' => 'Themafoto tonen', 'placeholder' => 'Neutraal vak (image placeholder)' ), 'default_value' => 'standaardfoto', 'instructions' => 'Wat er staat zolang er geen foto is gekozen. Zodra je een foto kiest, geldt die.', 'conditional_logic' => array( array( array( 'field' => 'field_lpm_foto', 'operator' => '==empty' ) ) ) ),
 							array( 'key' => 'field_lpm_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Tekst tussen [haken] wordt geel.' ),
 							array( 'key' => 'field_lpm_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual' ),
@@ -1964,7 +1964,7 @@ add_action( 'acf/init', function () {
 								'key' => 'field_lpu_punten', 'label' => 'Pluspunten', 'name' => 'punten', 'type' => 'repeater', 'layout' => 'block', 'button_label' => 'Pluspunt toevoegen',
 								'instructions' => 'Het raster loopt in drie kolommen; zes punten vullen precies twee rijen. Leeg = de zes punten van het ontwerp.',
 								'sub_fields' => array(
-									array( 'key' => 'field_lpu_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Klein vierkant icoon. Leeg = alleen tekst.' ),
+									array( 'key' => 'field_lpu_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Klein vierkant icoon. Leeg = alleen tekst. Aanbevolen: 240 x 240 px, of een SVG.' ),
 									array( 'key' => 'field_lpu_titel_r', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_lpu_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
 								),
@@ -1983,7 +1983,7 @@ add_action( 'acf/init', function () {
 						'sub_fields' => array(
 							array( 'key' => 'field_lpk_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Leeg = "Duurzaam met certificaat".' ),
 							array( 'key' => 'field_lpk_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '', 'instructions' => 'Een regel onder de titel. Leeg = de standaardzin.' ),
-							array( 'key' => 'field_lpk_logos', 'label' => 'Logo\'s', 'name' => 'logos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Leeg = de vier keurmerken uit het thema (BSCI, GOTS, OEKO-TEX, One Tree Planted).' ),
+							array( 'key' => 'field_lpk_logos', 'label' => 'Logo\'s', 'name' => 'logos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Leeg = de vier keurmerken uit het thema (BSCI, GOTS, OEKO-TEX, One Tree Planted). Aanbevolen: 300 x 200 px per logo, of een SVG.' ),
 						),
 					),
 
@@ -2188,7 +2188,7 @@ add_action( 'acf/init', function () {
 								'type'              => 'image',
 								'return_format'     => 'array',
 								'preview_size'      => 'medium',
-								'instructions'      => 'Leeg = de standaardfoto (sokkenbenen). Een PNG met transparante achtergrond werkt het mooist.',
+								'instructions'      => 'Leeg = de standaardfoto (sokkenbenen). Een PNG met transparante achtergrond werkt het mooist. Aanbevolen: 1200 x 1030 px (liggend, 7:6).',
 								'conditional_logic' => array( array( array( 'field' => 'field_cta_feet', 'operator' => '==', 'value' => '1' ) ) ),
 							),
 							array(
@@ -2351,7 +2351,7 @@ add_action( 'acf/init', function () {
 			),
 			array( 'key' => 'field_si_tab_promo', 'label' => 'Promokaart', 'type' => 'tab' ),
 			array( 'key' => 'field_si_promo_actief', 'label' => 'Promokaart tonen', 'name' => 'promo_actief', 'type' => 'true_false', 'ui' => 1, 'default_value' => 1, 'instructions' => 'De zwevende kaart linksonder. Per pagina uit te zetten bij de pagina-instellingen.' ),
-			array( 'key' => 'field_si_promo_foto', 'label' => 'Afbeelding', 'name' => 'promo_foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+			array( 'key' => 'field_si_promo_foto', 'label' => 'Afbeelding', 'name' => 'promo_foto', 'type' => 'image', 'instructions' => 'Aanbevolen: 340 x 340 px (vierkant).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 			array( 'key' => 'field_si_promo_titel', 'label' => 'Titel', 'name' => 'promo_titel', 'type' => 'text', 'instructions' => 'Leeg = "Bekijk onze kerstcollectie".' ),
 			array( 'key' => 'field_si_promo_tekst', 'label' => 'Tekst', 'name' => 'promo_tekst', 'type' => 'text', 'instructions' => 'Leeg = "Bestel op tijd voor de feestdagen.".' ),
 			array( 'key' => 'field_si_promo_link', 'label' => 'Link', 'name' => 'promo_link', 'type' => 'link', 'instructions' => 'Leeg = de collectiepagina.' ),
@@ -2640,7 +2640,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				'layout'       => 'block',
 				'button_label' => 'Belofte toevoegen',
 				'sub_fields'   => array(
-					array( 'key' => 'field_pps_belofte_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+					array( 'key' => 'field_pps_belofte_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'instructions' => 'Aanbevolen: 140 x 140 px, of een SVG.', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 					array( 'key' => 'field_pps_belofte_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 					array( 'key' => 'field_pps_belofte_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
 				),
@@ -2653,7 +2653,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				'layout'       => 'table',
 				'button_label' => 'Pluspunt toevoegen',
 				'sub_fields'   => array(
-					array( 'key' => 'field_pps_chip_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+					array( 'key' => 'field_pps_chip_icoon', 'label' => 'Icoon', 'name' => 'icoon', 'type' => 'image', 'instructions' => 'Aanbevolen: 100 x 100 px, of een SVG.', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 					array( 'key' => 'field_pps_chip_label', 'label' => 'Tekst', 'name' => 'label', 'type' => 'text' ),
 				),
 			),
@@ -2670,7 +2670,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				'button_label' => 'Kaart toevoegen',
 				'instructions'  => 'Kaart 1 = de groene "Onze methode"-kaart, kaart 2 = de rode vergelijkingskaart (vaste opmaakrollen).',
 				'sub_fields'   => array(
-					array( 'key' => 'field_pps_wk_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+					array( 'key' => 'field_pps_wk_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'instructions' => 'Aanbevolen: 1650 x 840 px (breed liggend, 2:1).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 					array( 'key' => 'field_pps_wk_tag', 'label' => 'Label (bijv. Onze methode)', 'name' => 'tag', 'type' => 'text' ),
 					array( 'key' => 'field_pps_wk_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 					array( 'key' => 'field_pps_wk_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
@@ -2690,7 +2690,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 			),
 			array( 'key' => 'field_pps_tab_design', 'label' => 'Ontwerp-promo', 'type' => 'tab' ),
 			array( 'key' => 'field_pps_design_titel', 'label' => 'Titel', 'name' => 'pdp_design_titel', 'type' => 'text', 'instructions' => 'Leeg = "Ontwerp je sokken nu zelf".' ),
-			array( 'key' => 'field_pps_design_foto', 'label' => 'Voorbeeld-afbeelding', 'name' => 'pdp_design_foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+			array( 'key' => 'field_pps_design_foto', 'label' => 'Voorbeeld-afbeelding', 'name' => 'pdp_design_foto', 'type' => 'image', 'instructions' => 'Aanbevolen: 2280 x 1240 px (breed liggend, 16:9).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 			array( 'key' => 'field_pps_design_knop', 'label' => 'Knop', 'name' => 'pdp_design_knop', 'type' => 'link', 'instructions' => 'Leeg = "Zelf ontwerpen" naar de configuratorpagina.' ),
 			array( 'key' => 'field_pps_tab_usecases', 'label' => 'Toepassingen', 'type' => 'tab' ),
 			array(
@@ -2704,7 +2704,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				'button_label' => 'Kaart toevoegen',
 				'instructions' => 'De collage heeft 6 vaste posities; de sectietitel volgt het soktype vanzelf.',
 				'sub_fields'   => array(
-					array( 'key' => 'field_pps_uc_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+					array( 'key' => 'field_pps_uc_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'instructions' => 'Aanbevolen: 920 x 760 px (liggend, 6:5).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 					array( 'key' => 'field_pps_uc_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 					array( 'key' => 'field_pps_uc_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
 				),
@@ -2747,9 +2747,9 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 		'title'  => 'Case-gegevens',
 		'fields' => array(
 			array( 'key' => 'field_case_tab_overzicht', 'label' => 'Kaart & slider', 'type' => 'tab' ),
-			array( 'key' => 'field_case_foto_groot', 'label' => 'Grote foto', 'name' => 'foto_groot', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
-			array( 'key' => 'field_case_foto_klein_1', 'label' => 'Kleine foto (boven)', 'name' => 'foto_klein_1', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
-			array( 'key' => 'field_case_foto_klein_2', 'label' => 'Kleine foto (onder)', 'name' => 'foto_klein_2', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+			array( 'key' => 'field_case_foto_groot', 'label' => 'Grote foto', 'name' => 'foto_groot', 'type' => 'image', 'instructions' => 'Aanbevolen: 840 x 840 px (vierkant).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+			array( 'key' => 'field_case_foto_klein_1', 'label' => 'Kleine foto (boven)', 'name' => 'foto_klein_1', 'type' => 'image', 'instructions' => 'Aanbevolen: 540 x 400 px (liggend, 4:3).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+			array( 'key' => 'field_case_foto_klein_2', 'label' => 'Kleine foto (onder)', 'name' => 'foto_klein_2', 'type' => 'image', 'instructions' => 'Aanbevolen: 540 x 400 px (liggend, 4:3).', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
 			array( 'key' => 'field_case_badge', 'label' => 'Badge', 'name' => 'badge', 'type' => 'text', 'instructions' => 'Leeg = "Klantcase".' ),
 			/* De drie punten op de kaart als REPEATER, zodat er ook meer of
 			   minder dan drie kunnen staan en het opschrift vrij is.
@@ -2785,7 +2785,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 			array( 'key' => 'field_case_intro', 'label' => 'Intro (onder de titel)', 'name' => 'intro', 'type' => 'textarea', 'rows' => 3, 'new_lines' => '', 'instructions' => 'De tekst in de paginakop van de detailpagina.' ),
 			array( 'key' => 'field_case_aanleiding', 'label' => 'Hoe het ging — Aanleiding', 'name' => 'aanleiding', 'type' => 'textarea', 'rows' => 4, 'new_lines' => '' ),
 			array( 'key' => 'field_case_verhaal_resultaat', 'label' => 'Hoe het ging — Resultaat', 'name' => 'verhaal_resultaat', 'type' => 'textarea', 'rows' => 4, 'new_lines' => '' ),
-			array( 'key' => 'field_case_story_fotos', 'label' => 'Foto\'s naast het verhaal', 'name' => 'story_fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'De schuivende fotokolommen. Leeg = de drie kaartfoto\'s.' ),
+			array( 'key' => 'field_case_story_fotos', 'label' => 'Foto\'s naast het verhaal', 'name' => 'story_fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'De schuivende fotokolommen. Leeg = de drie kaartfoto\'s. Aanbevolen: 860 x 860 px per foto (vierkant).' ),
 			array(
 				'key'          => 'field_case_specs',
 				'label'        => 'Wat we maakten (specs)',
@@ -2799,11 +2799,11 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 					array( 'key' => 'field_case_spec_waarde', 'label' => 'Waarde', 'name' => 'waarde', 'type' => 'text' ),
 				),
 			),
-			array( 'key' => 'field_case_resultaat_fotos', 'label' => 'Het resultaat in beeld (3 foto\'s)', 'name' => 'resultaat_fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Leeg = sectie verborgen.' ),
+			array( 'key' => 'field_case_resultaat_fotos', 'label' => 'Het resultaat in beeld (3 foto\'s)', 'name' => 'resultaat_fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Leeg = sectie verborgen. Aanbevolen: 1190 x 1190 px per foto (vierkant).' ),
 			array( 'key' => 'field_case_quote', 'label' => 'Quote', 'name' => 'quote', 'type' => 'textarea', 'rows' => 4, 'new_lines' => '' ),
 			array( 'key' => 'field_case_quote_naam', 'label' => 'Quote — naam', 'name' => 'quote_naam', 'type' => 'text' ),
 			array( 'key' => 'field_case_quote_functie', 'label' => 'Quote — functie/organisatie', 'name' => 'quote_functie', 'type' => 'text' ),
-			array( 'key' => 'field_case_video_foto', 'label' => 'Video-still', 'name' => 'video_foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Leeg = videosectie verborgen.' ),
+			array( 'key' => 'field_case_video_foto', 'label' => 'Video-still', 'name' => 'video_foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Leeg = videosectie verborgen. Aanbevolen: 2280 x 1240 px (breed liggend, 16:9).' ),
 			array( 'key' => 'field_case_video_url', 'label' => 'Video-link', 'name' => 'video_url', 'type' => 'url', 'instructions' => 'Optioneel — de afspeelknop opent deze link.' ),
 		),
 		'location' => array(
@@ -2828,7 +2828,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 		'key'    => 'group_sokkies_blog',
 		'title'  => 'Bloggegevens',
 		'fields' => array(
-			array( 'key' => 'field_blog_foto', 'label' => 'Uitgelichte afbeelding', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Staat groot boven het artikel en op de kaart in het overzicht.' ),
+			array( 'key' => 'field_blog_foto', 'label' => 'Uitgelichte afbeelding', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Staat groot boven het artikel en op de kaart in het overzicht. Aanbevolen: 2280 x 1240 px (breed liggend, 16:9).' ),
 			array( 'key' => 'field_blog_auteur', 'label' => 'Auteur', 'name' => 'auteur', 'type' => 'text', 'instructions' => 'De naam achter "Auteur:" boven het artikel. Leeg = de regel valt weg.' ),
 			array( 'key' => 'field_blog_intro', 'label' => 'Intro', 'name' => 'intro', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 1, 'instructions' => 'De alinea('."'".'s) boven de eerste tussenkop. Afbeeldingen kunnen via "Media toevoegen".' ),
 			array(
@@ -2849,14 +2849,14 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				'sub_fields'   => array(
 					array( 'key' => 'field_blog_sectie_kop', 'label' => 'Tussenkop', 'name' => 'kop', 'type' => 'text' ),
 					array( 'key' => 'field_blog_sectie_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'tabs' => 'visual', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 1, 'instructions' => 'Ook losse afbeeldingen kunnen hier, via "Media toevoegen".' ),
-					array( 'key' => 'field_blog_sectie_fotos', 'label' => 'Foto\x27s onder dit blok', 'name' => 'fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Optioneel — de indeling volgt vanzelf uit het aantal: één foto = volle breedte, twee = 50/50, drie = de eerste vol met twee eronder, vier = tweemaal 50/50.' ),
+					array( 'key' => 'field_blog_sectie_fotos', 'label' => 'Foto\x27s onder dit blok', 'name' => 'fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Optioneel — de indeling volgt vanzelf uit het aantal: één foto = volle breedte, twee = 50/50, drie = de eerste vol met twee eronder, vier = tweemaal 50/50. Aanbevolen: 1760 x 880 px per foto (2:1); staan er twee of drie naast elkaar, dan 880 x 880 px.' ),
 					/* Eigen review per blok (verzoek Kulwant 2026-09-01): niet kiezen
 					   uit de bestaande Reviews, maar rechtstreeks hier invullen. */
 					array( 'key' => 'field_blog_sectie_review_quote', 'label' => 'Review onder dit blok — quote', 'name' => 'review_quote', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '', 'instructions' => 'Optioneel — de uitspraak zelf, zonder aanhalingstekens (die zet de site er zelf omheen). Leeg = geen reviewblok.' ),
 					array( 'key' => 'field_blog_sectie_review_naam', 'label' => 'Review — naam', 'name' => 'review_naam', 'type' => 'text' ),
 					array( 'key' => 'field_blog_sectie_review_functie', 'label' => 'Review — functie/organisatie', 'name' => 'review_functie', 'type' => 'text', 'instructions' => 'Bijv. "CEO, OneTreePlanted". Leeg = alleen de naam.' ),
 					array( 'key' => 'field_blog_sectie_review_sterren', 'label' => 'Review — sterren', 'name' => 'review_sterren', 'type' => 'number', 'min' => 1, 'max' => 5, 'step' => 1, 'default_value' => 5 ),
-					array( 'key' => 'field_blog_sectie_review_foto', 'label' => 'Foto\/logo bij de review', 'name' => 'review_foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Optioneel — zoals het OneTreePlanted-logo op de huidige site.' ),
+					array( 'key' => 'field_blog_sectie_review_foto', 'label' => 'Foto\/logo bij de review', 'name' => 'review_foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Optioneel — zoals het OneTreePlanted-logo op de huidige site. Aanbevolen: 120 x 120 px (vierkant), of een SVG.' ),
 				),
 			),
 			array( 'key' => 'field_blog_tab_slot', 'label' => 'Afsluitblok', 'type' => 'tab' ),
@@ -2925,9 +2925,9 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 			array( 'key' => 'field_soktype_tab_pdp', 'label' => 'Productpagina', 'type' => 'tab' ),
 			array( 'key' => 'field_soktype_pdp_titel', 'label' => 'Paginatitel', 'name' => 'pdp_titel', 'type' => 'text', 'instructions' => 'Leeg = "{naam} bedrukken".' ),
 			array( 'key' => 'field_soktype_pdp_beschrijving', 'label' => 'Beschrijving', 'name' => 'pdp_beschrijving', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'all', 'instructions' => 'De tekst naast de grote foto; de Specificaties-link komt er automatisch achter de laatste alinea. Vet, cursief, opsommingen en links kunnen hier — plak GEEN kale URL op een eigen regel, die wordt niet getoond. Koppen en afbeeldingen verschijnen niet op de site.' ),
-			array( 'key' => 'field_soktype_pdp_fotos', 'label' => 'Productfoto\'s', 'name' => 'pdp_fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Eerste foto = grote foto; de rest wordt de miniaturenrij. Leeg = de kaartfoto.' ),
+			array( 'key' => 'field_soktype_pdp_fotos', 'label' => 'Productfoto\'s', 'name' => 'pdp_fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Eerste foto = grote foto; de rest wordt de miniaturenrij. Leeg = de kaartfoto. Aanbevolen: 1480 x 1480 px per foto (vierkant).' ),
 			array( 'key' => 'field_soktype_pdp_video', 'label' => 'Productvideo', 'name' => 'pdp_video', 'type' => 'file', 'return_format' => 'array', 'mime_types' => 'mp4,webm,mov', 'instructions' => 'Optioneel — komt als laatste miniatuur met een afspeelknop; speelt af in het grote vak.' ),
-			array( 'key' => 'field_soktype_pdp_video_still', 'label' => 'Video-miniatuur', 'name' => 'pdp_video_still', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Het plaatje op de video-miniatuur. Leeg = de eerste productfoto.' ),
+			array( 'key' => 'field_soktype_pdp_video_still', 'label' => 'Video-miniatuur', 'name' => 'pdp_video_still', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Het plaatje op de video-miniatuur. Leeg = de eerste productfoto. Aanbevolen: 280 x 280 px (vierkant).' ),
 			array( 'key' => 'field_soktype_expivi_product_id', 'label' => 'Expivi-product-ID', 'name' => 'expivi_product_id', 'type' => 'number', 'min' => 0, 'step' => 1, 'instructions' => 'Het ID van dit soktype in Expivi (de 3D-configurator). Leeg = geen configurator voor dit type.' ),
 			array(
 				'key'          => 'field_soktype_pdp_specs',
