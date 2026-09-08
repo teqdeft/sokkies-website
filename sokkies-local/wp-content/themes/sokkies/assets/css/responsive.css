@@ -11278,6 +11278,9 @@
     top:50%;
     transform:translateY(-50%);
   }
+  .sub-open .nav-burger {
+      top: 0%;
+  }
   .navbar{
     position:static;
     justify-content:flex-start;
@@ -11748,7 +11751,7 @@
   .cta-final-feet{
         width: 300px;
         left: 10%;
-        top: -59%;
+        top: -55%;
   }
   .cta-final-panel{
     padding:90px 0 70px;
@@ -12112,8 +12115,8 @@
     padding:50px 0 54px; /* 54 = 24px stagger + 30px marge tot de knoppen */
   }
   .gallery-swiper .swiper-slide{
-    width:calc(50% - 7px);
-    height:260px;
+    width: calc(54% - 6px);
+    height: 238px;
     border-radius:18px;
   }
   /* stagger op runtime-klassen i.p.v. nth-child: de loop husselt de DOM,
@@ -15691,4 +15694,22 @@
 
 @media (max-width:767px){
   .lp-media-placeholder{ border-radius:18px; }
+}
+
+/* ==========================================================================
+   FUNNELKOP — "Naar de collectie" op mobiel in de banner
+   Op mobiel staat de minimale kop vol (logo + link + globe), dus de link
+   verhuist naar de kruimelpadplek in de banner. Zie section-hero.php.
+   ========================================================================== */
+
+@media (max-width:767px){
+  /* Alleen verbergen als de banner-variant er ECHT staat: de bedankpagina's
+     hebben dezelfde kop maar geen hero-sectie, en zouden anders hun enige
+     weg terug kwijtraken. */
+  body:has(.breadcrumb-terug) .navbar-mini .nav-terug{ display:none; }
+  /* 115px is de vaste kruimelpad-vrijloop onder de plakkende kop (zelfde
+     waarde als contact/downloads/juridisch); de banner levert die ruimte
+     daarna weer in, zodat de titel niet omlaag schuift. */
+  .breadcrumb-terug{ display:flex; padding:115px 0 0; }
+  .breadcrumb-terug + .banner-section{ padding-top:62px; }
 }

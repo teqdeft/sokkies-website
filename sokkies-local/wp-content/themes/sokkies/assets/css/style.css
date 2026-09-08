@@ -1093,7 +1093,7 @@ font-weight: 600;
     color:var(--text);
   }
 
-  .collection-grid::-webkit-scrollbar{
+  .collection-grid::-webkit-scrollbar, .gift-grid::-webkit-scrollbar{
     opacity: 0;
   }
 
@@ -10004,6 +10004,23 @@ main.contact{
 }
 .nav-terug:hover{
   opacity:.65;
+}
+/* Dezelfde link als kruimelpad in de banner. Staat hier op display:none:
+   op desktop hoort hij in de kop en pakt de max-767-band hem op. */
+.breadcrumb-terug{
+  display:none;
+}
+.breadcrumb-terug a{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  font-weight:600;
+  text-decoration:none;
+}
+/* op een coral of donkere banner; bij stijl 'beige' blijft de basiskleur */
+.breadcrumb-terug-licht,
+.breadcrumb-terug-licht a{
+  color:#fff;
 }
 /* de balk is zonder menu een stuk lager; het logo houdt zijn maat */
 .navbar.navbar-mini{

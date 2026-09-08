@@ -49,6 +49,21 @@ $assets = get_template_directory_uri() . '/assets/media/';
           <span>&nbsp;&bull;&nbsp;</span>
           <span><?php echo esc_html( $breadcrumb ); ?></span>
         </nav>
+        <?php elseif ( function_exists( 'sokkies_mini_header' ) && sokkies_mini_header() ) : ?>
+        <?php /* Funnelpagina's tonen "Naar de collectie" in de minimale kop.
+                 Op mobiel staat die kop vol (logo + link + globe), dus daar
+                 verhuist de link naar de kruimelpadplek in de banner — de kop
+                 verbergt hem dan (zie de max-767-regels in responsive.css).
+                 Alleen als er geen echt kruimelpad staat: twee navigatieregels
+                 boven elkaar zou dubbelop zijn. */ ?>
+        <nav class="breadcrumb breadcrumb-terug<?php echo ( 'beige' === $stijl ) ? '' : ' breadcrumb-terug-licht'; ?>" aria-label="Kruimelpad">
+          <a href="<?php echo esc_url( home_url( '/collectie/' ) ); ?>">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="11" viewBox="0 0 14 11" aria-hidden="true">
+              <path d="M13 5.5H1M5.5 1 1 5.5 5.5 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Naar de collectie</span>
+          </a>
+        </nav>
         <?php endif; ?>
         <!-- Hero content -->
         <?php $banner_klassen = array( 'offerte' => ' offerte-banner', 'configurator' => ' configurator-banner' ); ?>
