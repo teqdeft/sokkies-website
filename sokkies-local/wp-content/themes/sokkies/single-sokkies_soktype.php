@@ -636,7 +636,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
     if ( $matrix ) : ?>
     <div class="pdp-calc" hidden>
       <div class="pdp-calc-overlay" data-calc-close></div>
-      <div class="pdp-calc-card" role="dialog" aria-modal="true" aria-label="Bereken jouw prijs">
+      <div class="pdp-calc-card" role="dialog" aria-modal="true" aria-label="Bereken jouw prijs" tabindex="-1">
         <button type="button" class="pdp-calc-sluit" data-calc-close aria-label="Sluiten">
           <svg xmlns="http://www.w3.org/2000/svg" width="15.414" height="15.414" viewBox="0 0 15.414 15.414">
             <g id="Close" transform="translate(0.707 0.707)">

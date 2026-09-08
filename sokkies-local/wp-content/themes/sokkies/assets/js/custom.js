@@ -1917,8 +1917,13 @@
     function open() {
       popup.hidden = false;
       document.body.classList.add('pdp-calc-open');
-      var veld = popup.querySelector('#qtyInput');
-      if (veld) setTimeout(function () { veld.focus(); }, 50);
+      /* Focus gaat naar de KAART, niet naar het aantalveld: een
+         invoerveld focussen laat een mobiele browser meteen het
+         toetsenbord opengooien, dat de halve popup afdekt. De kaart
+         heeft tabindex="-1", dus de focus blijft wel in de dialoog
+         (Escape en tabvolgorde blijven kloppen). */
+      var kaart = popup.querySelector('.pdp-calc-card');
+      if (kaart) setTimeout(function () { kaart.focus(); }, 50);
     }
     function close() {
       popup.hidden = true;

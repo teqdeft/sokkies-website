@@ -10296,6 +10296,12 @@ main.contact{
   padding:30px 32px 32px;
   box-shadow:0 20px 60px rgba(0,0,0,.25);
 }
+/* De kaart krijgt bij openen de focus (zie custom.js: anders opent het
+   mobiele toetsenbord). Dat is een programmatische focus op een blok,
+   geen bedienbaar element, dus zonder zichtbare ring. */
+.pdp-calc-card:focus{
+  outline:none;
+}
 .pdp-calc-card h3{
   font-family:var(--roc-grotesk);
   font-weight:700;
@@ -10961,19 +10967,6 @@ body.pdp-calc-open{
   .landing .faq{
     position:relative;
   }
-  .landing .faq::after{
-    content:"";
-    position:absolute;
-    left:0;
-    bottom:0;
-    /* Krimpt mee met het scherm. Met een vaste 580px liep de foto op 1100
-       nog 71px over de linkerrand van het accordeon heen; 44vw houdt hem
-       op elke breedte links van de vragen. */
-    width:min(580px, 44vw);
-    aspect-ratio:762 / 570;
-    background:url(../media/lg-faq-landing.png) no-repeat left bottom / contain;
-    pointer-events:none;
-  }
   .landing .cta-final-feet {
       display: none;
   }
@@ -11143,4 +11136,15 @@ body.pdp-calc-open{
     border:1px solid var(--text);
     border-radius:3px;
     padding:3px 6px;
+  }
+
+  .landing .cta-final::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top: -87%;
+    width: 752px;
+    aspect-ratio:762 / 570;
+    background:url(../media/lg-faq-landing.png) no-repeat left bottom / contain;
+    pointer-events:none;
   }
