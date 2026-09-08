@@ -2928,6 +2928,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 			array( 'key' => 'field_soktype_pdp_fotos', 'label' => 'Productfoto\'s', 'name' => 'pdp_fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Eerste foto = grote foto; de rest wordt de miniaturenrij. Leeg = de kaartfoto.' ),
 			array( 'key' => 'field_soktype_pdp_video', 'label' => 'Productvideo', 'name' => 'pdp_video', 'type' => 'file', 'return_format' => 'array', 'mime_types' => 'mp4,webm,mov', 'instructions' => 'Optioneel — komt als laatste miniatuur met een afspeelknop; speelt af in het grote vak.' ),
 			array( 'key' => 'field_soktype_pdp_video_still', 'label' => 'Video-miniatuur', 'name' => 'pdp_video_still', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Het plaatje op de video-miniatuur. Leeg = de eerste productfoto.' ),
+			array( 'key' => 'field_soktype_expivi_product_id', 'label' => 'Expivi-product-ID', 'name' => 'expivi_product_id', 'type' => 'number', 'min' => 0, 'step' => 1, 'instructions' => 'Het ID van dit soktype in Expivi (de 3D-configurator). Leeg = geen configurator voor dit type.' ),
 			array(
 				'key'          => 'field_soktype_pdp_specs',
 				'label'        => 'De specs (uitklaplijst)',

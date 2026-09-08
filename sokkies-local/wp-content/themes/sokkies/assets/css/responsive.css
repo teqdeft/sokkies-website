@@ -15786,3 +15786,49 @@
     padding-bottom:90px;
   }
 }
+
+/* ==========================================================================
+   EXPIVI 3D-CONFIGURATOR — responsive
+   De configurator vult .conf-preview-card, dus de hoogte volgt vanzelf de
+   kaarthoogte per band (572 / 572 / 466 / 600 / 410 / 275). Hier alleen de
+   breedte van het optiepaneel, en vanaf 991 het stapelen: naast elkaar
+   houdt geen van beide kolommen een werkbare maat over.
+   ========================================================================== */
+
+@media (min-width:1440px) and (max-width:1679px){
+  .expivi-configurator{ grid-template-columns:minmax(0,1fr) 360px; }
+}
+
+@media (min-width:1280px) and (max-width:1439px){
+  .expivi-configurator{ grid-template-columns:minmax(0,1fr) 360px; }
+}
+
+@media (min-width:992px) and (max-width:1279px){
+  .expivi-configurator{ grid-template-columns:minmax(0,1fr) 320px; }
+  .expivi-options{ padding:18px 16px; }
+}
+
+@media (max-width:991px){
+  /* de kaart is hier 600/410/275px hoog — te weinig voor viewer EN paneel,
+     dus de kaart groeit mee met de inhoud zodra de configurator erin staat */
+  .conf-preview-card:has(.expivi-configurator){
+    height:auto;
+  }
+  .expivi-configurator{
+    grid-template-columns:minmax(0,1fr);
+  }
+  .expivi-viewer{
+    height:380px;
+  }
+  .expivi-options{
+    border-left:0;
+    border-top:1px solid var(--border-light);
+    max-height:440px;
+    padding:20px;
+  }
+}
+
+@media (max-width:520px){
+  .expivi-viewer{ height:300px; }
+  .expivi-options{ max-height:380px; padding:16px; }
+}

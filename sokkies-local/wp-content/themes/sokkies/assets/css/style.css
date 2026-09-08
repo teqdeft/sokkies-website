@@ -11180,3 +11180,61 @@ body.pdp-calc-open{
     background:url(../media/lg-faq-landing.png) no-repeat left bottom / contain;
     pointer-events:none;
   }
+
+/*═════════════════════════════════════════
+  Expivi 3D-configurator (productpagina)
+  Staat in de kaart van de "Ontwerp je sokken nu zelf"-sectie
+  (.conf-preview-card, 620px hoog met overflow:hidden), op de plek van de
+  oude statische preview-foto. Verschijnt alleen op een soktype met een
+  Expivi-product-ID; markup in single-sokkies_soktype.php, wiring in
+  sokkies_expivi_assets().
+
+  De viewer vult zijn container met min-height:100%, dus die container MOET
+  een hoogte hebben — zonder deze regels is het blok 0px hoog en lijkt de
+  configurator niet te laden.
+═════════════════════════════════════════*/
+.expivi-configurator{
+  display:grid;
+  /* viewer links, optiepaneel rechts in een vaste kolom: het paneel is een
+     formulier en moet niet meeschalen met de viewer */
+  grid-template-columns:minmax(0,1fr) 400px;
+  align-items:stretch;
+  width:100%;
+  height:100%;
+}
+.expivi-viewer{
+  position:relative;
+  min-width:0;
+  background:#fff;
+}
+/* de viewer plaatst zijn eigen wrapper met min-height:100% hierin */
+.expivi-configurator #expivi-viewer{
+  height:100%;
+}
+.expivi-configurator #expivi-viewer canvas{
+  display:block;
+}
+.expivi-options{
+  min-width:0;
+  /* het paneel is langer dan de kaart (4 stappen + upload), en de kaart
+     knipt af met overflow:hidden — dus scrolt het paneel zelf */
+  overflow-y:auto;
+  background:#fff;
+  border-left:1px solid var(--border-light);
+  padding:22px 20px;
+}
+.expivi-configurator #expivi-price{
+  font-family:var(--roc-grotesk);
+  font-size:var(--h5-font-size);
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:14px;
+}
+.expivi-configurator #expivi-price:empty{
+  margin-bottom:0;
+}
+/* de kaart centreert zijn kind; de configurator moet juist vullen */
+.conf-preview-card:has(.expivi-configurator){
+  align-items:stretch;
+  justify-content:stretch;
+}

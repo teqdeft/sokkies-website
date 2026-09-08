@@ -397,7 +397,26 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
         <h2><?php echo sokkies_kop( $design_titel ); ?></h2>
         <div class="conf-preview">
           <div class="conf-preview-card">
+            <?php
+            /* Met een Expivi-product-ID staat hier de echte 3D-configurator;
+               zonder ID blijft het de statische preview-foto. Die terugval is
+               nodig: alleen dit soktype heeft een ID, de rest zou anders een
+               lege kaart tonen. */
+            $expivi_product_id = get_field( 'expivi_product_id' );
+            ?>
+            <?php if ( $expivi_product_id ) : ?>
+            <div class="expivi-configurator">
+              <div class="expivi-viewer">
+                <div id="expivi-viewer"></div>
+              </div>
+              <div class="expivi-options">
+                <div id="expivi-price"></div>
+                <div id="expivi-options"></div>
+              </div>
+            </div>
+            <?php else : ?>
             <img src="<?php echo esc_url( $design_foto ? $design_foto['url'] : $assets . 'configurator-demo-pdp.png' ); ?>" alt="Sok preview">
+            <?php endif; ?>
           </div>
           <a href="<?php echo esc_url( ! empty( $design_knop['url'] ) ? $design_knop['url'] : home_url( '/configurator/' ) ); ?>" class="conf-preview-button"><?php echo esc_html( ! empty( $design_knop['title'] ) ? $design_knop['title'] : 'Zelf ontwerpen' ); ?></a>
         </div>
