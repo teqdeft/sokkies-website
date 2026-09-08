@@ -8,7 +8,12 @@
  */
 ?>
                         <div class="mega">
-                        <button class="mega-back" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="10" viewBox="0 0 15 10"><path d="M5.2 1 1 5l4.2 4M1 5h13" fill="none" stroke="#28121b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Terug</button>
+                        <div class="sub-menu-head">
+                          <button class="mega-back" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="10" viewBox="0 0 15 10"><path d="M5.2 1 1 5l4.2 4M1 5h13" fill="none" stroke="#28121b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Terug</button>
+                          <button class="nav-burger" aria-label="Menu" aria-expanded="true">
+                            <span></span><span></span><span></span>
+                          </button>
+                        </div>
                         <div class="mega-mob-title">Sokkencollectie</div>
                         <div class="bestsellers-col">
                             <h4>Bestsellers</h4>

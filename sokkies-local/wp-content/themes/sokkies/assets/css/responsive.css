@@ -11926,16 +11926,14 @@
     height:44px;
     right:14px;
   }
-  /* De sluitknop blijft de knop uit de KOPBALK. Een tweede knop binnen de
-     mega kan niet stil blijven staan: .menu is de scrollcontainer, dus een
-     absolute knop daarbinnen scrolt mee (gemeten: op scrollstand 437 stond
-     hij op top -399, volledig buiten beeld). De kopknop hangt aan de
-     plakkende header en volgt de topbalk in beide scrollstanden — op
-     scrollpositie 0 staat die balk op y=30 door de body-padding, daarna op
-     y=0, en een vaste top-waarde klopt dus maar in één van de twee.
-     Staat er markup voor een knop in de mega, dan blijft die verborgen. */
-  .sub-open .mega .nav-burger{
+  .sub-open .nav-burger{
     display: none;
+  }
+  .sub-open  .mega .nav-burger{
+    display: flex;
+    top: 60px;
+    position: static;
+    transform: none;
   }
 
   /* open menu = witte sheet over de volle breedte, fixed onder de topbar;
@@ -11993,7 +11991,7 @@
     display:none;
   }
   .navbar.sub-open .menu{
-    padding:50px 20px 26px;
+    padding:30px 20px 26px;
   }
   /* hoofdlijst-li's helemaal weg in substate (anders blijven de scheidingslijnen staan) */
   .navbar.sub-open .menu > li:not(.has-mega){
@@ -12007,7 +12005,20 @@
     gap:0;
   }
   .navbar.sub-open .mega-back{
-    margin-bottom:70px;
+    margin-bottom:0px;
+  }
+  .navbar.sub-open .sub-menu-head{
+    margin-bottom:0px;
+    display: flex;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    padding: 10px 20px;
+    border-radius: 0 0 25px 25px;
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    position: sticky;
   }
   .navbar.sub-open .mega-mob-title{
     font-size:24px;

@@ -6710,6 +6710,21 @@ font-weight: 600;
   .mega-mob-title{
     display:none;
   }
+  /* De wikkel om Terug + sluitknop is alleen op mobiel een echte balk.
+     Daarboven mag hij geen cel in het mega-raster vullen: als blok schoof
+     hij de kolommen op en zakte de USP-kolom naar een tweede rij (gemeten
+     op 1440: usps van x 1199 naar x 59, y 156 naar 498). display:contents
+     laat de knoppen zich gedragen alsof de wikkel er niet is; de mobiele
+     band zet hem terug op flex. */
+  .sub-menu-head{
+    display:contents;
+  }
+  /* De sluitknop in die kop is ALLEEN in het mobiele subpaneel de
+     sluitknop; overal anders doet de burger in de kopbalk het werk en zou
+     dit een tweede X opleveren (gemeten op 640: 2 zichtbare knoppen). */
+  .mega .nav-burger{
+    display:none;
+  }
   /* "Home"-menu-item: alleen in het mobiele menu (≤520, mobiel-XD) */
   .menu-home{
     display:none;
