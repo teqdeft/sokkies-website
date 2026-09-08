@@ -11926,6 +11926,14 @@
     height:44px;
     right:14px;
   }
+  .sub-open .nav-burger{
+    display: none;
+  }
+  .sub-open  .mega .nav-burger{
+    display: flex;
+    top: 60px;
+  }
+
   /* open menu = witte sheet over de volle breedte, fixed onder de topbar;
      de logo/icon-rij zweeft erboven (pill-look uit), lijst gecentreerd
      condensed uppercase met scheidingslijnen (mobiel-XD) */
@@ -11981,7 +11989,7 @@
     display:none;
   }
   .navbar.sub-open .menu{
-    padding:24px 20px 26px;
+    padding:50px 20px 26px;
   }
   /* hoofdlijst-li's helemaal weg in substate (anders blijven de scheidingslijnen staan) */
   .navbar.sub-open .menu > li:not(.has-mega){
@@ -12692,7 +12700,7 @@
      overflow:hidden — alleen het menu zelf scrollt nog. */
 
   body:has(.navbar.menu-open){
-    padding-top:30px;
+    padding-top:0px;
     overflow:hidden;
   }
   .navbar.menu-open .menu{
@@ -15713,4 +15721,48 @@
      daarna weer in, zodat de titel niet omlaag schuift. */
   .breadcrumb-terug{ display:flex; padding:115px 0 0; }
   .breadcrumb-terug + .banner-section{ padding-top:62px; }
+}
+
+/* ==========================================================================
+   MOBIEL SUBPANEEL — "Bekijk collectie" als zwevende pil
+   Het hele .mega-usps-blok stond in beide mobiele banden op display:none,
+   dus de knop was er niet. Het artboard toont hem wel: als losse pil die
+   onderin blijft staan terwijl het paneel eronder doorscrolt. De USP-regels
+   blijven verborgen — die staan niet in het mobiele ontwerp.
+   ========================================================================== */
+
+@media (max-width:767px){
+  .navbar.sub-open .mega-usps{
+    display:block;
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:24px;
+    margin:0;
+    padding:0;
+    z-index:210; /* de mega zelf staat op 200 */
+    text-align:center;
+    /* alleen de pil vangt kliks; de lege ruimte ernaast laat het paneel door */
+    pointer-events:none;
+  }
+  .navbar.sub-open .mega-usps h4,
+  .navbar.sub-open .mega-usps span{
+    display:none;
+  }
+  .navbar.sub-open .mega-usps .cta-light{
+    pointer-events:auto;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:auto;
+    align-self:auto;
+    margin:0;
+    background:#fff;
+    box-shadow:0 6px 20px rgba(0,0,0,.15);
+  }
+  /* ruimte onderin het paneel, anders blijft de laatste rij types voorgoed
+     onder de pil liggen als er tot onderaan gescrold is */
+  .navbar.sub-open .mega{
+    padding-bottom:90px;
+  }
 }
