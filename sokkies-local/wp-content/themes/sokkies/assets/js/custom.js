@@ -59,6 +59,11 @@
       }
       function close() {
         navbar.classList.remove('search-open');
+        /* Ook het veld leegmaken: het browserkruisje van type="search" is
+           weggehaald (er stonden er twee), dus dit is nu de enige manier
+           om de zoekterm te wissen. Op de resultatenpagina staat de term
+           voorgevuld; die hoort ook weg te kunnen. */
+        input.value = '';
       }
 
       openBtn.addEventListener('click', open);

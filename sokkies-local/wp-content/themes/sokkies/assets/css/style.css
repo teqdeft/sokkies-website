@@ -310,6 +310,17 @@ body{
     color:var(--text);
     opacity:.85;
   }
+  /* Chrome zet in een type="search"-veld zijn eigen wiskruisje zodra er
+     tekst staat. Naast onze .nav-search-close stonden er dan twee, vlak
+     naast elkaar. De eigen knop blijft: die wist het veld en sluit de
+     balk, het browserkruisje wist alleen. */
+  .nav-search-input::-webkit-search-cancel-button{
+    -webkit-appearance:none;
+    appearance:none;
+  }
+  .nav-search-input::-ms-clear{
+    display:none;
+  }
   .nav-search-close{
     flex-shrink:0;
     display:flex;
