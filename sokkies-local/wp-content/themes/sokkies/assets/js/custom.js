@@ -63,7 +63,16 @@
 
       openBtn.addEventListener('click', open);
       closeBtn.addEventListener('click', close);
-      form.addEventListener('submit', (e) => e.preventDefault());
+      /* Het formulier verzendt nu echt naar de zoekresultaten. Hier stond
+         e.preventDefault() — de stub uit de statische build, waar zoeken
+         nog niet bestond. Wel een lege inzending tegenhouden: dat zou de
+         bezoeker naar de homepage sturen. */
+      form.addEventListener('submit', (e) => {
+        if ('' === input.value.trim()) {
+          e.preventDefault();
+          input.focus();
+        }
+      });
 
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') close();

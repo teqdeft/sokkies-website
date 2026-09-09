@@ -1015,3 +1015,209 @@ function sokkies_naam_veld_class( $classes, $field, $form ) {
 	return $classes;
 }
 add_filter( 'gform_field_css_class', 'sokkies_naam_veld_class', 10, 3 );
+
+/**
+ * ===== Zoeken =====
+ *
+ * Dit is de TWEEDE opzet. De eerste is op 2026-08-24 teruggedraaid met
+ * "werkt niet goed"; wat er precies aan mankeerde is toen niet vastgelegd,
+ * maar nagemeten op de huidige database is het duidelijk: zoeken op
+ * "sokken" gaf 51 treffers — vrijwel elke pagina van de site — op
+ * datumvolgorde en zonder te laten zien WAAROM iets matchte. Dat is geen
+ * zoekresultaat maar een inhoudsopgave.
+ *
+ * Drie dingen zijn daarom anders:
+ *
+ * 1. VOLGORDE OP RELEVANTIE. Een treffer in de titel komt boven een
+ *    treffer ergens in een veld, en een concreet ding (soktype, case,
+ *    blog) boven een algemene pagina. Dat is wat "sokken" bruikbaar
+ *    maakt: de sokken staan bovenaan in plaats van de homepage.
+ * 2. RUIS ERUIT. De sectievelden bevatten ook bestands-ID's, URL's,
+ *    kleurcodes en geserialiseerde arrays. Daar zoeken levert treffers op
+ *    die de bezoeker niet kan zien staan, dus die waarden vallen af.
+ * 3. FRAGMENT BIJ HET RESULTAAT. Bij een treffer buiten de titel wordt
+ *    het stukje tekst getoond waar het woord in stond, zodat zichtbaar is
+ *    waarom het resultaat er staat.
+ *
+ * WAT er doorzocht wordt: alleen types met een eigen klikbare pagina —
+ * pagina's, soktypes (/collectie/{slug}/), cases (/cases/{slug}/) en
+ * blogs (/blog/{slug}/). FAQ-vragen, reviews en merklogo's zijn
+ * hulp-CPT's zonder permalink; een treffer daarop zou nergens heen leiden.
+ *
+ * WAAR gezocht wordt: naast de titel ook in de postmeta, want de pagina's
+ * zijn opgebouwd met de ACF-sectiebuilder en post_content is dus leeg —
+ * standaard WordPress-zoeken vindt daar alleen titels.
+ */
+
+function sokkies_zoek_actief( $query ) {
+	return ! is_admin() && $query->is_main_query() && $query->is_search();
+}
+
+function sokkies_zoek_types( $query ) {
+	if ( ! sokkies_zoek_actief( $query ) ) {
+		return;
+	}
+	$query->set( 'post_type', array( 'page', 'sokkies_soktype', 'sokkies_case', 'sokkies_blog' ) );
+	$query->set( 'posts_per_page', 12 );
+}
+add_action( 'pre_get_posts', 'sokkies_zoek_types' );
+
+/**
+ * De join naar de postmeta, met de ruis er meteen uit.
+ *
+ * - meta_key NOT LIKE '_%' : ACF's eigen verwijzingen naar veldsleutels.
+ * - niet puur cijfers      : bestands- en post-ID's uit image-/relatievelden.
+ * - geen a:/s:/O: aan het begin : geserialiseerde arrays (repeaters e.d.).
+ * - geen http.../#kleurcode: URL's en hexwaarden.
+ * - minstens 4 tekens      : losse letters en cijfers zeggen niets.
+ */
+function sokkies_zoek_join( $join, $query ) {
+	global $wpdb;
+	if ( ! sokkies_zoek_actief( $query ) ) {
+		return $join;
+	}
+	$join .= " LEFT JOIN {$wpdb->postmeta} AS sokkies_zm"
+		. " ON {$wpdb->posts}.ID = sokkies_zm.post_id"
+		. " AND sokkies_zm.meta_key NOT LIKE '\_%'"
+		. " AND sokkies_zm.meta_value NOT REGEXP '^[0-9]+$'"
+		. " AND sokkies_zm.meta_value NOT LIKE 'a:%'"
+		. " AND sokkies_zm.meta_value NOT LIKE 's:%'"
+		. " AND sokkies_zm.meta_value NOT LIKE 'O:%'"
+		. " AND sokkies_zm.meta_value NOT LIKE 'http%'"
+		. " AND sokkies_zm.meta_value NOT LIKE '#%'"
+		. " AND CHAR_LENGTH(sokkies_zm.meta_value) > 3 ";
+	return $join;
+}
+add_filter( 'posts_join', 'sokkies_zoek_join', 10, 2 );
+
+/**
+ * WordPress bouwt per zoekwoord een (post_title LIKE '…'); daar hangen we
+ * de metawaarde naast. Via preg_replace i.p.v. een losse LIKE, zodat bij
+ * meerdere woorden elk woord zijn eigen OR krijgt en de AND tussen de
+ * woorden intact blijft.
+ */
+function sokkies_zoek_where( $where, $query ) {
+	global $wpdb;
+	if ( ! sokkies_zoek_actief( $query ) ) {
+		return $where;
+	}
+	return preg_replace(
+		"/\(\s*{$wpdb->posts}\.post_title\s+LIKE\s*(\'[^\']+\')\s*\)/",
+		"({$wpdb->posts}.post_title LIKE $1) OR (sokkies_zm.meta_value LIKE $1)",
+		$where
+	);
+}
+add_filter( 'posts_where', 'sokkies_zoek_where', 10, 2 );
+
+// De join levert een rij per metaveld; zonder DISTINCT komt een pagina net
+// zo vaak terug als er velden matchen.
+function sokkies_zoek_distinct( $distinct, $query ) {
+	return sokkies_zoek_actief( $query ) ? 'DISTINCT' : $distinct;
+}
+add_filter( 'posts_distinct', 'sokkies_zoek_distinct', 10, 2 );
+
+/**
+ * Relevantie. Zonder dit staat alles op datum en komt bij een algemeen
+ * woord de homepage boven het product dat je zocht.
+ *
+ * 1. titeltreffer eerst;
+ * 2. dan op soort: soktype, case, blog, en pas daarna de algemene pagina's;
+ * 3. binnen dezelfde groep de nieuwste eerst.
+ */
+function sokkies_zoek_orderby( $orderby, $query ) {
+	global $wpdb;
+	if ( ! sokkies_zoek_actief( $query ) ) {
+		return $orderby;
+	}
+	$term = trim( (string) $query->get( 's' ) );
+	if ( '' === $term ) {
+		return $orderby;
+	}
+	$like = '%' . $wpdb->esc_like( $term ) . '%';
+
+	return $wpdb->prepare(
+		"({$wpdb->posts}.post_title LIKE %s) DESC,"
+		. " FIELD({$wpdb->posts}.post_type,'sokkies_soktype','sokkies_case','sokkies_blog','page') ASC,"
+		. " {$wpdb->posts}.post_date DESC",
+		$like
+	);
+}
+add_filter( 'posts_orderby', 'sokkies_zoek_orderby', 10, 2 );
+
+/**
+ * Het stukje tekst waarin het zoekwoord staat, voor onder het resultaat.
+ *
+ * Loopt de zichtbare metavelden af (zelfde ruisfilter als de join) en pakt
+ * het eerste veld waar de term in staat. Geen treffer buiten de titel? Dan
+ * een lege string — search.php valt dan terug op het normale fragment.
+ */
+function sokkies_zoek_fragment( $post_id, $term, $woorden = 30 ) {
+	$term = trim( (string) $term );
+	if ( '' === $term ) {
+		return '';
+	}
+	$velden = get_post_meta( $post_id );
+	if ( ! $velden ) {
+		return '';
+	}
+	$titel = trim( wp_strip_all_tags( get_the_title( $post_id ) ) );
+	$beste = '';
+
+	foreach ( $velden as $sleutel => $waarden ) {
+		if ( '_' === substr( $sleutel, 0, 1 ) ) {
+			continue;
+		}
+		foreach ( (array) $waarden as $waarde ) {
+			if ( ! is_string( $waarde ) || is_serialized( $waarde ) ) {
+				continue;
+			}
+			$plat = trim( wp_strip_all_tags( $waarde ) );
+			/* Korte velden zijn labels, knopteksten en namen: die leveren een
+			   fragment op als "Kerstsokken", wat niets toevoegt naast de titel
+			   die er al boven staat. Alleen echte lopende tekst dus. */
+			if ( strlen( $plat ) < 40 || is_numeric( $plat ) || 0 === strpos( $plat, 'http' ) ) {
+				continue;
+			}
+			if ( 0 === strcasecmp( $plat, $titel ) ) {
+				continue;
+			}
+			if ( false === stripos( $plat, $term ) ) {
+				continue;
+			}
+			// het langste veld geeft de meeste context
+			if ( strlen( $plat ) > strlen( $beste ) ) {
+				$beste = $plat;
+			}
+		}
+	}
+	if ( '' === $beste ) {
+		return '';
+	}
+
+	// een stukje vóór de term meenemen zodat de zin loopt
+	$pos   = stripos( $beste, $term );
+	$start = max( 0, $pos - 60 );
+	$stuk  = substr( $beste, $start );
+	if ( $start > 0 ) {
+		$stuk = '…' . ltrim( $stuk );
+	}
+	return wp_trim_words( $stuk, $woorden, '…' );
+}
+
+/**
+ * De paginatitel van de zoekresultaten. WordPress draait hier op locale
+ * en_US zonder Nederlands taalbestand, dus core maakt er "Search Results
+ * for …" van op een verder Nederlandse site. Zelfde reden als
+ * sokkies_datum_nl(): de sitetaal omzetten zou de hele beheeromgeving
+ * meenemen, te grof voor één regel.
+ */
+function sokkies_zoek_titel( $delen ) {
+	if ( is_search() ) {
+		$term           = get_search_query();
+		$delen['title'] = '' === trim( $term )
+			? 'Zoeken'
+			: sprintf( 'Zoeken naar &ldquo;%s&rdquo;', $term );
+	}
+	return $delen;
+}
+add_filter( 'document_title_parts', 'sokkies_zoek_titel' );
