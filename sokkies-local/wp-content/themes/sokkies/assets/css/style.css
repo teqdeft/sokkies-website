@@ -1953,6 +1953,7 @@ font-weight: 600;
   .cases-swiper{
     position:relative;
     z-index:2;
+    overflow: visible;
   }
   .case-inner{
     display:flex;
@@ -7887,15 +7888,16 @@ font-weight: 600;
      én de knop boven de wig blijven. Alleen vanaf 768px: daaronder staat de
      afbeelding op ware grootte gecentreerd en is alleen het vlakke midden
      zichtbaar, waar het wit pas ~55px boven de onderkant begint.
-     Maatvoering: de tekst loopt op 1280px het verst door (tot 95,6% van de
-     breedte) en daar begint het wit 407px boven de onderkant. Met de 130px
-     die de sectie zelf al heeft, is 300px hier genoeg — op 1920 en 2560
-     blijft er ruim marge over. */
-  @media (min-width:768px){
-    .dz-pane.dz-pane-solo{
-      padding-bottom:300px;
-    }
-  }
+     HERZIEN 2026-09-10: die extra ruimte stond hier als een vaste 300px
+     vanaf 768px en is uitgecommentarieerd omdat hij op 1440 een leeg gat
+     van 300px opleverde — daar is hij ook niet nodig. Nagemeten door de
+     PNG te bemonsteren met dezelfde cover-uitsnede als de browser: tot een
+     sectiebreedte van ~1570px snijdt cover de steile rechterkant van de wig
+     weg en blijft de tekst er ruim boven (op 1425px zelfs 57px marge).
+     Daarboven komt die rand wél in beeld en klimt het wit naar 259px (1680)
+     en 393px (1920), terwijl de laatste tekstregel op ~202px staat — dus
+     wit op wit. De ruimte staat nu in responsive.css, per band op maat,
+     alleen vanaf 1550px. */
   .dz-pane.active{
     display:grid;
   }

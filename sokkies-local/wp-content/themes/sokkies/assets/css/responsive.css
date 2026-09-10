@@ -98,6 +98,10 @@
   .cases.cases-pdp {
     padding: 430px 0 50px;
   }
+  .case-bg-union {
+    height: 1352px;
+    background-size: 100%;
+  }
 
 }
 @media (min-width:1920px){
@@ -2493,7 +2497,7 @@
     grid-template-columns: repeat(5, 1fr);
   }
   .pt-otp-legs {
-    width: 490px;
+    width: 410px;
     top: -150px;
   }
   .lp-usps-duddle-l {
@@ -2510,7 +2514,7 @@
     width: 88%;
   }
   .process.process-landing:after {
-    height: 1000px;
+    height: 1080px;
   }
   .landing .cta-final::before {
     width: 562px;
@@ -3042,7 +3046,7 @@
     flex-direction:column;
   }
   .case-text{
-    flex:0 0 55%;
+    flex: 0 0 45%;
     width:55%;
     min-width:0;
   }
@@ -4744,8 +4748,8 @@
     flex-direction:column;
   }
   .case-text{
-    flex:0 0 55%;
-    width:55%;
+    flex: 0 0 50%;
+    width: 100%;
     min-width:0;
   }
   .case-img.case-img-main{
@@ -4970,7 +4974,7 @@
     width:100%;
   }
   .stat-arrow{
-    margin-top:2px;
+    margin-top: 18px;
   }
   .stat-arrow svg{
     width:15px;
@@ -6868,6 +6872,7 @@
   }
   .testimonial-card {
     height: 270px;
+    padding: 30px;
   }
 }
 
@@ -6968,6 +6973,9 @@
   .landing .cta-final::before {
     top: -89%;
     width: 552px;
+  }
+  .pt-partner-card img {
+    max-width: 100%;
   }
 
 }
@@ -14977,7 +14985,7 @@
     font-size:127px;
   }
   .error-404{
-    background:var(--white) url(../media/error-page-bg.png) no-repeat left 20% top;
+    background:var(--white) url(../media/error-page-bgMobile.png) no-repeat left 20% top;
     background-size:cover;
     height:100vh;
   }
@@ -15857,5 +15865,98 @@
   }
   .navbar.search-open .nav-search{
     width:auto;
+  }
+}
+
+/* ==========================================================================
+   DUURZAAMHEID — ruimte onder een volle-breedte certificaten-tab
+   Onderaan .dz-certs ligt duurzaamheid-hero-bg.png (1920x531): een witte wig
+   die rechtsonder steil omhoog loopt. Een tab zonder foto loopt tot ~95% van
+   de breedte, en de laatste tekstregel staat ~202px boven de onderkant van
+   de sectie — witte tekst op wit zodra de wig daar hoger komt.
+   Gemeten door de PNG te bemonsteren met dezelfde cover-uitsnede als de
+   browser (wit begint, in px boven de onderkant, op 95% van de breedte):
+     sectie 1425 -> 145   veilig (57px marge)
+     sectie 1535 -> 183   veilig (19px)
+     sectie 1585 -> 212   te krap
+     sectie 1665 -> 259
+     sectie 1905 -> 393
+     sectie 2545 -> 437
+   Onder ~1570px snijdt cover de steile rand weg, dus daar is niets nodig —
+   vandaar dat de oude vaste 300px vanaf 768px alleen maar een leeg gat gaf.
+   ========================================================================== */
+
+@media (min-width:1550px) and (max-width:1679px){
+  .dz-pane.dz-pane-solo{ padding-bottom:90px; }
+}
+
+@media (min-width:1680px) and (max-width:1919px){
+  .dz-pane.dz-pane-solo{ padding-bottom:230px; }
+}
+
+@media (min-width:1920px){
+  .dz-pane.dz-pane-solo{ padding-bottom:270px; }
+}
+
+/* ==========================================================================
+   404 — MOBIEL VOLGENS HET ARTBOARD
+   De foto lag over de hele pagina (cover + height:100vh), dus alle tekst
+   stond eroverheen — donkere kop op een druk beeld. Het ontwerp toont de
+   foto als BAND bovenaan, met de witte curve als onderrand, en de tekst
+   daaronder op wit. error-page-bgMobile.png (392x419) is precies die
+   uitsnede; die werd alleen uitgerekt.
+   ========================================================================== */
+
+@media (max-width:520px){
+  .error-404{
+    background:var(--white) url(../media/error-page-bgMobile.png) no-repeat center top;
+    /* eigen maat i.p.v. cover: de band is dan 100vw * 419/392 hoog */
+    background-size:100% auto;
+    height:auto;
+    min-height:0;
+  }
+  .er-hero{
+    padding:115px 0 0;
+  }
+  /* Het cijfer staat IN de foto. De hoogte duwt alles erna tot precies
+     onder de witte curve; 70px is de padding hierboven. Zo hangt de tekst
+     niet aan de toevallige regelhoogte van het cijfer. */
+  .er-num{
+    height:calc(100vw * 419 / 392 - 115px);
+    margin:0;
+  }
+  .er-hero h1{
+    margin-top:40px;
+  }
+  /* De twee knoppen staan in het ontwerp onderaan het scherm, over de
+     chips heen — hetzelfde patroon als de stickybalken elders op de site.
+     Wit op wit, dus de balk zelf valt niet op. */
+  .er-actions{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:90;
+    flex-direction:column;
+    flex-wrap:nowrap;
+    gap:10px;
+    margin:0;
+    padding:14px 20px 18px;
+    background:var(--white);
+    border-radius:15px 15px 0 0;
+  }
+  .er-actions .cta,
+  .er-actions .cta-light{
+    width:100%;
+  }
+  /* ruimte zodat de laatste chips boven de balk uit te scrollen zijn */
+  .er-links{
+    padding:30px 0 170px;
+  }
+  /* De balk staat IN <main>, dus '.er-actions ~ footer' matcht niet —
+     zelfde valkuil als bij .conf-sticky. Via :has() op de body wel. De
+     balk is 130px hoog; zonder dit valt de legal-regel eronder. */
+  body:has(main.error-404) footer{
+    padding-bottom:150px;
   }
 }
