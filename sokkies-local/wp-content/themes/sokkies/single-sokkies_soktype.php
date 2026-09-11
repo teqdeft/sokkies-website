@@ -25,7 +25,7 @@ $matrix  = function_exists( 'sokkies_staffel_matrix' ) ? sokkies_staffel_matrix(
 $std_beloftes = array(
 	array( 'icoon' => 'eigen.svg', 'titel' => 'Eigen productie', 'tekst' => 'Van ontwerp tot levering: wij regelen het hele proces. Jij hoeft niets te regelen.' ),
 	array( 'icoon' => 'privacy.svg', 'titel' => 'Geen verborgen kosten', 'tekst' => 'Geen setup-kosten, geen ontwerpkosten, geen verrassingen.' ),
-	array( 'icoon' => 'sock-pair.svg', 'titel' => 'Gratis proefdesign binnen 24 uur', 'tekst' => 'Stuur ons je wensen en ontvang digitaal proefontwerp. Volledig gratis, zonder verplichtingen.' ),
+	array( 'icoon' => 'sock-pair.svg', 'titel' => 'Gratis ontwerp binnen 24 uur', 'tekst' => 'Stuur ons je wensen en ontvang een digitaal ontwerp. Volledig gratis, zonder verplichtingen.' ),
 );
 $std_chips = array(
 	array( 'icoon' => 'gratis-ontwerp.svg', 'label' => 'Gratis ontwerp' ),

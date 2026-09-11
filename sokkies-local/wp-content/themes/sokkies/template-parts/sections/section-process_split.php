@@ -53,11 +53,12 @@ if ( $is_land ) {
 $land_kop        = get_sub_field( 'land_kop' ) ?: 'Klaar voor je ontwerp?';
 $land_knop       = get_sub_field( 'land_knop' );
 $land_knop_url   = ! empty( $land_knop['url'] ) ? $land_knop['url'] : home_url( '/offerte/' );
-/* Landingspagina volgt het ontwerp letterlijk ("Vraag gratis proefdesign
-   aan"); die tekst staat in de opruimlijst van sokkies_cta_tekst() en zou
-   anders sitebreed genormaliseerd worden. Leeg = het sitebrede label. */
-$land_knop_label = trim( (string) ( $land_knop['title'] ?? '' ) );
-if ( '' === $land_knop_label ) { $land_knop_label = sokkies_cta_label(); }
+/* Deze knop liep BEWUST om sokkies_cta_tekst() heen, zodat de landingspagina
+   het ontwerp letterlijk kon volgen ("Vraag gratis proefdesign aan"). Die
+   uitzondering is vervallen: de afgesproken term is site-breed "ontwerp", en
+   een knop die nog "proefdesign" zegt hoort daar niet bij (feedback
+   2026-09-11). Nu dus dezelfde normalisatie als elke andere CTA. */
+$land_knop_label = sokkies_cta_tekst( $land_knop['title'] ?? '', $land_knop_url );
 
 $contact_kop   = get_sub_field( 'contact_kop' ) ?: '[Gratis controle] door onze ontwerper';
 $contact_tekst = get_sub_field( 'contact_tekst' ) ?: 'Voordat je sokken in productie gaan, kijkt een van onze ontwerpers je bestand na op drukbaarheid, kleur en formaat. Dan mens dus, geen script.';
@@ -94,24 +95,7 @@ $contact_sub   = get_sub_field( 'contact_sub' ) ?: 'Vragen over je ontwerp? Bere
           <h5><?php echo sokkies_kop( $contact_kop, 'text-coral' ); ?></h5>
           <p><?php echo esc_html( $contact_tekst ); ?></p>
           <span class="conf-check-sub"><?php echo esc_html( $contact_sub ); ?></span>
-          <div class="conf-check-btns">
-            <a href="mailto:<?php echo esc_attr( sokkies_optie( 'email', 'info@sokkies.nl' ) ); ?>" class="conf-check-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="19.7" height="15.5" viewBox="0 0 19.7 15.5">                     <g id="mail-outline" transform="translate(-1.65 -4.05)">                       <rect id="Rectangle_418" data-name="Rectangle 418" width="18.2" height="14" rx="2" transform="translate(2.4 4.8)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>                       <path id="Path_4099" data-name="Path 4099" d="M5.6,8l6.315,4.873L18.231,8" transform="translate(-0.415 -0.392)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>                     </g>                   </svg>
-              E-mail
-            </a>
-            <a href="<?php echo esc_attr( sokkies_tel_href() ); ?>" class="conf-check-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="11.25" height="18" viewBox="0 0 11.25 18">                     <g id="phone" transform="translate(-4.5)">                       <g id="Group_671" data-name="Group 671" transform="translate(4.5)">                         <path id="Path_4100" data-name="Path 4100" d="M13.5,1.125A1.125,1.125,0,0,1,14.625,2.25v13.5A1.125,1.125,0,0,1,13.5,16.875H6.75A1.125,1.125,0,0,1,5.625,15.75V2.25A1.125,1.125,0,0,1,6.75,1.125ZM6.75,0A2.25,2.25,0,0,0,4.5,2.25v13.5A2.25,2.25,0,0,0,6.75,18H13.5a2.25,2.25,0,0,0,2.25-2.25V2.25A2.25,2.25,0,0,0,13.5,0Z" transform="translate(-4.5)" fill="#fff"/>                         <path id="Path_4101" data-name="Path 4101" d="M12,21a1.5,1.5,0,1,0-1.5-1.5A1.5,1.5,0,0,0,12,21Z" transform="translate(-6.375 -6)" fill="#fff"/>                       </g>                     </g>                   </svg>
-              Bellen
-            </a>
-            <a href="<?php echo esc_url( sokkies_wa_href() ); ?>" target="_blank" rel="noopener" class="conf-check-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="17.914" height="18" viewBox="0 0 17.914 18">                     <g id="whatsapp" transform="translate(-0.057 0)">                       <path id="Path_4098" data-name="Path 4098" d="M13.118,10.786c-.223-.112-1.318-.65-1.522-.725s-.353-.111-.5.112-.575.724-.7.873-.26.167-.483.056A6.119,6.119,0,0,1,8.113,10a6.709,6.709,0,0,1-1.24-1.544c-.13-.223-.013-.344.1-.454s.223-.26.334-.39a1.537,1.537,0,0,0,.223-.373.408.408,0,0,0-.019-.39c-.056-.112-.5-1.209-.687-1.655s-.365-.375-.5-.382S6.036,4.8,5.893,4.8a.817.817,0,0,0-.594.279,2.5,2.5,0,0,0-.78,1.859,4.343,4.343,0,0,0,.91,2.305,9.942,9.942,0,0,0,3.808,3.365,12.6,12.6,0,0,0,1.27.469,3.04,3.04,0,0,0,1.4.088,2.3,2.3,0,0,0,1.5-1.06,1.854,1.854,0,0,0,.13-1.06c-.056-.093-.2-.148-.427-.26M9.052,16.339h0A7.4,7.4,0,0,1,5.275,15.3L5,15.145,2.2,15.881l.748-2.736-.176-.281a7.414,7.414,0,1,1,6.28,3.474m6.31-13.723A8.921,8.921,0,0,0,1.323,13.378L.057,18l4.729-1.24a8.911,8.911,0,0,0,4.262,1.086h0a8.923,8.923,0,0,0,6.31-15.229Z" fill="#fff"/>                     </g>                   </svg>
-              WhatsApp
-            </a>
-            <a href="#" class="conf-check-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="19.385" height="18" viewBox="0 0 19.385 18">                     <g id="chat" transform="translate(-1.5 -3)">                       <path id="Path_4102" data-name="Path 4102" d="M12.4,21l-1.2-.692,2.769-4.846h4.154A1.385,1.385,0,0,0,19.5,14.077V5.769a1.385,1.385,0,0,0-1.385-1.385H4.269A1.385,1.385,0,0,0,2.885,5.769v8.308a1.385,1.385,0,0,0,1.385,1.385H10.5v1.385H4.269A2.769,2.769,0,0,1,1.5,14.077V5.769A2.769,2.769,0,0,1,4.269,3H18.115a2.769,2.769,0,0,1,2.769,2.769v8.308a2.769,2.769,0,0,1-2.769,2.769H14.765Z" transform="translate(0 0)" fill="#fff"/>                       <path id="Path_4103" data-name="Path 4103" d="M6,7.5h9V9H6Z" transform="translate(0.692 -0.375)" fill="#fff"/>                       <path id="Path_4104" data-name="Path 4104" d="M6,12h7.5v1.5H6Z" transform="translate(-0.538 -0.75)" fill="#fff"/>                     </g>                   </svg>
-              Chat
-            </a>
-          </div>
+          <?php get_template_part( 'template-parts/deel', 'contactknoppen' ); ?>
         </div>
         <?php elseif ( $is_land ) : ?>
         <?php /* Landing: geen knop onder de stappen — de actiekaart staat in

@@ -16,8 +16,6 @@ $resultaat = get_field( 'resultaat_fotos' );
 $quote     = get_field( 'quote' );
 $quote_naam = get_field( 'quote_naam' );
 $quote_fun = get_field( 'quote_functie' );
-$video     = get_field( 'video_foto' );
-$video_url = get_field( 'video_url' );
 $assets    = get_template_directory_uri() . '/assets/media/';
 
 // Story-kolommen: gallery of de drie kaartfoto's; kolom N start een foto verder.
@@ -57,10 +55,28 @@ if ( $story ) {
        </div>
      </div>
 
+    <?php
+    /* Twee weergaven, per case te kiezen (veld story_variant):
+       - standaard: tekst links, TWEE langzaam schuivende fotokolommen rechts;
+       - licht:     een stilstaande rij van max 3 foto's met de tekst eronder.
+       De lichte variant is er voor cases met maar een paar foto's — de
+       schuivende kolommen herhalen dezelfde foto's dan zichtbaar. */
+    $story_variant = get_field( 'story_variant' ) ?: 'standaard';
+    ?>
     <?php if ( $aanleiding || $verhaal ) : ?>
     <!-- Hoe het ging -->
-    <section class="case-story">
+    <section class="case-story case-story-<?php echo esc_attr( $story_variant ); ?>">
       <div class="container">
+        <?php if ( $story_urls && 'licht' === $story_variant ) : ?>
+        <?php /* Lichte weergave: de foto's staan BOVEN het verhaal, over de
+                 volle breedte, stil. De rij voegt zich naar het aantal — 1, 2
+                 of 3 vullen hem elk. */ ?>
+        <div class="case-story-fotos">
+          <?php foreach ( array_slice( $story_urls, 0, 3 ) as $story_url ) : ?>
+          <img src="<?php echo esc_url( $story_url ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>" loading="lazy">
+          <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
         <div class="impact-inner case-story-inner">
           <div class="impact-left case-story-left">
             <h2>Hoe het ging</h2>
@@ -76,10 +92,12 @@ if ( $story ) {
             <?php endif; ?>
           </div>
 
-          <?php if ( $story_urls ) : $n = count( $story_urls ); ?>
+          <?php if ( $story_urls && 'licht' !== $story_variant ) : $n = count( $story_urls ); ?>
+          <?php /* TWEE kolommen (was drie). Elke kolom start een foto verder,
+                   zodat ze niet gelijk lopen; de marquee zit in custom.js. */ ?>
           <div class="impact-case-right">
             <div class="impact-gallery">
-              <?php for ( $k = 0; $k < 3; $k++ ) : ?>
+              <?php for ( $k = 0; $k < 2; $k++ ) : ?>
               <div class="swiper v-swiper v-swiper-<?php echo (int) ( $k + 1 ); ?>">
                 <div class="swiper-wrapper">
                   <?php for ( $i = 0; $i < max( 3, $n ); $i++ ) : ?>
@@ -143,30 +161,6 @@ if ( $story ) {
     </section>
     <?php endif; ?>
 
-    <?php if ( $video ) : ?>
-    <!-- Bekijk de samenwerking (video) -->
-    <section class="case-video">
-      <img class="case-video-doodle case-video-doodle-r" src="<?php echo esc_url( $assets ); ?>sock-duddle-three.png" alt="" aria-hidden="true">
-      <div class="case-bg-union" aria-hidden="true"></div>
-      <div class="container">
-        <h2>Bekijk de samenwerking</h2>
-        <div class="case-video-card">
-          <div class="case-video-inner">
-            <img src="<?php echo esc_url( $video['url'] ); ?>" alt="<?php echo esc_attr( $video['alt'] ); ?>">
-          </div>
-          <?php if ( $video_url ) : ?>
-          <a href="<?php echo esc_url( $video_url ); ?>" target="_blank" rel="noopener" class="case-video-play" aria-label="Video afspelen">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="23" viewBox="0 0 20 23">               <path id="Polygon_1" data-name="Polygon 1" d="M9.766,3.015a2,2,0,0,1,3.468,0L21.277,17a2,2,0,0,1-1.734,3H3.457a2,2,0,0,1-1.734-3Z" transform="translate(20) rotate(90)" fill="#28121b"/>             </svg>
-          </a>
-          <?php else : ?>
-          <button type="button" class="case-video-play" aria-label="Video afspelen">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="23" viewBox="0 0 20 23">               <path id="Polygon_1" data-name="Polygon 1" d="M9.766,3.015a2,2,0,0,1,3.468,0L21.277,17a2,2,0,0,1-1.734,3H3.457a2,2,0,0,1-1.734-3Z" transform="translate(20) rotate(90)" fill="#28121b"/>             </svg>
-          </button>
-          <?php endif; ?>
-        </div>
-      </div>
-    </section>
-    <?php endif; ?>
 
     <?php
     $andere = get_posts( array( 'post_type' => 'sokkies_case', 'posts_per_page' => 4, 'post__not_in' => array( $case_id ), 'fields' => 'ids' ) );

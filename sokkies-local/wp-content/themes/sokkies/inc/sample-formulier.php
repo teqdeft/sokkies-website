@@ -79,7 +79,7 @@ add_filter( 'gform_submit_button', function ( $button, $form ) {
 	}
 
 	$zin = '<p class="sample-actions-note">Je sample is gratis en je zit nergens aan vast.</p>';
-	$alt = '<button type="button" class="cta-light of-proef-open">Ik wil toch een proefontwerp</button>';
+	$alt = '<button type="button" class="cta-light of-proef-open">Ik wil toch een ontwerp</button>';
 
 	return '<div class="sample-actions">' . $zin
 		. '<div class="sample-actions-right">' . $alt . $button . '</div></div>';

@@ -119,6 +119,21 @@
     bestaand.textContent = bericht;
   }
 
+  /* Zelfde plek als meldFout, andere toon: dit is informatie, geen fout.
+     Eigen class zodat de opmaak neutraal blijft (zie style.css). */
+  function meldInfo(bericht) {
+    var huis = document.querySelector('.of-huisnummer');
+    if (!huis) { return; }
+    var bestaand = huis.querySelector('.of-adres-info');
+    if (!bericht) { if (bestaand) { bestaand.remove(); } return; }
+    if (!bestaand) {
+      bestaand = document.createElement('div');
+      bestaand.className = 'of-adres-info';
+      huis.appendChild(bestaand);
+    }
+    bestaand.textContent = bericht;
+  }
+
   function zoekAdres() {
     var pc = invoer('of-postcode');
     var hn = invoer('of-huisnummer');
@@ -143,18 +158,28 @@
     fetch(url, { headers: { Accept: 'application/json' } })
       .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
       .then(function (res) {
-        if (!res.ok || res.data.fout) {
+        if (!res.ok || res.data.fout || res.data.melding) {
           // Ook de eerder gevonden gegevens wissen: anders blijft er een straat
           // uit een vórige postcode staan en lijkt het adres alsnog te kloppen.
           vul('of-straat', '', true);
           vul('of-plaats', '', true);
           vul('of-provincie', '', true);
-          meldFout(res.data.fout || 'We konden dit adres niet vinden.');
-          // Niets gevonden: de velden openzetten, anders kan de bezoeker het
-          // adres nergens kwijt en loopt de aanvraag hier dood.
+          /* 'melding' = geen fout maar een mededeling (postcode buiten
+             Nederland). Een Belgische 1000 is een geldige postcode; die rood
+             aanstrepen suggereert dat de bezoeker zich vergist. */
+          if (res.data.melding) {
+            meldFout('');
+            meldInfo(res.data.melding);
+          } else {
+            meldInfo('');
+            meldFout(res.data.fout || 'We konden dit adres niet vinden.');
+          }
+          // De velden openzetten, anders kan de bezoeker het adres nergens
+          // kwijt en loopt de aanvraag hier dood.
           toonHandmatig(true);
           return;
         }
+        meldInfo('');
         vul('of-straat', res.data.straat);
         vul('of-plaats', res.data.plaats);
         vul('of-provincie', res.data.provincie);

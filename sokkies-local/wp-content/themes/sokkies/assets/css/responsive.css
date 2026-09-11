@@ -102,6 +102,9 @@
     height: 1352px;
     background-size: 100%;
   }
+  .cases-solid .case-text {
+    flex: 0 0 50%;
+  }
 
 }
 @media (min-width:1920px){
@@ -203,6 +206,13 @@
   .cases:before {
     background-size: max(100%, 1920px) 100%;
     background-position: right;
+  }
+  .cases-solid .case-sock-right {
+    width: 22%;
+  }
+  .case-story-left {
+    flex: 0 0 30%;
+    padding: 0;
   }
 }
 
@@ -1294,6 +1304,7 @@
   .landing .cta-final::before {
     width: 672px;
   }
+  
 }
 
 /* ===================================================================
@@ -15958,5 +15969,23 @@
      balk is 130px hoog; zonder dit valt de legal-regel eronder. */
   body:has(main.error-404) footer{
     padding-bottom:150px;
+  }
+}
+
+/* ==========================================================================
+   CASEDETAIL — statische fotorij (max 3) op mobiel
+   Naast elkaar wordt op een telefoon te klein: gemeten 94px per foto op
+   390 (de kolom is daar maar 335 breed). Onder elkaar, liggend bijgesneden.
+   ========================================================================== */
+
+@media (max-width:520px){
+  .case-story-fotos{
+    grid-template-columns:minmax(0, 1fr);
+    gap:12px;
+  }
+  .case-story-fotos img,
+  .case-story-fotos:has(img:only-child) img{
+    aspect-ratio:4 / 3;
+    border-radius:15px;
   }
 }

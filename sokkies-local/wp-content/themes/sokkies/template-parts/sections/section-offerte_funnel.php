@@ -32,17 +32,20 @@ $assets_uri = get_template_directory_uri() . '/assets/';
             <h3>Wat krijg je?</h3>
             <ul>
               <li>Een persoonlijke offerte op maat</li>
-              <li>Een gratis digitaal proefontwerp</li>
+              <li>Een gratis digitaal ontwerp</li>
               <li>Reactie binnen 24 uur op werkdagen</li>
               <li>Geen verplichtingen</li>
             </ul>
             <div class="quote-aside-divider"></div>
             <h4>Liever direct contact?</h4>
-            <ul>
-              <li>Telefoon: <a href="<?php echo esc_attr( sokkies_tel_href() ); ?>"><span>+31 (0)413 410 411</span></a></li>
-              <li>WhatsApp: <a href="<?php echo esc_url( sokkies_wa_href() ); ?>" target="_blank" rel="noopener"><span>+31 (0)413 410 411</span></a></li>
-              <li><a href="mailto:<?php echo esc_attr( sokkies_optie( 'email', 'info@sokkies.nl' ) ); ?>">info@sokkies.nl</a></li>
-            </ul>
+            <?php
+            /* Dezelfde knoppen als op de configurator (verzoek: hergebruiken,
+               niet nabouwen) — één bron in deel-contactknoppen.php. Stond hier
+               als opsomming met het nummer twee keer uitgeschreven; dat liep
+               ook uit de pas met Website-instellingen, want alleen de LINKS
+               kwamen daaruit en de zichtbare tekst was hardgecodeerd. */
+            get_template_part( 'template-parts/deel', 'contactknoppen' );
+            ?>
           </aside>
         </div>
       </div>

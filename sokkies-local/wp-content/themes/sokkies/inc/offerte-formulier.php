@@ -184,9 +184,28 @@ function sokkies_offerte_adres_provider( $postcode, $huisnummer ) {
 	$postcode = strtoupper( preg_replace( '/\s+/', '', (string) $postcode ) );
 	$huisnummer = trim( (string) $huisnummer );
 
-	// Nederlandse postcode: 4 cijfers + 2 letters.
+	/* Nederlandse postcode: 4 cijfers + 2 letters.
+	 *
+	 * Alles daarbuiten is GEEN fout van de bezoeker: een Belgische 1000 of
+	 * een Duitse 10115 is een geldige postcode, alleen kent PDOK hem niet.
+	 * Daarom een eigen code, zodat de voorkant de velden gewoon openzet met
+	 * een neutrale mededeling in plaats van een rode foutregel.
+	 *
+	 * DE REGEX IS HIER HET VANGNET, niet de beperking. PDOK antwoordt op
+	 * buitenlandse invoer namelijk niet met "niets gevonden" maar met een
+	 * Nederlands adres dat erop lijkt (gemeten 2026-09-11):
+	 *   "Grote Markt 1 Antwerpen" -> Grote Markt 4A-1, Nijmegen
+	 *   "10115 Berlin"            -> Kerkenbos 10115, Nijmegen
+	 *   "SW1A 1AA London"         -> Laan van London 1, Middelburg
+	 *   "350 5th Ave New York"    -> Laan van York 1, Hoofddorp
+	 * Wie deze controle oprekt om "meer landen te steunen", vult dus stilletjes
+	 * een verkeerd adres in bij een buitenlandse klant.
+	 */
 	if ( ! preg_match( '/^[1-9][0-9]{3}[A-Z]{2}$/', $postcode ) ) {
-		return new WP_Error( 'ongeldige_postcode', 'Vul een geldige postcode in, bijvoorbeeld 1234 AB.' );
+		return new WP_Error(
+			'buiten_nederland',
+			'We vullen adressen alleen automatisch in voor Nederland. Vul de velden hieronder zelf in.'
+		);
 	}
 	if ( '' === $huisnummer ) {
 		return new WP_Error( 'geen_huisnummer', 'Vul ook een huisnummer in.' );
@@ -546,9 +565,19 @@ add_action( 'rest_api_init', function () {
 
 				$adres = sokkies_offerte_adres_provider( $postcode, $huisnummer );
 				if ( is_wp_error( $adres ) ) {
+					$code = $adres->get_error_code();
+					/* Buiten Nederland is geen fout maar een mededeling: de
+					   voorkant zet de velden open zonder rode regel. */
+					$sleutel_bericht = ( 'buiten_nederland' === $code ) ? 'melding' : 'fout';
+					$status          = 404;
+					if ( 'onbereikbaar' === $code ) {
+						$status = 503;
+					} elseif ( 'buiten_nederland' === $code ) {
+						$status = 200;
+					}
 					return new WP_REST_Response(
-						array( 'fout' => $adres->get_error_message() ),
-						'onbereikbaar' === $adres->get_error_code() ? 503 : 404
+						array( $sleutel_bericht => $adres->get_error_message() ),
+						$status
 					);
 				}
 				set_transient( $sleutel, $adres, DAY_IN_SECONDS );

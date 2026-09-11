@@ -217,7 +217,7 @@
         loop: true,
         grabCursor: true,
         /* QA #9 (2026-08-13): was 4000 — te snel, foto's lazen niet */
-        speed: 8000,
+        speed: 13000,
         allowTouchMove: false,
         autoplay: {
           delay: 0,
@@ -1281,11 +1281,21 @@
         renderTable(rows, idx);
       }
 
-      function setQty(qty, fromInput) {
+      /* Het minimum uit de markup halen i.p.v. hardgecodeerd 50: het
+         min-attribuut komt uit de eerste staffelregel en kan dus wijzigen. */
+      const minAantal = parseInt(input.getAttribute('min'), 10) || 50;
+
+      /* vanInput = de bezoeker is IN het veld aan het typen. Dan de waarde
+         NIET terugschrijven: dat deed hij wel, bij elke toetsaanslag, met
+         een klem op het minimum erbij. Wie het veld leegmaakte en "734"
+         begon te typen kreeg na de 7 meteen "50" terug, dan "507", dan
+         "5073" — het veld was zo niet te gebruiken. Klemmen gebeurt nu pas
+         als het veld wordt verlaten. */
+      function setQty(qty, vanInput) {
         qty = parseInt(qty, 10);
-        if (isNaN(qty)) qty = 50;
-        if (qty < 50) qty = 50;
-        input.value = qty;
+        if (isNaN(qty)) qty = minAantal;
+        if (qty < minAantal) qty = minAantal;
+        if (!vanInput) input.value = qty;
         range.value = Math.min(qty, range.max);
         paintRange();
         update(qty);
@@ -1293,6 +1303,9 @@
 
       range.addEventListener('input', () => setQty(range.value));
       input.addEventListener('input', () => setQty(input.value, true));
+      // veld verlaten of de pijltjes gebruiken: nu pas netjes maken
+      input.addEventListener('change', () => setQty(input.value));
+      input.addEventListener('blur', () => setQty(input.value));
 
       // Custom "Type sok" dropdown
       (function () {

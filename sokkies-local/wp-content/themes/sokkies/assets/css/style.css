@@ -452,6 +452,7 @@ body{
     border-radius:5px;
     overflow: hidden;
     background:#f0f0f0;
+    border: 1px solid #dddddd;
   }
   .type-img img{
     width: 100%;
@@ -670,7 +671,7 @@ font-weight: 600;
     font-weight: 600;
   }
   .lang-flag{
-    font-size: var(--body-sm-font-size);
+    font-size: calc(var(--body-sm-font-size) + 2px);
     line-height:1;
     text-align: center;
   }
@@ -1030,6 +1031,7 @@ font-weight: 600;
     height: 688px;
     transform: rotate(356deg);
     padding-right: 20px;
+    margin-top: -40px;
   }
   /* De verticale fotokolommen zijn versiering: ze draaien vanzelf en staan
      op allowTouchMove:false. Swiper zet op een verticale slider echter
@@ -1057,6 +1059,7 @@ font-weight: 600;
     height:400px;
     border-radius:22px;
     overflow:hidden;
+    border: 1px solid #dddddd;
   }
   .v-swiper .swiper-slide img{
     display:block;
@@ -1176,6 +1179,7 @@ font-weight: 600;
     height:395px;
     border-radius:10px;
     overflow:hidden;
+    border: 1px solid #dddddd;
   }
   .collection-img img{
     width:100%;
@@ -2893,6 +2897,7 @@ font-weight: 600;
     overflow:hidden;
     background:#f0f0f0;
     margin-bottom:20px;
+    border: 1px solid #dddddd;
   }
   .type-card-img img{
     width:100%; height:100%;
@@ -4433,7 +4438,10 @@ font-weight: 600;
     justify-content:center;
     flex-wrap:wrap;
     gap:14px;
-    margin-bottom:44px;
+    margin-bottom:25px;
+  }
+  .configurator-banner .banner-bottom-info{
+    margin-bottom: 20px;
   }
   /* White preview canvas + floating promo */
 
@@ -4747,6 +4755,10 @@ font-weight: 600;
   .cases.cases-solid .cases-nav button svg path, .cases.cases-solid .case-link svg path, .testimonial-light .cases-nav button svg path, .testimonial-light .case-link svg path, .cases.cases-pdp .cases-nav svg path, .testimonial-yellow .cases-nav svg path{
     stroke: var(--text);
   }
+
+  .cases-solid .case-text {
+    flex: 0 0 33%;
+  }
  
   .testimonial-light{
     background: var(--light-beige);
@@ -4794,7 +4806,7 @@ font-weight: 600;
     flex-direction:column;
   }
   .step-card-img{
-    height:500px;
+    height:420px;
     border-radius:35px;
     background:var(--light-beige);
     display:flex;
@@ -5002,6 +5014,7 @@ font-weight: 600;
     border-radius:10px;
     overflow:hidden;
     background:#f0f0f0;
+    border: 1px solid #dddd;
   }
   .case-card-img img{
     width:100%;
@@ -5205,7 +5218,7 @@ font-weight: 600;
     line-height:1.65;
     color:var(--text);
   }
-  .blog-body li{ margin-bottom:6px; }
+  .blog-body li{ margin-bottom:2px; }
   .blog-body a{ 
     color:var(--text); 
     text-decoration:underline;
@@ -5401,13 +5414,69 @@ font-weight: 600;
     margin-bottom:20px;
   }
   .case-story-inner{
-    gap: 70px;   
-    height: 100%; 
+    gap: 70px;
+    height: 100%;
+    /* Tekst en collage beginnen op dezelfde hoogte (feedback 2026-09-11).
+       .impact-inner centreert beide verticaal — dat is goed op de homepage,
+       maar hier lopen de twee kolommen daardoor uit de pas: gemeten op 1680
+       begon de tekst 84px boven de collage. Alleen deze sectie dus. */
+    align-items: flex-start;
   }
   .impact-case-right {
+    /* Kijkvenster waar de schuivende kolommen doorheen lopen; zonder vaste
+       hoogte + overflow is er niets om doorheen te schuiven. */
     height: 540px;
-    padding-left: 22px;
     overflow: hidden;
+    padding-left: 22px;
+  }
+  /* De casecollage heeft nog TWEE kolommen (was drie). Het raster erft
+     repeat(3,1fr) van de homepage-versie; zonder deze regel bleef de derde
+     kolom als lege ruimte staan — gemeten 349px op 1680. */
+  .case-story-inner .impact-gallery{
+    grid-template-columns:repeat(2,1fr);
+  }
+  /* LICHTE weergave: stilstaande fotorij van max 3 BOVEN het verhaal, over
+     de volle containerbreedte (zie single-sokkies_case.php).
+     auto-fit + 1fr laat de rij zich naar het AANTAL voegen: één foto vult
+     de rij, twee delen hem, drie ook. Vaste kolommen zouden bij één of
+     twee foto's een gat laten. */
+  .case-story-licht .case-story-inner{
+    /* geen fotokolom meer naast de tekst: het verhaal krijgt de volle breedte */
+    display:block;
+    height:auto;
+  }
+  .case-story-licht .case-story-left{
+    padding-inline-start:0;
+  }
+  /* Vaste bandhoogte i.p.v. vierkant: over de VOLLE breedte wordt een
+     vierkant absurd hoog — gemeten 765x765 bij twee foto's en 1545 bij één.
+     Met een vaste hoogte verschilt alleen de breedte, dus 1, 2 en 3 foto's
+     geven alle drie dezelfde nette band. */
+  .case-story-licht .case-story-fotos img,
+  .case-story-licht .case-story-fotos:has(img:only-child) img{
+    aspect-ratio:auto;
+    height:420px;
+  }
+  .case-story-fotos{
+    margin-bottom:50px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(0, 1fr));
+    gap:16px;
+    align-items:start;
+  }
+  .case-story-fotos img{
+    display:block;
+    width:100%;
+    /* vierkant houdt de rij gelijk van hoogte, ongeacht de aanlevering */
+    aspect-ratio:1 / 1;
+    object-fit:cover;
+    border-radius:25px;
+        border: 1px solid #dddddd;
+  }
+  /* Eén foto vult anders een vierkant van de halve paginabreedte — dat
+     wordt een torenhoog blok naast de tekst. Liggend staat daar beter. */
+  .case-story-fotos:has(img:only-child) img{
+    aspect-ratio:4 / 3;
   }
 
   /* Specs */
@@ -5449,7 +5518,7 @@ font-weight: 600;
   /* Resultaat in beeld + quote (indigo) */
   .case-result{
     position:relative;
-    background: linear-gradient(#fff 20%, var(--light-cyan) 80%);
+    /* background: linear-gradient(#fff 20%, var(--light-cyan) 80%); */
     padding:60px 0 70px;
   }
   .case-result-bg{
@@ -5540,93 +5609,11 @@ font-weight: 600;
     bottom: 9%;
    }
 
-  /* Bekijk de samenwerking (cyan, video) */
-  .case-video{
-    position:relative;
-    background:var(--light-cyan);
-    padding:207px 0 167px;
-  }
-  
-  .case-video-doodle{
-    position:absolute;
-    height:auto;
-    pointer-events:none;
-    z-index:1;
-  }
-  .case-video-doodle-r{ right:3%; top:18%; }
-  /* wrapper-div (2026-08-06, was <img>): png op NATUURLIJKE schaal (1921
-     breed) — schaalt niet mee, snijdt op smallere schermen aan de zijkanten */
-  .case-bg-union{
-    position: absolute;
-    top: -26%;
-    width: 100%;
-    height: 1392px;
-    background: url(../media/Union-bg-g.png) no-repeat top center;
-  }
-  .case-video-feet{
-    position:absolute;
-    left:2%;
-    bottom:0;
-    width:220px;
-    height:auto;
-    pointer-events:none;
-    z-index:1;
-  }
-  .case-video h2{
-    position:relative;
-    z-index:2;
-    text-align:center;
-    font-family:var(--roc-grotesk-condensed);
-    font-weight:700;
-    text-transform:uppercase;
-    color:var(--text);
-    margin-bottom:30px;
-  }
-  .case-video-card{
-   position: relative;
-  }
-  .case-video-inner{
-    position:relative;
-    z-index:2;
-    max-width:66.3%;
-    height: 620px;
-    margin:0 auto;
-    border-radius:35px;
-    overflow:hidden;
-    box-shadow:0 20px 20px rgba(0,0,0,.16);
-    border: 1px solid var(--white);
-  }
-  .case-video-card img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-  }
-  .case-video-play{
-    position:absolute;
-    left:50%;
-    bottom:-30px;
-    transform:translateX(-50%);
-    width:60px;
-    height:60px;
-    border-radius:50%;
-    background:var(--yellow);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    border: 1px solid var(--white);
-    transition:transform .2s;
-    z-index: 5;
-  }
-  .case-video-play:hover{ 
-    transform:translateX(-50%) scale(1.1); 
-  }
 
   /* Andere samenwerkingen */
   .case-others{
     background:#fff;
-    padding:120px 0;
+    padding:200px 0;
   }
   .case-others h2{
     font-family:var(--roc-grotesk-condensed);
@@ -5780,7 +5767,7 @@ font-weight: 600;
   .pdp-usps-main ul li{
     position:relative;
     padding-left:16px;
-    font-size:calc(var(--body-font-size) - 1px);
+    font-size:var(--body-font-size);
     text-transform:uppercase;
     letter-spacing:.03em;
     font-family: var(--roc-grotesk-condensed);
@@ -9984,6 +9971,14 @@ main.contact{
     background:none;
     border:0;
     padding:0;
+  }
+  /* Zelfde plek, maar in de gewone tekstkleur: een postcode buiten Nederland
+     is geen fout van de bezoeker, alleen iets wat de opzoekdienst niet kent. */
+  .quote-card .of-adres-info{
+    font-size:calc(var(--body-font-size) - 2px);
+    color:var(--text);
+    opacity:.75;
+    margin-top:6px;
   }
   .quote-card .gform_validation_errors{
     border:1px solid var(--coral);

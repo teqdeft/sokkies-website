@@ -129,14 +129,14 @@ add_action( 'acf/init', function () {
 								'label'        => 'Onderregel (tekst)',
 								'name'         => 'onderregel_tekst',
 								'type'         => 'text',
-								'instructions' => 'Optioneel. LET OP: de oude regel "Eigen ontwerp? Klik hier voor de templates" is vervallen — templates staan in de footer onder Downloads &amp; templates.',
+								'instructions' => 'Optioneel — de kleine regel onder de knoppen, bijv. "Eigen ontwerp?". Staat op de configuratorpagina; op de homepage is hij bewust leeg (2026-08-25).',
 							),
 							array(
 								'key'          => 'field_hero_onderregel_link',
 								'label'        => 'Onderregel (link)',
 								'name'         => 'onderregel_link',
 								'type'         => 'link',
-								'instructions' => 'Optioneel. Niet meer gebruiken voor de templates-link; die staat in de footer.',
+								'instructions' => 'Optioneel — de link achter de onderregel, bijv. "Klik hier voor de templates" naar /downloads/. De templates staan ook in de footer onder Downloads &amp; templates.',
 							),
 							array(
 								'key'           => 'field_hero_variant',
@@ -2785,7 +2785,19 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 			array( 'key' => 'field_case_intro', 'label' => 'Intro (onder de titel)', 'name' => 'intro', 'type' => 'textarea', 'rows' => 3, 'new_lines' => '', 'instructions' => 'De tekst in de paginakop van de detailpagina.' ),
 			array( 'key' => 'field_case_aanleiding', 'label' => 'Hoe het ging — Aanleiding', 'name' => 'aanleiding', 'type' => 'textarea', 'rows' => 4, 'new_lines' => '' ),
 			array( 'key' => 'field_case_verhaal_resultaat', 'label' => 'Hoe het ging — Resultaat', 'name' => 'verhaal_resultaat', 'type' => 'textarea', 'rows' => 4, 'new_lines' => '' ),
-			array( 'key' => 'field_case_story_fotos', 'label' => 'Foto\'s naast het verhaal', 'name' => 'story_fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'De schuivende fotokolommen. Leeg = de drie kaartfoto\'s. Aanbevolen: 860 x 860 px per foto (vierkant).' ),
+			array(
+				'key'           => 'field_case_story_variant',
+				'label'         => 'Weergave "Hoe het ging"',
+				'name'          => 'story_variant',
+				'type'          => 'button_group',
+				'choices'       => array(
+					'standaard' => 'Twee schuivende fotokolommen',
+					'licht'     => 'Drie foto\'s, daaronder de tekst',
+				),
+				'default_value' => 'standaard',
+				'instructions'  => 'Standaard: de tekst links, twee langzaam schuivende fotokolommen rechts. Licht: een stilstaande rij van maximaal drie foto\'s met het verhaal eronder — handig als er maar een paar foto\'s zijn.',
+			),
+			array( 'key' => 'field_case_story_fotos', 'label' => 'Foto\'s naast het verhaal', 'name' => 'story_fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Leeg = de drie kaartfoto\'s. De lichte weergave toont er maximaal drie. Aanbevolen: 860 x 860 px per foto (vierkant).' ),
 			array(
 				'key'          => 'field_case_specs',
 				'label'        => 'Wat we maakten (specs)',
@@ -2803,8 +2815,6 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 			array( 'key' => 'field_case_quote', 'label' => 'Quote', 'name' => 'quote', 'type' => 'textarea', 'rows' => 4, 'new_lines' => '' ),
 			array( 'key' => 'field_case_quote_naam', 'label' => 'Quote — naam', 'name' => 'quote_naam', 'type' => 'text' ),
 			array( 'key' => 'field_case_quote_functie', 'label' => 'Quote — functie/organisatie', 'name' => 'quote_functie', 'type' => 'text' ),
-			array( 'key' => 'field_case_video_foto', 'label' => 'Video-still', 'name' => 'video_foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Leeg = videosectie verborgen. Aanbevolen: 2280 x 1240 px (breed liggend, 16:9).' ),
-			array( 'key' => 'field_case_video_url', 'label' => 'Video-link', 'name' => 'video_url', 'type' => 'url', 'instructions' => 'Optioneel — de afspeelknop opent deze link.' ),
 		),
 		'location' => array(
 			array(

@@ -42,7 +42,7 @@ if ( $promo_aan ) {
               <div class="footer-certs">
                 <span class="footer-certs-label">Gecertificeerd</span>
                 <div class="footer-certs-list">
-                  <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/GOTS.png" alt="Fair Trade">
+                  <!-- <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/GOTS.png" alt="Fair Trade"> -->
                   <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/OEKO-TEX.png" alt="OEKO-TEX">
                   <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/BSCI.png" alt="BSCI">
                 </div>
