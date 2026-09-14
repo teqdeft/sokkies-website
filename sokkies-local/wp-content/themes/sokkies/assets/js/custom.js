@@ -1260,23 +1260,41 @@
         var typeEl = document.getElementById('staffelType');
         if (typeEl) typeEl.textContent = data.label;
 
-        // Savings hint — a toggle button for the 500-paar tier (always visible)
-        const hint = document.getElementById('calcHint');
-        const price500 = rows.find(r => r[0] === 500)[1];
-        const diff = perPair - price500;
-        const on = qty === 500;
-        document.getElementById('hintTop').textContent = 'Bij 500 paar betaal je';
-        document.getElementById('hintPrice').textContent = euro(price500) + ' per paar';
-        if (on) {
-          document.getElementById('hintSub').textContent = 'Geselecteerd — klik om terug te gaan';
-        } else if (diff > 0) {
-          document.getElementById('hintSub').textContent =
-            euro(diff) + ' per paar minder dan bij ' + rows[idx][0].toLocaleString('nl-NL') + ' paar';
+        /* Upsell naar de EERSTVOLGENDE staffel, niet langer hard naar 500.
+           De oude versie wees altijd naar de 500-regel, dus vanaf 500 paar
+           verwees hij naar een staffel die de bezoeker al voorbij was: bij
+           1.000 paar stond er "klik om 500 paar te kiezen" — een duurdere
+           prijs, dus precies het omgekeerde van een upsell. Nu leest hij de
+           regel ONDER de huidige, en de knop stuurt naar dat aantal. */
+        const hint     = document.getElementById('calcHint');
+        const volgende = rows[idx + 1];
+        if (volgende) {
+          const volgAantal = volgende[0];
+          const volgPrijs  = volgende[1];
+          const diff       = perPair - volgPrijs;
+          hint.dataset.doel = volgAantal;
+          hint.disabled     = false;
+          document.getElementById('hintTop').textContent =
+            'Bij ' + volgAantal.toLocaleString('nl-NL') + ' paar betaal je';
+          document.getElementById('hintPrice').textContent = euro(volgPrijs) + ' per paar';
+          document.getElementById('hintSub').textContent = diff > 0
+            ? euro(diff) + ' per paar minder dan bij ' + rows[idx][0].toLocaleString('nl-NL') + ' paar'
+            : 'Klik om ' + volgAantal.toLocaleString('nl-NL') + ' paar te kiezen';
         } else {
-          document.getElementById('hintSub').textContent = 'Klik om 500 paar te kiezen';
+          /* Hoogste staffel: er valt niets meer te upsellen. Het vak blijft wel
+             staan — .calc-hint heeft een vaste hoogte van 140px, dus weghalen
+             laat de kolom springen — maar is niet meer klikbaar. */
+          hint.dataset.doel = '';
+          hint.disabled     = true;
+          document.getElementById('hintTop').textContent   = 'Dit is de laagste prijs';
+          document.getElementById('hintPrice').textContent = euro(perPair) + ' per paar';
+          document.getElementById('hintSub').textContent   =
+            'Vanaf ' + rows[idx][0].toLocaleString('nl-NL') + ' paar is dit de beste staffel';
         }
-        hint.classList.toggle('is-active', on);
-        hint.setAttribute('aria-pressed', on ? 'true' : 'false');
+        /* Geen toggle meer (aria-pressed hoort bij een aan/uit-knop): het doel
+           schuift met de hoeveelheid mee, dus "terugklikken" bestaat niet. */
+        hint.classList.remove('is-active');
+        hint.removeAttribute('aria-pressed');
 
         renderTable(rows, idx);
       }
@@ -1291,8 +1309,18 @@
          begon te typen kreeg na de 7 meteen "50" terug, dan "507", dan
          "5073" — het veld was zo niet te gebruiken. Klemmen gebeurt nu pas
          als het veld wordt verlaten. */
+      /* "1.500" is precies hoe de staffeltabel het schrijft ("1.000 paar",
+         "2.500 paar"), en dus hoe een Nederlandse bezoeker het intypt. In een
+         number-veld is dat een geldig getal (1,5), en parseInt maakte er 1 van;
+         de klem op het minimum maakte daar vervolgens 50 van. Zo kon je 1.500
+         letterlijk niet invoeren. Alleen de cijfers tellen mee. */
+      function leesAantal(waarde) {
+        const cijfers = String(waarde).replace(/\D/g, '');
+        return cijfers === '' ? NaN : parseInt(cijfers, 10);
+      }
+
       function setQty(qty, vanInput) {
-        qty = parseInt(qty, 10);
+        qty = leesAantal(qty);
         if (isNaN(qty)) qty = minAantal;
         if (qty < minAantal) qty = minAantal;
         if (!vanInput) input.value = qty;
@@ -1349,17 +1377,12 @@
         markSelected();
       })();
 
-      // The savings hint is a toggle: 500 paar <-> previous quantity
+      /* Klikken op het upsell-vak springt naar het aantal dat erin staat.
+         Welk aantal dat is, bepaalt update() (de eerstvolgende staffel). */
       const hintBtn = document.getElementById('calcHint');
-      let prevQty = 250;
       hintBtn.addEventListener('click', () => {
-        const current = parseInt(input.value, 10);
-        if (current === 500) {
-          setQty(prevQty === 500 ? 250 : prevQty);
-        } else {
-          prevQty = current;
-          setQty(500);
-        }
+        const doel = parseInt(hintBtn.dataset.doel, 10);
+        if (doel) setQty(doel);
       });
 
       setQty(range.value);
