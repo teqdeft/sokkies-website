@@ -7632,8 +7632,13 @@
   .sample-card .gform_fields > .of-aantal,
   .sample-card .gform_fields > .of-wensen{ flex:0 0 100%; }
   /* = .quote-actions-split / .quote-actions-right */
-  .quote-card .gform_page_footer{ flex-direction:column; align-items:stretch; gap:12px; }
-  .quote-card .gform_previous_button{ margin-right:0; justify-content:center; }
+  /* BEWUSTE AFWIJKING VAN HTMLV (verzoek Kulwant 2026-09-14): htmlv stapelt deze
+     knoppen onder 768px tot volle breedte, maar de balk moet ook op een smal
+     scherm ÉÉN RIJ blijven — Terug links, Overslaan + Volgende rechts, precies
+     zoals op desktop. Daarom hier GEEN flex-direction:column meer; de basisregel
+     uit style.css (row, gap 20, Terug met margin-right:auto) blijft staan.
+     De maatvoering voor smalle schermen staat onderaan de ≤520-band: op 360px
+     past de rij niet op de standaard knoppadding. */
   .quote-actions-split{ flex-direction:column; align-items:stretch; gap:12px; }
   .quote-actions-right{ flex-direction:column; }
   .aanvraag-steps{ grid-template-columns:1fr; gap:26px; }
@@ -11543,8 +11548,13 @@
   .sample-card .gform_fields > .of-aantal,
   .sample-card .gform_fields > .of-wensen{ flex:0 0 100%; }
   /* = .quote-actions-split / .quote-actions-right */
-  .quote-card .gform_page_footer{ flex-direction:column; align-items:stretch; gap:12px; }
-  .quote-card .gform_previous_button{ margin-right:0; justify-content:center; }
+  /* BEWUSTE AFWIJKING VAN HTMLV (verzoek Kulwant 2026-09-14): htmlv stapelt deze
+     knoppen onder 768px tot volle breedte, maar de balk moet ook op een smal
+     scherm ÉÉN RIJ blijven — Terug links, Overslaan + Volgende rechts, precies
+     zoals op desktop. Daarom hier GEEN flex-direction:column meer; de basisregel
+     uit style.css (row, gap 20, Terug met margin-right:auto) blijft staan.
+     De maatvoering voor smalle schermen staat onderaan de ≤520-band: op 360px
+     past de rij niet op de standaard knoppadding. */
   .quote-actions-split{ flex-direction:column; align-items:stretch; gap:12px; }
   .quote-actions-right{ flex-direction:column; }
   .aanvraag-steps{ grid-template-columns:1fr; gap:26px; }
@@ -13468,8 +13478,14 @@
     grid-template-columns:1fr 1fr;
     align-items:start;
   }
+  /* "Personeelsgeschenken" is 172px breed in een kaartkolom van 139px en liep
+     dus 33px de buurkaart in — dezelfde tekstoverloop als de .usecases-flat-fix
+     van 2026-08-12. hyphens:auto stond hier al, maar dat breekt alleen af als de
+     browser een NL-woordenboek heeft; overflow-wrap is de harde garantie dat het
+     woord nooit meer uit de kaart loopt. */
   .usecases-masonry .usecase-body h5{
     font-size:var(--h5-font-size);
+    overflow-wrap:break-word;
     hyphens:auto;
   }
   /* mock toont geen bodytekst in de kaarten */
@@ -15175,9 +15191,28 @@
   .calculator .calc-panel.calc-right{
     order:3;
   }
+  /* De knoppenbalk blijft op mobiel één rij (zie de toelichting bovenin deze band):
+     Terug links, Overslaan + Volgende rechts. align-items:center lijnt de kale
+     terugknop uit op het midden van de twee pillen.
+     Op smalle schermen past 64 + 128 + 119 + 20 gap niet binnen de kaart (320px
+     inhoud op een 360px-scherm), dus daar wordt de knoppadding en de tussenruimte
+     iets ingehouden — de rij blijft zo heel tot en met 320px. */
   .quote-card .gform_page_footer{
     align-items: center;
     text-align: center;
+    gap: 12px;
+    /* Onder ~360px past de rij echt niet meer (297px nodig, 265px kaartbreedte op
+       een 320px-scherm). Laat hem dan afbreken in plaats van de pagina horizontaal
+       te laten scrollen; vanaf 360px blijft alles gewoon op één regel staan. */
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .quote-card .gform_next_button,
+  .quote-card .gform_button,
+  .quote-card .of-overslaan{
+    padding-left: 16px;
+    padding-right: 16px;
+    white-space: nowrap;
   }
   .pt-partner-card img {
     max-width: 110px;

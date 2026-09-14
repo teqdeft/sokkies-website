@@ -1221,3 +1221,25 @@ function sokkies_zoek_titel( $delen ) {
 	return $delen;
 }
 add_filter( 'document_title_parts', 'sokkies_zoek_titel' );
+
+/**
+ * De site is volledig Nederlands, maar draait op locale en_US (WPLANG leeg —
+ * bewust zo gelaten, zie CLAUDE.md: omzetten raakt admin, thema en datums).
+ * language_attributes() gaf daardoor <html lang="en-US"> terwijl htmlv overal
+ * lang="nl" heeft. Gevolg: een browser hyphenateert Nederlandse tekst met het
+ * ENGELSE woordenboek en vindt geen afbreekpunten, dus hyphens:auto deed niets
+ * — zichtbaar op de PDP-toepassingskaarten, waar "Personeelsgeschenken" de
+ * buurkaart in liep.
+ *
+ * Alleen het HTML-attribuut wordt gecorrigeerd, niet de locale: dit raakt geen
+ * vertalingen, datums of het beheer. Staat een meertalig-plugin (TranslatePress
+ * is gepland) de taal zelf te zetten, dan blijft die leidend.
+ */
+function sokkies_html_taal( $uitvoer ) {
+	$inlogscherm = function_exists( 'is_login' ) ? is_login() : ( isset( $GLOBALS['pagenow'] ) && 'wp-login.php' === $GLOBALS['pagenow'] );
+	if ( is_admin() || $inlogscherm || defined( 'TRP_PLUGIN_VERSION' ) || function_exists( 'pll_current_language' ) ) {
+		return $uitvoer;
+	}
+	return preg_replace( '/lang="[^"]*"/', 'lang="nl"', $uitvoer, 1 );
+}
+add_filter( 'language_attributes', 'sokkies_html_taal' );
