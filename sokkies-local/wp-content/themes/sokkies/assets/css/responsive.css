@@ -6988,6 +6988,27 @@
   .pt-partner-card img {
     max-width: 100%;
   }
+  .sub-open .nav-burger{
+    display: none;
+  }
+  .sub-open  .mega .nav-burger{
+    display: flex;
+    top: 60px;
+    position: static;
+    transform: none;
+  }
+  .sub-menu-head {
+    margin-bottom: 0px;
+    display: flex;
+    justify-content: space-between;
+    top: 0;
+    background: #fff;
+    padding: 10px 20px;
+    border-radius: 0 0 25px 25px;
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    position: sticky;
+  }
 
 }
 
@@ -10741,7 +10762,7 @@
     display:none;
   }
   .navbar.sub-open .menu{
-    padding:24px 20px 26px;
+    padding:0px 20px 26px;
   }
   .navbar.sub-open .menu > li:not(.has-mega){
     display:none;
@@ -10754,8 +10775,9 @@
     gap:0;
   }
   .navbar.sub-open .mega-back{
-    margin-bottom:70px;
+    margin-bottom:0px;
   }
+  
   .navbar.sub-open .mega-mob-title{
     font-size:24px;
     margin-bottom:16px;
@@ -11109,7 +11131,8 @@
     gap: 35px;
   }
   .calc-hint{
-    height: 112px;
+    height: 92px;
+    border: 1px solid #1DD665;
   }
   .staffel-row {
     padding: 8px 20px;
@@ -11945,8 +11968,8 @@
     height: 44px;
   }
   .globe{
-    width:38px;
-    height:38px;
+    width:44px;
+    height:44px;
     box-shadow:none;
     border:1.5px solid #e3e3e3;
   }
@@ -11955,15 +11978,7 @@
     height:44px;
     right:14px;
   }
-  .sub-open .nav-burger{
-    display: none;
-  }
-  .sub-open  .mega .nav-burger{
-    display: flex;
-    top: 60px;
-    position: static;
-    transform: none;
-  }
+  
 
   /* open menu = witte sheet over de volle breedte, fixed onder de topbar;
      de logo/icon-rij zweeft erboven (pill-look uit), lijst gecentreerd
@@ -11977,7 +11992,7 @@
     top:30px;
     height:calc(100vh - 30px); /* volledige schermhoogte onder de topbar */
     max-height:none;
-    padding:100px 20px 26px;
+    padding:140px 20px 45px;
     border-radius:0;
     gap:0;
     z-index:-1;
@@ -11988,7 +12003,8 @@
     text-transform:uppercase;
     font-size:32px;
     text-align:center;
-    padding:16px 12px;
+    padding: 15px 12px;
+    line-height: 1.1;
   }
   .menu > li + li{
     border-top:1px solid var(--border-light);
@@ -12153,7 +12169,7 @@
     width:100%;
   }
   .banner-bottom-info{
-    margin-top:12px;
+    margin-top:20px;
     font-size:13px;
     flex-wrap:wrap;
   }
@@ -12321,7 +12337,7 @@
   .calculator h2{
     font-size:var(--h2-font-size);
     text-align:center;
-    margin-bottom:25px;
+    margin-bottom:0px;
   }
   .calc-panel h3{
     font-size:calc(var(--h3-font-size) + 2px);
@@ -12644,13 +12660,13 @@
     text-align:center;
   }
   .feat-icon{
-    width:40px;
-    height:40px;
+    width: 40px;
+    height: 100%;
   }
   .feat-icon svg,
   .feat-icon img{
-    width:40px;
-    height:40px;
+    width:100%;
+    height:100%;
   }
   .feat-label{
     font-size:17px;
@@ -12749,7 +12765,8 @@
   }
   .navbar.menu-open .menu{
     top:0;
-    height:100vh;
+    height: auto;
+    border-radius: 0 0 20px 20px;
   }
 
   /* home-cases (mobiel-goedgekeurd 22px) — hersteld na dedup; geldt ook
@@ -15259,6 +15276,9 @@
   .cards-suggestion-swiper .collection-card {
     border-radius: 15px;
   }
+  .reviews-nav {
+    padding: 0 20px;
+  }
 }
 
 /* ===================================================================
@@ -15802,18 +15822,19 @@
 
 @media (max-width:767px){
   .navbar.sub-open .mega-usps{
-    display:block;
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:24px;
-    margin:0;
-    padding-bottom: 10px;
-    z-index:210; /* de mega zelf staat op 200 */
-    text-align:center;
-    /* alleen de pil vangt kliks; de lege ruimte ernaast laat het paneel door */
-    pointer-events:none;
-    border-radius: 20px 20px 0 0 ;
+      display: block;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: 0;
+      padding-bottom: 0;
+      z-index: 210;
+      text-align: center;
+      pointer-events: none;
+      border-radius: 20px 20px 0 0;
+      background: #fff;
+      height: 43px;
   }
   .navbar.sub-open .mega-usps .cta-light{
     margin-top: -20px;
@@ -15828,11 +15849,11 @@
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    width:auto;
+    width:220px;
     align-self:auto;
     margin:0;
     background:#fff;
-    box-shadow:0 6px 20px rgba(0,0,0,.15);
+    margin-top: -21px;
   }
   /* ruimte onderin het paneel, anders blijft de laatste rij types voorgoed
      onder de pil liggen als er tot onderaan gescrold is */

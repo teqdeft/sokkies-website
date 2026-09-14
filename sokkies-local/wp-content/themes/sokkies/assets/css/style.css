@@ -1996,19 +1996,20 @@ font-weight: 600;
     position: relative;
   }
   .case-badge{
-    display:inline-block;
+    display:inline-flex;
+    align-items: center;
     background:#87E1F0;
     color:var(--text);
-font-weight: 600;
+    font-weight: 600;
     font-size: var(--body-sm-font-size);
     text-transform:uppercase;
-    padding: 1px 7px;
-    height: 20px;
+    padding: 2px 7px;
+    height: auto;
     border-radius: 3px;
     margin-bottom: 19px;
+    line-height: normal;
   }
   .case-text h3{
-    
     font-weight: 700;
     line-height:1;
     margin-bottom:18px;
@@ -3806,7 +3807,7 @@ font-weight: 600;
     list-style:none; 
     display:flex; 
     flex-direction:column; 
-    gap:8px; 
+    gap:22px; 
     font-size: var(--body-font-size); 
     color:var(--text); 
   }
@@ -6684,7 +6685,7 @@ font-weight: 600;
     align-items:center;
     justify-content:center;
     flex-direction:column;
-    gap:6px;
+    gap:4px;
     padding:0;
   }
   .nav-burger span{
@@ -6694,6 +6695,9 @@ font-weight: 600;
     background:var(--white);
     border-radius:2px;
     transition:transform .2s, opacity .2s;
+  }
+  .navbar.menu-open .nav-burger{
+    gap:6px;
   }
   .navbar.menu-open .nav-burger span:nth-child(1){
     transform:translateY(8px) rotate(45deg);
@@ -6747,8 +6751,7 @@ font-weight: 600;
     margin-top:24px;
   }
   .suggestion-nav button,
-  .gift-nav button,
-  .collection-nav button{
+  .gift-nav button{
     width:55px;
     height:40px;
     border:1.5px solid var(--dark);
@@ -6759,7 +6762,24 @@ font-weight: 600;
     justify-content:center;
     cursor:pointer;
   }
-
+  .collection-nav button{
+     width:55px;
+    height:40px;
+    border:1.5px solid var(--dark);
+    background:transparent;
+    border-radius:7px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+  }
+  .collection-nav .nav-dashes span{
+      background: #000;
+      opacity: 30%;
+  }
+  .collection-nav .nav-dashes span.is-active{
+      opacity: 100%;
+  }
 /*═════════════════════════════════════════
   PDP — mobiele sticky CTA-balk (product-detail)
   Alleen zichtbaar ≤520 (regels in responsive.css);
