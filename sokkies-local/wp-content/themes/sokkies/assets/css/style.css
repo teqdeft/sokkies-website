@@ -465,6 +465,7 @@ body{
     display:flex;
     flex-direction:column;
     gap:14px;
+    justify-content: center;
   }
   .mega-usps span{
     display:flex;
@@ -3343,7 +3344,7 @@ font-weight: 600;
     background:#fff;
     border:1.5px solid var(--dark);
     border-radius:25px;
-    padding:50px;
+    padding:40px;
     position:sticky;
     top:20px;
   }
@@ -4597,6 +4598,9 @@ font-weight: 600;
     font-size:var(--h2-font-size);
     color:var(--text);
     margin-bottom:-30px;
+  }
+  .translatepress-en_GB .conf-works > .container > h2{
+    margin-bottom:0px;
   }
   .conf-check{
     background:var(--light-beige);
@@ -8217,10 +8221,10 @@ font-weight: 600;
   }
   /* benen met gele sokken rechts, over de witte shape heen (img staat ná de :before) */
   .pt-otp-legs{
-    position:absolute;
-    top:-240px;
-    right:0;
-    width:632px;
+    position: absolute;
+    top: -160px;
+    right: 0;
+    width: 582px;
     pointer-events:none;
   }
   /* gele sok-doodles (outline) midden op de witte golf */
@@ -8338,7 +8342,7 @@ font-weight: 600;
 /* ===== Partners — brochure en inspiratiegids (downloads) ===== */
   .pt-dl{
     background:var(--light-beige);
-    padding:100px 0 120px;
+    padding:100px 0 142px;
   }
   .pt-dl h2{
     font-family:var(--roc-grotesk-condensed);
