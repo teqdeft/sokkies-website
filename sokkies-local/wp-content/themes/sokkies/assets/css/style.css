@@ -11395,3 +11395,8 @@ body.pdp-calc-open{
     .zr-form{ flex-direction:column; }
     .zr-form input[type="search"]{ width:100%; }
   }
+
+
+  .trp-language-switcher{
+    display: none !important;
+  }
