@@ -98,7 +98,7 @@ if ( $fotos ) {
           </li>
           <?php endforeach; ?>
         </ul>
-        <p><?php echo nl2br( esc_html( $beschrijving ) ); ?></p>
+        <p><?php echo sokkies_tekst_regels( $beschrijving ); ?></p>
       </div>
 
       <div class="imapact-right-main">

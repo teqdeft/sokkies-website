@@ -75,7 +75,7 @@ $render_kolom = function ( $fotos, $standaard ) use ( $assets ) {
             <div class="coll-hero-content">
                 <h1><?php echo sokkies_kop( $titel, 'title-accent' ); ?></h1>
                 <?php if ( $subtekst ) : ?>
-                <p><?php echo nl2br( esc_html( $subtekst ) ); ?></p>
+                <p><?php echo sokkies_tekst_regels( $subtekst ); ?></p>
                 <?php endif; ?>
                 <?php if ( ! empty( $knop_1['url'] ) || ! empty( $knop_2['url'] ) ) : ?>
                 <div class="coll-hero-btns">

@@ -165,7 +165,7 @@ $andere = get_posts( array(
         <div class="blog-slot">
           <h2><?php echo esc_html( $slot_kop ); ?></h2>
           <?php if ( $slot_tekst ) : ?>
-          <p><?php echo nl2br( esc_html( $slot_tekst ) ); ?></p>
+          <p><?php echo sokkies_tekst_regels( $slot_tekst ); ?></p>
           <?php endif; ?>
           <a href="<?php echo esc_url( ! empty( $slot_knop['url'] ) ? $slot_knop['url'] : home_url( '/contact/' ) ); ?>" class="cta-light"<?php echo ( ! empty( $slot_knop['target'] ) ) ? ' target="' . esc_attr( $slot_knop['target'] ) . '" rel="noopener"' : ''; ?>>
             <?php echo esc_html( ! empty( $slot_knop['title'] ) ? $slot_knop['title'] : 'Neem contact op' ); ?>

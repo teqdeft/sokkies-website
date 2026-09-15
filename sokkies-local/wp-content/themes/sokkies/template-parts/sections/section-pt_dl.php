@@ -7,7 +7,7 @@ $titel   = get_sub_field( 'titel' ) ?: 'Brochure en inspiratiegids';
 $intro   = get_sub_field( 'intro' ) ?: 'Laat je mailadres achter en ontvang onze partnerbrochure en inspiratiegids direct in je inbox.';
 $rijen   = get_sub_field( 'kaarten' );
 $form_kop = get_sub_field( 'form_kop' ) ?: 'Ontvang beide downloads';
-$sticker = get_sub_field( 'sticker' ) ?: 'We mailen ze meteen toe!';
+$sticker = get_sub_field( 'sticker' ) ?: 'We mailen ze meteen toe.';
 $standaard = array(
 	array( 'tag' => 'Brochure', 'titel' => 'Partnerbrochure', 'tekst' => 'Alles over samenwerken met Sokkies.' ),
 	array( 'tag' => 'Brochure', 'titel' => 'Inspiratiegids', 'tekst' => 'Voorbeelden en ideeën voor je eigen sokken.' ),
@@ -44,7 +44,11 @@ if ( ! $rijen ) { $rijen = $standaard; }
           <input class="pt-dl-input" id="pdEmail" type="email" placeholder="voorbeeld@domeinnaam.nl" required>
           <button type="submit" class="pt-dl-btn">Stuur me de downloads</button>
         </form>
-        <span class="pt-dl-sticker"><?php echo esc_html( $sticker ); ?></span>
+        <?php /* Stond hier als geroteerde rode kapitalen (.pt-dl-sticker). Dat viel
+                 buiten de huisstijl; nu een gewone regel onder de knop. Geen class
+                 op de <p> — opmaak hangt aan .pt-dl-form-card, conform de afspraak
+                 dat content-elementen class-vrij blijven. */ ?>
+        <p><?php echo esc_html( $sticker ); ?></p>
       </div>
     </div>
   </div>

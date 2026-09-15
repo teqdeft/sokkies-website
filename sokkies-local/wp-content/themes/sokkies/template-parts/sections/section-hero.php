@@ -71,7 +71,7 @@ $assets = get_template_directory_uri() . '/assets/media/';
           <div class="container">
             <h1><?php echo sokkies_kop( $titel ); ?></h1>
             <?php if ( $subtekst ) : ?>
-            <p><?php echo nl2br( esc_html( $subtekst ) ); ?></p>
+            <p><?php echo sokkies_tekst_regels( $subtekst ); ?></p>
             <?php endif; ?>
             <?php if ( $usps ) : ?>
             <div class="usps">

@@ -72,7 +72,7 @@ if ( ! is_wp_error( $alle_termen ) ) {
       <div class="simple-hero-content">
         <h1><?php echo sokkies_kop( $titel ); ?></h1>
         <?php if ( '' !== trim( $subtekst ) ) : ?>
-        <p><?php echo nl2br( esc_html( $subtekst ) ); ?></p>
+        <p><?php echo sokkies_tekst_regels( $subtekst ); ?></p>
         <?php endif; ?>
       </div>
 

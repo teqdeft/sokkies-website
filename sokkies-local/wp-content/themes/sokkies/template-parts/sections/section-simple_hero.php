@@ -23,7 +23,7 @@ $subtekst   = get_sub_field( 'subtekst' ) ?: "1.000.000+ paar sokken geproduceer
     </nav>
     <div class="simple-hero-content">
       <h1><?php echo sokkies_kop( $titel ); ?></h1>
-      <p><?php echo nl2br( esc_html( $subtekst ) ); ?></p>
+      <p><?php echo sokkies_tekst_regels( $subtekst ); ?></p>
     </div>
   </div>
 </div>

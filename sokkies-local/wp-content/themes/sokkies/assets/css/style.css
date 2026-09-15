@@ -8442,17 +8442,22 @@ font-weight: 600;
   .pt-dl-btn:hover{
     opacity:.9;
   }
-  .pt-dl-sticker{
-    position:absolute;
-    right:26px;
-    bottom:26px;
-    color:var(--coral);
-    font-weight:700;
-    text-transform:uppercase;
-    font-size:22px;
-    line-height:1.05;
-    text-align:right;
-    transform:rotate(-8deg);
+  /* Geruststellende regel onder de verzendknop. Was .pt-dl-sticker: geroteerde
+     rode kapitalen rechtsonder, absoluut gepositioneerd. Die stond los van de
+     rest van de site en is op verzoek vervangen door gewone bodytekst in de
+     flow — dus ook geen gereserveerde ruimte onderin de kaart meer (zie de
+     paddings in responsive.css). Gecentreerd omdat de knop erboven
+     volledige breedte heeft. */
+  .pt-dl-form-card p{
+    margin-top:14px;
+    color:var(--text);
+    font-size:var(--body-font-size);
+    line-height:1.6;
+    text-align:center;
+  }
+
+  .partners .cta-final{
+    background: var(--yellow);
   }
 
 

@@ -49,7 +49,7 @@ if ( $story ) {
          <div class="simple-hero-content">
            <h1><?php the_title(); ?></h1>
            <?php if ( $intro ) : ?>
-           <p><?php echo nl2br( esc_html( $intro ) ); ?></p>
+           <p><?php echo sokkies_tekst_regels( $intro ); ?></p>
            <?php endif; ?>
          </div>
        </div>
@@ -83,12 +83,12 @@ if ( $story ) {
 
             <?php if ( $aanleiding ) : ?>
             <h3>Aanleiding</h3>
-            <p><?php echo nl2br( esc_html( $aanleiding ) ); ?></p>
+            <p><?php echo sokkies_tekst_regels( $aanleiding ); ?></p>
             <?php endif; ?>
 
             <?php if ( $verhaal ) : ?>
             <h3>Resultaat</h3>
-            <p><?php echo nl2br( esc_html( $verhaal ) ); ?></p>
+            <p><?php echo sokkies_tekst_regels( $verhaal ); ?></p>
             <?php endif; ?>
           </div>
 

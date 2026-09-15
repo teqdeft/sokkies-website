@@ -188,6 +188,50 @@ function sokkies_wa_href() {
 }
 
 /**
+ * Platte tekst uit een textarea als nette regels.
+ *
+ * Het patroon nl2br( esc_html( $veld ) ) stond op een stuk of twaalf plekken in
+ * het thema (subteksten van de paginakoppen, de CTA-sub, de impact-tekst, de
+ * case-teksten). Dat escapet terecht alle HTML, maar daardoor komt een <br> die
+ * een redacteur zelf typt LETTERLIJK op de site te staan - precies wat er in de
+ * footer met het adres gebeurde.
+ *
+ * Redacteuren typen dat nu eenmaal: in het CMS is een veld een tekstvak en de
+ * gewoonte om er HTML in te zetten is hardnekkig. Daarom wordt een KALE <br>
+ * hier eerst een gewoon regeleinde, en pas daarna wordt er geescaped.
+ *
+ * Alleen een kale <br> telt mee. Alles met attributen (<br onmouseover=...>) en
+ * elke andere tag blijft gewoon geescapeerd, dus dit maakt het veld geen
+ * HTML-veld en er kan niets ingespoten worden.
+ *
+ * Typt iemand <br> EN drukt hij op enter, dan staan er twee regeleindes; die
+ * worden samengetrokken zodat de tekst niet dubbel gespatieerd raakt.
+ */
+function sokkies_tekst_regels( $tekst ) {
+	$tekst = (string) $tekst;
+	$tekst = preg_replace( '#<\s*br\s*/?\s*>#i', "\n", $tekst );
+	$tekst = preg_replace( '/[ \t]+$/m', '', $tekst );
+	$tekst = preg_replace( '/\R{2,}/', "\n", $tekst );
+
+	return nl2br( esc_html( trim( $tekst ) ) );
+}
+
+/**
+ * Het adres uit Website-instellingen als nette regels.
+ *
+ * Hier begon het: in het adresveld stond een getypte <br>, die door esc_html
+ * LETTERLIJK op de site kwam ("De Morgenstond 45<br>"). De afhandeling daarvan
+ * zit in sokkies_tekst_regels(), zodat het adres en alle andere tekstvakken
+ * zich hetzelfde gedragen.
+ *
+ * Werkt ongeacht wat er in de database staat, dus ook op een omgeving waar
+ * niemand het veld opnieuw opslaat.
+ */
+function sokkies_adres( $standaard = '' ) {
+	return sokkies_tekst_regels( sokkies_optie( 'adres', $standaard ) );
+}
+
+/**
  * Kop-tekst veilig renderen: [woord] wordt de gele highlight
  * (<span class="text-yellow">) en <br> blijft werken; overige HTML wordt
  * geneutraliseerd.

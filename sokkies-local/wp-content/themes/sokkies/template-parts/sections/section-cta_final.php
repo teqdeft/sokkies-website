@@ -36,7 +36,7 @@ $tel_weergave = sokkies_optie( 'telefoon_weergave', '+31 (0)413 410 411' );
   <div class="cta-final-panel">
     <div class="container">
       <h2><?php echo sokkies_kop( $titel ); ?></h2>
-      <p><?php echo nl2br( esc_html( $subtekst ) ); ?></p>
+      <p><?php echo sokkies_tekst_regels( $subtekst ); ?></p>
       <?php if ( $contact ) : ?>
       <div class="cta-final-row">
         <a href="<?php echo esc_url( $knop_url ); ?>" class="cta"><?php echo esc_html( $knop_label ); ?></a>

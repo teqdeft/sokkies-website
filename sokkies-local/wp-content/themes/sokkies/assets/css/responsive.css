@@ -6634,8 +6634,10 @@
     margin-bottom: 20px;
     margin-top: -25px;
   }
+  /* 88px onderruimte was voor de geroteerde sticker die absoluut rechtsonder
+     stond; die staat nu als gewone regel in de flow, dus die ruimte kan eraf. */
   .pt-dl-form-card {
-    padding: 40px 44px 88px;
+    padding: 40px 44px;
   }
   .impact-case-right {
     height: 380px;
@@ -14857,13 +14859,11 @@
   .pt-dl-card h3{
     font-size:calc(var(--h3-font-size) - 1px);
   }
+  /* Idem: de 84px onderruimte en de eigen positionering van de sticker zijn
+     vervallen nu de regel gewoon onder de knop meeloopt. */
   .pt-dl-form-card{
-    padding:20px 20px 84px 20px;
+    padding:20px;
     border-radius:15px;
-  }
-  .pt-dl-sticker{
-    top: 212px;
-    transform: rotate(-6deg);
   }
   .pt-dl-grid > :last-child{
     grid-column:1 / -1;

@@ -1692,7 +1692,7 @@ add_action( 'acf/init', function () {
 								),
 							),
 							array( 'key' => 'field_pd_form_kop', 'label' => 'Formulier-kop', 'name' => 'form_kop', 'type' => 'text', 'instructions' => 'Leeg = "Ontvang beide downloads". Het formulier is nog een demo tot de formulierenfase.' ),
-							array( 'key' => 'field_pd_sticker', 'label' => 'Sticker-tekst', 'name' => 'sticker', 'type' => 'text', 'instructions' => 'Leeg = standaard.' ),
+							array( 'key' => 'field_pd_sticker', 'label' => 'Regel onder de knop', 'name' => 'sticker', 'type' => 'text', 'instructions' => 'Korte geruststelling onder de verzendknop. Leeg = "We mailen ze meteen toe."' ),
 						),
 					),
 
@@ -2322,7 +2322,7 @@ add_action( 'acf/init', function () {
 				'type'          => 'textarea',
 				'rows'          => 3,
 				'new_lines'     => '',
-				'instructions'  => 'Elke adresregel op een eigen regel.',
+				'instructions'  => 'Elke adresregel op een eigen regel. Gewoon enter gebruiken; een &lt;br&gt; typen hoeft niet.',
 				'default_value' => "De Morgenstond 45,\n5473 HE, Heeswijk Dinther\nNederland",
 			),
 			array( 'key' => 'field_si_tab_cijfers', 'label' => 'Cijfers & reviews', 'type' => 'tab' ),

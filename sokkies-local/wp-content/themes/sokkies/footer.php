@@ -103,7 +103,7 @@ if ( $promo_aan ) {
                   </li>
                 </ul>
                 <address class="footer-address">
-                  <?php echo nl2br( esc_html( sokkies_optie( 'adres', "De Morgenstond 45,\n5473 HE, Heeswijk Dinther\nNederland" ) ) ); ?>
+                  <?php echo sokkies_adres( "De Morgenstond 45,\n5473 HE, Heeswijk Dinther\nNederland" ); ?>
                 </address>
               </div>
 

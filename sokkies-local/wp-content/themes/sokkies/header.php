@@ -137,18 +137,28 @@
               </svg>
             </button>
             <ul class="lang-list" role="listbox" aria-label="Taal">
+              <?php /* De vlaglabels (NL/GB/DE/FR) zijn REGIOCODES, geen tekst. Zonder
+                       data-no-translation ziet TranslatePress ze als gewone inhoud en
+                       vertaalt het ze mee: op /fr/ werd NL "Neerlandais" en GB
+                       "Royaume-Uni", op /de/ werd GB "Grossbritannien" en op /en/ werd
+                       NL "Netherlands".
+                       Het attribuut staat bewust op de SPAN en niet op de <ul> of de
+                       <a>: bij een voorouder met dit attribuut zet TranslatePress ook
+                       de taalparameter op links niet meer
+                       (class-translation-render.php r1308), en juist die links zijn
+                       de taalkeuze zelf. */ ?>
               <?php if ( $sokkies_talen ) : ?>
                 <?php foreach ( $sokkies_talen as $sokkies_taal ) : ?>
-              <li role="none"><a class="lang-option<?php echo $sokkies_taal['actief'] ? ' is-selected' : ''; ?>" role="option" aria-selected="<?php echo $sokkies_taal['actief'] ? 'true' : 'false'; ?>" href="<?php echo esc_url( $sokkies_taal['url'] ); ?>" hreflang="<?php echo esc_attr( $sokkies_taal['hreflang'] ); ?>" data-value="<?php echo esc_attr( $sokkies_taal['waarde'] ); ?>" data-label="<?php echo esc_attr( $sokkies_taal['vlag'] ); ?>"><span class="lang-flag"><?php echo esc_html( $sokkies_taal['vlag'] ); ?></span></a></li>
+              <li role="none"><a class="lang-option<?php echo $sokkies_taal['actief'] ? ' is-selected' : ''; ?>" role="option" aria-selected="<?php echo $sokkies_taal['actief'] ? 'true' : 'false'; ?>" href="<?php echo esc_url( $sokkies_taal['url'] ); ?>" hreflang="<?php echo esc_attr( $sokkies_taal['hreflang'] ); ?>" data-value="<?php echo esc_attr( $sokkies_taal['waarde'] ); ?>" data-label="<?php echo esc_attr( $sokkies_taal['vlag'] ); ?>"><span class="lang-flag" data-no-translation><?php echo esc_html( $sokkies_taal['vlag'] ); ?></span></a></li>
                 <?php endforeach; ?>
               <?php else : ?>
               <?php /* Terugval zonder TranslatePress: de statische lijst uit htmlv. Niet
                        klikbaar, maar de kop ziet er hetzelfde uit op een omgeving waar
                        de plugin (nog) niet staat. */ ?>
-              <li class="lang-option" role="option" data-value="nl" data-label="NL"><span class="lang-flag">NL</span></li>
-              <li class="lang-option" role="option" data-value="en" data-label="EN"><span class="lang-flag">GB</span> </li>
-              <li class="lang-option" role="option" data-value="de" data-label="DE"><span class="lang-flag">DE</span></li>
-              <li class="lang-option" role="option" data-value="fr" data-label="FR"><span class="lang-flag">FR</span></li>
+              <li class="lang-option" role="option" data-value="nl" data-label="NL"><span class="lang-flag" data-no-translation>NL</span></li>
+              <li class="lang-option" role="option" data-value="en" data-label="EN"><span class="lang-flag" data-no-translation>GB</span> </li>
+              <li class="lang-option" role="option" data-value="de" data-label="DE"><span class="lang-flag" data-no-translation>DE</span></li>
+              <li class="lang-option" role="option" data-value="fr" data-label="FR"><span class="lang-flag" data-no-translation>FR</span></li>
               <?php endif; ?>
             </ul>
           </div>

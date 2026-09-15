@@ -73,7 +73,7 @@ $klassen = array(
 
       <div class="lp-hero-text">
         <h1><?php echo sokkies_kop( $titel ); ?></h1>
-        <p><?php echo nl2br( esc_html( $subtekst ) ); ?></p>
+        <p><?php echo sokkies_tekst_regels( $subtekst ); ?></p>
 
         <div class="lp-hero-btns">
           <a href="<?php echo esc_url( $knop_url ); ?>" class="cta"<?php echo ! empty( $knop['target'] ) ? ' target="' . esc_attr( $knop['target'] ) . '" rel="noopener"' : ''; ?>><?php echo esc_html( $knop_label ); ?></a>
