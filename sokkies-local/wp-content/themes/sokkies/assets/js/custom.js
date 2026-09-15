@@ -124,8 +124,14 @@
       }
       options.forEach(opt => {
         opt.addEventListener('click', () => {
+          /* De taalkeuze is sinds TranslatePress een echte <a> naar dezelfde
+             pagina in de andere taal: niet preventDefault'en, gewoon laten
+             navigeren. Dit blok zet alleen nog de zichtbare staat, zodat de
+             dropdown er tijdens het laden al goed uitziet. */
           lang.dataset.value = opt.dataset.value;
-          current.textContent = opt.dataset.label;
+          /* .lang-current staat NIET in de markup (alleen in de CSS), dus dit
+             gooide een TypeError bij elke klik op een taal. */
+          if (current) current.textContent = opt.dataset.label;
           markSelected();
           close();
         });
@@ -1208,6 +1214,27 @@
       };
       const BADGES = { 250: 'Meest gekozen', 500: 'bespaar' }; // 500 gets a computed savings badge
 
+      /* Teksten die hier in JS worden opgebouwd staan nergens als tekst in de
+         pagina, dus TranslatePress kon ze niet vertalen. Ze worden nu als
+         VERBORGEN spans meegestuurd (sokkies_calc_teksten() in functions.php);
+         TP vertaalt die gewoon mee en hier lezen we ze er weer uit. De
+         Nederlandse zinnen in de aanroepen hieronder zijn de terugval. */
+      const T = {};
+      document.querySelectorAll('.calc-teksten [data-k]').forEach((el) => {
+        T[el.dataset.k] = el.textContent;
+      });
+      function tekst(sleutel, terugval) {
+        return (T[sleutel] || terugval);
+      }
+      /* Kleine sprintf: vervangt %s, of %1$s/%2$s als er meerdere zijn. */
+      function vul(sjabloon) {
+        const waarden = Array.prototype.slice.call(arguments, 1);
+        let i = 0;
+        return String(sjabloon)
+          .replace(/%(\d)\$s/g, (m, n) => waarden[n - 1])
+          .replace(/%s/g, () => waarden[i++]);
+      }
+
       const euro = (n) => '€' + n.toFixed(2).replace('.', ',');
       const euroGroup = (n) =>
         '€' + n.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d)(?=\d*,))/g, '.');
@@ -1225,12 +1252,14 @@
         const html = rows.map(([qty, price], i) => {
           let badge = '';
           if (BADGES[qty] === 'Meest gekozen') {
-            badge = '<span class="staffel-badge staffel-badge--dark">Meest gekozen</span>';
+            badge = '<span class="staffel-badge staffel-badge--dark">' + tekst('meestGekozen', 'Meest gekozen') + '</span>';
           } else if (BADGES[qty] === 'bespaar' && i > 0) {
             const save = rows[i - 1][1] - price;
-            if (save > 0) badge = '<span class="staffel-badge staffel-badge--green">Bespaar ' + euro(save) + ' p.p.</span>';
+            if (save > 0) badge = '<span class="staffel-badge staffel-badge--green">' + vul(tekst('bespaar', 'Bespaar %s p.p.'), euro(save)) + '</span>';
           }
-          const label = qty >= 5000 ? '5.000+ paar' : qty.toLocaleString('nl-NL') + ' paar';
+          const label = qty >= 5000
+            ? tekst('paarPlus', '5.000+ paar')
+            : vul(tekst('paar', '%s paar'), qty.toLocaleString('nl-NL'));
           return '<div class="staffel-row' + (i === activeIdx ? ' is-active' : '') + '">' +
                    '<span class="staffel-qty">' + label + badge + '</span>' +
                    '<span class="staffel-price">' + euro(price) + '</span>' +
@@ -1275,21 +1304,22 @@
           hint.dataset.doel = volgAantal;
           hint.disabled     = false;
           document.getElementById('hintTop').textContent =
-            'Bij ' + volgAantal.toLocaleString('nl-NL') + ' paar betaal je';
-          document.getElementById('hintPrice').textContent = euro(volgPrijs) + ' per paar';
+            vul(tekst('bijPaar', 'Bij %s paar betaal je'), volgAantal.toLocaleString('nl-NL'));
+          document.getElementById('hintPrice').textContent =
+            vul(tekst('perPaar', '%s per paar'), euro(volgPrijs));
           document.getElementById('hintSub').textContent = diff > 0
-            ? euro(diff) + ' per paar minder dan bij ' + rows[idx][0].toLocaleString('nl-NL') + ' paar'
-            : 'Klik om ' + volgAantal.toLocaleString('nl-NL') + ' paar te kiezen';
+            ? vul(tekst('minderDan', '%1$s per paar minder dan bij %2$s paar'), euro(diff), rows[idx][0].toLocaleString('nl-NL'))
+            : vul(tekst('klikOm', 'Klik om %s paar te kiezen'), volgAantal.toLocaleString('nl-NL'));
         } else {
           /* Hoogste staffel: er valt niets meer te upsellen. Het vak blijft wel
              staan — .calc-hint heeft een vaste hoogte van 140px, dus weghalen
              laat de kolom springen — maar is niet meer klikbaar. */
           hint.dataset.doel = '';
           hint.disabled     = true;
-          document.getElementById('hintTop').textContent   = 'Dit is de laagste prijs';
-          document.getElementById('hintPrice').textContent = euro(perPair) + ' per paar';
+          document.getElementById('hintTop').textContent   = tekst('laagste', 'Dit is de laagste prijs');
+          document.getElementById('hintPrice').textContent = vul(tekst('perPaar', '%s per paar'), euro(perPair));
           document.getElementById('hintSub').textContent   =
-            'Vanaf ' + rows[idx][0].toLocaleString('nl-NL') + ' paar is dit de beste staffel';
+            vul(tekst('besteStaffel', 'Vanaf %s paar is dit de beste staffel'), rows[idx][0].toLocaleString('nl-NL'));
         }
         /* Geen toggle meer (aria-pressed hoort bij een aan/uit-knop): het doel
            schuift met de hoeveelheid mee, dus "terugklikken" bestaat niet. */

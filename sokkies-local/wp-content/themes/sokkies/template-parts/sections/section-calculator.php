@@ -113,6 +113,7 @@ $staffel_min = $matrix[ $eerste ]['rows'][0][0];
         </div>
       </div>
 
+      <?php sokkies_calc_teksten(); ?>
       <div class="calc-cta">
         <a href="<?php echo esc_url( $knop_url ); ?>" class="cta"><?php echo esc_html( $knop_label ); ?></a>
       </div>

@@ -649,6 +649,10 @@ font-weight: 600;
   .lang.open .lang-trigger{
         border-radius: 40px 40px 0 0;
   }
+  /* .lang-option is sinds TranslatePress een <a> (de taalkeuze is een echte
+     link naar dezelfde pagina in de andere taal). De opmaak staat daarom op de
+     link zelf en niet op de <li>: zo is de hele rij klikbaar, inclusief de
+     padding. text-decoration eraf, want de rest van de kiezer is geen tekstlink. */
   .lang-option{
     display: flex;
     align-items: center;
@@ -657,6 +661,7 @@ font-weight: 600;
     border-radius: 4px;
     font-size: 16px;
     color: var(--text);
+    text-decoration: none;
     cursor: pointer;
     transition: background .15s;
     height: 26px;

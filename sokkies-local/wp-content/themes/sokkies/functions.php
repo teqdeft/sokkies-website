@@ -280,7 +280,43 @@ add_action( 'wp_enqueue_scripts', function () {
 	if ( $staffel ) {
 		wp_add_inline_script( 'sokkies-custom', 'window.SOKKIES_TIERS = ' . wp_json_encode( $staffel ) . ';', 'before' );
 	}
+
 }, 20 );
+
+/**
+ * Teksten die de calculator in JAVASCRIPT opbouwt: de staffelregels, de badges
+ * en het upsell-vak. Die staan nergens als tekst in de pagina, dus
+ * TranslatePress kon ze niet oppikken - op de Engelse site bleven "Meest
+ * gekozen", "Bespaar ... p.p." en "... per paar minder dan bij ..." daardoor
+ * Nederlands.
+ *
+ * Ze worden nu als VERBORGEN tekst meegestuurd. TranslatePress vertaalt de
+ * HTML server-side en kijkt daarbij niet of iets zichtbaar is, dus deze spans
+ * gaan gewoon mee in het woordenboek; de JS leest ze er weer uit. Dat werkt
+ * voor elke taal die erbij komt, zonder Engels in het thema te zetten.
+ *
+ * %s is het aantal of het bedrag - dat vult de JS in.
+ */
+function sokkies_calc_teksten() {
+	$teksten = array(
+		'paar'         => '%s paar',
+		'paarPlus'     => '5.000+ paar',
+		'meestGekozen' => 'Meest gekozen',
+		'bespaar'      => 'Bespaar %s p.p.',
+		'bijPaar'      => 'Bij %s paar betaal je',
+		'perPaar'      => '%s per paar',
+		'minderDan'    => '%1$s per paar minder dan bij %2$s paar',
+		'klikOm'       => 'Klik om %s paar te kiezen',
+		'laagste'      => 'Dit is de laagste prijs',
+		'besteStaffel' => 'Vanaf %s paar is dit de beste staffel',
+	);
+
+	echo '<div class="calc-teksten" hidden aria-hidden="true">';
+	foreach ( $teksten as $sleutel => $tekst ) {
+		printf( '<span data-k="%s">%s</span>', esc_attr( $sleutel ), esc_html( $tekst ) );
+	}
+	echo '</div>';
+}
 
 /**
  * SVG-uploads toestaan voor beheerders (de ontwerp-iconen zijn svg's).
@@ -1243,3 +1279,70 @@ function sokkies_html_taal( $uitvoer ) {
 	return preg_replace( '/lang="[^"]*"/', 'lang="nl"', $uitvoer, 1 );
 }
 add_filter( 'language_attributes', 'sokkies_html_taal' );
+
+/**
+ * Talen voor de globe-kiezer in de header.
+ *
+ * Leest de GEPUBLICEERDE talen uit TranslatePress en geeft per taal de URL van
+ * de pagina waar de bezoeker nu staat. Zo blijft de kiezer vanzelf kloppen als
+ * er later een taal bijkomt - er staat niets hardgecodeerd op NL/GB/DE/FR.
+ *
+ * Geeft een LEGE array terug zodra TranslatePress er niet is of er maar één
+ * taal gepubliceerd staat. De header valt dan terug op de statische lijst uit
+ * htmlv, zodat een omgeving zonder de plugin (de plugin zit niet in de repo,
+ * dus dev heeft hem pas na een aparte installatie) gewoon blijft werken.
+ *
+ * De labels volgen het ontwerp: het VLAG-label is de regio (nl_NL -> NL,
+ * en_GB -> GB), data-value blijft de taalcode (en) omdat de CSS en custom.js
+ * daarop staan.
+ */
+function sokkies_talen() {
+	if ( ! defined( 'TRP_PLUGIN_VERSION' ) || ! class_exists( 'TRP_Translate_Press' ) ) {
+		return array();
+	}
+
+	$instellingen = get_option( 'trp_settings', array() );
+	$gepubliceerd = isset( $instellingen['publish-languages'] ) ? (array) $instellingen['publish-languages'] : array();
+	if ( count( $gepubliceerd ) < 2 ) {
+		return array();
+	}
+
+	$trp  = TRP_Translate_Press::get_trp_instance();
+	$urls = $trp ? $trp->get_component( 'url_converter' ) : null;
+	if ( ! $urls ) {
+		return array();
+	}
+
+	global $TRP_LANGUAGE;
+	$talen = array();
+
+	foreach ( $gepubliceerd as $code ) {
+		$deel = explode( '_', $code );
+		$taal = strtolower( $deel[0] );
+		$vlag = strtoupper( isset( $deel[1] ) ? $deel[1] : $deel[0] );
+
+		$talen[] = array(
+			'code'     => $code,
+			'waarde'   => $taal,
+			'vlag'     => $vlag,
+			'hreflang' => str_replace( '_', '-', $code ),
+			'url'      => $urls->get_url_for_language( $code ),
+			'actief'   => ( $code === $TRP_LANGUAGE ),
+		);
+	}
+
+	return $talen;
+}
+
+/**
+ * De taalcode van de ACTIEVE taal, als korte waarde voor .lang[data-value].
+ * Zonder TranslatePress blijft dat 'nl' - de taal waarin de site geschreven is.
+ */
+function sokkies_huidige_taal() {
+	global $TRP_LANGUAGE;
+	if ( ! $TRP_LANGUAGE ) {
+		return 'nl';
+	}
+	$deel = explode( '_', $TRP_LANGUAGE );
+	return strtolower( $deel[0] );
+}

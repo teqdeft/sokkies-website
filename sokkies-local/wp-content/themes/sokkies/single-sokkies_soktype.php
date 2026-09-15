@@ -681,6 +681,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
           </div>
         </div>
 
+        <?php sokkies_calc_teksten(); ?>
         <div class="calc-mid">
           <button type="button" class="calc-hint" id="calcHint">
             <span class="hint-icon">

@@ -127,7 +127,8 @@
             <?php endif; ?>
 
           </nav>
-          <div class="lang" data-value="nl">
+          <?php $sokkies_talen = function_exists( 'sokkies_talen' ) ? sokkies_talen() : array(); ?>
+          <div class="lang" data-value="<?php echo esc_attr( sokkies_huidige_taal() ); ?>">
             <button type="button" class="globe lang-trigger" aria-label="Taal" aria-haspopup="listbox" aria-expanded="false">
               <svg xmlns="http://www.w3.org/2000/svg" width="21.5" height="21.5" viewBox="0 0 21.5 21.5">
                   <g id="globe-1_curved" transform="translate(0.75 0.75)">
@@ -136,10 +137,19 @@
               </svg>
             </button>
             <ul class="lang-list" role="listbox" aria-label="Taal">
+              <?php if ( $sokkies_talen ) : ?>
+                <?php foreach ( $sokkies_talen as $sokkies_taal ) : ?>
+              <li role="none"><a class="lang-option<?php echo $sokkies_taal['actief'] ? ' is-selected' : ''; ?>" role="option" aria-selected="<?php echo $sokkies_taal['actief'] ? 'true' : 'false'; ?>" href="<?php echo esc_url( $sokkies_taal['url'] ); ?>" hreflang="<?php echo esc_attr( $sokkies_taal['hreflang'] ); ?>" data-value="<?php echo esc_attr( $sokkies_taal['waarde'] ); ?>" data-label="<?php echo esc_attr( $sokkies_taal['vlag'] ); ?>"><span class="lang-flag"><?php echo esc_html( $sokkies_taal['vlag'] ); ?></span></a></li>
+                <?php endforeach; ?>
+              <?php else : ?>
+              <?php /* Terugval zonder TranslatePress: de statische lijst uit htmlv. Niet
+                       klikbaar, maar de kop ziet er hetzelfde uit op een omgeving waar
+                       de plugin (nog) niet staat. */ ?>
               <li class="lang-option" role="option" data-value="nl" data-label="NL"><span class="lang-flag">NL</span></li>
               <li class="lang-option" role="option" data-value="en" data-label="EN"><span class="lang-flag">GB</span> </li>
               <li class="lang-option" role="option" data-value="de" data-label="DE"><span class="lang-flag">DE</span></li>
               <li class="lang-option" role="option" data-value="fr" data-label="FR"><span class="lang-flag">FR</span></li>
+              <?php endif; ?>
             </ul>
           </div>
         </div>
