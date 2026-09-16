@@ -13663,6 +13663,7 @@
     height:30px;
     background:#fff;
     z-index:-1;
+    border-radius: 20px 20px 0 0;
   }
   .conf-sticky .cta{
     width:auto;
