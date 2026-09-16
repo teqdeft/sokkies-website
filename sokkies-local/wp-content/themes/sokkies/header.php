@@ -13,7 +13,7 @@
         <li>Eigen productie</li>
         <li>Gratis ontwerp binnen 24u</li>
         <li>Gratis verzending</li>
-        <li> <?php echo esc_html( sokkies_optie( 'review_score', '9.5/10' ) ); ?> uit <span class="underline"><?php echo esc_html( sokkies_optie( 'review_aantal', '450+' ) ); ?> reviews</span></li>
+        <li> <?php echo esc_html( sokkies_optie( 'review_score', '9.5/10' ) ); ?> uit <a href="https://www.feedbackcompany.com/nl-nl/reviews/sokkies/" target="_blank" class="underline"><?php echo esc_html( sokkies_optie( 'review_aantal', '450+' ) ); ?> reviews</a></li>
         </ul>
     </div>
 

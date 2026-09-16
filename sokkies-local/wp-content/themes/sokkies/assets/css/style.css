@@ -158,6 +158,11 @@ body{
   }
   .topbar .underline{
     text-decoration: underline;
+    color: var(--white);
+    transition: 0.2s ease-in-out;
+  }
+   .topbar a:hover{
+    color: var(--coral);
   }
 
   /* sticky chrome (XD dev, 2026-08-12): header (0 hoog, pill hangt er absoluut
@@ -2763,6 +2768,10 @@ font-weight: 600;
   .footer-review a{
     color:var(--text);
     text-decoration:underline;
+    transition: 0.3s ease-in-out;
+  }
+  .footer-review a:hover{
+    color: var(--coral);
   }
   .footer-legal{
     text-align:center;

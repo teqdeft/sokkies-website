@@ -214,7 +214,7 @@ if ( $promo_aan ) {
                   </g>
                 </svg>
               </span>
-              <span>uit 300+ <a href="#">reviews</a></span>
+              <span>uit 300+ <a href="https://www.feedbackcompany.com/nl-nl/reviews/sokkies/" target="_blank">reviews</a></span>
             </div>
             <div class="footer-review">
               <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/google-logo.svg" alt="Google">
@@ -240,7 +240,7 @@ if ( $promo_aan ) {
                   </g>
                 </svg>
               </span>
-              <span>uit 120+ <a href="#">reviews</a></span>
+              <span>uit 120+ <a href="https://www.google.com/search?q=sokkies&rlz=1C1GCEA_enIN1087IN1087&oq=sokk&gs_lcrp=EgZjaHJvbWUqCAgBEEUYJxg7MgYIABBFGDwyCAgBEEUYJxg7Mg8IAhAuGEMYsQMYgAQYigUyBggDEEUYPDIGCAQQRRg8MgYIBRBFGEEyBggGEEUYQTIGCAcQRRhB0gEIMTk3NGowajmoAgawAgHxBTB4DxjRhI-6&sourceid=chrome&source=chrome.ob&ie=UTF-8#lrd=0x47c6e36e5bf03a73:0xa7bdabd85a4c91fe,1,,,," target="_blank">reviews</a></span>
             </div>
           </div>
 
