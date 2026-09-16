@@ -346,6 +346,12 @@
   .menu {
     gap: 25px;
   }
+  .translatepress-fr_FR .menu {
+    gap: 11px;
+  }
+  .translatepress-de_DE .menu {
+    gap: 20px;
+  }
   .logo{
     display: flex;
     width: 96px;
@@ -1686,6 +1692,12 @@
   .menu {
     gap: 17px;
   }
+  .translatepress-fr_FR .menu {
+    gap: 11px;
+  }
+  .translatepress-de_DE .menu {
+    gap: 20px;
+  }
   .navbar-inner {
     gap: 25px;
   }
@@ -2682,7 +2694,7 @@
       gap: 56px;
   }
   .impact-gallery {
-      width: 890px;
+      width: 660px;
   }
   :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul {
     gap: 19px;
@@ -4178,10 +4190,18 @@
   }
   /* zelfde behandeling voor de conf-types-rij (configurator) — stond nog
      als krappe 4-up grid op deze band */
+
+  .conf-types .container{
+    max-width: 100%;
+  }   
+  .conf-types .container h2{
+    padding-inline-start: 75px;
+  }
   .conf-types .collection-grid{
     display:flex;
     overflow-x:auto;
     scrollbar-width:none;
+    padding: 0px 75px 10px;
   }
   .conf-types .collection-grid::-webkit-scrollbar{
     display:none;
@@ -4234,6 +4254,13 @@
   }
   .landing .cta-final::before {
     width: 562px;
+  }
+  .configurator-section ul {
+    gap: 12px 20px;
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: space-evenly;
   }
   }
 
@@ -5793,7 +5820,9 @@
     margin-bottom:0px;
   }
   .configurator-section ul{
-    gap:30px 60px;
+    gap: 30px 16px;
+    display: grid;
+    grid-template-columns: auto auto auto;
   }
   .conf-works .process-split-inner{
     gap:60px;
@@ -6837,6 +6866,10 @@
     grid-column:2;
     grid-row:4;
     margin-top:18px;
+    align-items: baseline;
+  }
+  .mega-usps .cta-light {
+    width: fit-content;
   }
   .navbar.sub-open .mega-usps h4{
     display:none;

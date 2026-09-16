@@ -2753,6 +2753,8 @@ font-weight: 600;
     height:auto;
     width:auto;
     object-fit:contain;
+    max-height: 29px;
+    max-width: 48px;
   }
   .border-v {
     width: 1px;
@@ -3384,10 +3386,10 @@ font-weight: 600;
    hover altijd zichtbaar en kan hij nooit wegvallen. */
 .testimonial-num{
   color:inherit;
-  transition:opacity .2s;
+  transition:color .3s;
 }
 .testimonial-num:hover{
-  opacity:.75;
+  color: var(--coral);
 }
   .testimonial-stars,
   .testimonial-card-stars{ color:var(--green); letter-spacing:1px; }
