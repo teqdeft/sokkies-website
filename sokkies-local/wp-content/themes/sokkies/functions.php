@@ -328,6 +328,231 @@ add_action( 'wp_enqueue_scripts', function () {
 }, 20 );
 
 /**
+ * Logorijen in de footer (keurmerken, goede doelen, betalen, verzenden).
+ *
+ * Geeft de rijen uit Website-instellingen terug, of - als er niets is
+ * ingevuld - de set uit het ontwerp. Dat is dezelfde afspraak als bij de
+ * secties en de menu's: LEEG = de statische inhoud, zodat de footer er zonder
+ * ingevulde velden exact uitziet als voorheen.
+ *
+ * $standaard is een lijst van array( 'bestand' => …, 'alt' => … ); die
+ * bestanden staan in assets/media van het thema.
+ */
+function sokkies_footer_logos( $naam, $standaard ) {
+	$rijen = sokkies_optie( $naam, array() );
+	$uit   = array();
+
+	if ( is_array( $rijen ) ) {
+		foreach ( $rijen as $rij ) {
+			$logo = isset( $rij['logo'] ) ? $rij['logo'] : null;
+			if ( ! is_array( $logo ) || empty( $logo['url'] ) ) {
+				continue; // lege repeaterrij overslaan
+			}
+			$uit[] = array(
+				'url'  => $logo['url'],
+				'alt'  => isset( $logo['alt'] ) ? $logo['alt'] : '',
+				'link' => isset( $rij['link'] ) ? $rij['link'] : '',
+			);
+		}
+	}
+
+	if ( $uit ) {
+		return $uit;
+	}
+
+	$basis = get_template_directory_uri() . '/assets/media/';
+	foreach ( $standaard as $s ) {
+		$uit[] = array( 'url' => $basis . $s['bestand'], 'alt' => $s['alt'], 'link' => '' );
+	}
+
+	return $uit;
+}
+
+/**
+ * De slotregel van de footer: copyright, juridische links, KVK en BTW.
+ *
+ * DE DRIE SPANS ZIJN GEEN OPMAAK-TOEVAL. Op mobiel worden ze blokken en gaan
+ * de .fl-sep-scheidingstekens uit, zodat de regel over drie regels valt zoals
+ * in het ontwerp (zie de ≤520-band in responsive.css). Daarom wordt de inhoud
+ * hier over precies die drie spans verdeeld en niet als één lange string
+ * uitgeschreven.
+ *
+ * De verdeling volgt het ontwerp: copyright + eerste link | tweede link +
+ * KVK | BTW. Zijn er meer of minder juridische links, dan schuiven ze mee in
+ * de eerste twee spans.
+ */
+function sokkies_footer_slotregel() {
+	$copyright = sokkies_optie( 'footer_copyright', '© 2026 Sokkies' );
+	$kvk       = sokkies_optie( 'footer_kvk', '89538226' );
+	$btw       = sokkies_optie( 'footer_btw', 'NL865014218B01' );
+
+	// Juridische links: uit de instellingen of de twee uit het ontwerp.
+	$links = array();
+	$rijen = sokkies_optie( 'footer_legal', array() );
+	if ( is_array( $rijen ) ) {
+		foreach ( $rijen as $rij ) {
+			$link  = isset( $rij['link'] ) ? $rij['link'] : null;
+			$url   = is_array( $link ) ? ( isset( $link['url'] ) ? $link['url'] : '' ) : (string) $link;
+			$label = isset( $rij['label'] ) && '' !== trim( (string) $rij['label'] )
+				? $rij['label']
+				: ( is_array( $link ) && ! empty( $link['title'] ) ? $link['title'] : '' );
+			if ( '' === $url || '' === $label ) {
+				continue;
+			}
+			$links[] = '<a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>';
+		}
+	}
+	if ( ! $links ) {
+		$links = array(
+			'<a href="' . esc_url( home_url( '/juridisch/' ) ) . '">Algemene voorwaarden</a>',
+			'<a href="' . esc_url( home_url( '/cookieverklaring/' ) ) . '">Cookieverklaring</a>',
+		);
+	}
+
+	$punt = ' &nbsp;•&nbsp; ';
+
+	// Span 1: copyright + de eerste link. Span 2: de rest van de links + KVK.
+	$eerste = array_shift( $links );
+	$span1  = esc_html( $copyright ) . ( $eerste ? $punt . $eerste : '' );
+
+	$span2 = $links ? implode( $punt, $links ) : '';
+	if ( '' !== trim( (string) $kvk ) ) {
+		$span2 .= ( $span2 ? $punt : '' ) . 'KVK: ' . esc_html( $kvk );
+	}
+
+	$span3 = '' !== trim( (string) $btw ) ? 'BTW: ' . esc_html( $btw ) : '';
+
+	$uit = '<span>' . $span1 . '</span>';
+	if ( $span2 ) {
+		$uit .= '<span class="fl-sep">' . $punt . '</span><span>' . $span2 . '</span>';
+	}
+	if ( $span3 ) {
+		$uit .= '<span class="fl-sep">' . $punt . '</span><span>' . $span3 . '</span>';
+	}
+
+	echo $uit; // phpcs:ignore WordPress.Security.EscapeOutput -- onderdelen zijn hierboven los ge-escaped
+}
+
+/**
+ * De reviewblokken onderin de footer (logo, cijfer, sterren, link).
+ *
+ * De sterrenrij zit als vaste SVG in de template: die is altijd vijf sterren
+ * en hoort niet bij de redactionele inhoud.
+ */
+function sokkies_footer_reviews() {
+	$rijen = sokkies_optie( 'footer_reviews', array() );
+	$uit   = array();
+
+	if ( is_array( $rijen ) ) {
+		foreach ( $rijen as $rij ) {
+			$logo = isset( $rij['logo'] ) ? $rij['logo'] : null;
+			if ( ! is_array( $logo ) || empty( $logo['url'] ) ) {
+				continue;
+			}
+			$uit[] = array(
+				'logo'   => $logo['url'],
+				'alt'    => isset( $logo['alt'] ) ? $logo['alt'] : '',
+				'score'  => isset( $rij['score'] ) ? $rij['score'] : '',
+				'aantal' => isset( $rij['aantal'] ) ? $rij['aantal'] : '',
+				'link'   => isset( $rij['link'] ) ? $rij['link'] : '',
+			);
+		}
+	}
+
+	if ( $uit ) {
+		return $uit;
+	}
+
+	$basis = get_template_directory_uri() . '/assets/media/';
+
+	return array(
+		array(
+			'logo'   => $basis . 'feedbackcompany.svg',
+			'alt'    => 'Feedback Company',
+			'score'  => '9.5/10',
+			'aantal' => '300+',
+			'link'   => 'https://www.feedbackcompany.com/nl-nl/reviews/sokkies/',
+		),
+		array(
+			'logo'   => $basis . 'google-logo.svg',
+			'alt'    => 'Google',
+			'score'  => '4.7/5.0',
+			'aantal' => '120+',
+			/* Letterlijk de URL zoals hij in de footer stond. Hij is lang en bevat
+			   parameters die uit een adresbalk komen (rlz, sourceid, ie); inkorten
+			   tot het lrd-fragment kan waarschijnlijk, maar dat is niet getest en
+			   dit is een terugval - dus onveranderd overgenomen. */
+			'link'   => 'https://www.google.com/search?q=sokkies&rlz=1C1GCEA_enIN1087IN1087&oq=sokk&gs_lcrp=EgZjaHJvbWUqCAgBEEUYJxg7MgYIABBFGDwyCAgBEEUYJxg7Mg8IAhAuGEMYsQMYgAQYigUyBggDEEUYPDIGCAQQRRg8MgYIBRBFGEEyBggGEEUYQTIGCAcQRRhB0gEIMTk3NGowajmoAgawAgHxBTB4DxjRhI-6&sourceid=chrome&source=chrome.ob&ie=UTF-8#lrd=0x47c6e36e5bf03a73:0xa7bdabd85a4c91fe,1,,,,',
+		),
+	);
+}
+
+/**
+ * Het icoon bij een social in de footer.
+ *
+ * De iconen zitten als inline-SVG in het thema en niet in de mediabibliotheek:
+ * ze zijn eenkleurig wit en moeten meeschalen met de knop. De redacteur kiest
+ * dus het PLATFORM en vult alleen het adres in.
+ *
+ * Onbekend platform geeft een lege string; de link wordt dan niet gerenderd,
+ * zodat er nooit een leeg vierkantje verschijnt.
+ */
+function sokkies_footer_social_icoon( $platform ) {
+	$iconen = array(
+		'linkedin'  => '<svg xmlns="http://www.w3.org/2000/svg" width="20.923" height="20" viewBox="0 0 20.923 20"><path d="M4.75,20V6.506H.265V20ZM2.508,4.663A2.339,2.339,0,1,0,2.537,0a2.338,2.338,0,1,0-.059,4.663h.029ZM7.232,20h4.485V12.464a3.074,3.074,0,0,1,.148-1.094,2.455,2.455,0,0,1,2.3-1.64c1.623,0,2.272,1.237,2.272,3.051V20h4.485V12.263c0-4.145-2.213-6.073-5.164-6.073a4.468,4.468,0,0,0-4.072,2.274h.03V6.506H7.232c.059,1.266,0,13.494,0,13.494Z" fill="#fff"/></svg>',
+		'facebook'  => '<svg xmlns="http://www.w3.org/2000/svg" width="12.1" height="22" viewBox="0 0 12.1 22"><path d="M223.75,12688.016h-3.3a5.5,5.5,0,0,0-5.5,5.5v3.3h-3.3v4.4h3.3v8.8h4.4v-8.8h3.3l1.1-4.4h-4.4v-3.3a1.1,1.1,0,0,1,1.1-1.1h3.3Z" transform="translate(-211.65 -12688.016)" fill="#fff"/></svg>',
+		'instagram' => '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><path d="M169.908,12694.2a1.337,1.337,0,1,0-1.863-.027,1.336,1.336,0,0,0,1.863.027Zm-10.906.814a5.654,5.654,0,1,1,0,8,5.656,5.656,0,0,1,0-8Zm2.593,7.389a3.669,3.669,0,1,0-2.265-3.391,3.668,3.668,0,0,0,2.265,3.391Zm5.849-12.344c-1.159-.055-1.507-.064-4.445-.064s-3.285.01-4.445.064a6.042,6.042,0,0,0-2.043.379,3.622,3.622,0,0,0-2.087,2.086,6.108,6.108,0,0,0-.379,2.043c-.053,1.16-.064,1.508-.064,4.445s.011,3.285.064,4.445a6.108,6.108,0,0,0,.379,2.043,3.622,3.622,0,0,0,2.087,2.086,6.092,6.092,0,0,0,2.043.379c1.159.055,1.507.064,4.445.064s3.285-.01,4.445-.064a6.092,6.092,0,0,0,2.043-.379,3.622,3.622,0,0,0,2.087-2.086,6.108,6.108,0,0,0,.379-2.043c.053-1.16.064-1.508.064-4.445s-.011-3.285-.064-4.445a6.108,6.108,0,0,0-.379-2.043,3.622,3.622,0,0,0-2.087-2.086,6.042,6.042,0,0,0-2.043-.379Zm-8.98-1.98c1.173-.055,1.547-.066,4.535-.066s3.362.014,4.534.066a8.13,8.13,0,0,1,2.672.51,5.638,5.638,0,0,1,3.216,3.219,8.086,8.086,0,0,1,.512,2.67c.054,1.174.066,1.549.066,4.535s-.013,3.361-.066,4.535a8.051,8.051,0,0,1-.512,2.67,5.613,5.613,0,0,1-3.216,3.217,8.072,8.072,0,0,1-2.67.512c-1.174.055-1.548.066-4.536.066s-3.362-.014-4.535-.066a8.072,8.072,0,0,1-2.67-.512,5.619,5.619,0,0,1-3.218-3.217,8.123,8.123,0,0,1-.511-2.67c-.054-1.174-.066-1.549-.066-4.535s.013-3.361.066-4.533a8.091,8.091,0,0,1,.511-2.672,5.636,5.636,0,0,1,3.217-3.219,8.128,8.128,0,0,1,2.67-.51Z" transform="translate(-152 -12688.016)" fill="#fff"/></svg>',
+		'tiktok'    => '<svg xmlns="http://www.w3.org/2000/svg" width="19.068" height="22" viewBox="0 0 19.068 22"><g transform="translate(-2.398 -0.8)"><path d="M19.091,5.505a5.008,5.008,0,0,1-.433-.252,6.09,6.09,0,0,1-1.112-.945,5.246,5.246,0,0,1-1.253-2.586h0A3.186,3.186,0,0,1,16.247.8H12.468V15.41c0,.2,0,.39-.008.582,0,.024,0,.046,0,.071a.158.158,0,0,1,0,.033V16.1A3.208,3.208,0,0,1,10.84,18.65a3.153,3.153,0,0,1-1.563.412,3.208,3.208,0,0,1,0-6.416,3.158,3.158,0,0,1,.981.155l0-3.847a7.019,7.019,0,0,0-5.408,1.582,7.415,7.415,0,0,0-1.618,2A6.913,6.913,0,0,0,2.4,15.705a7.49,7.49,0,0,0,.406,2.508v.009a7.384,7.384,0,0,0,1.026,1.871,7.678,7.678,0,0,0,1.637,1.544v-.009l.009.009A7.07,7.07,0,0,0,9.337,22.8a6.828,6.828,0,0,0,2.863-.633,7.184,7.184,0,0,0,2.325-1.747,7.262,7.262,0,0,0,1.267-2.105,7.885,7.885,0,0,0,.456-2.408V8.155c.046.027.656.431.656.431a8.739,8.739,0,0,0,2.252.931,12.967,12.967,0,0,0,2.311.316V6.083A4.9,4.9,0,0,1,19.091,5.505Z" fill="#fff"/></g></svg>',
+	);
+
+	return isset( $iconen[ $platform ] ) ? $iconen[ $platform ] : '';
+}
+
+/**
+ * De nette schrijfwijze van een platformnaam, voor het aria-label.
+ * ucfirst() zou er "Linkedin" en "Tiktok" van maken.
+ */
+function sokkies_footer_social_naam( $platform ) {
+	$namen = array(
+		'linkedin'  => 'LinkedIn',
+		'facebook'  => 'Facebook',
+		'instagram' => 'Instagram',
+		'tiktok'    => 'TikTok',
+	);
+
+	return isset( $namen[ $platform ] ) ? $namen[ $platform ] : ucfirst( $platform );
+}
+
+/**
+ * De socials in de footer: platform + adres, of de standaardset.
+ */
+function sokkies_footer_socials() {
+	$rijen = sokkies_optie( 'footer_socials', array() );
+	$uit   = array();
+
+	if ( is_array( $rijen ) ) {
+		foreach ( $rijen as $rij ) {
+			$platform = isset( $rij['platform'] ) ? $rij['platform'] : '';
+			$url      = isset( $rij['url'] ) ? trim( (string) $rij['url'] ) : '';
+			if ( '' === $platform || '' === $url ) {
+				continue;
+			}
+			$uit[] = array( 'platform' => $platform, 'url' => $url );
+		}
+	}
+
+	if ( $uit ) {
+		return $uit;
+	}
+
+	return array(
+		array( 'platform' => 'linkedin', 'url' => 'https://www.linkedin.com/company/sokkies/' ),
+		array( 'platform' => 'facebook', 'url' => 'https://www.facebook.com/Sokkies' ),
+		array( 'platform' => 'instagram', 'url' => 'https://www.instagram.com/sokkiesnl/' ),
+	);
+}
+
+/**
  * Meldingen van de nieuwsbriefformulieren.
  *
  * Deze zinnen worden in JAVASCRIPT opgebouwd en staan dus nergens als tekst in

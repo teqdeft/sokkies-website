@@ -38,13 +38,16 @@ if ( $promo_aan ) {
                   </g>
                 </svg>
               </div>
-              <p>Sokkies maakt sinds 2014 op maat bedrukte sokken voor bedrijven, evenementen en zorgorganisaties in heel Europa.</p>
+              <p><?php echo sokkies_tekst_regels( sokkies_optie( 'footer_intro', 'Sokkies maakt sinds 2014 op maat bedrukte sokken voor bedrijven, evenementen en zorgorganisaties in heel Europa.' ) ); ?></p>
               <div class="footer-certs">
-                <span class="footer-certs-label">Gecertificeerd</span>
+                <span class="footer-certs-label"><?php echo esc_html( sokkies_optie( 'footer_certs_label', 'Gecertificeerd' ) ); ?></span>
                 <div class="footer-certs-list">
-                  <!-- <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/GOTS.png" alt="Fair Trade"> -->
-                  <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/OEKO-TEX.png" alt="OEKO-TEX">
-                  <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/BSCI.png" alt="BSCI">
+                  <?php foreach ( sokkies_footer_logos( 'footer_certs', array(
+                    array( 'bestand' => 'OEKO-TEX.png', 'alt' => 'OEKO-TEX' ),
+                    array( 'bestand' => 'BSCI.png', 'alt' => 'BSCI' ),
+                  ) ) as $sokkies_cert ) : ?>
+                  <img src="<?php echo esc_url( $sokkies_cert['url'] ); ?>" alt="<?php echo esc_attr( $sokkies_cert['alt'] ); ?>">
+                  <?php endforeach; ?>
                 </div>
               </div>
             </div>
@@ -107,28 +110,23 @@ if ( $promo_aan ) {
                 </address>
               </div>
 
+              <?php /* Socials: platform + adres uit Website-instellingen. Het icoon
+                       zit in het thema (sokkies_footer_social_icoon) omdat het een
+                       eenkleurige inline-SVG is die met de knop meeschaalt. */ ?>
               <div class="footer-socials">
-                <a href="https://www.linkedin.com/company/sokkies/" target="_blank" aria-label="LinkedIn">
-                  <svg id="linkedin" xmlns="http://www.w3.org/2000/svg" width="20.923" height="20" viewBox="0 0 20.923 20">
-                    <path id="Path_3789" data-name="Path 3789" d="M4.75,20V6.506H.265V20ZM2.508,4.663A2.339,2.339,0,1,0,2.537,0a2.338,2.338,0,1,0-.059,4.663h.029ZM7.232,20h4.485V12.464a3.074,3.074,0,0,1,.148-1.094,2.455,2.455,0,0,1,2.3-1.64c1.623,0,2.272,1.237,2.272,3.051V20h4.485V12.263c0-4.145-2.213-6.073-5.164-6.073a4.468,4.468,0,0,0-4.072,2.274h.03V6.506H7.232c.059,1.266,0,13.494,0,13.494Z" fill="#fff"/>
-                  </svg>
+                <?php foreach ( sokkies_footer_socials() as $sokkies_social ) : ?>
+                <?php $sokkies_icoon = sokkies_footer_social_icoon( $sokkies_social['platform'] ); ?>
+                <?php if ( ! $sokkies_icoon ) { continue; } ?>
+                <a href="<?php echo esc_url( $sokkies_social['url'] ); ?>" target="_blank" rel="noopener" aria-label="<?php echo esc_attr( sokkies_footer_social_naam( $sokkies_social['platform'] ) ); ?>">
+                  <?php echo $sokkies_icoon; // phpcs:ignore WordPress.Security.EscapeOutput -- vaste SVG uit het thema ?>
                 </a>
-                <a href="https://www.facebook.com/Sokkies" target="_blank" aria-label="Facebook">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12.1" height="22" viewBox="0 0 12.1 22">
-                    <path id="Path_3651" data-name="Path 3651" d="M223.75,12688.016h-3.3a5.5,5.5,0,0,0-5.5,5.5v3.3h-3.3v4.4h3.3v8.8h4.4v-8.8h3.3l1.1-4.4h-4.4v-3.3a1.1,1.1,0,0,1,1.1-1.1h3.3Z" transform="translate(-211.65 -12688.016)" fill="#fff"/>
-                  </svg>
-                </a>
-                <a href="https://www.instagram.com/sokkiesnl/" target="_blank" aria-label="Instagram">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
-                    <path id="Path_3650" data-name="Path 3650" d="M169.908,12694.2a1.337,1.337,0,1,0-1.863-.027,1.336,1.336,0,0,0,1.863.027Zm-10.906.814a5.654,5.654,0,1,1,0,8,5.656,5.656,0,0,1,0-8Zm2.593,7.389a3.669,3.669,0,1,0-2.265-3.391,3.668,3.668,0,0,0,2.265,3.391Zm5.849-12.344c-1.159-.055-1.507-.064-4.445-.064s-3.285.01-4.445.064a6.042,6.042,0,0,0-2.043.379,3.622,3.622,0,0,0-2.087,2.086,6.108,6.108,0,0,0-.379,2.043c-.053,1.16-.064,1.508-.064,4.445s.011,3.285.064,4.445a6.108,6.108,0,0,0,.379,2.043,3.622,3.622,0,0,0,2.087,2.086,6.092,6.092,0,0,0,2.043.379c1.159.055,1.507.064,4.445.064s3.285-.01,4.445-.064a6.092,6.092,0,0,0,2.043-.379,3.622,3.622,0,0,0,2.087-2.086,6.108,6.108,0,0,0,.379-2.043c.053-1.16.064-1.508.064-4.445s-.011-3.285-.064-4.445a6.108,6.108,0,0,0-.379-2.043,3.622,3.622,0,0,0-2.087-2.086,6.042,6.042,0,0,0-2.043-.379Zm-8.98-1.98c1.173-.055,1.547-.066,4.535-.066s3.362.014,4.534.066a8.13,8.13,0,0,1,2.672.51,5.638,5.638,0,0,1,3.216,3.219,8.086,8.086,0,0,1,.512,2.67c.054,1.174.066,1.549.066,4.535s-.013,3.361-.066,4.535a8.051,8.051,0,0,1-.512,2.67,5.613,5.613,0,0,1-3.216,3.217,8.072,8.072,0,0,1-2.67.512c-1.174.055-1.548.066-4.536.066s-3.362-.014-4.535-.066a8.072,8.072,0,0,1-2.67-.512,5.619,5.619,0,0,1-3.218-3.217,8.123,8.123,0,0,1-.511-2.67c-.054-1.174-.066-1.549-.066-4.535s.013-3.361.066-4.533a8.091,8.091,0,0,1,.511-2.672,5.636,5.636,0,0,1,3.217-3.219,8.128,8.128,0,0,1,2.67-.51Z" transform="translate(-152 -12688.016)" fill="#fff"/>
-                  </svg>
-                </a>
+                <?php endforeach; ?>
               </div>
 
               <div class="footer-news">
-                <h4>Mis niets</h4>
+                <h4><?php echo esc_html( sokkies_optie( 'footer_news_titel', 'Mis niets' ) ); ?></h4>
                 <div class="footer-news-row">
-                  <span>Of schrijf je in voor de nieuwsbrief</span>
+                  <span><?php echo esc_html( sokkies_optie( 'footer_news_tekst', 'Of schrijf je in voor de nieuwsbrief' ) ); ?></span>
                   <?php /* Was een dode <a href="#">. Nu een echt formulier dat naar Klaviyo
                            inschrijft (custom.js, [data-klaviyo-form]). De knop houdt de
                            opmaak van de oude link, inclusief het pijltje. */ ?>
@@ -151,9 +149,17 @@ if ( $promo_aan ) {
           </div>
 
           <div class="footer-partners">
-            <span class="footer-partners-label">In samenwerking met</span>
-            <img class="footer-otp" src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/otp-logo.svg" alt="One Tree Planted">
-            <img class="footer-otp" src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/voedselbanken-logo.svg" alt="voedselbanken">
+            <span class="footer-partners-label"><?php echo esc_html( sokkies_optie( 'footer_partners_label', 'In samenwerking met' ) ); ?></span>
+            <?php foreach ( sokkies_footer_logos( 'footer_partners', array(
+              array( 'bestand' => 'otp-logo.svg', 'alt' => 'One Tree Planted' ),
+              array( 'bestand' => 'voedselbanken-logo.svg', 'alt' => 'voedselbanken' ),
+            ) ) as $sokkies_doel ) : ?>
+            <?php if ( $sokkies_doel['link'] ) : ?>
+            <a href="<?php echo esc_url( $sokkies_doel['link'] ); ?>" target="_blank" rel="noopener"><img class="footer-otp" src="<?php echo esc_url( $sokkies_doel['url'] ); ?>" alt="<?php echo esc_attr( $sokkies_doel['alt'] ); ?>"></a>
+            <?php else : ?>
+            <img class="footer-otp" src="<?php echo esc_url( $sokkies_doel['url'] ); ?>" alt="<?php echo esc_attr( $sokkies_doel['alt'] ); ?>">
+            <?php endif; ?>
+            <?php endforeach; ?>
           </div>
         </div>
       </div>
@@ -163,89 +169,73 @@ if ( $promo_aan ) {
         <div class="container">
           <div class="footer-pay">
             <div class="footer-pay-group">
-              <span class="footer-pay-label">Betaal eenvoudig</span>
+              <span class="footer-pay-label"><?php echo esc_html( sokkies_optie( 'footer_pay_label', 'Betaal eenvoudig' ) ); ?></span>
               <div class="footer-pay-inner">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/ideal_logo.svg" alt="iDEAL">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/Wero_logo.svg" alt="Wero">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/sepa.svg" alt="SEPA">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/google_pay.svg" alt="Google Pay">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/Apple_Pay.png" alt="Apple Pay">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/visa.svg" alt="VISA">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/Maestro.svg" alt="Maestro">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/logo-amex-bw.svg" alt="American Express">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/logo-paypal-bw.svg" alt="PayPal">
+                <?php foreach ( sokkies_footer_logos( 'footer_pay', array(
+                  array( 'bestand' => 'ideal_logo.svg', 'alt' => 'iDEAL' ),
+                  array( 'bestand' => 'Wero_logo.svg', 'alt' => 'Wero' ),
+                  array( 'bestand' => 'sepa.svg', 'alt' => 'SEPA' ),
+                  array( 'bestand' => 'google_pay.svg', 'alt' => 'Google Pay' ),
+                  array( 'bestand' => 'Apple_Pay.png', 'alt' => 'Apple Pay' ),
+                  array( 'bestand' => 'visa.svg', 'alt' => 'VISA' ),
+                  array( 'bestand' => 'Maestro.svg', 'alt' => 'Maestro' ),
+                  array( 'bestand' => 'logo-amex-bw.svg', 'alt' => 'American Express' ),
+                  array( 'bestand' => 'logo-paypal-bw.svg', 'alt' => 'PayPal' ),
+                ) ) as $sokkies_betaal ) : ?>
+                <img src="<?php echo esc_url( $sokkies_betaal['url'] ); ?>" alt="<?php echo esc_attr( $sokkies_betaal['alt'] ); ?>">
+                <?php endforeach; ?>
               </div>
             </div>
             <div class="border-v"></div>
             <div class="footer-pay-group footer-ship">
-              <span class="footer-pay-label">Onze verzendpartners</span>
+              <span class="footer-pay-label"><?php echo esc_html( sokkies_optie( 'footer_ship_label', 'Onze verzendpartners' ) ); ?></span>
               <div class="footer-ship-inner">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/FedEx.svg" alt="FedEx">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/PostNL.svg" alt="PostNL">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/ups.svg" alt="UPS">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/logo_dpdblack_rgb.svg" alt="DPD">
-                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/logo-dhl-bw.svg" alt="DHL">
+                <?php foreach ( sokkies_footer_logos( 'footer_ship', array(
+                  array( 'bestand' => 'FedEx.svg', 'alt' => 'FedEx' ),
+                  array( 'bestand' => 'PostNL.svg', 'alt' => 'PostNL' ),
+                  array( 'bestand' => 'ups.svg', 'alt' => 'UPS' ),
+                  array( 'bestand' => 'logo_dpdblack_rgb.svg', 'alt' => 'DPD' ),
+                  array( 'bestand' => 'logo-dhl-bw.svg', 'alt' => 'DHL' ),
+                ) ) as $sokkies_verzend ) : ?>
+                <img src="<?php echo esc_url( $sokkies_verzend['url'] ); ?>" alt="<?php echo esc_attr( $sokkies_verzend['alt'] ); ?>">
+                <?php endforeach; ?>
               </div>
             </div>
           </div>
 
           <div class="footer-reviews">
+            <?php foreach ( sokkies_footer_reviews() as $sokkies_review ) : ?>
             <div class="footer-review">
-              <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/feedbackcompany.svg" alt="Feedback Company">
-              <strong>9.5/10</strong>
+              <img src="<?php echo esc_url( $sokkies_review['logo'] ); ?>" alt="<?php echo esc_attr( $sokkies_review['alt'] ); ?>">
+              <strong><?php echo esc_html( $sokkies_review['score'] ); ?></strong>
               <span class="footer-stars">
-                <svg xmlns="http://www.w3.org/2000/svg" width="71.126" height="12" viewBox="0 0 71.126 12">
-                  <g id="Group_244" data-name="Group 244" transform="translate(-829 -444)">
-                    <g id="star" transform="translate(887.501 444)">
-                      <path id="Path_172" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="71.126" height="12" viewBox="0 0 71.126 12">
+                    <g id="Group_244" data-name="Group 244" transform="translate(-829 -444)">
+                      <g id="star" transform="translate(887.501 444)">
+                        <path id="Path_172" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
+                      </g>
+                      <g id="star-2" data-name="star" transform="translate(872.876 444)">
+                        <path id="Path_172-2" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
+                      </g>
+                      <g id="star-3" data-name="star" transform="translate(858.25 444)">
+                        <path id="Path_172-3" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
+                      </g>
+                      <g id="star-4" data-name="star" transform="translate(843.625 444)">
+                        <path id="Path_172-4" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
+                      </g>
+                      <g id="star-5" data-name="star" transform="translate(829 444)">
+                        <path id="Path_172-5" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
+                      </g>
                     </g>
-                    <g id="star-2" data-name="star" transform="translate(872.876 444)">
-                      <path id="Path_172-2" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
-                    </g>
-                    <g id="star-3" data-name="star" transform="translate(858.25 444)">
-                      <path id="Path_172-3" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
-                    </g>
-                    <g id="star-4" data-name="star" transform="translate(843.625 444)">
-                      <path id="Path_172-4" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
-                    </g>
-                    <g id="star-5" data-name="star" transform="translate(829 444)">
-                      <path id="Path_172-5" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
-                    </g>
-                  </g>
-                </svg>
-              </span>
-              <span>uit 300+ <a href="https://www.feedbackcompany.com/nl-nl/reviews/sokkies/" target="_blank">reviews</a></span>
+                  </svg>
+                </span>
+              <span>uit <?php echo esc_html( $sokkies_review['aantal'] ); ?> <a href="<?php echo esc_url( $sokkies_review['link'] ); ?>" target="_blank" rel="noopener">reviews</a></span>
             </div>
-            <div class="footer-review">
-              <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/media/google-logo.svg" alt="Google">
-              <strong>4.7/5.0</strong>
-              <span class="footer-stars">
-                <svg xmlns="http://www.w3.org/2000/svg" width="71.126" height="12" viewBox="0 0 71.126 12">
-                  <g id="Group_244" data-name="Group 244" transform="translate(-829 -444)">
-                    <g id="star" transform="translate(887.501 444)">
-                      <path id="Path_172" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
-                    </g>
-                    <g id="star-2" data-name="star" transform="translate(872.876 444)">
-                      <path id="Path_172-2" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
-                    </g>
-                    <g id="star-3" data-name="star" transform="translate(858.25 444)">
-                      <path id="Path_172-3" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
-                    </g>
-                    <g id="star-4" data-name="star" transform="translate(843.625 444)">
-                      <path id="Path_172-4" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
-                    </g>
-                    <g id="star-5" data-name="star" transform="translate(829 444)">
-                      <path id="Path_172-5" data-name="Path 172" d="M199.009,211l-1.78,4.185-4.532.393,3.445,2.983L195.1,223l3.908-2.357L202.917,223l-1.04-4.439,3.446-2.983-4.533-.393Z" transform="translate(-192.697 -211)" fill="#1dd665"/>
-                    </g>
-                  </g>
-                </svg>
-              </span>
-              <span>uit 120+ <a href="https://www.google.com/search?q=sokkies&rlz=1C1GCEA_enIN1087IN1087&oq=sokk&gs_lcrp=EgZjaHJvbWUqCAgBEEUYJxg7MgYIABBFGDwyCAgBEEUYJxg7Mg8IAhAuGEMYsQMYgAQYigUyBggDEEUYPDIGCAQQRRg8MgYIBRBFGEEyBggGEEUYQTIGCAcQRRhB0gEIMTk3NGowajmoAgawAgHxBTB4DxjRhI-6&sourceid=chrome&source=chrome.ob&ie=UTF-8#lrd=0x47c6e36e5bf03a73:0xa7bdabd85a4c91fe,1,,,," target="_blank">reviews</a></span>
-            </div>
+            <?php endforeach; ?>
           </div>
 
           <div class="footer-legal">
-            <span>© 2026 Sokkies &nbsp;•&nbsp; <a href="<?php echo esc_url( home_url( '/juridisch/' ) ); ?>">Algemene voorwaarden</a></span><span class="fl-sep"> &nbsp;•&nbsp; </span><span><a href="<?php echo esc_url( home_url( '/cookieverklaring/' ) ); ?>">Cookieverklaring</a> &nbsp;•&nbsp; KVK: 89538226</span><span class="fl-sep"> &nbsp;•&nbsp; </span><span>BTW: NL865014218B01</span>
+            <?php sokkies_footer_slotregel(); ?>
           </div>
         </div>
       </div>
