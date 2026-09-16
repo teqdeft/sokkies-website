@@ -41,7 +41,7 @@ if ( ! $rijen ) { $rijen = $standaard; }
         <h3><?php echo esc_html( $form_kop ); ?></h3>
         <form id="partnerDownloadsForm" novalidate>
           <label class="pt-dl-label" for="pdEmail">E-mail *</label>
-          <input class="pt-dl-input" id="pdEmail" type="email" placeholder="voorbeeld@domeinnaam.nl" required>
+          <input class="pt-dl-input" id="pdEmail" type="email" placeholder="<?php echo esc_attr( sokkies_voorbeeld_email() ); ?>" required>
           <button type="submit" class="pt-dl-btn">Stuur me de downloads</button>
         </form>
         <?php /* Stond hier als geroteerde rode kapitalen (.pt-dl-sticker). Dat viel

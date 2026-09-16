@@ -1430,3 +1430,31 @@ function sokkies_huidige_taal() {
 	$deel = explode( '_', $TRP_LANGUAGE );
 	return strtolower( $deel[0] );
 }
+
+/**
+ * Het voorbeeldadres in de placeholder van elk e-mailveld.
+ *
+ * STAAT BEWUST IN CODE EN NIET IN TRANSLATEPRESS. Die kan deze string namelijk
+ * structureel niet automatisch vertalen: skip_strings_that_cannot_be_auto_translated()
+ * in de plugin weigert alles waar looks_like_email() waar op is, en een
+ * machinale vertaling wordt voor zulke strings ook niet uitgeserveerd - alleen
+ * een handmatig nagekeken vertaling (status 2) werkt. Dat betekende dat iemand
+ * het op ELKE omgeving met de hand moest invullen; op dev bleef het daardoor
+ * Nederlands terwijl het lokaal al goed stond.
+ *
+ * Zo reist het gewoon mee met een deploy en klopt het overal meteen.
+ *
+ * Onbekende taal valt terug op het Nederlandse adres.
+ */
+function sokkies_voorbeeld_email() {
+	$adressen = array(
+		'nl' => 'voorbeeld@domeinnaam.nl',
+		'en' => 'example@domain.com',
+		'de' => 'beispiel@domainname.de',
+		'fr' => 'exemple@nomdedomaine.fr',
+	);
+
+	$taal = sokkies_huidige_taal();
+
+	return isset( $adressen[ $taal ] ) ? $adressen[ $taal ] : $adressen['nl'];
+}

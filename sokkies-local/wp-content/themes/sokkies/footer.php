@@ -133,7 +133,7 @@ if ( $promo_aan ) {
                            inschrijft (custom.js, [data-klaviyo-form]). De knop houdt de
                            opmaak van de oude link, inclusief het pijltje. */ ?>
                   <form class="footer-news-form" data-klaviyo-form="Website footer" novalidate>
-                    <input type="email" name="email" placeholder="voorbeeld@domeinnaam.nl" aria-label="E-mailadres voor de nieuwsbrief" required>
+                    <input type="email" name="email" placeholder="<?php echo esc_attr( sokkies_voorbeeld_email() ); ?>" aria-label="E-mailadres voor de nieuwsbrief" required>
                     <button type="submit" class="footer-news-link">
                       <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
                         <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">

@@ -19,7 +19,7 @@ $subtekst = get_sub_field( 'subtekst' ) ?: 'Laat je naam en e-mail achter, dan s
         </div>
         <div class="dl-niets-field">
           <label for="dlEmail">E-mail *</label>
-          <input id="dlEmail" type="email" placeholder="voorbeeld@domeinnaam.nl" required>
+          <input id="dlEmail" type="email" placeholder="<?php echo esc_attr( sokkies_voorbeeld_email() ); ?>" required>
         </div>
         <button type="submit" class="dl-niets-btn">Aanvragen</button>
       </form>
