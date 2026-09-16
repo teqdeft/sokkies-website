@@ -111,7 +111,7 @@ $assets = get_template_directory_uri() . '/assets/media/';
                        </span>
                 </div>
                 <div class="rating-info-bottom">
-                   <a href="https://www.feedbackcompany.com/nl-nl/reviews/sokkies/" target="_blank" rel="noopener">uit <?php echo esc_html( sokkies_optie( 'review_aantal', '450+' ) ); ?> reviews</a>
+                   <a href="<?php echo esc_url( sokkies_reviews_url() ); ?>" target="_blank" rel="noopener">uit <?php echo esc_html( sokkies_optie( 'review_aantal', '450+' ) ); ?> reviews</a>
                 </div>
               </div>
 

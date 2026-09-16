@@ -3373,6 +3373,22 @@ font-weight: 600;
   text-transform: uppercase;
   text-decoration: underline;
 }
+/* De reviewregel is een <a> naar de reviewpagina geworden (was een <span>).
+   color:inherit is hier geen detail maar noodzaak: dit blok heeft VIER
+   achtergronden (standaard blauw, licht, geel en de offerte-variant) en een
+   link erft geen kleur, dus zonder dit werd hij overal browserblauw - op het
+   blauwe vlak blauw-op-blauw.
+
+   HOVER VIA DOORZICHTIGHEID EN NIET VIA EEN KLEUR, om dezelfde reden: er is
+   geen enkele kleur die op alle vier de achtergronden goed leest. Zo is de
+   hover altijd zichtbaar en kan hij nooit wegvallen. */
+.testimonial-num{
+  color:inherit;
+  transition:opacity .2s;
+}
+.testimonial-num:hover{
+  opacity:.75;
+}
   .testimonial-stars,
   .testimonial-card-stars{ color:var(--green); letter-spacing:1px; }
   .testimonial-card{

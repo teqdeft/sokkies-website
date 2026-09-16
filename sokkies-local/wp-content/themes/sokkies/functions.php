@@ -369,6 +369,20 @@ function sokkies_footer_logos( $naam, $standaard ) {
 }
 
 /**
+ * De publieke reviewpagina waar de reviewregels naartoe linken.
+ *
+ * Stond op vier plekken los in de templates. Nu op één plek, zodat een
+ * verhuizing naar een andere reviewpartij één regel is in plaats van zoeken.
+ *
+ * De reviewBLOKKEN in de footer gebruiken deze niet: die hebben per blok een
+ * eigen linkveld in Website-instellingen, omdat daar ook naar Google gelinkt
+ * wordt.
+ */
+function sokkies_reviews_url() {
+	return 'https://www.feedbackcompany.com/nl-nl/reviews/sokkies/';
+}
+
+/**
  * De slotregel van de footer: copyright, juridische links, KVK en BTW.
  *
  * DE DRIE SPANS ZIJN GEEN OPMAAK-TOEVAL. Op mobiel worden ze blokken en gaan

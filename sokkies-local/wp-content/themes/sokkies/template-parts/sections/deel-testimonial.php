@@ -19,7 +19,7 @@ $scheiding = $args['scheiding'] ?? ' — ';
       <div class="testimonial-rating">
         <span class="testimonial-score"><?php echo esc_html( sokkies_optie( 'review_score', '9.5/10' ) ); ?></span>
         <span class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-        <span class="testimonial-num">uit <?php echo esc_html( sokkies_optie( 'review_aantal', '450+' ) ); ?> reviews</span>
+        <a class="testimonial-num" href="<?php echo esc_url( sokkies_reviews_url() ); ?>" target="_blank" rel="noopener">uit <?php echo esc_html( sokkies_optie( 'review_aantal', '450+' ) ); ?> reviews</a>
       </div>
     </div>
 
