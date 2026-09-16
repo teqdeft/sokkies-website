@@ -1119,6 +1119,16 @@
          volgorde en blijft het te testen. */
       const config = () => window.SOKKIES_KLAVIYO || null;
 
+      /* De meldingen hieronder staan als verborgen tekst in de pagina
+         (sokkies_nieuwsbrief_teksten in functions.php), zodat TranslatePress ze
+         kan vertalen. Staat dat blok er niet, dan blijven de Nederlandse zinnen
+         in de aanroepen de terugval. */
+      const T = {};
+      document.querySelectorAll('.nieuwsbrief-teksten [data-k]').forEach((el) => {
+        T[el.dataset.k] = el.textContent;
+      });
+      const vertaal = (sleutel, terugval) => T[sleutel] || terugval;
+
       function melding(form, tekst, gelukt) {
         let vak = form.querySelector('.nl-status');
         if (!vak) {
@@ -1142,7 +1152,7 @@
           const mail = veld ? veld.value.trim() : '';
 
           if (!mail) {
-            melding(form, 'Vul je e-mailadres in.', false);
+            melding(form, vertaal('leeg', 'Vul je e-mailadres in.'), false);
             if (veld) veld.focus();
             return;
           }
@@ -1151,12 +1161,12 @@
              De oude stub riep hier altijd "Bedankt!" — ook als er niets werd
              verstuurd. */
           if (!cfg || !cfg.sleutel || !cfg.lijst) {
-            melding(form, 'Inschrijven lukt nu even niet. Probeer het later opnieuw.', false);
+            melding(form, vertaal('uit', 'Inschrijven lukt nu even niet. Probeer het later opnieuw.'), false);
             return;
           }
 
           if (knop) knop.disabled = true;
-          melding(form, 'Bezig met inschrijven…', true);
+          melding(form, vertaal('bezig', 'Bezig met inschrijven…'), true);
 
           try {
             const res = await fetch(
@@ -1188,12 +1198,12 @@
             /* Klaviyo antwoordt met 202 als de inschrijving is aangenomen. */
             if (res.status === 202) {
               form.reset();
-              melding(form, 'Gelukt! Check je mail om je inschrijving te bevestigen.', true);
+              melding(form, vertaal('gelukt', 'Gelukt! Check je mail om je inschrijving te bevestigen.'), true);
             } else {
-              melding(form, 'Inschrijven lukte niet. Controleer je e-mailadres.', false);
+              melding(form, vertaal('foutAdres', 'Inschrijven lukte niet. Controleer je e-mailadres.'), false);
             }
           } catch (err) {
-            melding(form, 'Inschrijven lukte niet. Probeer het later opnieuw.', false);
+            melding(form, vertaal('foutAlgemeen', 'Inschrijven lukte niet. Probeer het later opnieuw.'), false);
           } finally {
             if (knop) knop.disabled = false;
           }

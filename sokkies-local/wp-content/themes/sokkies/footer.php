@@ -132,6 +132,7 @@ if ( $promo_aan ) {
                   <?php /* Was een dode <a href="#">. Nu een echt formulier dat naar Klaviyo
                            inschrijft (custom.js, [data-klaviyo-form]). De knop houdt de
                            opmaak van de oude link, inclusief het pijltje. */ ?>
+                  <?php sokkies_nieuwsbrief_teksten(); ?>
                   <form class="footer-news-form" data-klaviyo-form="Website footer" novalidate>
                     <input type="email" name="email" placeholder="<?php echo esc_attr( sokkies_voorbeeld_email() ); ?>" aria-label="E-mailadres voor de nieuwsbrief" required>
                     <button type="submit" class="footer-news-link">

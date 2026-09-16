@@ -328,6 +328,35 @@ add_action( 'wp_enqueue_scripts', function () {
 }, 20 );
 
 /**
+ * Meldingen van de nieuwsbriefformulieren.
+ *
+ * Deze zinnen worden in JAVASCRIPT opgebouwd en staan dus nergens als tekst in
+ * de pagina, waardoor TranslatePress ze niet ziet - op de Engelse site bleef
+ * "Vul je e-mailadres in." gewoon Nederlands staan.
+ *
+ * Zelfde oplossing als bij de calculator (sokkies_calc_teksten): de zinnen gaan
+ * als VERBORGEN tekst mee. TranslatePress vertaalt server-side en kijkt daarbij
+ * niet of iets zichtbaar is, dus ze belanden in het woordenboek; de JS leest ze
+ * er weer uit. Werkt voor elke taal die erbij komt, zonder Engels in het thema.
+ */
+function sokkies_nieuwsbrief_teksten() {
+	$teksten = array(
+		'leeg'        => 'Vul je e-mailadres in.',
+		'uit'         => 'Inschrijven lukt nu even niet. Probeer het later opnieuw.',
+		'bezig'       => 'Bezig met inschrijven…',
+		'gelukt'      => 'Gelukt! Check je mail om je inschrijving te bevestigen.',
+		'foutAdres'   => 'Inschrijven lukte niet. Controleer je e-mailadres.',
+		'foutAlgemeen' => 'Inschrijven lukte niet. Probeer het later opnieuw.',
+	);
+
+	echo '<div class="nieuwsbrief-teksten" hidden aria-hidden="true">';
+	foreach ( $teksten as $sleutel => $tekst ) {
+		printf( '<span data-k="%s">%s</span>', esc_attr( $sleutel ), esc_html( $tekst ) );
+	}
+	echo '</div>';
+}
+
+/**
  * Klaviyo-gegevens voor de nieuwsbriefformulieren.
  *
  * De sleutel en de lijst komen uit de KLAVIYO-PLUGIN (optie klaviyo_settings,
