@@ -47,7 +47,13 @@
     (function () {
       const navbar = document.querySelector('.navbar');
       if (!navbar) return;
-      const openBtn = navbar.querySelector('.actions .icon-btn[aria-label="Zoeken"]');
+      /* NIET op aria-label selecteren: TranslatePress vertaalt dat attribuut
+         mee, dus op /en/ staat er "Search", op /de/ "Suchen" en op /fr/
+         "Rechercher". De selector vond de knop dan niet, de guard hieronder
+         stopte de hele handler en het zoekicoon deed in elke taal behalve
+         Nederlands niets. De wrapper .search-header-icon staat al in de markup
+         en verandert niet mee. */
+      const openBtn = navbar.querySelector('.search-header-icon .icon-btn');
       const form = navbar.querySelector('.nav-search');
       if (!openBtn || !form) return;
       const input = form.querySelector('.nav-search-input');

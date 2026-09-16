@@ -169,7 +169,7 @@
   .conf-works > .container > h2{
     margin-bottom:30px;
   }
-   .translatepress-en_GB .conf-works > .container > h2{
+   .translatepress-en_GB .conf-works > .container > h2, .translatepress-de_DE .conf-works > .container > h2, .translatepress-fr_FR .conf-works > .container > h2{
     margin-bottom:20px;
   }
   .conf-bg{
@@ -294,7 +294,7 @@
     font-size:var(--h3-font-size);
     margin-bottom:30px;
   }
-   .translatepress-en_GB .conf-works > .container > h2{
+   .translatepress-en_GB .conf-works > .container > h2, .translatepress-de_DE .conf-works > .container > h2, .translatepress-fr_FR .conf-works > .container > h2{
     margin-bottom:20px;
   }
   /* ── DEFINITIEVE TYPOGRAFIE-INVENTARIS (PDF Kulwant 2026-08-03) — DE bron
@@ -1369,7 +1369,7 @@
     font-size:var(--h3-font-size);
     margin-bottom:30px;
   }
-   .translatepress-en_GB .conf-works > .container > h2{
+   .translatepress-en_GB .conf-works > .container > h2, .translatepress-de_DE .conf-works > .container > h2, .translatepress-fr_FR .conf-works > .container > h2{
     margin-bottom:20px;
   }
   /* ── DEFINITIEVE TYPOGRAFIE-INVENTARIS (PDF Kulwant 2026-08-03) — DE bron
@@ -2602,7 +2602,7 @@
     font-size:var(--h3-font-size);
     margin-bottom:30px;
   }
-   .translatepress-en_GB .conf-works > .container > h2{
+   .translatepress-en_GB .conf-works > .container > h2, .translatepress-de_DE .conf-works > .container > h2, .translatepress-fr_FR .conf-works > .container > h2{
     margin-bottom:20px;
   }
   /* ── DEFINITIEVE TYPOGRAFIE-INVENTARIS (PDF Kulwant 2026-08-03) — DE bron
@@ -4301,7 +4301,7 @@
     font-size:var(--h3-font-size);
     margin-bottom:30px;
   }
-   .translatepress-en_GB .conf-works > .container > h2{
+   .translatepress-en_GB .conf-works > .container > h2, .translatepress-de_DE .conf-works > .container > h2, .translatepress-fr_FR .conf-works > .container > h2{
     margin-bottom:20px;
   }
   /* ── DEFINITIEVE TYPOGRAFIE-INVENTARIS (PDF Kulwant 2026-08-03) — DE bron
@@ -7086,7 +7086,7 @@
     font-size:var(--h3-font-size);
     margin-bottom:30px;
   }
-   .translatepress-en_GB .conf-works > .container > h2{
+   .translatepress-en_GB .conf-works > .container > h2, .translatepress-de_DE .conf-works > .container > h2, .translatepress-fr_FR .conf-works > .container > h2{
     margin-bottom:20px;
   }
   /* ── DEFINITIEVE TYPOGRAFIE-INVENTARIS (PDF Kulwant 2026-08-03) — DE bron
@@ -10999,7 +10999,7 @@
     font-size:var(--h3-font-size);
     margin-bottom:30px;
   }
-   .translatepress-en_GB .conf-works > .container > h2{
+   .translatepress-en_GB .conf-works > .container > h2, .translatepress-de_DE .conf-works > .container > h2, .translatepress-fr_FR .conf-works > .container > h2{
     margin-bottom:20px;
   }
   /* ── DEFINITIEVE TYPOGRAFIE-INVENTARIS (PDF Kulwant 2026-08-03) — DE bron
