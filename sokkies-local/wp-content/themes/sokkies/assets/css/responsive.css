@@ -1455,7 +1455,7 @@
       gap: 56px;
   }
   .impact-gallery {
-      width: 890px;
+      width: 800px;
   }
   :is(.impact, .promises, .steps-section) > :is(.container, .container-md) > ul {
     gap: 19px;
@@ -1693,10 +1693,10 @@
     gap: 17px;
   }
   .translatepress-fr_FR .menu {
-    gap: 11px;
+    gap: 20px;
   }
   .translatepress-de_DE .menu {
-    gap: 20px;
+    gap: 12px;
   }
   .navbar-inner {
     gap: 25px;
@@ -1712,6 +1712,14 @@
     width:calc(100% - 140px);
     justify-content: space-between;
   }
+  
+
+  .lang-trigger {
+    width: 65px;
+    height: 65px;
+  }
+   
+
 
   /* ===== Home: hero ===== */
   .banner-section{
@@ -2553,6 +2561,25 @@
   }
 }
 
+
+@media (min-width:1280px) and (max-width:1300px){
+   .translatepress-de_DE .navbar-inner, .translatepress-fr_FR .navbar-inner {
+    width: calc(100% - 112px);
+  }
+  .translatepress-fr_FR .navbar-inner {
+    gap: 20px;
+  }
+  .actions .cta{
+    font-size:87.5% ;
+  }
+  .translatepress-fr_FR .menu {
+    gap: 7px;
+  }
+  .translatepress-de_DE .menu {
+    gap: 12px;
+  }
+
+}
 /* ===================================================================
    992-1279 — zelfde 1280-opmaak (gevloerd op 992, besluit Kulwant)
    =================================================================== */
@@ -10955,6 +10982,7 @@
   /* ═══ Configurator — 521-ronde testronde 2 (specs Kulwant 2026-08-13) ═══ */
   .configurator-section ul{
     text-align:left;
+    justify-content: flex-start;
   }
   .conf-works .process-inner{
     width:80%;
@@ -11187,7 +11215,7 @@
     gap: 35px;
   }
   .calc-hint{
-    height: 92px;
+    height: 100%;
     border: 1px solid #1DD665;
   }
   .staffel-row {
