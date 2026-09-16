@@ -182,7 +182,7 @@ $pijl = '<svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" vi
               </div>
             </div>
 
-            <form class="newsletter-card" id="newsletterForm">
+            <form class="newsletter-card" id="newsletterForm" data-klaviyo-form="Website bedankt-pagina" novalidate>
               <h3>Ja, ik wil graag op de hoogte gehouden worden van kortingen, nieuws en aanbiedingen.</h3>
               <input type="email" class="quote-input newsletter-input" name="email" placeholder="voorbeeld@domeinnaam.nl" required>
               <div class="newsletter-row">

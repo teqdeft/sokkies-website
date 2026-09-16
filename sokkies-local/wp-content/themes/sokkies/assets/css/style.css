@@ -2609,6 +2609,69 @@ font-weight: 600;
 font-weight: 600;
     white-space:nowrap;
   }
+  /* De Inschrijven-link is een <button> geworden (het nieuwsbriefveld in de
+     footer). Knopstandaarden terugzetten zodat hij exact als de oude link
+     rendert; de rest erft van .footer-news-link hierboven. */
+  button.footer-news-link{
+    background:none;
+    border:0;
+    padding:0;
+    color:inherit;
+    font-family:inherit;
+    font-size:inherit;
+    cursor:pointer;
+  }
+  /* De footerkolom is ~454px. Met een invoerveld erbij past de zin, het veld
+     en de knop niet meer op één regel (193 + 220 + 112 + gaps = 565), waardoor
+     de knop onder het veld viel. De zin krijgt daarom zijn eigen regel en het
+     formulier de volle kolombreedte; veld en knop staan dan weer naast
+     elkaar. */
+  .footer-news-row{
+    flex-wrap:wrap;
+  }
+  .footer-news-form{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+    flex:1 1 100%;
+  }
+  .footer-news-form input[type="email"]{
+    background:transparent;
+    border:0;
+    border-bottom:1px solid rgba(255,255,255,.45);
+    color:var(--white);
+    font-family:inherit;
+    font-size:var(--body-font-size);
+    padding:6px 2px;
+    /* Meeschalend in plaats van een vaste 220px, anders wipt de knop op
+       smallere schermen alsnog naar de volgende regel. */
+    flex:1 1 170px;
+    min-width:0;
+  }
+  .footer-news-form input[type="email"]::placeholder{
+    color:rgba(255,255,255,.55);
+  }
+  .footer-news-form input[type="email"]:focus{
+    outline:none;
+    border-bottom-color:var(--white);
+  }
+  /* Terugkoppeling na het inschrijven. Staat op eigen regel onder het veld
+     zodat de footerrij niet verspringt; geldt ook voor de kaart op de
+     bedankt-pagina's, vandaar de losse selector. */
+  .nl-status{
+    flex-basis:100%;
+    margin-top:8px;
+    font-size:var(--body-sm-font-size);
+    line-height:1.5;
+  }
+  .nl-status.is-fout{
+    color:var(--yellow);
+  }
+  .newsletter-card .nl-status{
+    margin-top:12px;
+    color:var(--text);
+  }
   /* Partners strip */
   .footer-partners{
     display:flex;

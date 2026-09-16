@@ -129,15 +129,21 @@ if ( $promo_aan ) {
                 <h4>Mis niets</h4>
                 <div class="footer-news-row">
                   <span>Of schrijf je in voor de nieuwsbrief</span>
-                  <a href="#" class="footer-news-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
-                      <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">
-                        <path id="Path_3670" data-name="Path 3670" d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
-                        <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
-                      </g>
-                    </svg>
-                    Inschrijven
-                  </a>
+                  <?php /* Was een dode <a href="#">. Nu een echt formulier dat naar Klaviyo
+                           inschrijft (custom.js, [data-klaviyo-form]). De knop houdt de
+                           opmaak van de oude link, inclusief het pijltje. */ ?>
+                  <form class="footer-news-form" data-klaviyo-form="Website footer" novalidate>
+                    <input type="email" name="email" placeholder="voorbeeld@domeinnaam.nl" aria-label="E-mailadres voor de nieuwsbrief" required>
+                    <button type="submit" class="footer-news-link">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
+                        <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">
+                          <path id="Path_3670" data-name="Path 3670" d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+                          <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+                        </g>
+                      </svg>
+                      Inschrijven
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>

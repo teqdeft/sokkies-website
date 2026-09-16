@@ -1087,14 +1087,111 @@
     });
 
 
-    // ===== Nieuwsbrief (bedankt-pagina) =====
+    // ===== Nieuwsbrief -> Klaviyo =====
+    /* Werkt voor elk formulier met data-klaviyo-form: nu de kaart op de
+       bedankt-pagina's en het veld in de footer.
+
+       Er gaat GEEN geheime sleutel naar de browser. Dit is Klaviyo's
+       client-side endpoint, dat juist voor formulieren op een website bedoeld
+       is: met de publieke company-ID kun je alleen een inschrijving indienen,
+       niets uitlezen. De sleutel en de lijst komen uit de Klaviyo-plugin
+       (sokkies_klaviyo() in functions.php).
+
+       Er wordt bewust GEEN toestemmingswaarde meegestuurd: dit endpoint weigert
+       een 'subscriptions'-blok op het profiel ("'subscriptions' is not a valid
+       field for the resource 'profile'") - de aanroep zelf IS de inschrijving.
+       Of er een bevestigingsmail volgt, bepaalt de LIJST in Klaviyo. Dubbele
+       opt-in hoort daar dus aan te staan; anders staat iemand er meteen op
+       zonder dat het aantoonbaar is. De melding hieronder gaat uit van dubbele
+       opt-in. */
     (function () {
-      const form = document.getElementById('newsletterForm');
-      if (!form) return;
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        alert('Bedankt! Je bent ingeschreven voor de nieuwsbrief.');
-        form.reset();
+      const forms = document.querySelectorAll('[data-klaviyo-form]');
+      if (!forms.length) return;
+
+      /* Bij het VERZENDEN uitlezen, niet bij het laden. De inline-config staat
+         weliswaar vóór dit bestand, maar zo is het niet afhankelijk van die
+         volgorde en blijft het te testen. */
+      const config = () => window.SOKKIES_KLAVIYO || null;
+
+      function melding(form, tekst, gelukt) {
+        let vak = form.querySelector('.nl-status');
+        if (!vak) {
+          vak = document.createElement('div');
+          vak.className = 'nl-status';
+          vak.setAttribute('role', 'status');
+          form.appendChild(vak);
+        }
+        vak.textContent = tekst;
+        vak.classList.toggle('is-goed', !!gelukt);
+        vak.classList.toggle('is-fout', !gelukt);
+      }
+
+      forms.forEach((form) => {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const cfg  = config();
+          const veld = form.querySelector('input[type="email"]');
+          const knop = form.querySelector('button[type="submit"]');
+          const mail = veld ? veld.value.trim() : '';
+
+          if (!mail) {
+            melding(form, 'Vul je e-mailadres in.', false);
+            if (veld) veld.focus();
+            return;
+          }
+
+          /* Niet ingesteld: eerlijk melden in plaats van doen alsof het lukte.
+             De oude stub riep hier altijd "Bedankt!" — ook als er niets werd
+             verstuurd. */
+          if (!cfg || !cfg.sleutel || !cfg.lijst) {
+            melding(form, 'Inschrijven lukt nu even niet. Probeer het later opnieuw.', false);
+            return;
+          }
+
+          if (knop) knop.disabled = true;
+          melding(form, 'Bezig met inschrijven…', true);
+
+          try {
+            const res = await fetch(
+              'https://a.klaviyo.com/client/subscriptions/?company_id=' + encodeURIComponent(cfg.sleutel),
+              {
+                method: 'POST',
+                headers: { 'content-type': 'application/json', revision: '2024-10-15' },
+                body: JSON.stringify({
+                  data: {
+                    type: 'subscription',
+                    attributes: {
+                      /* Waar de inschrijving vandaan komt; zichtbaar op het
+                         profiel in Klaviyo, zodat footer en bedankt-pagina uit
+                         elkaar te houden zijn. */
+                      custom_source: form.dataset.klaviyoForm || 'Website',
+                      profile: {
+                        data: {
+                          type: 'profile',
+                          attributes: { email: mail },
+                        },
+                      },
+                    },
+                    relationships: { list: { data: { type: 'list', id: cfg.lijst } } },
+                  },
+                }),
+              }
+            );
+
+            /* Klaviyo antwoordt met 202 als de inschrijving is aangenomen. */
+            if (res.status === 202) {
+              form.reset();
+              melding(form, 'Gelukt! Check je mail om je inschrijving te bevestigen.', true);
+            } else {
+              melding(form, 'Inschrijven lukte niet. Controleer je e-mailadres.', false);
+            }
+          } catch (err) {
+            melding(form, 'Inschrijven lukte niet. Probeer het later opnieuw.', false);
+          } finally {
+            if (knop) knop.disabled = false;
+          }
+        });
       });
     })();
 

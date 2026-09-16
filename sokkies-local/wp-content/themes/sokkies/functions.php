@@ -328,6 +328,46 @@ add_action( 'wp_enqueue_scripts', function () {
 }, 20 );
 
 /**
+ * Klaviyo-gegevens voor de nieuwsbriefformulieren.
+ *
+ * De sleutel en de lijst komen uit de KLAVIYO-PLUGIN (optie klaviyo_settings,
+ * beheerscherm Klaviyo), niet uit Website-instellingen. Zo staat het op één
+ * plek en hoeft er niets gedupliceerd te worden.
+ *
+ * ALLEEN DE PUBLIEKE SLEUTEL gaat naar de browser. Die hoort daar ook thuis -
+ * Klaviyo's client-side endpoint is er expliciet voor gemaakt - en met alleen
+ * die sleutel kan niemand gegevens UITLEZEN, alleen een inschrijving indienen.
+ * De geheime API-sleutel blijft buiten het thema.
+ *
+ * Geeft een lege array zodra er geen sleutel of geen lijst is ingesteld. De
+ * formulieren blijven dan gewoon staan maar melden netjes dat inschrijven even
+ * niet kan, in plaats van in het niets te posten.
+ */
+function sokkies_klaviyo() {
+	$instellingen = get_option( 'klaviyo_settings' );
+	if ( ! is_array( $instellingen ) ) {
+		return array();
+	}
+
+	$sleutel = isset( $instellingen['klaviyo_public_api_key'] ) ? trim( (string) $instellingen['klaviyo_public_api_key'] ) : '';
+	$lijst   = isset( $instellingen['klaviyo_newsletter_list_id'] ) ? trim( (string) $instellingen['klaviyo_newsletter_list_id'] ) : '';
+
+	if ( '' === $sleutel || '' === $lijst ) {
+		return array();
+	}
+
+	return array( 'sleutel' => $sleutel, 'lijst' => $lijst );
+}
+
+// Klaviyo-gegevens vóór custom.js zetten, zelfde patroon als de staffelmatrix.
+add_action( 'wp_enqueue_scripts', function () {
+	$klaviyo = sokkies_klaviyo();
+	if ( $klaviyo ) {
+		wp_add_inline_script( 'sokkies-custom', 'window.SOKKIES_KLAVIYO = ' . wp_json_encode( $klaviyo ) . ';', 'before' );
+	}
+}, 20 );
+
+/**
  * Teksten die de calculator in JAVASCRIPT opbouwt: de staffelregels, de badges
  * en het upsell-vak. Die staan nergens als tekst in de pagina, dus
  * TranslatePress kon ze niet oppikken - op de Engelse site bleven "Meest
