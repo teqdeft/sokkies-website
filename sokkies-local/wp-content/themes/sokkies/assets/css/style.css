@@ -784,9 +784,10 @@ font-weight: 600;
    maar de regel juist minder leesbaar maken dan hij al is. */
 .rating-info-bottom a{
   color:inherit;
+  transition: 0.3s ease-in-out;
 }
 .rating-info-bottom a:hover{
-  color:var(--dark);
+  color:var(--yellow-hover);
 }
 .banner-bottom-info {
     display: flex;
