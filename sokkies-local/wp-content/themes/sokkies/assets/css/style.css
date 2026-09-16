@@ -787,7 +787,7 @@ font-weight: 600;
   transition: 0.3s ease-in-out;
 }
 .rating-info-bottom a:hover{
-  color:var(--yellow-hover);
+  color:var(--yellow);
 }
 .banner-bottom-info {
     display: flex;
