@@ -770,13 +770,23 @@ font-weight: 600;
 /* De reviewregel is een <a> naar Feedback Company geworden (was een <span>).
    Font, grootte, kapitalen en de onderstreping erven van de regel hierboven,
    maar KLEUR erft een link niet: zonder dit werd hij browserblauw
-   (rgb(0,0,238) gemeten). Coral bij hover, gelijk aan de andere
-   review-links in de topbar en de footer. */
+   (rgb(0,0,238) gemeten).
+
+   HOVER IS DONKER EN BEWUST NIET CORAL. De andere review-links (topbar,
+   footer) staan op een donkere achtergrond en worden daar coral; deze regel
+   staat in de hero, en die is zelf coral (#FA4B46 gemeten op home, landing,
+   offerte en sample-request). Coral-op-coral liet de tekst bij hover volledig
+   verdwijnen - contrast 1.00.
+
+   Van de huisstijlkleuren is --dark de enige die het bij hover BETER maakt in
+   plaats van slechter. Contrast tegen coral, gemeten: donker 4.98, wit 3.41
+   (de ruststand), beige 2.77, geel 2.61, cyaan 2.34. Geel zou dus mooi ogen
+   maar de regel juist minder leesbaar maken dan hij al is. */
 .rating-info-bottom a{
   color:inherit;
 }
 .rating-info-bottom a:hover{
-  color:var(--coral);
+  color:var(--dark);
 }
 .banner-bottom-info {
     display: flex;
