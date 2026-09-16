@@ -102,7 +102,7 @@ $klassen = array(
               </span>
             </div>
             <div class="rating-info-bottom">
-              <span>uit <?php echo esc_html( sokkies_optie( 'review_aantal', '300+' ) ); ?> reviews</span>
+              <a href="https://www.feedbackcompany.com/nl-nl/reviews/sokkies/" target="_blank" rel="noopener">uit <?php echo esc_html( sokkies_optie( 'review_aantal', '300+' ) ); ?> reviews</a>
             </div>
           </div>
         </div>

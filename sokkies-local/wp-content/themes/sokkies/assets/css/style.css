@@ -767,6 +767,17 @@ font-weight: 600;
   text-transform: uppercase;
   text-decoration: underline;
 }
+/* De reviewregel is een <a> naar Feedback Company geworden (was een <span>).
+   Font, grootte, kapitalen en de onderstreping erven van de regel hierboven,
+   maar KLEUR erft een link niet: zonder dit werd hij browserblauw
+   (rgb(0,0,238) gemeten). Coral bij hover, gelijk aan de andere
+   review-links in de topbar en de footer. */
+.rating-info-bottom a{
+  color:inherit;
+}
+.rating-info-bottom a:hover{
+  color:var(--coral);
+}
 .banner-bottom-info {
     display: flex;
     justify-content: center;
