@@ -159,6 +159,133 @@ function sokkies_form_labels( $taal ) {
 }
 
 /**
+ * De ANTWOORDEN van keuzevelden, per taal.
+ *
+ * Het label van "Wil je er een proefontwerp bij?" wordt hierboven al vertaald,
+ * maar het antwoord ("Nee, alleen een sample") komt uit de keuzelijst van
+ * Gravity Forms en stond dus nog in het Nederlands in de mail. Hetzelfde geldt
+ * voor de soktypes en de extra opties.
+ *
+ * De Duitse en Franse soknamen zijn dezelfde als die al op de site staan, zodat
+ * de mail niet iets anders zegt dan wat de bezoeker heeft aangeklikt.
+ */
+function sokkies_form_keuzes( $taal ) {
+	$kaart = array(
+		'en' => array(
+			'Reguliere sokken'             => 'Regular socks',
+			'Sportsokken'                  => 'Sports socks',
+			'Bamboesokken'                 => 'Bamboo socks',
+			'Yoga & pilates sokken'        => 'Yoga & pilates socks',
+			'Werksokken'                   => 'Work socks',
+			'Kerstsokken'                  => 'Christmas socks',
+			'Wielersokken'                 => 'Cycling socks',
+			'Antislipsokken'               => 'Non-slip socks',
+			'Kids & baby sokken'           => 'Kids & baby socks',
+			'Zorgsokken'                   => 'Care socks',
+			'Labels'                       => 'Labels',
+			'Geschenkdoosjes'              => 'Gift boxes',
+			'Kaartjes'                     => 'Cards',
+			'Inpak & verzending'           => 'Packing & shipping',
+			"Geen extra's"                 => 'No extras',
+			'Nee, alleen een sample'       => 'No, just a sample',
+			'Ik wil toch een proefontwerp' => 'I would like a trial design after all',
+		),
+		'de' => array(
+			'Reguliere sokken'             => 'Reguläre Socken',
+			'Sportsokken'                  => 'Sportsocken',
+			'Bamboesokken'                 => 'Bambussocken',
+			'Yoga & pilates sokken'        => 'Yoga- und Pilatessocken',
+			'Werksokken'                   => 'Arbeitssocken',
+			'Kerstsokken'                  => 'Weihnachtssocken',
+			'Wielersokken'                 => 'Radfahrsocken',
+			'Antislipsokken'               => 'Rutschfeste Socken',
+			'Kids & baby sokken'           => 'Kinder- und Babysocken',
+			'Zorgsokken'                   => 'Pflegesocken',
+			'Labels'                       => 'Etiketten',
+			'Geschenkdoosjes'              => 'Geschenkboxen',
+			'Kaartjes'                     => 'Kärtchen',
+			'Inpak & verzending'           => 'Verpackung & Versand',
+			"Geen extra's"                 => 'Keine Extras',
+			'Nee, alleen een sample'       => 'Nein, nur ein Muster',
+			'Ik wil toch een proefontwerp' => 'Ich möchte doch ein Probedesign',
+		),
+		'fr' => array(
+			'Reguliere sokken'             => 'Chaussettes classiques',
+			'Sportsokken'                  => 'Chaussettes de sport',
+			'Bamboesokken'                 => 'Chaussettes en bambou',
+			'Yoga & pilates sokken'        => 'Chaussettes de yoga et pilates',
+			'Werksokken'                   => 'Chaussettes de travail',
+			'Kerstsokken'                  => 'Chaussettes de Noël',
+			'Wielersokken'                 => 'Chaussettes de cyclisme',
+			'Antislipsokken'               => 'Chaussettes antidérapantes',
+			'Kids & baby sokken'           => 'Chaussettes enfants et bébés',
+			'Zorgsokken'                   => 'Chaussettes de soin',
+			'Labels'                       => 'Étiquettes',
+			'Geschenkdoosjes'              => 'Coffrets cadeaux',
+			'Kaartjes'                     => 'Cartes',
+			'Inpak & verzending'           => 'Emballage et expédition',
+			"Geen extra's"                 => 'Aucun extra',
+			'Nee, alleen een sample'       => 'Non, juste un échantillon',
+			'Ik wil toch een proefontwerp' => "Je souhaite finalement un design d'essai",
+		),
+	);
+
+	return isset( $kaart[ $taal ] ) ? $kaart[ $taal ] : array();
+}
+
+/**
+ * Het gekozen antwoord in de mail meevertalen.
+ *
+ * Dit filter krijgt in de HTML-variant de WAARDE mee (common.php:1936) — precies
+ * wat hier nodig is. Alleen velden met een keuzelijst worden aangeraakt: in een
+ * vrij tekstveld zou "Ik wil Sportsokken" anders half vertaald raken.
+ *
+ * De keuzetekst wordt eerst gedecodeerd. Gravity Forms levert die op de ene
+ * omgeving rauw aan en op de andere HTML-gecodeerd; precies de drie opties met
+ * een & erin misten daardoor eerder hun foto (zie de notitie van 2026-08-26).
+ */
+add_filter(
+	'gform_merge_tag_filter',
+	function ( $waarde, $merge_tag, $opties, $veld, $ruw, $format ) {
+		if ( 'all_fields' !== $merge_tag || false === $waarde || ! is_string( $waarde ) || '' === $waarde ) {
+			return $waarde;
+		}
+		if ( ! is_object( $veld ) || empty( $veld->choices ) ) {
+			return $waarde;
+		}
+		if ( ! in_array( $veld->get_input_type(), array( 'checkbox', 'radio', 'select', 'multiselect' ), true ) ) {
+			return $waarde;
+		}
+		if ( ! sokkies_form_eigen( array( 'id' => $veld->formId ) ) ) {
+			return $waarde;
+		}
+
+		$keuzes = sokkies_form_keuzes( sokkies_form_huidige_taal() );
+		if ( ! $keuzes ) {
+			return $waarde;
+		}
+
+		foreach ( $veld->choices as $keuze ) {
+			$tekst = html_entity_decode( (string) rgar( $keuze, 'text' ), ENT_QUOTES, 'UTF-8' );
+			if ( '' === $tekst || ! isset( $keuzes[ $tekst ] ) ) {
+				continue;
+			}
+			// Zowel de rauwe als de gecodeerde schrijfwijze: welke van de twee
+			// in de mail belandt verschilt per omgeving.
+			$waarde = str_replace(
+				array( esc_html( $tekst ), $tekst ),
+				esc_html( $keuzes[ $tekst ] ),
+				$waarde
+			);
+		}
+
+		return $waarde;
+	},
+	5,
+	6
+);
+
+/**
  * De zinnen uit de bevestigingsmail aan de bezoeker, per taal.
  *
  * Vervanging per ZIN in plaats van de hele mail overschrijven: de mail bevat
