@@ -72,7 +72,7 @@ $render_kolom = function ( $fotos, $standaard ) use ( $assets ) {
                 <?php endif; ?>
                 <span><?php echo esc_html( $breadcrumb ); ?></span>
             </nav>
-            <div class="coll-hero-content">
+            <div class="coll-hero-content" data-aos="fade-up">
                 <h1><?php echo sokkies_kop( $titel, 'title-accent' ); ?></h1>
                 <?php if ( $subtekst ) : ?>
                 <p><?php echo sokkies_tekst_regels( $subtekst ); ?></p>

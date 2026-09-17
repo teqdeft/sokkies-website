@@ -25,7 +25,7 @@ if ( $leeg( $kolom_2 ) ) { $kolom_2 = '<p>Bodytekst in twee kolommen. Hier komt 
   <div class="container">
     <div class="fp-kolommen-inner">
       <h2 data-aos="fade-up"><?php echo sokkies_kop( $kop ); ?></h2>
-      <div class="fp-kolommen-intro"><?php echo sokkies_rijke_tekst( $intro ); ?></div>
+      <div class="fp-kolommen-intro" data-aos="fade-up" data-aos-delay="100"><?php echo sokkies_rijke_tekst( $intro ); ?></div>
       <div class="fp-kolommen-grid">
         <div class="fp-kolom"><?php echo sokkies_rijke_tekst( $kolom_1 ); ?></div>
         <div class="fp-kolom"><?php echo sokkies_rijke_tekst( $kolom_2 ); ?></div>

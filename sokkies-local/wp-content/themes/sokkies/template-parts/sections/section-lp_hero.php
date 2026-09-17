@@ -71,7 +71,7 @@ $klassen = array(
   <div class="container">
     <div class="lp-hero-inner">
 
-      <div class="lp-hero-text">
+      <div class="lp-hero-text" data-aos="fade-up">
         <h1><?php echo sokkies_kop( $titel ); ?></h1>
         <p><?php echo sokkies_tekst_regels( $subtekst ); ?></p>
 

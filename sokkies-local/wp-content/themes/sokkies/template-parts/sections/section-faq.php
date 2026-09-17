@@ -35,7 +35,7 @@ if ( ! $vraag_ids ) {
     <div class="faq-grid">
       <div class="faq-left">
         <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
-        <?php echo wp_kses_post( $intro ); ?>
+        <div data-aos="fade-up" data-aos-delay="100"><?php echo wp_kses_post( $intro ); ?></div>
       </div>
 
       <div class="faq-right">

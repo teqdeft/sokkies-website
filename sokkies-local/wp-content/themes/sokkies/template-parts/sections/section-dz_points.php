@@ -27,7 +27,7 @@ $standaard_punten = array(
       </div>
       <div class="dz-points-text">
         <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
-        <p><?php echo esc_html( $intro ); ?></p>
+        <p data-aos="fade-up" data-aos-delay="100"><?php echo esc_html( $intro ); ?></p>
         <ol>
           <?php $lijst = $rijen ? array_column( $rijen, 'tekst' ) : $standaard_punten; foreach ( $lijst as $i => $punt ) : ?>
           <li>

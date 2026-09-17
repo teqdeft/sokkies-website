@@ -16,7 +16,7 @@ if ( ! $rijen ) { $rijen = $standaard; }
 <section class="usecase-why">
   <div class="container">
     <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
-    <p><?php echo esc_html( $intro ); ?></p>
+    <p data-aos="fade-up" data-aos-delay="100"><?php echo esc_html( $intro ); ?></p>
     <ul>
       <?php foreach ( $rijen as $rij ) : ?>
       <li>

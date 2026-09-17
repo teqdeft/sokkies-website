@@ -67,7 +67,7 @@ $assets = get_template_directory_uri() . '/assets/media/';
         <?php endif; ?>
         <!-- Hero content -->
         <?php $banner_klassen = array( 'offerte' => ' offerte-banner', 'configurator' => ' configurator-banner' ); ?>
-        <div class="banner-section<?php echo esc_attr( $banner_klassen[ $variant ] ?? '' ); ?>">
+        <div class="banner-section<?php echo esc_attr( $banner_klassen[ $variant ] ?? '' ); ?>" data-aos="fade-up">
           <div class="container">
             <h1><?php echo sokkies_kop( $titel ); ?></h1>
             <?php if ( $subtekst ) : ?>
