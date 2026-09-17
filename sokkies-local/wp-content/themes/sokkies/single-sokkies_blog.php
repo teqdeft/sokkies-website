@@ -54,7 +54,7 @@ $andere = get_posts( array(
         <span><?php the_title(); ?></span>
       </nav>
 
-      <div class="simple-hero-content">
+      <div class="simple-hero-content" data-aos="fade-up">
         <h1><?php the_title(); ?></h1>
       </div>
 

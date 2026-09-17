@@ -41,7 +41,7 @@ if ( ! $groepen ) { return; }
            <span><?php echo esc_html( $kruimel ); ?></span>
          </nav>
      <?php endif; ?>
-         <div class="simple-hero-content">
+         <div class="simple-hero-content" data-aos="fade-up">
            <h1><?php echo sokkies_kop( $titel ); ?></h1>
            <p><?php echo esc_html( $subtekst ); ?></p>
            <form class="faq-search" role="search">

@@ -69,7 +69,7 @@ if ( ! is_wp_error( $alle_termen ) ) {
         <span>&nbsp;&bull;&nbsp;</span>
         <span><?php echo esc_html( $breadcrumb ); ?></span>
       </nav>
-      <div class="simple-hero-content">
+      <div class="simple-hero-content" data-aos="fade-up">
         <h1><?php echo sokkies_kop( $titel ); ?></h1>
         <?php if ( '' !== trim( $subtekst ) ) : ?>
         <p><?php echo sokkies_tekst_regels( $subtekst ); ?></p>

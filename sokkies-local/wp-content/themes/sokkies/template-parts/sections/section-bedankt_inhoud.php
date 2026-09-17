@@ -75,7 +75,7 @@ $pijl = '<svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" vi
 ?>
 <section class="thanks-hero">
       <div class="container">
-        <div class="banner-section">
+        <div class="banner-section" data-aos="fade-up">
           <h1><?php echo sokkies_kop( $titel ); ?></h1>
           <p><?php echo sokkies_kop( $intro ); ?></p>
           <?php if ( $ref_tonen && $ref_tekst ) : ?>

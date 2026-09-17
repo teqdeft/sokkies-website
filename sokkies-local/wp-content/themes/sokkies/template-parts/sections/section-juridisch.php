@@ -61,7 +61,7 @@ $heeft_intro = '' !== trim( wp_strip_all_tags( $intro ) );
           <span>&nbsp;&bull;&nbsp;</span>
           <span><?php echo esc_html( $kruimelpad ); ?></span>
         </nav>
-        <div class="banner-section">
+        <div class="banner-section" data-aos="fade-up">
           <div class="container">
             <h1><?php echo sokkies_kop( $titel ); ?></h1>
             <?php if ( '' !== $datum ) : ?>

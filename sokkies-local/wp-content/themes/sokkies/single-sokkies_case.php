@@ -46,7 +46,7 @@ if ( $story ) {
            <span>&nbsp;&bull;&nbsp;</span>
            <span><?php the_title(); ?></span>
          </nav>
-         <div class="simple-hero-content">
+         <div class="simple-hero-content" data-aos="fade-up">
            <h1><?php the_title(); ?></h1>
            <?php if ( $intro ) : ?>
            <p><?php echo sokkies_tekst_regels( $intro ); ?></p>
