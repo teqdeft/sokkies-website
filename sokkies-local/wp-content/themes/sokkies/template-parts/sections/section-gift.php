@@ -23,10 +23,10 @@ $standaard = array(
 ?>
 <section class="gift">
   <div class="container">
-    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2><?php echo sokkies_kop( $titel ); ?></h2>
     <div class="gift-grid">
-      <?php if ( $rijen ) : foreach ( $rijen as $i => $rij ) : ?>
-      <div class="gift-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
+      <?php if ( $rijen ) : foreach ( $rijen as $rij ) : ?>
+      <div class="gift-card">
         <div class="gift-img">
           <?php if ( ! empty( $rij['foto'] ) ) : ?><img src="<?php echo esc_url( $rij['foto']['url'] ); ?>" alt="<?php echo esc_attr( $rij['titel'] ); ?>"><?php endif; ?>
         </div>
@@ -47,8 +47,8 @@ $standaard = array(
           <?php endif; ?>
         </div>
       </div>
-      <?php endforeach; else : foreach ( $standaard as $i => $rij ) : ?>
-      <div class="gift-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
+      <?php endforeach; else : foreach ( $standaard as $rij ) : ?>
+      <div class="gift-card">
         <div class="gift-img">
           <img src="<?php echo esc_url( $assets . $rij['bestand'] ); ?>" alt="<?php echo esc_attr( $rij['titel'] ); ?>">
         </div>

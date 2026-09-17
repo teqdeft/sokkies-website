@@ -15,7 +15,7 @@ $min_afname = sokkies_optie( 'minimale_afname', '30' );
   <div class="container">
     <div class="types-head">
       <div class="types-head-center">
-        <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
+        <h2><?php echo sokkies_kop( $titel ); ?></h2>
         <p><?php echo count( $type_ids ); ?> resultaten</p>
       </div>
     </div>

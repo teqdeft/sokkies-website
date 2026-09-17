@@ -19,7 +19,7 @@ $assets = get_template_directory_uri() . '/assets/media/';
         <img class="img-lg" src="<?php echo esc_url( $groot ? $groot['url'] : $assets . 'op-img2.png' ); ?>" alt="">
       </div>
       <div class="pt-otp-text">
-        <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
+        <h2><?php echo sokkies_kop( $titel ); ?></h2>
         <p><?php echo esc_html( $tekst ); ?></p>
       </div>
     </div>
