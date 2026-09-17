@@ -207,8 +207,14 @@
     padding-top:80px;
   }
   .cases:before {
-    background-size: max(100%, 1920px) 100%;
-    background-position: right;
+    background-size: max(100%, 1920px) 90%;
+    background-position: 33%;
+    height: 85%;
+  }
+  .cases-feet {
+    top: -42%;
+    right: 0;
+    width: 313px;
   }
   .cases-solid .case-sock-right {
     width: 22%;

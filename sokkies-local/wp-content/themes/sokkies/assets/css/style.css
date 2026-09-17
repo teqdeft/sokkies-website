@@ -1966,9 +1966,11 @@ font-weight: 600;
      boven 1920px bleef rechts een strook onbedekt. Met 'auto' als hoogte
      groeide de vorm dan mee met de breedte — op 2560px werd de blauwe band
      1200px hoog in plaats van 790px (melding Kulwant).
-     Daarom nu de hoogte VAST op wat 1920px toont, en alleen de breedte die
-     meerekt zodat er niets onbedekt blijft. max() houdt het op 1920px en
-     smaller exact zoals het was.
+     Daarom rekt alleen de BREEDTE mee, zodat er niets onbedekt blijft;
+     max() houdt die op 1920px en smaller exact zoals het was. De hoogte
+     stond eerst vast op 1074px en is inmiddels 90% van de sectie: die
+     volgt de inhoud en niet de schermbreedte, dus op 2560px blijft de
+     band even hoog als op 1920px (nagemeten: 1275px op beide).
      LET OP: deze regel geldt alleen vanaf 1680px. Alle smallere banden
      zetten in responsive.css een ANDER bestand (blue-shape-lg.png) met
      cover/contain; die blijven ongemoeid. */
