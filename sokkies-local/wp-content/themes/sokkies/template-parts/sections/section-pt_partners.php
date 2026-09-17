@@ -9,6 +9,10 @@ $logo_ids = get_sub_field( 'logos' );
 if ( ! $logo_ids ) {
 	$logo_ids = get_posts( array( 'post_type' => 'sokkies_logo', 'posts_per_page' => -1, 'fields' => 'ids' ) );
 }
+
+/* Logo's met een taalkeuze verschijnen alleen in die taal; zonder keuze
+   overal. Zo kan de Franse site een andere merkenrij tonen. */
+$logo_ids = sokkies_logos_voor_taal( $logo_ids );
 if ( ! $logo_ids ) { return; }
 $kaarten = array();
 $cats = array();

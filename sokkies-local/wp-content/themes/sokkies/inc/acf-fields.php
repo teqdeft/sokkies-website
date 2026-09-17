@@ -2799,6 +2799,33 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 		),
 	) );
 
+	// —— Merklogo: in welke talen verschijnt dit logo ——
+	acf_add_local_field_group( array(
+		'key'    => 'group_sokkies_logo',
+		'title'  => 'Zichtbaarheid',
+		'fields' => array(
+			array(
+				'key'           => 'field_logo_talen',
+				'label'         => 'Tonen in deze talen',
+				'name'          => 'talen',
+				'type'          => 'checkbox',
+				'choices'       => sokkies_taal_keuzes(),
+				'layout'        => 'horizontal',
+				'instructions'  => 'Niets aanvinken = het logo verschijnt in ALLE talen (zo werkt het nu). Vink talen aan om het logo alleen daar te tonen — handig als de Franse of Duitse site andere merken laat zien.',
+				'return_format' => 'value',
+			),
+		),
+		'location' => array(
+			array(
+				array(
+					'param'    => 'post_type',
+					'operator' => '==',
+					'value'    => 'sokkies_logo',
+				),
+			),
+		),
+	) );
+
 	// —— Opties-subpagina: vaste productpagina-secties (1x bewerken → alle
 	// soktypes) ——
 	if ( function_exists( 'acf_add_options_sub_page' ) ) {

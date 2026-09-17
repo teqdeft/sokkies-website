@@ -369,6 +369,78 @@ function sokkies_footer_logos( $naam, $standaard ) {
 }
 
 /**
+ * De gepubliceerde talen als keuzelijst voor ACF: code => nette naam.
+ *
+ * Leest dezelfde bron als sokkies_talen() (de TranslatePress-instellingen),
+ * zodat er automatisch een taal bijkomt zodra die gepubliceerd wordt en er
+ * niets hardgecodeerd hoeft te worden.
+ *
+ * Zonder TranslatePress - of in het beheer voordat de plugin geladen is -
+ * valt hij terug op de vier talen die de site nu heeft, zodat het
+ * bewerkscherm nooit een leeg keuzeveld toont.
+ */
+function sokkies_taal_keuzes() {
+	$namen = array(
+		'nl' => 'Nederlands',
+		'en' => 'Engels',
+		'de' => 'Duits',
+		'fr' => 'Frans',
+	);
+
+	$instellingen = get_option( 'trp_settings', array() );
+	$gepubliceerd = isset( $instellingen['publish-languages'] ) ? (array) $instellingen['publish-languages'] : array();
+
+	if ( ! $gepubliceerd ) {
+		return $namen;
+	}
+
+	$uit = array();
+	foreach ( $gepubliceerd as $code ) {
+		$deel = explode( '_', $code );
+		$taal = strtolower( $deel[0] );
+		$uit[ $taal ] = isset( $namen[ $taal ] ) ? $namen[ $taal ] : strtoupper( $taal );
+	}
+
+	return $uit;
+}
+
+/**
+ * Filtert een lijst logo-ID's op de taal die de bezoeker nu bekijkt.
+ *
+ * Een logo zonder taalkeuze verschijnt in ALLE talen - dat is de bestaande
+ * situatie, dus wie niets instelt merkt niets. Pas zodra er talen zijn
+ * aangevinkt, verschijnt het logo alleen daar.
+ *
+ * Zo kan de Franse site een andere merkenrij tonen dan de Nederlandse,
+ * inclusief een ander AANTAL logo's - iets wat met het vertalen van losse
+ * afbeeldingen niet zou kunnen.
+ */
+function sokkies_logos_voor_taal( $logo_ids ) {
+	if ( ! $logo_ids ) {
+		return $logo_ids;
+	}
+
+	$taal = sokkies_huidige_taal();
+	$uit  = array();
+
+	foreach ( (array) $logo_ids as $logo_id ) {
+		$talen = function_exists( 'get_field' ) ? get_field( 'talen', $logo_id ) : null;
+
+		// Niets aangevinkt = overal tonen.
+		if ( ! is_array( $talen ) || ! $talen ) {
+			$uit[] = $logo_id;
+			continue;
+		}
+
+		if ( in_array( $taal, $talen, true ) ) {
+			$uit[] = $logo_id;
+		}
+	}
+
+	return $uit;
+}
+
+/**
  * De publieke reviewpagina waar de reviewregels naartoe linken.
  *
  * Stond op vier plekken los in de templates. Nu op één plek, zodat een
