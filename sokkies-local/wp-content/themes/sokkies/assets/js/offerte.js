@@ -1,6 +1,6 @@
 /* Offerteformulier — gedrag dat Gravity Forms zelf niet levert.
  *
- * 1. maximaal twee soorten sokken aanvinken
+ * 1. het aantal soorten sokken begrenzen (offerte 1, sample 2)
  * 2. "Geen extra's" sluit de andere extra opties uit
  * 3. postcode + huisnummer vullen straat/plaats/provincie automatisch
  *
@@ -15,7 +15,11 @@
 (function () {
   'use strict';
 
-  var MAX_SOKTYPES = 2;
+  /* Het maximum verschilt per formulier: het offerteformulier staat één
+     soort sok toe, het sampleformulier twee. Beide draaien op dit script,
+     dus het getal komt per formulier-id mee uit PHP (wp_localize_script).
+     Geen hardgecodeerde id's: Gravity Forms hernummert bij een import. */
+  var STANDAARD_MAX = 2;
   var GEEN_EXTRAS = "Geen extra's";
 
   function vakjes(veldClass) {
@@ -46,15 +50,44 @@
     });
   }
 
-  /* ---------- 1. maximaal twee soorten sokken ---------- */
-  function pasSoktypesToe() {
+  /* ---------- 1. aantal soorten sokken ---------- */
+  function maxSoktypes(el) {
+    var form = el && el.closest ? el.closest('form[id^="gform_"]') : null;
+    var id = form ? (String(form.id).match(/(\d+)/) || [])[1] : '';
+    var kaart = (window.sokkiesOfferte && window.sokkiesOfferte.maxSoktypes) || {};
+    var n = parseInt(kaart[id], 10);
+    return n > 0 ? n : STANDAARD_MAX;
+  }
+
+  function pasSoktypesToe(gewijzigd) {
     var lijst = vakjes('of-soktypes');
     if (!lijst.length) { return; }
+    var max = maxSoktypes(lijst[0]);
+
+    /* Bij één toegestane keuze gedraagt de rij zich als een radiogroep: een
+     * nieuwe kaart VERVANGT de vorige. Bewust niets uitschakelen — dan zou
+     * de bezoeker na zijn eerste klik vastzitten en eerst moeten uitvinken.
+     * Dezelfde val als eerder bij "Geen extra's".
+     * Zonder klik (init, of na het terugzetten van bewaarde velden) wint de
+     * eerste aangevinkte, zodat een oude keuze van twee netjes terugvalt. */
+    if (1 === max) {
+      var houden = (gewijzigd && gewijzigd.checked)
+        ? gewijzigd
+        : lijst.filter(function (v) { return v.checked; })[0] || null;
+      lijst.forEach(function (v) {
+        if (houden && v !== houden && v.checked) { v.checked = false; markeerKeuze(v); }
+        v.disabled = false;
+        var kaart = v.closest('.gchoice');
+        if (kaart) { kaart.classList.remove('is-uitgeschakeld'); }
+      });
+      return;
+    }
+
     var aantal = lijst.filter(function (v) { return v.checked; }).length;
     lijst.forEach(function (v) {
       // Niet uitschakelen wat al aangevinkt is, anders kan de bezoeker niets
       // meer weghalen zodra hij aan het maximum zit.
-      v.disabled = !v.checked && aantal >= MAX_SOKTYPES;
+      v.disabled = !v.checked && aantal >= max;
       var kaart = v.closest('.gchoice');
       if (kaart) { kaart.classList.toggle('is-uitgeschakeld', v.disabled); }
     });
@@ -437,7 +470,7 @@
     if (!t || !t.closest || !t.closest('form[id^="gform_"]')) { return; }
     if ('checkbox' === t.type) {
       markeerKeuze(t);
-      if (t.closest('.of-soktypes')) { pasSoktypesToe(); }
+      if (t.closest('.of-soktypes')) { pasSoktypesToe(t); }
       if (t.closest('.of-extras')) { pasExtrasToe(t); markeerAlles(); }
     }
     bewaar();

@@ -77,6 +77,21 @@ function sokkies_form_eigen_opmaak( $form_of_id ) {
 	return in_array( $id, array_filter( $ids ), true );
 }
 
+/**
+ * Hoeveel soorten sokken mag de bezoeker aanvinken?
+ *
+ * Het OFFERTEformulier staat er ÉÉN toe (verzoek Kulwant 2026-09-17), het
+ * SAMPLEformulier er twee — daar gaan ook twee paar de deur uit. Beide
+ * formulieren delen dezelfde kaarten, dezelfde validatie en hetzelfde
+ * script, dus het getal hangt aan het FORMULIER en niet aan de code
+ * eromheen. Onbekend formulier = twee, de oude waarde.
+ */
+function sokkies_max_soktypes( $form_of_id ) {
+	$id = is_array( $form_of_id ) ? (int) rgar( $form_of_id, 'id' ) : (int) $form_of_id;
+
+	return ( $id && $id === sokkies_offerte_form_id() ) ? 1 : 2;
+}
+
 /** Zoekt een veld op label; geeft het GF_Field of null. */
 function sokkies_offerte_veld( $form, $label ) {
 	foreach ( (array) $form['fields'] as $v ) {
@@ -135,12 +150,15 @@ add_filter( 'gform_field_validation', function ( $resultaat, $waarde, $form, $ve
 		return $resultaat;
 	}
 
-	// 1. Maximaal twee soorten sokken.
+	// 1. Aantal soorten sokken — één op de offerte, twee op de sample.
 	if ( 'Wat wil je laten bedrukken?' === $veld->label ) {
 		$gekozen = sokkies_offerte_aangevinkt( $veld );
-		if ( count( $gekozen ) > 2 ) {
+		$max     = sokkies_max_soktypes( $form );
+		if ( count( $gekozen ) > $max ) {
 			$resultaat['is_valid'] = false;
-			$resultaat['message']  = 'Kies maximaal twee soorten sokken.';
+			$resultaat['message']  = 1 === $max
+				? 'Kies één soort sok.'
+				: 'Kies maximaal twee soorten sokken.';
 		}
 	}
 
@@ -262,9 +280,9 @@ function sokkies_offerte_stappen() {
 	return array(
 		array(
 			'titel' => 'Wat wil je laten bedrukken?',
-			// htmlv zegt hier "kies één"; dit formulier staat er twee toe
-			// (verzoek Kulwant), dus de ondertitel volgt de werking.
-			'onder' => 'Type sok (kies één of twee)',
+			// Volgt de werking: sinds 2026-09-17 staat dit formulier nog maar
+			// één soort toe, net als htmlv al zei.
+			'onder' => 'Type sok (kies er één)',
 		),
 		array(
 			'titel' => 'Aanvullende opties',
@@ -319,6 +337,20 @@ function sokkies_offerte_optioneel_labels() {
 add_filter( 'gform_field_content', function ( $content, $field ) {
 	if ( ! is_object( $field ) || ! sokkies_form_eigen_opmaak( $field->formId ) ) {
 		return $content;
+	}
+
+	/* De hint onder de soktypekaarten hoort bij het MAXIMUM, en dat staat in
+	   code. De tekst zelf staat in de veldinstelling van Gravity Forms, dus
+	   in de DATABASE — en die deployt niet mee. Stond hij daar nog op "Kies
+	   één of twee soorten sokken.", dan zou live iets anders beloven dan de
+	   validatie toestaat. Daarom schrijft de code hem hier. */
+	if ( 'Wat wil je laten bedrukken?' === $field->label && 1 === sokkies_max_soktypes( $field->formId ) ) {
+		$content = preg_replace(
+			'#(<div[^>]*class=["\'][^"\']*gfield_description[^"\']*["\'][^>]*>).*?(</div>)#s',
+			'$1' . esc_html__( 'Kies één soort sok.', 'sokkies' ) . '$2',
+			$content,
+			1
+		);
 	}
 
 	/* De regel met toegestane bestandstypen hoort in het ontwerp BINNEN het
@@ -501,6 +533,20 @@ add_filter( 'gform_field_choice_markup_pre_render', function ( $markup, $choice,
 	return $nieuw ? $nieuw : $markup;
 }, 10, 4 );
 
+/** Maximum aantal soktypes per formulier-id, voor offerte.js. */
+function sokkies_soktype_maxima() {
+	$uit = array();
+	$ids = array( sokkies_offerte_form_id() );
+	if ( function_exists( 'sokkies_sample_form_id' ) ) {
+		$ids[] = sokkies_sample_form_id();
+	}
+	foreach ( array_filter( $ids ) as $fid ) {
+		$uit[ (string) $fid ] = sokkies_max_soktypes( $fid );
+	}
+
+	return $uit;
+}
+
 /**
  * Script laden zodra het offerte- of sampleformulier op de pagina staat.
  *
@@ -528,7 +574,14 @@ add_action( 'wp_enqueue_scripts', function () {
 	wp_localize_script(
 		'sokkies-offerte',
 		'sokkiesOfferte',
-		array( 'adresUrl' => esc_url_raw( rest_url( 'sokkies/v1/adres' ) ) )
+		array(
+			'adresUrl' => esc_url_raw( rest_url( 'sokkies/v1/adres' ) ),
+			/* Het maximum per FORMULIER-ID. Niet één getal voor het hele
+			   script: offerte en sample delen offerte.js maar hebben een
+			   ander maximum. De id's worden op titel opgezocht, dus er
+			   staat ook hier geen nummer hardgecodeerd. */
+			'maxSoktypes' => sokkies_soktype_maxima(),
+		)
 	);
 }, 20 );
 
