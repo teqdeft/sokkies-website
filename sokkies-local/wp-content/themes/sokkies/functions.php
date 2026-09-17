@@ -191,6 +191,10 @@ require_once get_template_directory() . '/inc/juridisch-seed.php';
 // offerteformulier hierboven; hier staat alleen wat sample-eigen is.
 require_once get_template_directory() . '/inc/sample-formulier.php';
 
+/* Formulieren volgen de taal van de bezoeker: mailonderwerp, veldlabels in
+   de beheerdersmail, de bevestigingsmail en de meldingen in het formulier. */
+require_once get_template_directory() . '/inc/formulier-talen.php';
+
 /**
  * Site-instelling uit de ACF-opties-pagina, met hardcoded fallback zolang
  * de opties nog niet zijn opgeslagen (of ACF uit staat).
@@ -281,10 +285,18 @@ function sokkies_datum_nl( $tijd, $met_tijd = true ) {
 	if ( ! $tijd ) {
 		return '';
 	}
-	$maanden = array(
-		1 => 'januari', 'februari', 'maart', 'april', 'mei', 'juni',
-		'juli', 'augustus', 'september', 'oktober', 'november', 'december',
+	/* De maandnamen volgen de taal van de pagina. Zonder dit zou een Franse
+	   bedankpagina "17 september" tonen naast Franstalige tekst. wp_date()
+	   kan dit niet: de site draait op en_US zonder taalbestanden, en de
+	   sitetaal omzetten raakt de hele beheeromgeving. */
+	$per_taal = array(
+		'nl' => array( 'januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december' ),
+		'en' => array( 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ),
+		'de' => array( 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ),
+		'fr' => array( 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre' ),
 	);
+	$taal    = function_exists( 'sokkies_form_taal' ) ? sokkies_form_taal() : 'nl';
+	$maanden = array_combine( range( 1, 12 ), isset( $per_taal[ $taal ] ) ? $per_taal[ $taal ] : $per_taal['nl'] );
 	$dag   = (int) wp_date( 'j', $tijd );
 	$maand = $maanden[ (int) wp_date( 'n', $tijd ) ];
 	$jaar  = wp_date( 'Y', $tijd );
@@ -1337,14 +1349,26 @@ function sokkies_gf_nl_meldingen() {
 	);
 }
 
+/* De kaart hangt aan de TAAL van de pagina: Nederlands krijgt de kaart
+   hierboven, Duits en Frans hun eigen (inc/formulier-talen.php) en Engels
+   geen enkele — Gravity Forms is zelf Engels, dus daar is vertalen juist
+   het probleem. De taal wordt één keer per verzoek bepaald: dit filter
+   vuurt honderden keren per pagina. */
+function sokkies_gf_meldingkaart() {
+	static $kaart = null;
+	if ( null === $kaart ) {
+		$taal  = function_exists( 'sokkies_form_taal' ) ? sokkies_form_taal() : 'nl';
+		$kaart = ( 'nl' === $taal ) ? sokkies_gf_nl_meldingen() : sokkies_form_meldingen( $taal );
+	}
+
+	return $kaart;
+}
+
 add_filter( 'gettext', function ( $vertaald, $origineel, $domein ) {
 	if ( 'gravityforms' !== $domein || is_admin() ) {
 		return $vertaald;
 	}
-	static $map = null;
-	if ( null === $map ) {
-		$map = sokkies_gf_nl_meldingen();
-	}
+	$map = sokkies_gf_meldingkaart();
 	return isset( $map[ $origineel ] ) ? $map[ $origineel ] : $vertaald;
 }, 10, 3 );
 
@@ -1353,10 +1377,7 @@ add_filter( 'gettext_with_context', function ( $vertaald, $origineel, $context, 
 	if ( 'gravityforms' !== $domein || is_admin() ) {
 		return $vertaald;
 	}
-	static $map = null;
-	if ( null === $map ) {
-		$map = sokkies_gf_nl_meldingen();
-	}
+	$map = sokkies_gf_meldingkaart();
 	return isset( $map[ $origineel ] ) ? $map[ $origineel ] : $vertaald;
 }, 10, 4 );
 

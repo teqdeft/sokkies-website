@@ -157,8 +157,8 @@ add_filter( 'gform_field_validation', function ( $resultaat, $waarde, $form, $ve
 		if ( count( $gekozen ) > $max ) {
 			$resultaat['is_valid'] = false;
 			$resultaat['message']  = 1 === $max
-				? 'Kies één soort sok.'
-				: 'Kies maximaal twee soorten sokken.';
+				? sokkies_form_zin( 'Kies één soort sok.' )
+				: sokkies_form_zin( 'Kies maximaal twee soorten sokken.' );
 		}
 	}
 
@@ -168,7 +168,7 @@ add_filter( 'gform_field_validation', function ( $resultaat, $waarde, $form, $ve
 		$geen    = in_array( "Geen extra's", $gekozen, true );
 		if ( $geen && count( $gekozen ) > 1 ) {
 			$resultaat['is_valid'] = false;
-			$resultaat['message']  = 'Kies óf een of meer extra opties, óf "Geen extra\'s" — niet allebei.';
+			$resultaat['message']  = sokkies_form_zin( 'Kies óf een of meer extra opties, óf "Geen extra\'s" — niet allebei.' );
 		}
 	}
 

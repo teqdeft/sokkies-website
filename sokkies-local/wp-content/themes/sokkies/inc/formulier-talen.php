@@ -1,0 +1,473 @@
+<?php
+/**
+ * Formulieren in de taal van de bezoeker.
+ *
+ * Wie het Engelse contactformulier invult, hoort een Engelse bevestiging te
+ * krijgen — en de beheerdersmail hoort te laten zien in welke taal de aanvraag
+ * binnenkwam. TranslatePress vertaalt alleen de PAGINA; e-mail gaat buiten dat
+ * mechanisme om, dus die bleef volledig Nederlands.
+ *
+ * WAAROM DE TEKSTEN HIER IN CODE STAAN EN NIET IN TRANSLATEPRESS
+ * (besluit Kulwant 2026-09-17): de TP-woordenlijst staat in de DATABASE en die
+ * deployt niet mee. Op de dev-server draait automatische vertaling aantoonbaar
+ * niet — een string die daar alleen via code terechtkwam bleef Nederlands, ook
+ * na herhaalde bezoeken. Een mail die terugvalt op Nederlands zodra er een rij
+ * ontbreekt is geen optie, dus de mailteksten reizen mee met de code.
+ *
+ * Wat hier NIET in staat: de pagina's zelf. Die blijven van TranslatePress.
+ *
+ * @package Sokkies
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * De taal waarin het formulier is ingevuld: nl, en, de of fr.
+ *
+ * De bron is het adres van de pagina waar de bezoeker stond — dat legt Gravity
+ * Forms bij elke inzending vast (source_url). Bewust NIET de huidige taal van
+ * het verzoek: een notificatie kan ook later opnieuw verstuurd worden vanuit de
+ * beheeromgeving, en dan klopt "de huidige taal" niet meer.
+ */
+function sokkies_form_taal( $entry = null ) {
+	$url = '';
+	if ( is_array( $entry ) ) {
+		$url = (string) rgar( $entry, 'source_url' );
+	}
+	if ( '' === $url && isset( $_SERVER['REQUEST_URI'] ) ) {
+		$url = home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+	}
+
+	$locale = '';
+	if ( $url && class_exists( 'TRP_Translate_Press' ) ) {
+		$trp      = TRP_Translate_Press::get_trp_instance();
+		$omzetter = $trp ? $trp->get_component( 'url_converter' ) : null;
+		if ( $omzetter && method_exists( $omzetter, 'get_lang_from_url_string' ) ) {
+			$locale = (string) $omzetter->get_lang_from_url_string( $url );
+		}
+	}
+
+	// Vangnet als TranslatePress er niet is of niets teruggeeft: het eerste
+	// paddeel na de site-url. Bij de standaardtaal staat daar geen taalcode,
+	// dus levert dit vanzelf 'nl'.
+	if ( '' === $locale && $url ) {
+		$pad   = trim( (string) wp_parse_url( $url, PHP_URL_PATH ), '/' );
+		$thuis = trim( (string) wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
+		if ( '' !== $thuis && 0 === strpos( $pad, $thuis ) ) {
+			$pad = trim( substr( $pad, strlen( $thuis ) ), '/' );
+		}
+		$eerste = (string) strtok( $pad, '/' );
+		$kaart  = array(
+			'en' => 'en_GB',
+			'de' => 'de_DE',
+			'fr' => 'fr_FR',
+		);
+		if ( isset( $kaart[ $eerste ] ) ) {
+			$locale = $kaart[ $eerste ];
+		}
+	}
+
+	$kort = strtolower( substr( $locale, 0, 2 ) );
+
+	return in_array( $kort, array( 'en', 'de', 'fr' ), true ) ? $kort : 'nl';
+}
+
+/**
+ * Veldlabels per taal, zoals ze in de beheerdersmail komen te staan.
+ *
+ * Alleen de labels die de bezoeker ook echt invult. De trackingvelden
+ * (Channel, GA4 ID, Attribute 1 …) blijven bewust technisch: die zijn voor het
+ * systeem dat de gegevens ophaalt, niet om te lezen.
+ */
+function sokkies_form_labels( $taal ) {
+	$kaart = array(
+		'en' => array(
+			'Voornaam'                        => 'First name',
+			'Achternaam'                      => 'Last name',
+			'E-mailadres'                     => 'Email address',
+			'E-mail'                          => 'Email',
+			'Telefoon'                        => 'Phone',
+			'Bedrijfsnaam'                    => 'Company name',
+			'Contactpersoon'                  => 'Contact person',
+			'Uw bericht'                      => 'Your message',
+			'Wat wil je laten bedrukken?'     => 'What would you like printed?',
+			'Aantal paar'                     => 'Number of pairs',
+			'Upload je ontwerp'               => 'Upload your design',
+			'Aanvullende opties'              => 'Additional options',
+			'Jouw input'                      => 'Your input',
+			'Jouw wensen'                     => 'Your wishes',
+			'Opmerkingen'                     => 'Comments',
+			'Wil je er een proefontwerp bij?' => 'Would you like a trial design?',
+			'Postcode'                        => 'Postcode',
+			'Huisnummer'                      => 'House number',
+			'Toevoeging'                      => 'Addition',
+			'Straat'                          => 'Street',
+			'Plaats'                          => 'Town',
+			'Provincie'                       => 'Province',
+		),
+		'de' => array(
+			'Voornaam'                        => 'Vorname',
+			'Achternaam'                      => 'Nachname',
+			'E-mailadres'                     => 'E-Mail-Adresse',
+			'E-mail'                          => 'E-Mail',
+			'Telefoon'                        => 'Telefon',
+			'Bedrijfsnaam'                    => 'Firmenname',
+			'Contactpersoon'                  => 'Ansprechpartner',
+			'Uw bericht'                      => 'Ihre Nachricht',
+			'Wat wil je laten bedrukken?'     => 'Was möchten Sie bedrucken lassen?',
+			'Aantal paar'                     => 'Anzahl Paare',
+			'Upload je ontwerp'               => 'Design hochladen',
+			'Aanvullende opties'              => 'Zusätzliche Optionen',
+			'Jouw input'                      => 'Ihre Angaben',
+			'Jouw wensen'                     => 'Ihre Wünsche',
+			'Opmerkingen'                     => 'Anmerkungen',
+			'Wil je er een proefontwerp bij?' => 'Möchten Sie ein Probedesign dazu?',
+			'Postcode'                        => 'Postleitzahl',
+			'Huisnummer'                      => 'Hausnummer',
+			'Toevoeging'                      => 'Zusatz',
+			'Straat'                          => 'Straße',
+			'Plaats'                          => 'Ort',
+			'Provincie'                       => 'Provinz',
+		),
+		'fr' => array(
+			'Voornaam'                        => 'Prénom',
+			'Achternaam'                      => 'Nom',
+			'E-mailadres'                     => 'Adresse e-mail',
+			'E-mail'                          => 'E-mail',
+			'Telefoon'                        => 'Téléphone',
+			'Bedrijfsnaam'                    => "Nom d'entreprise",
+			'Contactpersoon'                  => 'Personne de contact',
+			'Uw bericht'                      => 'Votre message',
+			'Wat wil je laten bedrukken?'     => 'Que souhaitez-vous faire imprimer ?',
+			'Aantal paar'                     => 'Nombre de paires',
+			'Upload je ontwerp'               => 'Téléchargez votre design',
+			'Aanvullende opties'              => 'Options supplémentaires',
+			'Jouw input'                      => 'Vos informations',
+			'Jouw wensen'                     => 'Vos souhaits',
+			'Opmerkingen'                     => 'Remarques',
+			'Wil je er een proefontwerp bij?' => "Souhaitez-vous un design d'essai ?",
+			'Postcode'                        => 'Code postal',
+			'Huisnummer'                      => 'Numéro',
+			'Toevoeging'                      => 'Complément',
+			'Straat'                          => 'Rue',
+			'Plaats'                          => 'Ville',
+			'Provincie'                       => 'Province',
+		),
+	);
+
+	return isset( $kaart[ $taal ] ) ? $kaart[ $taal ] : array();
+}
+
+/**
+ * De zinnen uit de bevestigingsmail aan de bezoeker, per taal.
+ *
+ * Vervanging per ZIN in plaats van de hele mail overschrijven: de mail bevat
+ * ook de handtekening van Sokkies (logo, naam, HTML-tabel). Die blijft zo
+ * ongemoeid, en past het team de tekst later aan in Gravity Forms, dan blijft
+ * alles wat hier niet genoemd staat gewoon staan.
+ */
+function sokkies_form_zinnen( $taal ) {
+	$kaart = array(
+		'en' => array(
+			'Hartelijk dank voor je bericht!'         => 'Thank you very much for your message!',
+			'Hartelijk dank voor je aanvraag!'        => 'Thank you very much for your request!',
+			'Hartelijk dank voor je sample-aanvraag!' => 'Thank you very much for your sample request!',
+			'We hebben je bericht in goede orde ontvangen en komen zo snel mogelijk bij je terug.'         => 'We have received your message and will get back to you as soon as possible.',
+			'We hebben je aanvraag in goede orde ontvangen en komen zo snel mogelijk bij je terug.'        => 'We have received your request and will get back to you as soon as possible.',
+			'We hebben je sample-aanvraag in goede orde ontvangen en komen zo snel mogelijk bij je terug.' => 'We have received your sample request and will get back to you as soon as possible.',
+			'Je kunt binnen 24 uur een reactie van ons verwachten. We streven ernaar om je zo snel mogelijk verder te helpen.' => 'You can expect a reply from us within 24 hours. We aim to help you as quickly as we can.',
+			'Mocht je in de tussentijd nog aanvullende vragen hebben, aarzel dan niet om contact met ons op te nemen.' => 'If you have any further questions in the meantime, please do not hesitate to contact us.',
+			'Met vriendelijke groet,'                 => 'Kind regards,',
+		),
+		'de' => array(
+			'Hartelijk dank voor je bericht!'         => 'Vielen Dank für Ihre Nachricht!',
+			'Hartelijk dank voor je aanvraag!'        => 'Vielen Dank für Ihre Anfrage!',
+			'Hartelijk dank voor je sample-aanvraag!' => 'Vielen Dank für Ihre Musteranfrage!',
+			'We hebben je bericht in goede orde ontvangen en komen zo snel mogelijk bij je terug.'         => 'Wir haben Ihre Nachricht erhalten und melden uns so schnell wie möglich bei Ihnen.',
+			'We hebben je aanvraag in goede orde ontvangen en komen zo snel mogelijk bij je terug.'        => 'Wir haben Ihre Anfrage erhalten und melden uns so schnell wie möglich bei Ihnen.',
+			'We hebben je sample-aanvraag in goede orde ontvangen en komen zo snel mogelijk bij je terug.' => 'Wir haben Ihre Musteranfrage erhalten und melden uns so schnell wie möglich bei Ihnen.',
+			'Je kunt binnen 24 uur een reactie van ons verwachten. We streven ernaar om je zo snel mogelijk verder te helpen.' => 'Sie können innerhalb von 24 Stunden mit einer Antwort rechnen. Wir helfen Ihnen so schnell wie möglich weiter.',
+			'Mocht je in de tussentijd nog aanvullende vragen hebben, aarzel dan niet om contact met ons op te nemen.' => 'Sollten Sie in der Zwischenzeit weitere Fragen haben, zögern Sie nicht, uns zu kontaktieren.',
+			'Met vriendelijke groet,'                 => 'Mit freundlichen Grüßen,',
+		),
+		'fr' => array(
+			'Hartelijk dank voor je bericht!'         => 'Merci beaucoup pour votre message !',
+			'Hartelijk dank voor je aanvraag!'        => 'Merci beaucoup pour votre demande !',
+			'Hartelijk dank voor je sample-aanvraag!' => "Merci beaucoup pour votre demande d'échantillon !",
+			'We hebben je bericht in goede orde ontvangen en komen zo snel mogelijk bij je terug.'         => 'Nous avons bien reçu votre message et revenons vers vous dans les meilleurs délais.',
+			'We hebben je aanvraag in goede orde ontvangen en komen zo snel mogelijk bij je terug.'        => 'Nous avons bien reçu votre demande et revenons vers vous dans les meilleurs délais.',
+			'We hebben je sample-aanvraag in goede orde ontvangen en komen zo snel mogelijk bij je terug.' => "Nous avons bien reçu votre demande d'échantillon et revenons vers vous dans les meilleurs délais.",
+			'Je kunt binnen 24 uur een reactie van ons verwachten. We streven ernaar om je zo snel mogelijk verder te helpen.' => 'Vous pouvez compter sur une réponse de notre part sous 24 heures. Nous faisons le maximum pour vous aider rapidement.',
+			'Mocht je in de tussentijd nog aanvullende vragen hebben, aarzel dan niet om contact met ons op te nemen.' => "Si vous avez d'autres questions entre-temps, n'hésitez pas à nous contacter.",
+			'Met vriendelijke groet,'                 => 'Cordialement,',
+		),
+	);
+
+	return isset( $kaart[ $taal ] ) ? $kaart[ $taal ] : array();
+}
+
+/**
+ * Onderwerpregels per taal.
+ *
+ * De merge tag ({form_title}, {Voornaam:3} …) blijft staan; alleen de tekst
+ * eromheen wisselt. Daarom sjablonen met %s in plaats van kant-en-klare
+ * zinnen: welke tag het is verschilt per formulier.
+ */
+function sokkies_form_onderwerpen( $taal ) {
+	$kaart = array(
+		'en' => array(
+			'beheer'   => 'New submission from %s',
+			'bericht'  => 'Thank you %s for your message!',
+			'aanvraag' => 'Thank you %s for your request!',
+			'sample'   => 'Thank you %s for your sample request!',
+		),
+		'de' => array(
+			'beheer'   => 'Neue Einsendung von %s',
+			'bericht'  => 'Danke %s für Ihre Nachricht!',
+			'aanvraag' => 'Danke %s für Ihre Anfrage!',
+			'sample'   => 'Danke %s für Ihre Musteranfrage!',
+		),
+		'fr' => array(
+			'beheer'   => 'Nouvelle soumission de %s',
+			'bericht'  => 'Merci %s pour votre message !',
+			'aanvraag' => 'Merci %s pour votre demande !',
+			'sample'   => "Merci %s pour votre demande d'échantillon !",
+		),
+	);
+
+	return isset( $kaart[ $taal ] ) ? $kaart[ $taal ] : array();
+}
+
+/**
+ * De meldingen in het formulier zelf, per taal.
+ *
+ * Twee soorten door elkaar:
+ *  - de teksten van Gravity Forms ("This field is required."), die via het
+ *    gettext-filter lopen — zie sokkies_gf_nl_meldingen() in functions.php;
+ *  - onze eigen validatieteksten, die gewoon in code staan.
+ *
+ * Voor ENGELS staat hier bewust niets: Gravity Forms is zelf Engels, dus zonder
+ * vertaalkaart komen die teksten al goed door. Alleen onze eigen zinnen hebben
+ * ook in het Engels een vertaling nodig.
+ */
+function sokkies_form_meldingen( $taal ) {
+	$kaart = array(
+		'en' => array(
+			// Onze eigen zinnen. De GF-teksten laten we in het Engels staan.
+			'Kies één soort sok.'                => 'Choose one type of sock.',
+			'Kies maximaal twee soorten sokken.' => 'Choose no more than two types of socks.',
+			'Kies óf een of meer extra opties, óf "Geen extra\'s" — niet allebei.' => 'Choose either one or more extras, or "No extras" — not both.',
+			'Het contactformulier is tijdelijk niet beschikbaar.' => 'The contact form is temporarily unavailable.',
+			'Het offerteformulier is tijdelijk niet beschikbaar.' => 'The quote form is temporarily unavailable.',
+			'Het sampleformulier is tijdelijk niet beschikbaar.'  => 'The sample form is temporarily unavailable.',
+		),
+		'de' => array(
+			'There was a problem with your submission.' => 'Bei Ihrer Einsendung ist ein Problem aufgetreten.',
+			'Please review the fields below.'           => 'Bitte überprüfen Sie die Felder unten.',
+			'This field is required.'                   => 'Dieses Feld ist erforderlich.',
+			'(Required)'                                => '(Pflichtfeld)',
+			'The email address entered is invalid.'     => 'Die eingegebene E-Mail-Adresse ist ungültig.',
+			'Please enter a valid email address.'       => 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+			'Please enter a valid phone number.'        => 'Bitte geben Sie eine gültige Telefonnummer ein.',
+			'Your form was not submitted. Please try again in a few minutes.' => 'Ihr Formular wurde nicht gesendet. Bitte versuchen Sie es in einigen Minuten erneut.',
+			'Kies één soort sok.'                => 'Wählen Sie eine Sockenart.',
+			'Kies maximaal twee soorten sokken.' => 'Wählen Sie höchstens zwei Sockenarten.',
+			'Kies óf een of meer extra opties, óf "Geen extra\'s" — niet allebei.' => 'Wählen Sie entweder eine oder mehrere Zusatzoptionen oder "Keine Extras" — nicht beides.',
+			'Het contactformulier is tijdelijk niet beschikbaar.' => 'Das Kontaktformular ist vorübergehend nicht verfügbar.',
+			'Het offerteformulier is tijdelijk niet beschikbaar.' => 'Das Angebotsformular ist vorübergehend nicht verfügbar.',
+			'Het sampleformulier is tijdelijk niet beschikbaar.'  => 'Das Musterformular ist vorübergehend nicht verfügbar.',
+		),
+		'fr' => array(
+			'There was a problem with your submission.' => 'Un problème est survenu lors de votre envoi.',
+			'Please review the fields below.'           => 'Veuillez vérifier les champs ci-dessous.',
+			'This field is required.'                   => 'Ce champ est obligatoire.',
+			'(Required)'                                => '(Obligatoire)',
+			'The email address entered is invalid.'     => "L'adresse e-mail saisie n'est pas valide.",
+			'Please enter a valid email address.'       => 'Veuillez saisir une adresse e-mail valide.',
+			'Please enter a valid phone number.'        => 'Veuillez saisir un numéro de téléphone valide.',
+			'Your form was not submitted. Please try again in a few minutes.' => "Votre formulaire n'a pas été envoyé. Réessayez dans quelques minutes.",
+			'Kies één soort sok.'                => 'Choisissez un seul type de chaussette.',
+			'Kies maximaal twee soorten sokken.' => 'Choisissez au maximum deux types de chaussettes.',
+			'Kies óf een of meer extra opties, óf "Geen extra\'s" — niet allebei.' => 'Choisissez soit une ou plusieurs options supplémentaires, soit "Aucun extra" — pas les deux.',
+			'Het contactformulier is tijdelijk niet beschikbaar.' => "Le formulaire de contact est temporairement indisponible.",
+			'Het offerteformulier is tijdelijk niet beschikbaar.' => "Le formulaire de devis est temporairement indisponible.",
+			'Het sampleformulier is tijdelijk niet beschikbaar.'  => "Le formulaire d'échantillon est temporairement indisponible.",
+		),
+	);
+
+	return isset( $kaart[ $taal ] ) ? $kaart[ $taal ] : array();
+}
+
+/**
+ * Eén van onze eigen zinnen in de taal van de bezoeker.
+ *
+ * Zonder tweede argument wordt de taal uit het huidige verzoek gehaald — dat is
+ * precies goed voor validatiemeldingen, want die verschijnen op de pagina waar
+ * de bezoeker op dat moment staat.
+ */
+function sokkies_form_zin( $nederlands, $taal = null ) {
+	$taal = null === $taal ? sokkies_form_taal() : $taal;
+	if ( 'nl' === $taal ) {
+		return $nederlands;
+	}
+	$kaart = sokkies_form_meldingen( $taal );
+
+	return isset( $kaart[ $nederlands ] ) ? $kaart[ $nederlands ] : $nederlands;
+}
+
+/**
+ * De taal van de notificatie die op dit moment wordt opgebouwd.
+ *
+ * Gravity Forms vervangt de merge tags ná het gform_notification-filter, en op
+ * dat moment is de inzending niet meer bij de hand. Daarom onthouden we de taal
+ * hier even; per notificatie wordt hij opnieuw gezet.
+ */
+function sokkies_form_huidige_taal( $zet = null ) {
+	static $taal = 'nl';
+	if ( null !== $zet ) {
+		$taal = $zet;
+	}
+
+	return $taal;
+}
+
+/** Alleen onze eigen drie formulieren. */
+function sokkies_form_eigen( $form ) {
+	$id  = (int) rgar( (array) $form, 'id' );
+	$ids = array_filter(
+		array(
+			function_exists( 'sokkies_contactformulier_id' ) ? sokkies_contactformulier_id() : 0,
+			function_exists( 'sokkies_offerte_form_id' ) ? sokkies_offerte_form_id() : 0,
+			function_exists( 'sokkies_sample_form_id' ) ? sokkies_sample_form_id() : 0,
+		)
+	);
+
+	return $id && in_array( $id, $ids, true );
+}
+
+/**
+ * Onderwerp en tekst van de mail in de taal van de bezoeker.
+ */
+add_filter(
+	'gform_notification',
+	function ( $notification, $form, $entry ) {
+		if ( ! sokkies_form_eigen( $form ) ) {
+			return $notification;
+		}
+
+		$taal = sokkies_form_taal( $entry );
+		sokkies_form_huidige_taal( $taal );
+
+		if ( 'nl' === $taal ) {
+			return $notification;
+		}
+
+		$onderwerpen = sokkies_form_onderwerpen( $taal );
+		$onderwerp   = (string) rgar( $notification, 'subject' );
+
+		// De merge tag uit het bestaande onderwerp overnemen, zodat de naam of
+		// de formuliertitel blijft werken ook als het team hem later wijzigt.
+		$tag = '';
+		if ( preg_match( '/\{[^}]+\}/', $onderwerp, $m ) ) {
+			$tag = $m[0];
+		}
+
+		if ( 0 === strpos( $onderwerp, 'Nieuwe inzending' ) ) {
+			$notification['subject'] = sprintf( $onderwerpen['beheer'], '' !== $tag ? $tag : '{form_title}' );
+		} elseif ( false !== strpos( $onderwerp, 'sample' ) ) {
+			$notification['subject'] = sprintf( $onderwerpen['sample'], $tag );
+		} elseif ( false !== strpos( $onderwerp, 'aanvraag' ) ) {
+			$notification['subject'] = sprintf( $onderwerpen['aanvraag'], $tag );
+		} elseif ( false !== strpos( $onderwerp, 'bericht' ) ) {
+			$notification['subject'] = sprintf( $onderwerpen['bericht'], $tag );
+		}
+
+		$zinnen = sokkies_form_zinnen( $taal );
+		if ( $zinnen && ! empty( $notification['message'] ) ) {
+			$notification['message'] = str_replace( array_keys( $zinnen ), array_values( $zinnen ), $notification['message'] );
+		}
+
+		// De veldlabels van {all_fields} staan op de veld-objecten en worden
+		// hierna pas uitgelezen; zie de uitleg verderop.
+		sokkies_form_labels_terug();
+		if ( false !== strpos( (string) rgar( $notification, 'message' ), '{all_fields' ) ) {
+			sokkies_form_labels_omzetten( $form, $taal );
+		}
+
+		return $notification;
+	},
+	10,
+	3
+);
+
+/**
+ * De veldlabels in {all_fields} meevertalen.
+ *
+ * WAAROM DIT OMSLACHTIG IS. Voor de hand ligt het filter gform_merge_tag_filter,
+ * maar dat helpt hier niet: in de HTML-variant krijgt dat filter alleen de
+ * WAARDE mee (common.php:1936), en Gravity Forms plakt het label er pas dáárna
+ * omheen, uit een variabele die al vóór het filter is gevuld
+ * (common.php:1953-1961). Het label is op dat moment dus niet meer te raken.
+ * RGFormsModel::get_label() kent zelf geen filter.
+ *
+ * Wat wel kan: het label op het VELD-OBJECT omzetten vlak voordat de mail wordt
+ * opgebouwd, en het daarna meteen terugzetten. $form wordt wel per waarde
+ * doorgegeven, maar de velden erin zijn objecten — dezelfde exemplaren die
+ * Gravity Forms even later gebruikt.
+ *
+ * Het terugzetten is geen nette bijkomstigheid maar noodzaak: die objecten zijn
+ * gedeeld met de bevestiging en met een eventuele tweede notificatie. Vandaar
+ * twee herstelmomenten, zie hieronder.
+ */
+function sokkies_form_labels_omzetten( $form, $taal ) {
+	$labels = sokkies_form_labels( $taal );
+	if ( ! $labels || empty( $form['fields'] ) ) {
+		return;
+	}
+
+	$origineel = array();
+	foreach ( $form['fields'] as $veld ) {
+		$schoon = html_entity_decode( (string) $veld->label, ENT_QUOTES, 'UTF-8' );
+		if ( isset( $labels[ $schoon ] ) ) {
+			$origineel[] = array( $veld, $veld->label );
+			$veld->label = $labels[ $schoon ];
+		}
+	}
+
+	sokkies_form_labels_bewaard( $origineel );
+}
+
+/** Onthoudt welke labels zijn omgezet, zodat ze terug kunnen. */
+function sokkies_form_labels_bewaard( $zet = null ) {
+	static $bewaard = array();
+	if ( null !== $zet ) {
+		$bewaard = $zet;
+	}
+
+	return $bewaard;
+}
+
+/** Zet de oorspronkelijke labels terug. Mag vaker aangeroepen worden. */
+function sokkies_form_labels_terug() {
+	foreach ( sokkies_form_labels_bewaard() as $paar ) {
+		list( $veld, $label ) = $paar;
+		$veld->label          = $label;
+	}
+	sokkies_form_labels_bewaard( array() );
+}
+
+/* Herstelmoment 1: zodra de mail is opgebouwd. Dit filter draait ook als de
+   verzending wordt afgebroken, dus het is het laatste zekere punt. */
+add_filter(
+	'gform_pre_send_email',
+	function ( $email ) {
+		sokkies_form_labels_terug();
+
+		return $email;
+	},
+	1
+);
+
+/* Herstelmoment 2 als vangnet: gaat er onderweg iets mis en komt het eerste
+   moment niet, dan staan de labels aan het eind van het verzoek alsnog goed. */
+add_action( 'shutdown', 'sokkies_form_labels_terug', 1 );

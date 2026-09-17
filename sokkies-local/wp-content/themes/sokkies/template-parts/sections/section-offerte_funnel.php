@@ -22,7 +22,7 @@ $assets_uri = get_template_directory_uri() . '/assets/';
           if ( $offerte_id && function_exists( 'gravity_form' ) ) {
               gravity_form( $offerte_id, false, false, false, null, true );
           } else {
-              echo '<p>Het offerteformulier is tijdelijk niet beschikbaar.</p>';
+              echo '<p>' . esc_html( sokkies_form_zin( 'Het offerteformulier is tijdelijk niet beschikbaar.' ) ) . '</p>';
           }
           echo '</div>';
           ?>

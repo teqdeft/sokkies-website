@@ -26,7 +26,7 @@
           if ( $formulier_id && function_exists( 'gravity_form' ) ) {
               gravity_form( $formulier_id, false, false, false, null, true );
           } else {
-              echo '<p>Het contactformulier is tijdelijk niet beschikbaar.</p>';
+              echo '<p>' . esc_html( sokkies_form_zin( 'Het contactformulier is tijdelijk niet beschikbaar.' ) ) . '</p>';
           }
           echo '</div>';
           ?>

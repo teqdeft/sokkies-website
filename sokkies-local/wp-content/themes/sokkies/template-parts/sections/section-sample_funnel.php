@@ -20,7 +20,7 @@
           if ( $sample_id && function_exists( 'gravity_form' ) ) {
               gravity_form( $sample_id, false, false, false, null, true );
           } else {
-              echo '<p>Het sampleformulier is tijdelijk niet beschikbaar.</p>';
+              echo '<p>' . esc_html( sokkies_form_zin( 'Het sampleformulier is tijdelijk niet beschikbaar.' ) ) . '</p>';
           }
           echo '</div>';
           ?>
