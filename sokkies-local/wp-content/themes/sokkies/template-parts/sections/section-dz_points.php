@@ -26,7 +26,7 @@ $standaard_punten = array(
         <img class="img-lg" src="<?php echo esc_url( $groot ? $groot['url'] : $assets . 'duur-img3.png' ); ?>" alt="">
       </div>
       <div class="dz-points-text">
-        <h2><?php echo sokkies_kop( $titel ); ?></h2>
+        <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
         <p><?php echo esc_html( $intro ); ?></p>
         <ol>
           <?php $lijst = $rijen ? array_column( $rijen, 'tekst' ) : $standaard_punten; foreach ( $lijst as $i => $punt ) : ?>

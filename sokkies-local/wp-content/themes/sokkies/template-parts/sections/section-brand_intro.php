@@ -50,7 +50,7 @@ $klassen  = array( 'standaard' => '', 'licht' => ' brand-light', 'licht_werkwijz
     </div>
     <div class="brand-intro-inner">
       <?php if ( $titel ) : ?>
-      <h2><?php echo sokkies_kop( $titel ); ?></h2>
+      <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
       <?php endif; ?>
       <?php if ( $inklappen ) : ?>
       <div class="brand-collapse is-collapsed" data-brand-collapse style="max-height:<?php echo (int) $inklap_h; ?>px">

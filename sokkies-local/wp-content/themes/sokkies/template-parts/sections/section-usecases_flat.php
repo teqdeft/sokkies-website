@@ -18,12 +18,12 @@ $standaard = array(
 <section class="usecases usecases-flat">
   <div class="container">
     <div class="usecases-head">
-      <h2><?php echo sokkies_kop( $titel ); ?></h2>
+      <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
     </div>
 
     <div class="usecases-grid">
-      <?php if ( $rijen ) : foreach ( $rijen as $rij ) : ?>
-      <div class="usecase-card">
+      <?php if ( $rijen ) : foreach ( $rijen as $i => $rij ) : ?>
+      <div class="usecase-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
         <div class="usecase-img"><?php if ( ! empty( $rij['foto'] ) ) : ?><img src="<?php echo esc_url( $rij['foto']['url'] ); ?>" alt="<?php echo esc_attr( $rij['titel'] ); ?>"><?php endif; ?></div>
         <div class="usecase-body">
           <h5><?php echo esc_html( $rij['titel'] ); ?></h5>
@@ -35,8 +35,8 @@ $standaard = array(
           <?php endif; ?>
         </div>
       </div>
-      <?php endforeach; else : foreach ( $standaard as $rij ) : ?>
-      <div class="usecase-card">
+      <?php endforeach; else : foreach ( $standaard as $i => $rij ) : ?>
+      <div class="usecase-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
         <div class="usecase-img"><img src="<?php echo esc_url( $assets . $rij['bestand'] ); ?>" alt="<?php echo esc_attr( $rij['titel'] ); ?>"></div>
         <div class="usecase-body">
           <h5><?php echo esc_html( $rij['titel'] ); ?></h5>

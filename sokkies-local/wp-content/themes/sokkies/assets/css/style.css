@@ -760,6 +760,15 @@ font-weight: 600;
   font-size: var(--body-font-size);
 }
 
+/* Vangnet bij de scroll-animaties (AOS). Lukt de init niet, dan zet het script
+   op de aos-handle in functions.php de class aos-uit op <html> en maakt deze
+   regel alles alsnog zichtbaar. Zonder dit blijven koppen en kaarten op
+   opacity:0 staan zodra er iets misgaat in de JS. */
+html.aos-uit [data-aos]{
+  opacity:1 !important;
+  transform:none !important;
+  transition:none !important;
+}
 .rating-info-bottom{
   font-family: var(--juniper-bay);
   color:var(--white);

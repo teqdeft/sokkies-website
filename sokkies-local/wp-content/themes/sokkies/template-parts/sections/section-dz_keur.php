@@ -15,7 +15,7 @@ if ( ! $rijen ) { $rijen = $standaard; }
 ?>
 <section class="dz-keur">
   <div class="container-md">
-    <h2><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
     <div class="dz-keur-grid">
       <?php foreach ( $rijen as $rij ) :
         $logo = $eigen ? ( ! empty( $rij['logo'] ) ? $rij['logo']['url'] : '' ) : $assets . $rij['bestand'];

@@ -25,7 +25,7 @@ function sokkies_dl_tabblad( $href ) {
 <section class="dl-cards">
   <div class="container">
     <div class="dl-cards-grid">
-      <?php if ( $rijen ) : foreach ( $rijen as $rij ) :
+      <?php if ( $rijen ) : foreach ( $rijen as $i => $rij ) :
         $href  = '#';
         $label = 'Download';
         $download = '';
@@ -37,7 +37,7 @@ function sokkies_dl_tabblad( $href ) {
             $label = ! empty( $rij['link']['title'] ) ? $rij['link']['title'] : $label;
         }
       ?>
-      <div class="dl-card">
+      <div class="dl-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
         <div class="dl-card-img"><?php if ( ! empty( $rij['foto'] ) ) : ?><img src="<?php echo esc_url( $rij['foto']['url'] ); ?>" alt="<?php echo esc_attr( $rij['titel'] ); ?>"><?php else : ?><span class="dl-ph">Image placeholder</span><?php endif; ?></div>
         <div class="dl-card-body">
           <h3><?php echo esc_html( $rij['titel'] ); ?></h3>
@@ -48,8 +48,8 @@ function sokkies_dl_tabblad( $href ) {
           </a>
         </div>
       </div>
-      <?php endforeach; else : foreach ( $standaard as $rij ) : ?>
-      <div class="dl-card">
+      <?php endforeach; else : foreach ( $standaard as $i => $rij ) : ?>
+      <div class="dl-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
         <div class="dl-card-img"><span class="dl-ph">Image placeholder</span></div>
         <div class="dl-card-body">
           <h3><?php echo esc_html( $rij['titel'] ); ?></h3>

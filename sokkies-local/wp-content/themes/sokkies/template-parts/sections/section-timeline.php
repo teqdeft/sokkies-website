@@ -22,7 +22,7 @@ $slides = $eigen ?: $standaard;
 <section class="timeline">
   <div class="container">
     <div class="timeline-head">
-      <h2><?php echo sokkies_kop( $titel ); ?></h2>
+      <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
       <div class="timeline-nav">
         <button class="t-prev" aria-label="Vorige">
           <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">                 <g id="arrow_3" data-name="arrow 3" transform="translate(11.699 8.707) rotate(180)">                   <path id="Path_3670" data-name="Path 3670" d="M1289.087,547h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                   <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>                 </g>               </svg>

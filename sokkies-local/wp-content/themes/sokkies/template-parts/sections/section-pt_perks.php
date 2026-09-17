@@ -15,10 +15,10 @@ if ( ! $rijen ) { $rijen = $standaard; }
 <section class="pt-perks">
   <div class="container">
     <div class="pt-perks-inner">
-      <h2><?php echo sokkies_kop( $titel ); ?></h2>
+      <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
       <div class="pt-perks-grid">
-        <?php foreach ( $rijen as $rij ) : ?>
-        <div class="pt-perks-card">
+        <?php foreach ( $rijen as $i => $rij ) : ?>
+        <div class="pt-perks-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
           <h3><?php echo esc_html( $rij['titel'] ); ?></h3>
           <p><?php echo esc_html( $rij['tekst'] ); ?></p>
         </div>

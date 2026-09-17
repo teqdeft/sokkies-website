@@ -44,7 +44,7 @@ if ( ! $rijen ) { $rijen = $standaard; }
         ?>
         <div class="dz-pane<?php echo 0 === $i ? ' active' : ''; ?><?php echo $heeft_foto ? '' : ' dz-pane-solo'; ?>">
           <div class="dz-pane-text">
-            <h2><?php echo esc_html( $rij['titel'] ); ?></h2>
+            <h2 data-aos="fade-up"><?php echo esc_html( $rij['titel'] ); ?></h2>
             <?php
             /* Rijke tekst: het veld is een wysiwyg, dus de redacteur bepaalt
                zelf de alinea's, vetgedrukte tussenkopjes en opsommingen. Eerder

@@ -15,7 +15,7 @@ $doel = max( 6, count( $review_ids ) );
 <section class="overons-reviews">
   <div class="container">
     <div class="reviews-head">
-      <h2><?php echo sokkies_kop( $titel ); ?></h2>
+      <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
       <p>
         <span class="score"><?php echo esc_html( sokkies_optie( 'review_score', '9.5/10' ) ); ?></span>
         <span class="stars">

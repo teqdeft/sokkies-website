@@ -48,7 +48,7 @@ if ( 'beige' === $stijl )    { $klassen .= ' lp-media-beige'; }
 
       <div class="lp-media-tekst">
         <?php if ( '' !== $titel ) : ?>
-        <h2><?php echo sokkies_kop( $titel ); ?></h2>
+        <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
         <?php endif; ?>
         <?php if ( $heeft_tekst ) { echo sokkies_rijke_tekst( $tekst ); } ?>
         <?php if ( ! empty( $knop['url'] ) ) : ?>

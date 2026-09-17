@@ -28,7 +28,7 @@ if ( ! $rijen ) {
 ?>
 <section class="fp-lees-ook<?php echo ( 'wit' === $stijl ) ? ' fp-lees-ook-wit' : ''; ?>">
   <div class="container">
-    <h2><?php echo sokkies_kop( $kop ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $kop ); ?></h2>
     <div class="fp-lees-ook-grid">
       <?php foreach ( $rijen as $rij ) :
         $url   = ! empty( $rij['link']['url'] ) ? $rij['link']['url'] : '';

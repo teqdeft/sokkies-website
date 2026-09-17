@@ -1093,6 +1093,31 @@
     });
 
 
+    // ===== Scroll-animaties (AOS) =====
+    /* Elementen met data-aos komen bij het scrollen rustig omhoog invaden.
+       once:true, dus het gebeurt één keer en niet opnieuw bij terugscrollen.
+
+       BEWEGING UIT VOOR WIE DAAR LAST VAN HEEFT: staat de systeeminstelling
+       "verminder beweging" aan, dan zet disable AOS volledig uit en verschijnt
+       alles gewoon meteen. Zonder dat zou de site onbruikbaar kunnen worden
+       voor mensen die misselijk worden van bewegende pagina's. */
+    (function () {
+      if (typeof AOS === 'undefined') return;
+      /* Meldt aan het vangnet in functions.php dat de init gelukt is; zonder
+         deze class maakt de CSS na 2,5s alles alsnog zichtbaar. */
+      document.documentElement.classList.add('aos-draait');
+      AOS.init({
+        duration: 600,
+        easing: 'ease-out',
+        once: true,
+        offset: 80,
+        disable: function () {
+          return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        },
+      });
+    })();
+
+
     // ===== Nieuwsbrief -> Klaviyo =====
     /* Werkt voor elk formulier met data-klaviyo-form: nu de kaart op de
        bedankt-pagina's en het veld in de footer.

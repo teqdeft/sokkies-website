@@ -81,7 +81,7 @@ if ( ! $groepen ) { return; }
         <div class="faq-cats-list">
           <?php foreach ( $groepen as $g => $groep ) : ?>
           <div class="faq-cat-group" id="cat-<?php echo esc_attr( $groep['term']->slug ); ?>" data-cat="<?php echo esc_attr( $groep['term']->slug ); ?>">
-            <h2><?php echo esc_html( $groep['term']->name ); ?></h2>
+            <h2 data-aos="fade-up"><?php echo esc_html( $groep['term']->name ); ?></h2>
             <?php foreach ( $groep['vragen'] as $i => $vraag_id ) : $open = ( 0 === $g && 0 === $i ); ?>
             <div class="faq-item<?php echo $open ? ' is-open' : ''; ?>">
               <button type="button" class="faq-q" aria-expanded="<?php echo $open ? 'true' : 'false'; ?>">

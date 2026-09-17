@@ -25,7 +25,7 @@ $standaard = array( 'BSCI.png', 'GOTS.png', 'OEKO-TEX.png', 'one-tree-planted.pn
 <section class="lp-keur">
   <div class="container">
     <div class="lp-keur-inner">
-      <h2><?php echo sokkies_kop( $titel ); ?></h2>
+      <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
       <?php if ( '' !== trim( (string) $tekst ) ) : ?>
       <p><?php echo esc_html( $tekst ); ?></p>
       <?php endif; ?>

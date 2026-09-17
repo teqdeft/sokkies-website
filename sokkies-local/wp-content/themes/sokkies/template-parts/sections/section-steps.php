@@ -22,7 +22,7 @@ if ( ! $rijen ) { $rijen = $standaard; }
 ?>
 <section class="steps-section">
   <div class="container">
-    <h2><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
 
     <div class="swiper steps-swiper">
       <div class="swiper-wrapper">

@@ -30,7 +30,7 @@ if ( ! $rijen ) { $rijen = $std_rijen; }
     <img class="compare-floating-elements" src="<?php echo esc_url( $assets ); ?>yellow-sock-element.svg" alt="" aria-hidden="true">
     <div class="compare-inner-main">
         <div class="container">
-          <h2><?php echo sokkies_kop( $titel ); ?></h2>
+          <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
           <div class="compare-scroll">
             <table class="compare-table">
               <thead>

@@ -17,7 +17,7 @@ $klassen = array( 'standaard' => '', 'beige' => ' brands-beige', 'inner' => ' br
 ?>
 <section class="brands<?php echo esc_attr( $klassen[ $stijl ] ?? '' ); ?>">
   <div class="container">
-    <h2><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
     <div class="swiper brands-swiper">
       <div class="swiper-wrapper">
       <?php foreach ( $logo_ids as $logo_id ) : $logo = get_the_post_thumbnail_url( $logo_id, 'full' ); if ( ! $logo ) { continue; } ?>

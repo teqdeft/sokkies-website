@@ -27,7 +27,7 @@ foreach ( $case_ids as $case_id ) {
 ?>
 <section class="case-grid-section" id="cases" data-filtergrid data-step="8">
   <div class="container">
-    <h2><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
 
     <div class="case-filters">
       <div class="case-filter" data-filter="type">

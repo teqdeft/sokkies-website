@@ -24,10 +24,10 @@ $standaard = array(
 ?>
 <section class="process">
   <div class="container">
-    <h2><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
     <div class="process-steps">
       <?php if ( $rijen ) : foreach ( $rijen as $i => $rij ) : ?>
-      <div class="process-step">
+      <div class="process-step" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
         <span class="step-num"><?php echo esc_html( sprintf( '%02d', $i + 1 ) ); ?></span>
         <?php if ( ! empty( $rij['icoon'] ) ) : ?>
         <span class="step-icon"><img src="<?php echo esc_url( $rij['icoon']['url'] ); ?>" alt=""></span>
@@ -36,7 +36,7 @@ $standaard = array(
         <p><?php echo esc_html( $rij['tekst'] ); ?></p>
       </div>
       <?php endforeach; else : foreach ( $standaard as $i => $rij ) : ?>
-      <div class="process-step">
+      <div class="process-step" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
         <span class="step-num"><?php echo esc_html( sprintf( '%02d', $i + 1 ) ); ?></span>
         <span class="step-icon"><?php echo $rij['icoon_svg']; ?></span>
         <h3><?php echo esc_html( $rij['titel'] ); ?></h3>

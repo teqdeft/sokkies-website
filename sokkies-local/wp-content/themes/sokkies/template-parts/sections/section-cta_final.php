@@ -35,7 +35,7 @@ $tel_weergave = sokkies_optie( 'telefoon_weergave', '+31 (0)413 410 411' );
   <?php if ( $feet && 'achter' === $positie ) { echo $feet_img; } ?>
   <div class="cta-final-panel">
     <div class="container">
-      <h2><?php echo sokkies_kop( $titel ); ?></h2>
+      <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
       <p><?php echo sokkies_tekst_regels( $subtekst ); ?></p>
       <?php if ( $contact ) : ?>
       <div class="cta-final-row">

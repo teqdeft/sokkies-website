@@ -29,7 +29,7 @@ $staffel_min = $matrix[ $eerste ]['rows'][0][0];
   <?php endif; ?>
   <div class="container">
     <div class="calc-box">
-      <h2><?php echo sokkies_kop( $titel ); ?></h2>
+      <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
       <div class="calc-grid">
         <!-- Left: calculator -->
         <div class="calc-panel calc-left">

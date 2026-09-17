@@ -31,8 +31,29 @@ function sokkies_assets() {
 	wp_enqueue_style( 'sokkies-style', get_template_directory_uri() . '/assets/css/style.css', array( 'swiper' ), sokkies_asset_versie( '/assets/css/style.css' ) );
 	wp_enqueue_style( 'sokkies-responsive', get_template_directory_uri() . '/assets/css/responsive.css', array( 'sokkies-style' ), sokkies_asset_versie( '/assets/css/responsive.css' ) );
 
+	/* AOS (Animate On Scroll) — zelfde aanpak als op sokkies.com: elementen
+	   komen bij het scrollen rustig omhoog invaden. Van dezelfde CDN als
+	   Swiper, zodat er maar één externe bron bijkomt. */
+	wp_enqueue_style( 'aos', 'https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css', array(), '2.3.4' );
+
 	wp_enqueue_script( 'swiper', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', array(), '11', true );
-	wp_enqueue_script( 'sokkies-custom', get_template_directory_uri() . '/assets/js/custom.js', array( 'swiper' ), sokkies_asset_versie( '/assets/js/custom.js' ), true );
+	wp_enqueue_script( 'aos', 'https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js', array(), '2.3.4', true );
+
+	/* VANGNET. AOS verbergt elk element met data-aos op opacity:0 en onthult
+	   het pas zelf. Draait die init niet - een JS-fout eerder in custom.js is
+	   in dit project al eens voorgekomen en sloopte toen alle blokken erna -
+	   dan blijven koppen en kaarten PERMANENT ONZICHTBAAR. Dat is een veel
+	   ergere uitkomst dan een pagina zonder animatie.
+
+	   Daarom: lukt de init niet binnen 2,5 seconde, dan zet dit script de
+	   class aos-uit op <html> en maakt de CSS alles gewoon zichtbaar. Staat
+	   bewust op de aos-handle en niet in custom.js, zodat het ook werkt als
+	   custom.js zelf stukloopt. */
+	wp_add_inline_script(
+		'aos',
+		"setTimeout(function(){var h=document.documentElement;if(!h.classList.contains('aos-draait')){h.classList.add('aos-uit');}},2500);"
+	);
+	wp_enqueue_script( 'sokkies-custom', get_template_directory_uri() . '/assets/js/custom.js', array( 'swiper', 'aos' ), sokkies_asset_versie( '/assets/js/custom.js' ), true );
 }
 add_action( 'wp_enqueue_scripts', 'sokkies_assets' );
 
@@ -366,6 +387,20 @@ function sokkies_footer_logos( $naam, $standaard ) {
 	}
 
 	return $uit;
+}
+
+/**
+ * Trapsgewijze vertraging voor de scroll-animatie van een rij items.
+ *
+ * Loopt rond over 100/200/300/400 ms, dezelfde opbouw als op sokkies.com: de
+ * kaarten in een rij komen kort na elkaar in beeld in plaats van allemaal
+ * tegelijk. Na vier items begint de reeks opnieuw, zodat een lange rij niet
+ * eindigt met items die seconden later pas verschijnen.
+ */
+function sokkies_aos_stap( $i ) {
+	$stappen = array( 100, 200, 300, 400 );
+
+	return $stappen[ (int) $i % 4 ];
 }
 
 /**

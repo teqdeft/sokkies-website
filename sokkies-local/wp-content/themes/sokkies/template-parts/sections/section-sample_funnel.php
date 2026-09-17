@@ -47,7 +47,7 @@
 <section class="application-section application-sample-request">
       <div class="application-bg-shape" aria-hidden="true"></div>
       <div class="container">
-        <h2>Wat er daarna gebeurt?</h2>
+        <h2 data-aos="fade-up">Wat er daarna gebeurt?</h2>
         <div class="application-steps">
           <div class="application-step">
             <span class="application-num">1.</span>

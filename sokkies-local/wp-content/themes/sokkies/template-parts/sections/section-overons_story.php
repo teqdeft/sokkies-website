@@ -60,7 +60,7 @@ $tekst = preg_replace( '#<div[^>]*class="[^"]*story-collage[^"]*"[^>]*>\s*</div>
 
       <div class="overons-story-right">
         <div class="overons-story-text">
-          <h2><?php echo sokkies_kop( $titel ); ?></h2>
+          <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
           <?php echo wp_kses_post( $tekst ); ?>
         </div>
 

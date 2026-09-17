@@ -17,7 +17,7 @@ if ( ! $rijen ) { $rijen = $standaard; }
 ?>
 <section class="pt-dl">
   <div class="container-md">
-    <h2><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
     <p><?php echo esc_html( $intro ); ?></p>
     <div class="pt-dl-grid">
       <?php foreach ( $rijen as $rij ) :

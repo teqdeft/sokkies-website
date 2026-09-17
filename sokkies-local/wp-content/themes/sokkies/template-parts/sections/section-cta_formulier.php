@@ -10,7 +10,7 @@ $subtekst = get_sub_field( 'subtekst' ) ?: 'Laat je naam en e-mail achter, dan s
 <section class="cta-final" id="mis-niets">
   <div class="cta-final-panel">
     <div class="container">
-      <h2><?php echo sokkies_kop( $titel ); ?></h2>
+      <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
       <p><?php echo esc_html( $subtekst ); ?></p>
       <form class="dl-niets-card" id="dlMisNietsForm" novalidate>
         <div class="dl-niets-field">

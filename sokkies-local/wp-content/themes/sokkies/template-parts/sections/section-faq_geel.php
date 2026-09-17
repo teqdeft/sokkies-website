@@ -22,7 +22,7 @@ if ( ! $vraag_ids ) {
 <section class="pt-faq">
   <div class="container">
     <div class="pt-faq-inner">
-      <h2><?php echo sokkies_kop( $titel ); ?></h2>
+      <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
       <div class="pt-faq-list">
         <?php foreach ( $vraag_ids as $i => $vraag_id ) : $open = ( 0 === $i ); ?>
         <div class="faq-item<?php echo $open ? ' is-open' : ''; ?>">

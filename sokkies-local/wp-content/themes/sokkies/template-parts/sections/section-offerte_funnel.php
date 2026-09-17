@@ -54,7 +54,7 @@ $assets_uri = get_template_directory_uri() . '/assets/';
 <section class="application-section">
         <div class="application-bg-shape" aria-hidden="true"></div>
       <div class="container">
-        <h2>Wat gebeurt er na je aanvraag?</h2>
+        <h2 data-aos="fade-up">Wat gebeurt er na je aanvraag?</h2>
         <div class="application-steps">
           <div class="application-step">
             <span class="application-num">1.</span>

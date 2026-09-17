@@ -18,7 +18,7 @@ else { foreach ( $standaard_fotos as $b ) { $urls[] = $assets . $b; } }
 <section class="overons-duurz">
   <img class="duurz-doodle" src="<?php echo esc_url( $assets ); ?>socks-doodle-sustain.png" alt="" aria-hidden="true">
   <div class="container">
-    <h2><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
     <div class="duurz-inner">
       <div class="duurz-collage">
         <?php if ( isset( $urls[0] ) ) : ?><img class="img-lg" src="<?php echo esc_url( $urls[0] ); ?>" alt=""><?php endif; ?>

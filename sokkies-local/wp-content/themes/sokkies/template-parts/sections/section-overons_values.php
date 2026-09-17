@@ -15,7 +15,7 @@ $waarden = $eigen ?: $standaard;
 ?>
 <section class="overons-values">
   <div class="container">
-    <h2><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
     <ul>
       <?php foreach ( $waarden as $i => $rij ) : ?>
       <li>

@@ -26,7 +26,7 @@ else { foreach ( $standaard_fotos as $b ) { $urls[] = $assets . $b; } }
   <div class="container">
     <div class="ws-gets-inner">
       <div class="ws-gets-left">
-        <h2><?php echo sokkies_kop( $titel ); ?></h2>
+        <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
         <ol>
           <?php foreach ( $punten as $i => $punt ) : ?>
           <li>

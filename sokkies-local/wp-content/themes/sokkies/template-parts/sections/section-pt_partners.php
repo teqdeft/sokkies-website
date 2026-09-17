@@ -25,7 +25,7 @@ foreach ( $logo_ids as $logo_id ) {
 ?>
 <section class="pt-partners">
   <div class="container">
-    <h2><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
     <?php if ( $cats ) : ?>
     <div class="pt-partners-chips">
       <button type="button" class="active" data-cat="alle">Alle</button>

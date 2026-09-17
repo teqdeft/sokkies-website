@@ -22,7 +22,7 @@ $rijen = $eigen ?: $standaard;
 ?>
 <section class="ws-compare">
   <div class="container">
-    <h2><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
     <div class="ws-compare-scroll">
       <table class="ws-compare-table">
         <thead>
