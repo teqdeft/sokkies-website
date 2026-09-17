@@ -111,7 +111,7 @@ $assets = get_template_directory_uri() . '/assets/media/';
           ?>
           <div class="swiper-slide">
             <div class="case-inner">
-              <div class="case-gallery" data-aos="fade-up" data-aos-delay="100">
+              <div class="case-gallery">
                 <div class="case-img case-img-main">
                   <?php if ( $groot ) : ?><img src="<?php echo esc_url( $groot['url'] ); ?>" alt="<?php echo esc_attr( get_the_title( $case_id ) ); ?>"><?php endif; ?>
                 </div>
@@ -120,7 +120,7 @@ $assets = get_template_directory_uri() . '/assets/media/';
                   <div class="case-img"><?php if ( $klein_2 ) : ?><img src="<?php echo esc_url( $klein_2['url'] ); ?>" alt=""><?php endif; ?></div>
                 </div>
               </div>
-              <div class="case-text" data-aos="fade-up" data-aos-delay="200">
+              <div class="case-text" data-aos="fade-up" data-aos-delay="100">
                 <span class="case-badge"><?php echo esc_html( $badge ); ?></span>
                 <h3><?php echo sokkies_kop( get_the_title( $case_id ) ); ?></h3>
                 <ul>
