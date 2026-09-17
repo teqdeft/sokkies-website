@@ -12331,6 +12331,7 @@
   }
   .impact-left{
     text-align:left;
+    width: auto;
   }
   .impact .impact-left ul{
     display:flex;
@@ -12500,6 +12501,9 @@
   }
   .case-img{
     height:110px;
+  }
+  .case-text {
+    width: 100%;
   }
   /* globale mobiele sectiekop 32px — neutraliseert per-sectie px uit het
      768-blok (brands-kop blijft bewust 17px per aparte spec) */
@@ -12851,6 +12855,15 @@
     top:0;
     height: auto;
     border-radius: 0 0 20px 20px;
+  }
+
+  /* .case-text kreeg in style.css-basis width:40% voor de desktopkolom.
+     De basis kent geen media queries, dus die 40% gold ook hier: de
+     tekstkolom werd 140px breed in een container van 350px (de titel
+     wikkelde over vier regels). De banden 992-1279, 768-991 en 521-767
+     zetten hun eigen breedte, alleen deze band had er geen. */
+  .case-text{
+    width:100%;
   }
 
   /* home-cases (mobiel-goedgekeurd 22px) — hersteld na dedup; geldt ook
