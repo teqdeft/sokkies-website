@@ -15,8 +15,8 @@ $scheiding = $args['scheiding'] ?? ' — ';
 <section class="testimonial<?php echo esc_attr( $stijl_klasse ); ?>">
   <div class="container">
     <div class="testimonial-head">
-      <h2><?php echo sokkies_kop( $titel ); ?></h2>
-      <div class="testimonial-rating">
+      <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
+      <div class="testimonial-rating" data-aos="fade-up" data-aos-delay="100">
         <span class="testimonial-score"><?php echo esc_html( sokkies_optie( 'review_score', '9.5/10' ) ); ?></span>
         <span class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
         <a class="testimonial-num" href="<?php echo esc_url( sokkies_reviews_url() ); ?>" target="_blank" rel="noopener">uit <?php echo esc_html( sokkies_optie( 'review_aantal', '450+' ) ); ?> reviews</a>
@@ -30,8 +30,12 @@ $scheiding = $args['scheiding'] ?? ' — ';
           $sterren   = (int) ( get_field( 'sterren', $review_id ) ?: 5 );
           $functie   = get_field( 'functie', $review_id );
         ?>
+        <?php /* Bewust GEEN oplopende vertraging per kaart: de swiper-loop
+             verplaatst de laatste slide naar voren, waardoor de stagger op 400
+             zou beginnen - en boven 1680px staat de loop uit, dus de volgorde
+             zou per band verschillen. Nu faadt de rij als geheel in beeld. */ ?>
         <div class="swiper-slide">
-          <div class="testimonial-card">
+          <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
             <span class="testimonial-card-stars"><?php echo esc_html( str_repeat( '★', max( 1, min( 5, $sterren ) ) ) ); ?></span>
             <p>"<?php echo esc_html( get_field( 'quote', $review_id ) ); ?>"</p>
             <span class="testimonial-author"><?php echo esc_html( get_the_title( $review_id ) . ( $functie ? $scheiding . $functie : '' ) ); ?></span>
