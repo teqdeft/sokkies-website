@@ -564,7 +564,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
           <img class="dubble-right" src="<?php echo esc_url( $assets_uri ); ?>media/sock-duddle-r.png" alt="" aria-hidden="true">
         </div>
         <div class="brand-intro-inner">
-          <h2 data-aos="fade-up">Sokken bedrukken voor elk bedrijf</h2>
+          <h2>Sokken bedrukken voor elk bedrijf</h2>
           <p>Custom sokken zijn een opvallend en blijvend relatiegeschenk. Bij Sokkies werk je vanaf 50 paar, krijg je binnen 24 uur een digitaal proefontwerp, en produceren we in Portugal en Italië. Bij Sokkies hebben we onze eigen productie: van ontwerp tot levering beheren we het proces zelf. Zo garanderen we kwaliteit en snelle doorlooptijden.</p>
           <h6>Bekend van reguliere sokken, sportsokken en bamboesokken — en duurzaam dankzij onze One Tree Planted samenwerking.</h6>
           <p>Voor sportclubs, bedrijven en sponsoren werkt het hetzelfde. Vanaf 50 paar in jouw eigen ontwerp, kleur en formaat. Met of zonder geschenkdoosje. Wat ooit een gimmick was, is inmiddels een serieuze marketingtool.</p>
@@ -587,7 +587,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
       <div class="container">
         <div class="faq-grid">
           <div class="faq-left">
-            <h2 data-aos="fade-up">Vragen over<br><?php echo esc_html( mb_strtolower( get_the_title() ) ); ?> bedrukken.</h2>
+            <h2>Vragen over<br><?php echo esc_html( mb_strtolower( get_the_title() ) ); ?> bedrukken.</h2>
             <p>De meeste vragen staan hier of op de <a href="<?php echo esc_url( home_url( '/veelgestelde-vragen/' ) ); ?>">FAQ-pagina</a>. Mist er nog iets, laat het weten. Duidelijkheid is schaars, dus we doen ons best.</p>
             <p>Staat je vraag er niet tussen? Neem <a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">contact</a> op, dan kijken we mee.</p>
           </div>
