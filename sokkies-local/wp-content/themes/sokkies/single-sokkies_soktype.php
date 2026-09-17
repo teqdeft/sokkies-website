@@ -115,7 +115,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
            </div>
 
            <!-- Info -->
-           <div class="prod-info">
+           <div class="prod-info" data-aos="fade-up">
              <h1><?php echo sokkies_kop( $pdp_titel ); ?></h1>
              <?php
              /* De Specificaties-link staat op een EIGEN REGEL maar nog wel
@@ -192,12 +192,12 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
 
 <section class="promises">
       <div class="container-md">
-        <h2>Onze beloftes</h2>
+        <h2 data-aos="fade-up">Onze beloftes</h2>
         <div class="promises-grid">
-          <?php $rijen = $opt_beloftes ?: $std_beloftes; foreach ( $rijen as $rij ) :
+          <?php $rijen = $opt_beloftes ?: $std_beloftes; foreach ( $rijen as $i => $rij ) :
             $icoon = is_array( $rij['icoon'] ?? null ) ? $rij['icoon']['url'] : ( $rij['icoon'] ? $assets . $rij['icoon'] : '' );
           ?>
-          <div class="promise-card">
+          <div class="promise-card" data-aos="fade-up" data-aos-delay="<?php echo esc_attr( sokkies_aos_stap( $i ) ); ?>">
             <span class="promise-icon"><?php if ( $icoon ) : ?><img src="<?php echo esc_url( $icoon ); ?>" alt=""><?php endif; ?></span>
             <h5><?php echo esc_html( $rij['titel'] ); ?></h5>
             <p><?php echo esc_html( $rij['tekst'] ); ?></p>
@@ -229,7 +229,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
       </div>
       <div class="specs-section-inner">
         <div class="container">
-          <h2>De specs</h2>
+          <h2 data-aos="fade-up">De specs</h2>
           <div class="specs-grid">
             <?php $rijen = $specs_items ?: $std_specs; $helft = max( 1, (int) ceil( count( $rijen ) / 2 ) ); foreach ( array_chunk( $rijen, $helft ) as $kolom ) : ?>
             <div class="specs-col">
@@ -256,12 +256,12 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
 <section class="weave">
       <div class="weave-inner">
         <div class="container">
-          <h2><?php echo sokkies_kop( $weave_titel ); ?></h2>
+          <h2 data-aos="fade-up"><?php echo sokkies_kop( $weave_titel ); ?></h2>
           <div class="weave-grid">
             <?php $rijen = $opt_weave ?: $std_weave; foreach ( array_slice( $rijen, 0, 2 ) as $i => $rij ) :
               $foto = is_array( $rij['foto'] ?? null ) ? $rij['foto']['url'] : ( $rij['foto'] ? $assets . $rij['foto'] : '' );
             ?>
-            <div class="weave-card<?php echo 1 === $i ? ' weave-card-sublimation' : ''; ?>">
+            <div class="weave-card<?php echo 1 === $i ? ' weave-card-sublimation' : ''; ?>" data-aos="fade-up" data-aos-delay="<?php echo esc_attr( sokkies_aos_stap( $i ) ); ?>">
               <div class="weave-img"><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( $rij['titel'] ); ?>"><?php endif; ?></div>
               <div class="weave-body">
                 <span class="weave-tag<?php echo 1 === $i ? ' weave-tag-coral' : ''; ?>"><?php echo esc_html( $rij['tag'] ); ?></span>
@@ -285,7 +285,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
 <section class="versus">
       <div class="container">
         <img class="versus-dubble-left" src="<?php echo esc_url( $assets_uri ); ?>media/versus-duddle-l.png" alt="" aria-hidden="true">
-        <h2>Hoe verhoudt Sokkies zich?</h2>
+        <h2 data-aos="fade-up">Hoe verhoudt Sokkies zich?</h2>
         <div class="versus-scroll">
           <table class="versus-table">
             <thead>
@@ -337,7 +337,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
     <section class="cards-suggestion">
       <div class="container">
         <div class="cards-suggestion-head">
-          <h2>Bekijk ook deze</h2>
+          <h2 data-aos="fade-up">Bekijk ook deze</h2>
           <a href="<?php echo esc_url( home_url( '/collectie/' ) ); ?>" class="cta-light">Bekijk alle sokken</a>
         </div>
         <div class="swiper cards-suggestion-swiper">
@@ -394,7 +394,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
       <img class="design-duddle-sock" src="<?php echo esc_url( $assets ); ?>pdp-duddle-configurator.png" alt="" aria-hidden="true">
       <div class="design-bg-union" aria-hidden="true"></div>
       <div class="container">
-        <h2><?php echo sokkies_kop( $design_titel ); ?></h2>
+        <h2 data-aos="fade-up"><?php echo sokkies_kop( $design_titel ); ?></h2>
         <div class="conf-preview">
           <div class="conf-preview-card">
             <?php
@@ -428,7 +428,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
         <div class="usecases-masonry">
           <div class="usecases-outer-left">
             <div class="usecases-head">
-              <h2>Voor welke bedrijven<br>werken reguliere sokken?</h2>
+              <h2 data-aos="fade-up">Voor welke bedrijven<br>werken reguliere sokken?</h2>
             </div>
   
             <div class="usecases-cards-inner">
@@ -564,7 +564,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
           <img class="dubble-right" src="<?php echo esc_url( $assets_uri ); ?>media/sock-duddle-r.png" alt="" aria-hidden="true">
         </div>
         <div class="brand-intro-inner">
-          <h2>Sokken bedrukken voor elk bedrijf</h2>
+          <h2 data-aos="fade-up">Sokken bedrukken voor elk bedrijf</h2>
           <p>Custom sokken zijn een opvallend en blijvend relatiegeschenk. Bij Sokkies werk je vanaf 50 paar, krijg je binnen 24 uur een digitaal proefontwerp, en produceren we in Portugal en Italië. Bij Sokkies hebben we onze eigen productie: van ontwerp tot levering beheren we het proces zelf. Zo garanderen we kwaliteit en snelle doorlooptijden.</p>
           <h6>Bekend van reguliere sokken, sportsokken en bamboesokken — en duurzaam dankzij onze One Tree Planted samenwerking.</h6>
           <p>Voor sportclubs, bedrijven en sponsoren werkt het hetzelfde. Vanaf 50 paar in jouw eigen ontwerp, kleur en formaat. Met of zonder geschenkdoosje. Wat ooit een gimmick was, is inmiddels een serieuze marketingtool.</p>
@@ -587,7 +587,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
       <div class="container">
         <div class="faq-grid">
           <div class="faq-left">
-            <h2>Vragen over<br><?php echo esc_html( mb_strtolower( get_the_title() ) ); ?> bedrukken.</h2>
+            <h2 data-aos="fade-up">Vragen over<br><?php echo esc_html( mb_strtolower( get_the_title() ) ); ?> bedrukken.</h2>
             <p>De meeste vragen staan hier of op de <a href="<?php echo esc_url( home_url( '/veelgestelde-vragen/' ) ); ?>">FAQ-pagina</a>. Mist er nog iets, laat het weten. Duidelijkheid is schaars, dus we doen ons best.</p>
             <p>Staat je vraag er niet tussen? Neem <a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">contact</a> op, dan kijken we mee.</p>
           </div>
@@ -623,7 +623,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
       <img class="cta-final-feet" src="<?php echo esc_url( $assets ); ?>socks-transparent.png" alt="" aria-hidden="true">
       <div class="cta-final-panel">
         <div class="container">
-          <h2>Klaar om jouw eigen<br>sokken te ontwerpen?</h2>
+          <h2 data-aos="fade-up">Klaar om jouw eigen<br>sokken te ontwerpen?</h2>
           <p>Binnen 24 uur digitaal ontwerp in je inbox</p>
           <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
         </div>
