@@ -28,16 +28,16 @@ $badges = array( 'bestseller' => array( '', 'Bestseller' ), 'nieuw' => array( ' 
 <section class="collection<?php echo ( 'beige' === $stijl ) ? ' collection-beige' : ''; ?>">
 <?php endif; ?>
   <div class="container">
-    <h2><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
     <div class="collection-grid">
-      <?php foreach ( $type_ids as $type_id ) :
+      <?php foreach ( $type_ids as $i => $type_id ) :
         $link  = get_field( 'pagina_link', $type_id );
         $href  = ! empty( $link['url'] ) ? $link['url'] : get_permalink( $type_id );
         $prijs = get_field( 'prijs_vanaf', $type_id );
         $badge = get_field( 'badge', $type_id );
         $foto  = get_the_post_thumbnail_url( $type_id, 'large' );
       ?>
-      <a href="<?php echo esc_url( $href ); ?>" class="collection-card">
+      <a href="<?php echo esc_url( $href ); ?>" class="collection-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
         <div class="collection-img">
           <?php if ( $badge && isset( $badges[ $badge ] ) ) : ?>
           <span class="collection-badge<?php echo esc_attr( $badges[ $badge ][0] ); ?>"><?php echo esc_html( $badges[ $badge ][1] ); ?></span>

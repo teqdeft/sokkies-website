@@ -46,11 +46,11 @@ $assets = get_template_directory_uri() . '/assets/media/';
   <?php endif; ?>
 
   <div class="container">
-    <h2><?php echo sokkies_kop( $titel ); ?></h2>
+    <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
 
     <div class="lp-usps-grid">
-      <?php foreach ( $rijen as $rij ) : ?>
-      <div class="lp-usp">
+      <?php foreach ( $rijen as $i => $rij ) : ?>
+      <div class="lp-usp" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
         <div class="lp-usp-icoon">
           <?php if ( ! empty( $rij['icoon'] ) ) : ?>
           <img src="<?php echo esc_url( $rij['icoon']['url'] ); ?>" alt="<?php echo esc_attr( $rij['icoon']['alt'] ); ?>" loading="lazy">
