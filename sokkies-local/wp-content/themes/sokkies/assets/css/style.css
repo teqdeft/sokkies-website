@@ -680,6 +680,7 @@ font-weight: 600;
   .lang-option.is-selected{
     background:var(--light-beige);
     font-weight: 600;
+    margin: 2px 0;
   }
   .lang-flag{
     font-size: calc(var(--body-sm-font-size) + 2px);
@@ -3471,7 +3472,7 @@ font-weight: 600;
     border-radius:25px;
     padding:40px;
     position:sticky;
-    top:20px;
+    top:120px;
   }
   .of-aantal {
     margin-top: 45px;
