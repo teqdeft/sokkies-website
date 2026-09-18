@@ -255,6 +255,18 @@
     }
   }
 
+  /* De landnaam ZOALS DIE OP HET SCHERM STAAT. De waarde van de optie is
+     altijd Engels (die gaat zo de inzending in), maar het adrespaneel is
+     voor de bezoeker — op de Franse pagina hoort daar "Pays-Bas" te staan
+     en niet "Netherlands". Vandaar de tekst van de optie en niet de waarde. */
+  function landTekst() {
+    var sel = invoer('of-land');
+    if (!sel || !sel.options || sel.selectedIndex < 0) { return ''; }
+    // Lege waarde = de placeholder ("Kies een land"); die hoort er niet bij.
+    if (!sel.value) { return ''; }
+    return (sel.options[sel.selectedIndex].text || '').trim();
+  }
+
   /* De landenlijst komt uit Gravity Forms en de teksten worden door
      TranslatePress vertaald; de WAARDE blijft Engels. Daarom zoeken we de
      optie op waarde en niet op zichtbare tekst. */
@@ -289,6 +301,9 @@
     if (!straat || !plaats) { return; }
     var regel = straat + ' ' + waarde('of-huisnummer') + waarde('of-toevoeging');
     regel = regel.trim() + ', ' + waarde('of-postcode') + ' ' + plaats;
+    // Het gekozen land sluit de regel af, zoals op een adreslabel.
+    var land = landTekst();
+    if (land) { regel += ', ' + land; }
     vak.textContent = regel.replace(/\s+/g, ' ').trim();
   }
 
@@ -497,6 +512,9 @@
   document.addEventListener('change', function (e) {
     var t = e.target;
     if (!t || !t.closest || !t.closest('form[id^="gform_"]')) { return; }
+    // Kiest de bezoeker zelf een ander land, dan moet het adrespaneel dat
+    // meteen laten zien — anders staat er een land in dat hij net wijzigde.
+    if (t.closest('.of-land')) { toonAdres(); }
     if ('checkbox' === t.type) {
       markeerKeuze(t);
       if (t.closest('.of-soktypes')) { pasSoktypesToe(t); }
