@@ -389,6 +389,7 @@ function sokkies_form_meldingen( $taal ) {
 			'We konden dit adres niet vinden. Controleer postcode en huisnummer.' => 'We could not find this address. Please check the postcode and house number.',
 			'We konden dit adres niet vinden.'   => 'We could not find this address.',
 			'De adresservice is even niet bereikbaar. Vul de gegevens zelf in.' => 'The address service is temporarily unavailable. Please enter the details yourself.',
+			'(optioneel)'                        => '(optional)',
 			'Kies één soort sok.'                => 'Choose one type of sock.',
 			'Kies maximaal twee soorten sokken.' => 'Choose no more than two types of socks.',
 			'Kies óf een of meer extra opties, óf "Geen extra\'s" — niet allebei.' => 'Choose either one or more extras, or "No extras" — not both.',
@@ -410,6 +411,7 @@ function sokkies_form_meldingen( $taal ) {
 			'We konden dit adres niet vinden. Controleer postcode en huisnummer.' => 'Wir konnten diese Adresse nicht finden. Bitte prüfen Sie Postleitzahl und Hausnummer.',
 			'We konden dit adres niet vinden.'   => 'Wir konnten diese Adresse nicht finden.',
 			'De adresservice is even niet bereikbaar. Vul de gegevens zelf in.' => 'Der Adressdienst ist vorübergehend nicht erreichbar. Bitte geben Sie die Daten selbst ein.',
+			'(optioneel)'                        => '(optional)',
 			'Kies één soort sok.'                => 'Wählen Sie eine Sockenart.',
 			'Kies maximaal twee soorten sokken.' => 'Wählen Sie höchstens zwei Sockenarten.',
 			'Kies óf een of meer extra opties, óf "Geen extra\'s" — niet allebei.' => 'Wählen Sie entweder eine oder mehrere Zusatzoptionen oder "Keine Extras" — nicht beides.',
@@ -431,6 +433,7 @@ function sokkies_form_meldingen( $taal ) {
 			'We konden dit adres niet vinden. Controleer postcode en huisnummer.' => "Nous n'avons pas trouvé cette adresse. Vérifiez le code postal et le numéro.",
 			'We konden dit adres niet vinden.'   => "Nous n'avons pas trouvé cette adresse.",
 			'De adresservice is even niet bereikbaar. Vul de gegevens zelf in.' => "Le service d'adresses est momentanément indisponible. Veuillez saisir les informations vous-même.",
+			'(optioneel)'                        => '(facultatif)',
 			'Kies één soort sok.'                => 'Choisissez un seul type de chaussette.',
 			'Kies maximaal twee soorten sokken.' => 'Choisissez au maximum deux types de chaussettes.',
 			'Kies óf een of meer extra opties, óf "Geen extra\'s" — niet allebei.' => 'Choisissez soit une ou plusieurs options supplémentaires, soit "Aucun extra" — pas les deux.',
@@ -544,13 +547,39 @@ add_filter(
 			return $content;
 		}
 
-		// Alleen het EERSTE <label> en alleen de tekst tot aan het eerstvolgende
-		// element: daarachter zit het sterretje van een verplicht veld, en dat
-		// moet blijven staan.
+		/* Alleen het EERSTE <label>-element, en daarbinnen alleen de TEKSTKNOOP
+		   die exact het Nederlandse label is.
+		   Gravity Forms kent namelijk twee vormen:
+		     <label ...>Postcode<span class="gfield_required">*</span></label>
+		     <label ...><span class="gform-field-label__text">Postcode</span>…
+		   In de tweede zit de tekst in een extra span. Een eerdere versie ging
+		   daar onderuit: die schreef de vertaling in de lege plek direct achter
+		   <label> en liet de originele tekst in de span staan, met
+		   "PostcodePostcode" tot gevolg. Door op de tekstknoop zelf te matchen
+		   werken beide vormen, en blijft het sterretje van een verplicht veld
+		   ongemoeid. */
 		return preg_replace_callback(
-			'/(<label\b)([^>]*>)([^<]*)/',
-			function ( $m ) use ( $labels, $schoon ) {
-				return $m[1] . ' data-no-translation' . $m[2] . esc_html( $labels[ $schoon ] );
+			'#<label\b[^>]*>.*?</label>#s',
+			function ( $blok ) use ( $labels, $schoon ) {
+				$uit = preg_replace_callback(
+					'/>([^<]+)</',
+					function ( $tekst ) use ( $labels, $schoon ) {
+						$ruw = html_entity_decode( $tekst[1], ENT_QUOTES, 'UTF-8' );
+						if ( trim( $ruw ) !== $schoon ) {
+							return $tekst[0];
+						}
+
+						/* De spaties eromheen overnemen. Achter "Upload je ontwerp "
+						   staat een spatie die de (optioneel)-markering van het label
+						   scheidt; die viel er met een kale trim vanaf. */
+						preg_match( '/^(\s*).*?(\s*)$/s', $ruw, $rand );
+
+						return '>' . $rand[1] . esc_html( $labels[ $schoon ] ) . $rand[2] . '<';
+					},
+					$blok[0]
+				);
+
+				return preg_replace( '/<label\b/', '<label data-no-translation', $uit, 1 );
 			},
 			$content,
 			1

@@ -413,7 +413,7 @@ add_filter( 'gform_field_content', function ( $content, $field ) {
 	}
 	/* Achter de labeltekst plakken, binnen de span die GF er zelf omheen zet,
 	   zodat de opmaak van het label blijft kloppen. */
-	$merk = ' <span class="opt">(optioneel)</span>';
+	$merk = ' <span class="opt" data-no-translation>' . esc_html( sokkies_form_zin( '(optioneel)' ) ) . '</span>';
 	$nieuw = preg_replace(
 		'#(<span class=[\'"]gform-field-label__text[\'"][^>]*>' . preg_quote( $field->label, '#' ) . ')(</span>)#',
 		'$1' . $merk . '$2',
