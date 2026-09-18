@@ -9800,6 +9800,7 @@ main.contact{
   .quote-card .ginput_container input[type="email"],
   .quote-card .ginput_container input[type="tel"],
   .quote-card .ginput_container input[type="number"],
+  .quote-card .ginput_container select,
   .quote-card .ginput_container textarea{
     width:100%;
     border:1.5px solid var(--border-light);
@@ -9811,6 +9812,22 @@ main.contact{
     color:var(--text);
     background:var(--white);
   }
+  /* Een <select> tekent zijn eigen pijl en negeert een deel van de opmaak
+     die de tekstvelden wel pakken. appearance:none haalt de systeemstijl
+     eraf; de chevron komt als achtergrond terug, op dezelfde plek als in
+     de bestaande dropdowns van de site. padding-right houdt de tekst van
+     het pijltje af, ook bij een lange landnaam. */
+  .quote-card .ginput_container select{
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    padding-right:40px;
+    cursor:pointer;
+    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2328121B' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+  }
+
   /* GF zet rows='10' vast, ongeacht de veldgrootte — vandaar een hoogte in
      CSS. Het ontwerp gebruikt rows="5" met height:auto; nagemeten in htmlv
      is dat 126px, zowel op offerte.html als op sample-request.html.
@@ -9859,6 +9876,15 @@ main.contact{
      niets oplevert. */
   .quote-card .gform_fields > .of-auto{ display:none; }
   .quote-card .gform_fields > .of-auto.is-zichtbaar{
+    display:block;
+    flex:0 0 calc(50% - 10px);
+  }
+
+  /* Een veld uit deze groep dat de validatie afkeurt MOET zichtbaar zijn,
+     ook als de groep dicht staat: anders wijst Gravity Forms naar een fout
+     die de bezoeker niet kan zien en dus niet kan herstellen. Geldt in de
+     praktijk alleen voor Land — dat is als enige van de groep verplicht. */
+  .quote-card .gform_fields > .of-auto.gfield_error{
     display:block;
     flex:0 0 calc(50% - 10px);
   }

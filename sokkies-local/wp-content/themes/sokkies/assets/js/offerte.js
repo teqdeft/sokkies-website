@@ -136,7 +136,9 @@
 
   function invoer(klasse) {
     var veld = document.querySelector('.' + klasse);
-    return veld ? veld.querySelector('input') : null;
+    // Ook een <select>: het landveld hoort bij dezelfde groep als straat,
+    // plaats en provincie en wordt op dezelfde manier gevuld en gewist.
+    return veld ? veld.querySelector('input, select') : null;
   }
 
   /* Meldingen die het script zelf toont, in de taal van de pagina. Komt
@@ -205,6 +207,7 @@
           vul('of-straat', '', true);
           vul('of-plaats', '', true);
           vul('of-provincie', '', true);
+          vul('of-land', '', true);
           /* 'melding' = geen fout maar een mededeling (postcode buiten
              Nederland). Een Belgische 1000 is een geldige postcode; die rood
              aanstrepen suggereert dat de bezoeker zich vergist. */
@@ -224,6 +227,12 @@
         vul('of-straat', res.data.straat);
         vul('of-plaats', res.data.plaats);
         vul('of-provincie', res.data.provincie);
+        /* De opzoeking werkt alleen voor Nederland (zie de uitleg bij
+           sokkies_offerte_adres_provider), dus een gevonden adres IS een
+           Nederlands adres. Het land hoort bij dezelfde groep als straat
+           en plaats en wordt dus net zo automatisch ingevuld — anders zou
+           de bezoeker een verplicht veld moeten kiezen dat hij niet ziet. */
+        vul('of-land', landWaarde('Netherlands'));
         toonHandmatig(false);
         toonAdres();
       })
@@ -244,6 +253,18 @@
       el.value = waarde || '';
       el.dispatchEvent(new Event('change', { bubbles: true }));
     }
+  }
+
+  /* De landenlijst komt uit Gravity Forms en de teksten worden door
+     TranslatePress vertaald; de WAARDE blijft Engels. Daarom zoeken we de
+     optie op waarde en niet op zichtbare tekst. */
+  function landWaarde(waardeNaam) {
+    var sel = invoer('of-land');
+    if (!sel || !sel.options) { return ''; }
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === waardeNaam) { return sel.options[i].value; }
+    }
+    return '';
   }
 
   function waarde(klasse) {
