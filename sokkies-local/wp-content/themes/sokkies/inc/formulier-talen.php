@@ -700,14 +700,70 @@ function sokkies_form_labels_terug() {
 	sokkies_form_labels_bewaard( array() );
 }
 
+/**
+ * TranslatePress van ONZE mails afhouden.
+ *
+ * TP hangt zelf op wp_mail (prioriteit 1) en vertaalt daar onderwerp én tekst
+ * opnieuw — met een taal die het uit de ONTVANGER haalt, niet uit de
+ * inzending. Gevolg, gemeten op 2026-09-18: een formulier ingevuld op
+ * /nl/offerte/ leverde een Engelse bevestiging op. Herkenbaar aan de
+ * machinetaal die er niet in hoort: "in good order" (uit "in goede orde") en
+ * een handtekening met "Team Socks" — de merknaam Sokkies was meevertaald.
+ *
+ * Onze mails hebben die hulp niet nodig: de taal staat al vast op grond van
+ * source_url van de inzending, en de teksten staan in dit bestand. Daarom
+ * wordt het filter vlak vóór het verzenden weggehaald en er meteen daarna
+ * weer op gezet, zodat mail van andere plugins ongemoeid blijft.
+ */
+function sokkies_form_tp_mail_filter( $aanzetten ) {
+	if ( ! class_exists( 'TRP_Translate_Press' ) ) {
+		return;
+	}
+	$trp = TRP_Translate_Press::get_trp_instance();
+	$render = $trp ? $trp->get_component( 'translation_render' ) : null;
+	if ( ! $render || ! method_exists( $render, 'wp_mail_filter' ) ) {
+		return;
+	}
+
+	if ( $aanzetten ) {
+		add_filter( 'wp_mail', array( $render, 'wp_mail_filter' ), 1 );
+	} else {
+		remove_filter( 'wp_mail', array( $render, 'wp_mail_filter' ), 1 );
+	}
+}
+
 /* Herstelmoment 1: zodra de mail is opgebouwd. Dit filter draait ook als de
-   verzending wordt afgebroken, dus het is het laatste zekere punt. */
+   verzending wordt afgebroken, dus het is het laatste zekere punt. Hier gaat
+   meteen het mailfilter van TranslatePress eraf. */
 add_filter(
 	'gform_pre_send_email',
-	function ( $email ) {
+	function ( $email, $format, $notification, $entry ) {
 		sokkies_form_labels_terug();
 
+		if ( sokkies_form_eigen( array( 'id' => rgar( (array) $entry, 'form_id' ) ) ) ) {
+			sokkies_form_tp_mail_filter( false );
+		}
+
 		return $email;
+	},
+	1,
+	4
+);
+
+/* En er meteen weer op, zodat mail die NIET van onze formulieren komt gewoon
+   door TranslatePress blijft lopen. Twee momenten, want gaat het versturen
+   onderweg mis dan komt gform_after_email niet. */
+add_action(
+	'gform_after_email',
+	function () {
+		sokkies_form_tp_mail_filter( true );
+	},
+	99
+);
+add_action(
+	'shutdown',
+	function () {
+		sokkies_form_tp_mail_filter( true );
 	},
 	1
 );
