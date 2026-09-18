@@ -104,6 +104,7 @@ function sokkies_form_labels( $taal ) {
 			'Straat'                          => 'Street',
 			'Plaats'                          => 'Town',
 			'Provincie'                       => 'Province',
+			'Land'                            => 'Country',
 		),
 		'de' => array(
 			'Voornaam'                        => 'Vorname',
@@ -128,6 +129,7 @@ function sokkies_form_labels( $taal ) {
 			'Straat'                          => 'Straße',
 			'Plaats'                          => 'Ort',
 			'Provincie'                       => 'Provinz',
+			'Land'                            => 'Land',
 		),
 		'fr' => array(
 			'Voornaam'                        => 'Prénom',
@@ -152,6 +154,7 @@ function sokkies_form_labels( $taal ) {
 			'Straat'                          => 'Rue',
 			'Plaats'                          => 'Ville',
 			'Provincie'                       => 'Province',
+			'Land'                            => 'Pays',
 		),
 	);
 

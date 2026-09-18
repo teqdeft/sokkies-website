@@ -7732,6 +7732,7 @@
   .quote-card .gform_fields > .of-contact,
   .quote-card .gform_fields > .of-email,
   .quote-card .gform_fields > .of-telefoon,
+  .quote-card .gform_fields > .of-land,
   .quote-card .gform_fields > .of-auto.is-zichtbaar{ flex:0 0 100%; }
   /* Idem voor .sample-proof-grid op het sampleformulier: htmlv zet die
      onder de 768px ook op één kolom, dus "Aantal paar" mag hier niet op
@@ -11654,6 +11655,7 @@
   .quote-card .gform_fields > .of-contact,
   .quote-card .gform_fields > .of-email,
   .quote-card .gform_fields > .of-telefoon,
+  .quote-card .gform_fields > .of-land,
   .quote-card .gform_fields > .of-auto.is-zichtbaar{ flex:0 0 100%; }
   /* Idem voor .sample-proof-grid op het sampleformulier: htmlv zet die
      onder de 768px ook op één kolom, dus "Aantal paar" mag hier niet op

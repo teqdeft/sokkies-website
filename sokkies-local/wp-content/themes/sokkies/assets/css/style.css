@@ -9863,6 +9863,13 @@ main.contact{
     flex:0 0 calc(50% - 10px);
   }
 
+  /* Land staat naast Provincie, in de helft die daar overbleef: straat en
+     plaats vullen samen de eerste rij, provincie de linkerhelft van de
+     tweede. Anders dan die drie is Land NIET of-auto — het is geen veld
+     dat de opzoeking invult maar een keuze van de bezoeker, en juist die
+     keuze bepaalt of de opzoeking (Nederland-only) überhaupt van pas komt. */
+  .quote-card .gform_fields > .of-land{ flex:0 0 calc(50% - 10px); }
+
   .quote-card .of-kop h3{ margin:0 0 6px; }
 
   /* HARDE RIJOVERGANG. flex-wrap breekt pas als een regel vol is, en zodra de
