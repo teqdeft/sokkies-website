@@ -491,6 +491,76 @@ function sokkies_form_eigen( $form ) {
 }
 
 /**
+ * De veldlabels OP DE PAGINA in de taal van de bezoeker.
+ *
+ * Normaal is dat het werk van TranslatePress, en voor de rest van het
+ * formulier blijft dat ook zo. Voor deze labels niet meer, om twee redenen die
+ * zich allebei op 2026-09-18 lieten zien met het nieuwe veld "Land":
+ *
+ *  1. De woordenlijst van TP staat in de database en deployt niet mee, en op
+ *     dev draait automatische vertaling niet. Een NIEUW label is daar dus
+ *     onvertaald tot iemand een databasepush doet — precies wat er gebeurde.
+ *  2. Losse woorden vertalen slecht zonder context. "Land" werd in het Frans
+ *     "Terre" (aarde, grond) in plaats van "Pays". Dat stond zo op live.
+ *
+ * De vertalingen komen uit dezelfde kaart als de mail, dus pagina en mail
+ * kunnen niet meer uit elkaar lopen.
+ *
+ * LET OP voor wie een label wil aanpassen: dat gaat nu via
+ * sokkies_form_labels() in dit bestand, niet meer via de vertaaleditor van
+ * TranslatePress. Labels die niet in die kaart staan laat dit filter met rust
+ * en blijven gewoon van TP.
+ *
+ * BEWUST NIET VIA gform_pre_render, hoe voor de hand liggend dat ook is. De
+ * velden in $form zijn OBJECTEN; wie daar het label van omzet, verandert het
+ * exemplaar dat Gravity Forms even later ook voor de notificatie gebruikt.
+ * Gemeten: met die aanpak kreeg de Nederlandse beheerdersmail Engelse labels
+ * en de Duitse een mengeling ("Postleitzahl" naast "House number"). Daarom
+ * wordt hier alleen de GERENDERDE HTML aangepast — de objecten blijven zoals
+ * ze zijn, en de mail regelt zijn eigen labels verderop in dit bestand.
+ *
+ * In dezelfde stap krijgt het label data-no-translation. Zonder dat gaat de
+ * tekst twee keer door de molen: wij zetten de vertaling neer en
+ * TranslatePress ziet die Engelse tekst vervolgens als bronstring en vertaalt
+ * hem nóg eens. Gemeten: "Province" kwam er zo als "County" uit. De andere
+ * labels overleefden dat toevallig, omdat hun tweede vertaling gelijk was aan
+ * het origineel — puur geluk.
+ */
+add_filter(
+	'gform_field_content',
+	function ( $content, $veld ) {
+		if ( ! is_object( $veld ) || ! sokkies_form_eigen( array( 'id' => $veld->formId ) ) ) {
+			return $content;
+		}
+
+		$taal = sokkies_form_taal();
+		if ( 'nl' === $taal ) {
+			return $content;
+		}
+
+		$labels = sokkies_form_labels( $taal );
+		$schoon = html_entity_decode( (string) $veld->label, ENT_QUOTES, 'UTF-8' );
+		if ( ! isset( $labels[ $schoon ] ) ) {
+			return $content;
+		}
+
+		// Alleen het EERSTE <label> en alleen de tekst tot aan het eerstvolgende
+		// element: daarachter zit het sterretje van een verplicht veld, en dat
+		// moet blijven staan.
+		return preg_replace_callback(
+			'/(<label\b)([^>]*>)([^<]*)/',
+			function ( $m ) use ( $labels, $schoon ) {
+				return $m[1] . ' data-no-translation' . $m[2] . esc_html( $labels[ $schoon ] );
+			},
+			$content,
+			1
+		);
+	},
+	10,
+	2
+);
+
+/**
  * Onderwerp en tekst van de mail in de taal van de bezoeker.
  */
 add_filter(
