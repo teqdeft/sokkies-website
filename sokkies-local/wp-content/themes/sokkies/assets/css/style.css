@@ -9874,9 +9874,19 @@ main.contact{
   /* Straat/plaats/provincie horen bij het gevonden adres: normaal onzichtbaar,
      zichtbaar zodra de bezoeker "Handmatig invullen" kiest of de opzoeking
      niets oplevert. */
-  .quote-card .gform_fields > .of-auto{ display:none; }
+  /* WAAROM !important, tegen de huisregels in: op het SAMPLEformulier hangt
+     het hele adresblok aan voorwaardelijke logica van Gravity Forms (het
+     verschijnt pas bij "Ik wil toch een proefontwerp"). GF regelt dat met
+     een INLINE display op het veld, en die wint van elke stylesheet. Zonder
+     !important stond Land daardoor open zodra het adresblok verscheen,
+     terwijl straat/plaats/provincie netjes achter "Handmatig invullen"
+     bleven — het veld hoort bij die groep en moet zich dus ook zo gedragen.
+     Het omgekeerde risico bestaat niet: is-zichtbaar wordt alleen gezet via
+     "Handmatig invullen", en die link zit ín het adresblok. Staat dat blok
+     dicht, dan is er niets aan te klikken. */
+  .quote-card .gform_fields > .of-auto{ display:none !important; }
   .quote-card .gform_fields > .of-auto.is-zichtbaar{
-    display:block;
+    display:block !important;
     flex:0 0 calc(50% - 10px);
   }
 
@@ -9885,7 +9895,7 @@ main.contact{
      die de bezoeker niet kan zien en dus niet kan herstellen. Geldt in de
      praktijk alleen voor Land — dat is als enige van de groep verplicht. */
   .quote-card .gform_fields > .of-auto.gfield_error{
-    display:block;
+    display:block !important;
     flex:0 0 calc(50% - 10px);
   }
 
