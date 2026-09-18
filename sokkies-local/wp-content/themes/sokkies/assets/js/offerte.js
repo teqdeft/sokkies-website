@@ -139,6 +139,13 @@
     return veld ? veld.querySelector('input') : null;
   }
 
+  /* Meldingen die het script zelf toont, in de taal van de pagina. Komt
+     PHP niet mee, dan blijft het Nederlands — nooit een lege regel. */
+  function tekst(sleutel, terugval) {
+    var m = (window.sokkiesOfferte && window.sokkiesOfferte.meldingen) || {};
+    return m[sleutel] || terugval;
+  }
+
   function meldFout(bericht) {
     var huis = document.querySelector('.of-huisnummer');
     if (!huis) { return; }
@@ -186,7 +193,8 @@
     if (!basis) { bezig = false; return; }
     var url = basis + (basis.indexOf('?') === -1 ? '?' : '&') +
       'postcode=' + encodeURIComponent(postcode) +
-      '&huisnummer=' + encodeURIComponent(huisnummer);
+      '&huisnummer=' + encodeURIComponent(huisnummer) +
+      '&taal=' + encodeURIComponent((window.sokkiesOfferte && window.sokkiesOfferte.taal) || 'nl');
 
     fetch(url, { headers: { Accept: 'application/json' } })
       .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
@@ -205,7 +213,7 @@
             meldInfo(res.data.melding);
           } else {
             meldInfo('');
-            meldFout(res.data.fout || 'We konden dit adres niet vinden.');
+            meldFout(res.data.fout || tekst('nietGevonden', 'We konden dit adres niet vinden.'));
           }
           // De velden openzetten, anders kan de bezoeker het adres nergens
           // kwijt en loopt de aanvraag hier dood.
@@ -220,7 +228,7 @@
         toonAdres();
       })
       .catch(function () {
-        meldFout('De adresservice is even niet bereikbaar. Vul de gegevens zelf in.');
+        meldFout(tekst('onbereikbaar', 'De adresservice is even niet bereikbaar. Vul de gegevens zelf in.'));
         toonHandmatig(true);
       })
       .finally(function () {

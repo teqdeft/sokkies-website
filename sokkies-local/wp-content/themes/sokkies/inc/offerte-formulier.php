@@ -343,11 +343,12 @@ add_filter( 'gform_field_content', function ( $content, $field ) {
 	   code. De tekst zelf staat in de veldinstelling van Gravity Forms, dus
 	   in de DATABASE — en die deployt niet mee. Stond hij daar nog op "Kies
 	   één of twee soorten sokken.", dan zou live iets anders beloven dan de
-	   validatie toestaat. Daarom schrijft de code hem hier. */
+	   validatie toestaat. Daarom schrijft de code hem hier — en in de taal
+	   van de pagina, want als vaste tekst bleef hij overal Nederlands. */
 	if ( 'Wat wil je laten bedrukken?' === $field->label && 1 === sokkies_max_soktypes( $field->formId ) ) {
 		$content = preg_replace(
 			'#(<div[^>]*class=["\'][^"\']*gfield_description[^"\']*["\'][^>]*>).*?(</div>)#s',
-			'$1' . esc_html__( 'Kies één soort sok.', 'sokkies' ) . '$2',
+			'$1' . esc_html( sokkies_form_zin( 'Kies één soort sok.' ) ) . '$2',
 			$content,
 			1
 		);
@@ -581,6 +582,14 @@ add_action( 'wp_enqueue_scripts', function () {
 			   ander maximum. De id's worden op titel opgezocht, dus er
 			   staat ook hier geen nummer hardgecodeerd. */
 			'maxSoktypes' => sokkies_soktype_maxima(),
+			/* De taal van DEZE pagina, plus de twee meldingen die het script
+			   zelf toont als het eindpunt niets teruggeeft. Bij het renderen
+			   staat de taal vast; in de losse fetch erna niet meer. */
+			'taal'        => sokkies_form_taal(),
+			'meldingen'   => array(
+				'nietGevonden' => sokkies_form_zin( 'We konden dit adres niet vinden.' ),
+				'onbereikbaar' => sokkies_form_zin( 'De adresservice is even niet bereikbaar. Vul de gegevens zelf in.' ),
+			),
 		)
 	);
 }, 20 );
@@ -603,10 +612,18 @@ add_action( 'rest_api_init', function () {
 			'args'                => array(
 				'postcode'   => array( 'required' => true ),
 				'huisnummer' => array( 'required' => true ),
+				/* De taal komt van de PAGINA mee. Dit eindpunt heeft zelf geen
+				   taalvoorvoegsel in de url, dus het kan de taal niet afleiden —
+				   en de meldingen hieronder belanden wel degelijk in beeld. */
+				'taal'       => array( 'required' => false ),
 			),
 			'callback'            => function ( WP_REST_Request $request ) {
 				$postcode   = (string) $request->get_param( 'postcode' );
 				$huisnummer = (string) $request->get_param( 'huisnummer' );
+				$taal       = (string) $request->get_param( 'taal' );
+				if ( ! in_array( $taal, array( 'nl', 'en', 'de', 'fr' ), true ) ) {
+					$taal = 'nl';
+				}
 
 				// Antwoorden een dag bewaren: dezelfde postcode levert altijd
 				// hetzelfde adres, en het scheelt de provider verkeer.
@@ -629,7 +646,7 @@ add_action( 'rest_api_init', function () {
 						$status = 200;
 					}
 					return new WP_REST_Response(
-						array( $sleutel_bericht => $adres->get_error_message() ),
+						array( $sleutel_bericht => sokkies_form_zin( $adres->get_error_message(), $taal ) ),
 						$status
 					);
 				}
