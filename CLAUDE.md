@@ -2635,6 +2635,63 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   sokkies.com/nl/algemene-voorwaarden/. Niet aangeraakt (viel buiten de
   opdracht) maar wel voorleggen.
 
+  OPTIEOVERZICHT /opties/ (2026-09-21, opdracht Kulwant met een screenshot van
+  sokkies.com/options/): nieuwe pagina "Opties" (#1730, slug opties) met de vier
+  bestaande optiepagina's erop — Labels (#1700), Geschenkdoosjes (#1713),
+  Kaartjes (#1719) en Inpakservice (#1723).
+  NIEUWE LAYOUT 'optie_kaarten' ("Optiekaarten (raster met pagina's)",
+  categorie Extra's): kop + kaarten-repeater met per rij een PAGINA
+  (post_object), plus optionele eigen titel/tekst/foto en een eigen link.
+  DE KAART VOLGT DE PAGINA: titel = paginatitel, tekst = de subtekst uit de
+  paginakop, foto = de uitgelichte afbeelding en anders de eerste foto in de
+  secties van die pagina. Dat scheelt dubbel onderhoud (op de oude site staat
+  precies dezelfde zin op de kaart als boven aan de optiepagina) en het
+  overzicht kan niet meer uit de pas lopen met de pagina's. Twee nieuwe
+  helpers in functions.php doen dat werk: sokkies_pagina_intro() en
+  sokkies_pagina_foto(); die lezen de secties RUW uit postmeta (get_field() op
+  de hele flexible content ophalen om er één bijlage-ID uit te vissen is
+  onnodig zwaar, en de sleutels liggen vast op secties_{index}_{veld}).
+  KAART = .case-card, dezelfde als het cases- en blogoverzicht, dus er kwam
+  geen nieuwe kaartopmaak bij. Alleen het kolomaantal is nieuw:
+  .optie-grid = 3 kolommen (het ritme van het ontwerp), en bij PRECIES VIER
+  kaarten zet de sectie .optie-grid-4 erbij = 4 kolommen. Anders zouden er
+  drie bovenaan staan en eentje alleen daaronder. Omdat beide selectors
+  specifieker zijn dan .case-grid moet het kolomaantal per band expliciet
+  mee-afschalen (zelfde valkuil als bij .blog-grid): 992-1279 = 3, 768-991 = 2,
+  521-767 = 2, <=520 = 1, in responsive.css.
+  BEWUST GEEN STATISCHE TERUGVAL: deze sectie bestaat niet in htmlv, dus er is
+  geen ontwerp om op terug te vallen. Zonder kaarten rendert hij niets — beter
+  dan een lege witte band.
+  VALKUIL DIE TOESLOEG: het subtekstveld van simple_hero LEEG laten geeft niet
+  "geen subtekst" maar de standaardtekst van reviews-en-cases ("1.000.000+ paar
+  sokken geproduceerd..."). Die stond dus even op de optiepagina. De pagina
+  heeft nu een eigen regel; dat is MIJN COPY ("Van label tot geschenkdoosje:
+  kies de extra's die jouw sokken afmaken.") — de oude site heeft daar geen
+  subtekst, dus even langs de klant.
+  H1 EN VOLGORDE 1:1 VAN LIVE: "Bekijk onze extra opties<br>voor jouw
+  gepersonaliseerde sokken", kaarten in de volgorde Labels, Geschenkdoosjes,
+  Kaartjes, Inpakservice. De slot-CTA is gelijk aan die van de vier
+  optiepagina's zelf (voetjes uit) — daardoor is de extra onderruimte die het
+  blogoverzicht nodig heeft hier niet nodig.
+  URL'S ONGEMOEID GELATEN: de vier pagina's blijven /labels/, /kaartjes/ enz.
+  Op de oude site zitten ze onder /option/{slug}/; ze onder /opties/ hangen
+  (post_parent) kan, maar dat verandert hun URL en dat is een eigen besluit.
+  NIET GEDAAN, bewust: "Opties" staat nog NIET in het hoofd- of footermenu
+  (Website-instellingen > Hoofdmenu/Footermenu) — de pagina is voorlopig alleen
+  via /opties/ bereikbaar.
+  LET OP: de pagina en de sectie-inhoud zijn DATABASE. De code (layout,
+  template, CSS, thumbnail) deployt mee, de pagina niet — op dev/live moet die
+  nog aangemaakt worden of via de WP Migrate DB-sync meekomen.
+  GEVERIFIEERD in de browser: 390 = 1 kolom, 600 en 768 = 2, 1100 = 3, 1300 en
+  1920 = 4 kolommen, overal 0 horizontale scroll; alle vier de kaarten linken
+  naar hun eigen pagina en tonen automatisch de juiste foto en tekst. De
+  console-fout h4wp_ct_Cookies is niet van deze wijziging — die staat ook op
+  /labels/ en de andere pagina's.
+  MEETVALKUIL (opnieuw): de headless screenshot op 390 leek rechts afgekapt,
+  maar in de browser is scrollWidth exact 390. Meet dat na, ga niet af op het
+  beeld. En headless Chrome volgt de taalherkenning van TranslatePress: /nl/
+  gaf een Engelse pagina tot ik --lang=nl meegaf.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

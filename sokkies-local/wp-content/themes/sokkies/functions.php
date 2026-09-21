@@ -1854,3 +1854,81 @@ function sokkies_voorbeeld_email() {
 
 	return isset( $adressen[ $taal ] ) ? $adressen[ $taal ] : $adressen['nl'];
 }
+
+/**
+ * De introtekst van een pagina — de subtekst uit de paginakop.
+ *
+ * Gebruikt door de optiekaarten: op een kaart hoort dezelfde eenregelige
+ * omschrijving als boven aan de pagina zelf, zodat de twee niet uit elkaar
+ * gaan lopen zodra iemand de kop herschrijft.
+ *
+ * Er wordt niet gekeken WELKE kopsectie het is (hero, simple_hero, coll_hero
+ * en lp_hero hebben allemaal een veld 'subtekst'): de eerste sectie met een
+ * gevulde subtekst is in de praktijk altijd de paginakop.
+ *
+ * @param int $post_id De pagina.
+ * @return string De subtekst, of '' als de pagina er geen heeft.
+ */
+function sokkies_pagina_intro( $post_id ) {
+	$secties = get_post_meta( $post_id, 'secties', true );
+
+	if ( ! is_array( $secties ) ) {
+		return '';
+	}
+
+	foreach ( array_keys( $secties ) as $i ) {
+		$tekst = get_post_meta( $post_id, 'secties_' . $i . '_subtekst', true );
+
+		if ( is_string( $tekst ) && '' !== trim( $tekst ) ) {
+			return trim( $tekst );
+		}
+	}
+
+	return '';
+}
+
+/**
+ * Een bruikbare afbeelding bij een pagina.
+ *
+ * Eerst de uitgelichte afbeelding; heeft de pagina die niet, dan de eerste
+ * foto die in de secties staat. Zo krijgt een optiekaart vanzelf het juiste
+ * beeld zonder dat iemand dezelfde foto nog een keer moet kiezen.
+ *
+ * LET OP: de secties-velden worden RUW uit postmeta gelezen, niet via
+ * get_field(). De hele flexible content van een pagina ophalen om er één
+ * bijlage-ID uit te vissen is onnodig zwaar, en de sleutels liggen vast
+ * (secties_{index}_{veldnaam}).
+ *
+ * @param int $post_id De pagina.
+ * @return int Bijlage-ID, of 0 als er niets te vinden is.
+ */
+function sokkies_pagina_foto( $post_id ) {
+	$uitgelicht = get_post_thumbnail_id( $post_id );
+
+	if ( $uitgelicht ) {
+		return (int) $uitgelicht;
+	}
+
+	$secties = get_post_meta( $post_id, 'secties', true );
+
+	if ( ! is_array( $secties ) ) {
+		return 0;
+	}
+
+	foreach ( array_keys( $secties ) as $i ) {
+		foreach ( array( 'foto', 'fotos', 'foto_groot' ) as $naam ) {
+			$waarde = get_post_meta( $post_id, 'secties_' . $i . '_' . $naam, true );
+
+			// Een galerijveld geeft een rij bijlage-ID's; daar pakken we de eerste van.
+			if ( is_array( $waarde ) ) {
+				$waarde = reset( $waarde );
+			}
+
+			if ( is_numeric( $waarde ) && (int) $waarde > 0 ) {
+				return (int) $waarde;
+			}
+		}
+	}
+
+	return 0;
+}

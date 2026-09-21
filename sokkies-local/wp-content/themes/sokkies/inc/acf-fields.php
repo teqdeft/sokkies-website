@@ -2045,6 +2045,29 @@ add_action( 'acf/init', function () {
 						),
 					),
 
+					'layout_optie_kaarten' => array(
+						'key'        => 'layout_optie_kaarten',
+						'name'       => 'optie_kaarten',
+						'label'      => 'Optiekaarten (raster met pagina\'s)',
+						'display'    => 'block',
+						'acfe_flexible_category'  => array( 'Extra\'s' ),
+						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/optie_kaarten.png',
+						'sub_fields' => array(
+							array( 'key' => 'field_ok_titel', 'label' => 'Kop boven de kaarten', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Leeg = geen kop. Meestal niet nodig: de paginakop staat er al boven. Tekst tussen [haken] wordt geel.' ),
+							array(
+								'key' => 'field_ok_kaarten', 'label' => 'Kaarten', 'name' => 'kaarten', 'type' => 'repeater', 'layout' => 'block', 'button_label' => 'Optie toevoegen',
+								'instructions' => 'Kies per kaart een pagina; titel, omschrijving en foto komen dan van die pagina zelf. Vul je een veld hieronder toch in, dan wint dat. Bij precies vier kaarten staan ze op één rij, anders in drie kolommen.',
+								'sub_fields' => array(
+									array( 'key' => 'field_ok_pagina', 'label' => 'Pagina', 'name' => 'pagina', 'type' => 'post_object', 'post_type' => array( 'page' ), 'return_format' => 'id', 'ui' => 1, 'allow_null' => 1, 'instructions' => 'De pagina waar de kaart heen linkt.' ),
+									array( 'key' => 'field_ok_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Leeg = de titel van de gekozen pagina.' ),
+									array( 'key' => 'field_ok_kaart_tekst', 'label' => 'Korte omschrijving', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '', 'instructions' => 'Leeg = de subtekst uit de kop van die pagina.' ),
+									array( 'key' => 'field_ok_kaart_foto', 'label' => 'Foto', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Leeg = de uitgelichte afbeelding van de pagina, en anders de eerste foto op die pagina. Aanbevolen: 800 x 600 px (liggend).' ),
+									array( 'key' => 'field_ok_kaart_link', 'label' => 'Of een eigen link', 'name' => 'link', 'type' => 'link', 'instructions' => 'Alleen nodig als de kaart niet naar een pagina hierboven wijst. Een link hier wint van de gekozen pagina.' ),
+								),
+							),
+						),
+					),
+
 					'layout_juridisch' => array(
 						'key'        => 'layout_juridisch',
 						'name'       => 'juridisch',

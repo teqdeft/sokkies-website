@@ -5251,6 +5251,21 @@ font-weight: 600;
     color:var(--text);
   }
 
+
+  /* ---- Optieoverzicht (/opties/) ----
+     Zelfde kaart als het cases- en blogoverzicht; alleen het kolomaantal is
+     anders. Drie kolommen is het ritme van het ontwerp, maar bij precies
+     vier kaarten zou er eentje alleen op de tweede rij belanden — die zet de
+     sectie zelf op vier kolommen (.optie-grid-4). Omdat beide selectors
+     specifieker zijn dan .case-grid, moet het kolomaantal per band expliciet
+     mee-afschalen; dat staat in responsive.css. */
+  .case-grid.optie-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+  .case-grid.optie-grid-4{
+    grid-template-columns:repeat(4,1fr);
+  }
+
   /* ---- Blogdetail ---- */
   .simple-hero.blog-detail-hero{
     /* De halve-foto-overlap zit niet meer hier maar in .blog-foto-band

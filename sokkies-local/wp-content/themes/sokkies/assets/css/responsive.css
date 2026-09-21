@@ -16178,3 +16178,25 @@
     border-radius:15px;
   }
 }
+
+/* ===== Optieoverzicht (/opties/) =====
+   De optiekaarten dragen .case-grid plus .optie-grid (drie kolommen) of
+   .optie-grid-4 (vier kaarten op één rij). Allebei zijn ze specifieker dan
+   de .case-grid-regels van de banden hieronder, dus het kolomaantal moet
+   hier expliciet mee-afschalen — net als bij het blogoverzicht. */
+@media (min-width:992px) and (max-width:1279px){
+  .case-grid.optie-grid,
+  .case-grid.optie-grid-4{ grid-template-columns:repeat(3,1fr); }
+}
+@media (min-width:768px) and (max-width:991px){
+  .case-grid.optie-grid,
+  .case-grid.optie-grid-4{ grid-template-columns:repeat(2,1fr); }
+}
+@media (min-width:521px) and (max-width:767px){
+  .case-grid.optie-grid,
+  .case-grid.optie-grid-4{ grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:520px){
+  .case-grid.optie-grid,
+  .case-grid.optie-grid-4{ grid-template-columns:1fr; gap:16px; }
+}
