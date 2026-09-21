@@ -325,6 +325,19 @@ function sokkies_main_class() {
 		$klasse .= ' juridisch';
 	}
 
+	// Het optieoverzicht én de optiepagina's eronder (Labels, Kaartjes,
+	// Geschenkdoosjes, Inpakservice) delen één scope-class, zodat opmaak
+	// voor die hele familie in één regel te schrijven is in plaats van per
+	// slug. Net als bij 'juridisch' hierboven volgt die scope de STRUCTUUR:
+	// /opties/ zelf en alles wat eronder hangt krijgt hem, dus een nieuwe
+	// optiepagina hoeft alleen de juiste bovenliggende pagina te krijgen en
+	// is meteen goed.
+	$ouder      = (int) get_post_field( 'post_parent' );
+	$ouder_slug = $ouder ? (string) get_post_field( 'post_name', $ouder ) : '';
+	if ( 'opties' === $slug || 'opties' === $ouder_slug ) {
+		$klasse .= ' optie-pagina';
+	}
+
 	return $klasse;
 }
 

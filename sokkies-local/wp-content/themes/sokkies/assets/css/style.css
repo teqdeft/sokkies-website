@@ -11575,6 +11575,11 @@ body.pdp-calc-open{
   .zoekresultaten .page-numbers.current{ background:var(--coral); color:#fff; }
   /* ≤520 is .cta sitebreed width:100% (mobiele knopconventie), dus het
      zoekveld en de knop passen daar niet naast elkaar — onder elkaar. */
+
+  .opties .cta-final, .optie-pagina .cta-final{
+    background: transparent;
+    margin-top: 3%;
+  }
   @media (max-width:520px){
     .zr-form{ flex-direction:column; }
     .zr-form input[type="search"]{ width:100%; }

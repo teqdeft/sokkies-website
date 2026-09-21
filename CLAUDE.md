@@ -2691,6 +2691,41 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   maar in de browser is scrollWidth exact 390. Meet dat na, ga niet af op het
   beeld. En headless Chrome volgt de taalherkenning van TranslatePress: /nl/
   gaf een Engelse pagina tot ik --lang=nl meegaf.
+  VERVOLG DEZELFDE DAG (2026-09-21, twee verzoeken Kulwant):
+  (1) URL'S TOCH GENEST: de vier optiepagina's hangen nu ONDER /opties/
+  (post_parent = #1730), dus /opties/labels/, /opties/kaartjes/ enz. — op de
+  oude site stond er ook een prefix voor (/option/{slug}/). Vooraf gecheckt
+  dat niets de prefix 'opties' claimt (de CPT's gebruiken collectie, cases en
+  blog) en dat geen enkel menu-item of ACF-linkveld naar de oude URL's wees.
+  De oude adressen zijn niet dood: WordPress stuurt /labels/ met een 301 door
+  naar /opties/labels/. De kaarten op het overzicht volgen vanzelf, want die
+  gebruiken get_permalink.
+  LET OP: post_parent is DATABASE en deployt dus niet mee — op dev/live per
+  pagina instellen via Pagina-attributen > Bovenliggende > Opties.
+  DAARBIJ OP DEV GEVONDEN: Kaartjes, Geschenkdoosjes en Inpakservice stonden
+  daar onder COLLECTIE en gaven daardoor een 404. Hun permalink werd
+  /collectie/{slug}/, en die prefix is van de Soktype-CPT (rewrite slug
+  'collectie'); de CPT-regel matcht eerst, vindt geen soktype met die naam en
+  geeft op. Bewijs: /nl/collectie/bamboesokken/ = 200, /nl/collectie/labels/
+  = 404. Ze onder Opties hangen lost dat meteen op. LES: een pagina onder een
+  ouder hangen is geen onschuldige actie — check eerst of een CPT die prefix
+  al claimt.
+  (2) ÉÉN GEDEELDE SCOPE-CLASS: sokkies_main_class() zet nu 'optie-pagina' op
+  /opties/ zelf én op alles wat eronder hangt, naast de bestaande slug-class
+  (main class="labels optie-pagina"). Zo is opmaak voor de hele familie in
+  één regel te schrijven; in de werkmap stond al een handgeschreven
+  '.opties .cta-final, .kaartjes .cta-final{background:transparent}' die maar
+  2 van de 5 pagina's raakte — dat wordt '.optie-pagina .cta-final'.
+  Net als bij 'juridisch' volgt de scope de STRUCTUUR en niet een lijstje
+  slugs, dus een nieuwe optiepagina hoeft alleen de juiste bovenliggende
+  pagina te krijgen. Geverifieerd: alle vijf de pagina's dragen de class,
+  alle andere pagina's houden exact hun oude class (home, collectie,
+  faq-page, juridisch, over-ons, blogs, contact). De voetjes-check in
+  section-cta_final.php gebruikt een \b-regex op de scope en is dus niet
+  geraakt.
+  NOG OPEN: de kruimelpaden op de optiepagina's tonen "Home • Labels" en niet
+  "Home • Opties • Labels" — simple_hero rendert één label en kent de
+  hiërarchie niet. Voorgelegd, niet gebouwd.
 
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
