@@ -2813,6 +2813,62 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   "Geen extra's" als standaard heeft — dat is de isSelected-instelling op de
   keuze in Gravity Forms, dus database.
 
+  LAND OP DE EERSTE RIJ EN ALTIJD IN BEELD (2026-09-22, drie verzoeken
+  Kulwant met schermafbeeldingen van /offerte/ stap 3).
+  ALLES IN CODE, NIETS IN DE DATABASE. De veldvolgorde, de zichtbaarheid en
+  het bijschrift zijn alle drie instellingen van Gravity Forms en dus
+  database — die deployt niet mee, dus dat had op dev en op live opnieuw
+  gemoeten. Daarom staat de hele wijziging in het thema.
+  (1) VOLGORDE via flex order: Land krijgt order 1 en alles wat eronder hoort
+  order 2, zodat de eerste rij Postcode / Huisnummer / Toevoeging / Land
+  wordt terwijl het veld in de DOM gewoon onderaan het adresblok blijft
+  staan. Geldt vanzelf ook voor het sampleformulier, dat hetzelfde adresblok
+  met dezelfde of-classes gebruikt.
+  BREEDTE = de rest van de rij (flex 1 1 175px), geen vaste helft: een halve
+  kolom is op 1440 408px en dat past niet naast drie vaste kolommen van
+  155px, waardoor het veld naar een eigen regel sprong. Gemeten ruimte na
+  die drie: 1920 -> 574, 1440 -> 311, 1280 -> 181, 992 -> 330, 768 -> 106
+  (daar wikkelt het veld netjes naar de regel eronder).
+  OPEN PUNT: op 1280 is het veld 181px en blijft er 127px tekstruimte over.
+  Nederland/Duitsland/Frankrijk/Belgie passen, "Verenigd Koninkrijk" (144px)
+  wordt in het dichte keuzemenu afgeknipt. 1280 is de krapste band omdat de
+  zijkolom "Wat krijg je?" daar nog naast staat. Voorgelegd, niet opgelost;
+  de opties zijn laten zoals het is, op 1280 naar een eigen regel laten
+  zakken, of in die band de drie vaste kolommen van 155 naar ~135px.
+  (2) ALTIJD ZICHTBAAR via :not(.of-land) op de verbergregel, en BEWUST GEEN
+  eigen display-regel met !important. Op het SAMPLEformulier hangt het hele
+  adresblok aan voorwaardelijke logica van Gravity Forms, en GF regelt dat
+  met een INLINE display:none op het veld. Een !important in de stylesheet
+  verslaat die inline stijl, en dan had Land daar in beeld gestaan terwijl
+  het adresblok nog dicht was. Met :not() zegt de stylesheet niets over de
+  zichtbaarheid van dit veld en houdt GF de regie. Getest in alle drie de
+  toestanden: offerte (Land zichtbaar, straat/plaats/provincie achter
+  "Handmatig invullen"), sample dicht (alles verborgen, ook Land), sample
+  open (Land zichtbaar, de rest nog niet).
+  WAAROM ALTIJD ZICHTBAAR: Land is niet louter een veld dat de opzoeking
+  invult maar er soms ook voor NODIG is — een Belgische, Duitse of Franse
+  postcode is enkel cijfers, dus daar kan de vorm het land niet verraden.
+  Zat het veld achter "Handmatig invullen", dan stond die keuze verstopt
+  achter precies de stap die de opzoeking overbodig maakt.
+  (3) BIJSCHRIFT "Wordt automatisch ingevuld." weg onder Land, via
+  gform_pre_render (description leegmaken) en NIET via display:none. GF
+  hangt het bijschrift ook met aria-describedby aan het keuzemenu, dus
+  wegstylen laat een schermlezer die belofte voorlezen bij precies het veld
+  waar ze niet altijd opgaat. Leegmaken haalt het uit de markup én uit de
+  toegankelijkheidsboom (gemeten: geen .gfield_description meer,
+  aria-describedby null). Bijvangst: zonder dat bijschrift staan de vier
+  invoervelden van de rij eindelijk op dezelfde hoogte.
+  Het veld wordt gezocht op zijn cssClass of-land, niet op het label — dat
+  laatste is redactionele tekst die kan veranderen.
+  LET OP: straat, plaats en provincie dragen dezelfde regel en houden hem
+  bewust; die verschijnen alleen achter "Handmatig invullen" en daar legt de
+  zin nog wel uit waarom ze leeg zijn.
+  NOG VOOR TE LEGGEN: (a) de veldbeschrijving in Gravity Forms zelf zegt nog
+  "Wordt automatisch ingevuld" — die wordt nu nergens meer getoond, maar
+  staat wel in het beheerscherm; (b) het keuzemenu opent op "Kies een land",
+  Nederland als standaard (isSelected op de keuze) zou de meeste bezoekers
+  een handeling schelen. Allebei database.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

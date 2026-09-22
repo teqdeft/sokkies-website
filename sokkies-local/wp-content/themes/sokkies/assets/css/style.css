@@ -9893,14 +9893,22 @@ main.contact{
   /* WAAROM !important, tegen de huisregels in: op het SAMPLEformulier hangt
      het hele adresblok aan voorwaardelijke logica van Gravity Forms (het
      verschijnt pas bij "Ik wil toch een proefontwerp"). GF regelt dat met
-     een INLINE display op het veld, en die wint van elke stylesheet. Zonder
-     !important stond Land daardoor open zodra het adresblok verscheen,
-     terwijl straat/plaats/provincie netjes achter "Handmatig invullen"
-     bleven — het veld hoort bij die groep en moet zich dus ook zo gedragen.
-     Het omgekeerde risico bestaat niet: is-zichtbaar wordt alleen gezet via
-     "Handmatig invullen", en die link zit ín het adresblok. Staat dat blok
-     dicht, dan is er niets aan te klikken. */
-  .quote-card .gform_fields > .of-auto{ display:none !important; }
+     een INLINE display op het veld, en die wint van elke stylesheet. */
+
+     /* LAND IS DE UITZONDERING (verzoek 2026-09-22): dat staat altijd in
+        beeld. Het is namelijk geen veld dat de opzoeking alleen maar
+        invult, maar er soms ook voor NODIG is: bij een Belgische, Duitse
+        of Franse postcode — allemaal kale cijfers — kan de vorm het land
+        niet verraden en moet de bezoeker het zelf kiezen. Zat het veld
+        achter "Handmatig invullen", dan is die keuze verstopt achter
+        precies de stap die de opzoeking overbodig maakt.
+
+        Daarom :not() en GEEN eigen display-regel met !important: zo'n
+        regel zou ook de INLINE display:none van Gravity Forms verslaan,
+        en dan stond Land op het sampleformulier in beeld terwijl het
+        hele adresblok nog dicht is. Nu zegt de stylesheet niets over de
+        zichtbaarheid van dit veld en houdt GF de regie. */
+  .quote-card .gform_fields > .of-auto:not(.of-land){ display:none !important; }
   .quote-card .gform_fields > .of-auto.is-zichtbaar{
     display:block !important;
     flex:0 0 calc(50% - 10px);
@@ -9915,12 +9923,38 @@ main.contact{
     flex:0 0 calc(50% - 10px);
   }
 
-  /* Land staat naast Provincie, in de helft die daar overbleef: straat en
-     plaats vullen samen de eerste rij, provincie de linkerhelft van de
-     tweede. Anders dan die drie is Land NIET of-auto — het is geen veld
-     dat de opzoeking invult maar een keuze van de bezoeker, en juist die
-     keuze bepaalt of de opzoeking (Nederland-only) überhaupt van pas komt. */
-  .quote-card .gform_fields > .of-land{ flex:0 0 calc(50% - 10px); }
+  /* LAND STAAT OP DE EERSTE RIJ, naast Toevoeging (verzoek 2026-09-22).
+     In de DOM staat het veld onderaan het adresblok, want daar heeft
+     Gravity Forms het staan en die volgorde zit in de DATABASE — die
+     deployt niet mee. Met flex order verhuist het veld dus in CODE:
+     Land krijgt order 1 en alles wat erna hoort order 2, zodat de
+     eerste rij Postcode / Huisnummer / Toevoeging / Land wordt.
+
+     De breedte is GEEN vaste helft meer maar de rest van de rij, met
+     175px als ondergrens. Gemeten ruimte na de drie vaste kolommen van
+     155px: 1920 -> 574, 1440 -> 311, 1280 -> 181, 992 -> 330. Een halve
+     kolom (408px op 1440) paste daar niet, dan sprong het veld naar een
+     eigen regel. Past het niet meer (768 -> 106), dan wikkelt het netjes
+     naar de regel eronder.
+
+     De drie selectors zijn er om de of-auto-regels hierboven te
+     verslaan: die zetten een halve kolom op .of-auto.is-zichtbaar en
+     .of-auto.gfield_error, en dat weegt zwaarder dan een kale .of-land.
+     De banden die alles op 100% stapelen dragen dezelfde drie, zodat
+     die daar blijven winnen. */
+  .quote-card .gform_fields > .of-land,
+  .quote-card .gform_fields > .of-land.is-zichtbaar,
+  .quote-card .gform_fields > .of-land.gfield_error{ flex:1 1 175px; }
+  .quote-card .gform_fields > .of-land{ order:1; }
+  .quote-card .gform_fields > .of-rij-break,
+  .quote-card .gform_fields > .of-adres-paneel,
+  .quote-card .gform_fields > .of-straat,
+  .quote-card .gform_fields > .of-plaats,
+  .quote-card .gform_fields > .of-provincie,
+  .quote-card .gform_fields > .of-bedrijf,
+  .quote-card .gform_fields > .of-contact,
+  .quote-card .gform_fields > .of-email,
+  .quote-card .gform_fields > .of-telefoon{ order:2; }
 
   .quote-card .of-kop h3{ margin:0 0 6px; }
 

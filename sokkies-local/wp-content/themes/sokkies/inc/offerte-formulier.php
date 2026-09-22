@@ -718,6 +718,42 @@ function sokkies_offerte_optioneel_labels() {
 	return array( 'Upload je ontwerp', 'Jouw wensen', 'Opmerkingen' );
 }
 
+/**
+ * Het bijschrift onder Land weg (verzoek 2026-09-22).
+ *
+ * "Wordt automatisch ingevuld" klopte toen het veld alleen verscheen met
+ * een adres er al in. Sinds Land altijd in beeld staat is het juist het
+ * ENE veld dat de bezoeker soms zelf moet kiezen — een Belgische, Duitse
+ * of Franse postcode is enkel cijfers, dus daar valt het land niet uit af
+ * te leiden. De regel beloofde dus iets dat niet altijd waar is.
+ *
+ * WAAROM HIER EN NIET IN CSS: display:none haalt de tekst alleen van het
+ * scherm. Gravity Forms hangt het bijschrift ook via aria-describedby aan
+ * het keuzemenu, dus een schermlezer zou "wordt automatisch ingevuld"
+ * blijven voorlezen bij precies het veld waar dat niet opgaat. Leeg maken
+ * bij het renderen haalt allebei weg.
+ *
+ * WAAROM NIET IN GRAVITY FORMS ZELF: de veldinstelling staat in de
+ * database en die deployt niet mee; dan moest het op dev en live opnieuw.
+ * Het veld wordt gezocht op zijn cssClass, niet op het label: dat laatste
+ * is redactionele tekst die kan veranderen.
+ *
+ * LET OP: straat, plaats en provincie dragen dezelfde regel en houden
+ * hem bewust — die verschijnen alleen achter "Handmatig invullen" en daar
+ * legt de zin nog wel uit waarom ze leeg zijn.
+ */
+add_filter( 'gform_pre_render', function ( $form ) {
+	if ( ! is_array( $form ) || empty( $form['fields'] ) || ! sokkies_form_eigen_opmaak( $form['id'] ) ) {
+		return $form;
+	}
+	foreach ( $form['fields'] as $veld ) {
+		if ( false !== strpos( (string) $veld->cssClass, 'of-land' ) ) {
+			$veld->description = '';
+		}
+	}
+	return $form;
+} );
+
 add_filter( 'gform_field_content', function ( $content, $field ) {
 	if ( ! is_object( $field ) || ! sokkies_form_eigen_opmaak( $field->formId ) ) {
 		return $content;
