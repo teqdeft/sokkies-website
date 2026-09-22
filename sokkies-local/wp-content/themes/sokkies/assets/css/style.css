@@ -518,6 +518,9 @@ body{
   .icon-btn:hover{
     border-color:var(--coral);
 }
+.account-ico{
+  display: none;
+}
 
   .cta{
     background:var(--yellow);
