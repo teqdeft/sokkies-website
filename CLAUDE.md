@@ -2881,6 +2881,73 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   Nederland als standaard (isSelected op de keuze) zou de meeste bezoekers
   een handeling schelen. Allebei database.
 
+  ADRESOPZOEKING BUITEN NEDERLAND NAAR GOOGLE (2026-09-22, opdracht Kulwant:
+  "use google instead of postcode.eu"). Na overleg NIET alles omgezet:
+  Nederland blijft bij Postcode.eu, al het overige gaat naar Google Address
+  Validation. Reden om Nederland te laten staan: dat bevraagt het officiële
+  register en geeft een hard "bestaat niet" (5211AB/12 -> 404), en dat is
+  precies de scherpte die we bij de grootste groep bezoekers willen houden.
+  WELKE GOOGLE-DIENST, en waarom niet de voor de hand liggende: de Geocoding
+  API is een GEOCODER, geen adrescontrole. Kent die een huisnummer niet, dan
+  geeft hij een geïnterpoleerd punt terug in plaats van een fout — hetzelfde
+  gedrag waardoor PDOK "Maijweg" opleverde voor een niet-bestaande combinatie.
+  Address Validation zegt wél of een adres tot op het pand klopt. Places
+  Autocomplete viel af omdat het de invulmanier zelf vervangt.
+  WAT DIT KOST AAN FUNCTIONALITEIT — belangrijkste gevolg, vooraf gemeld:
+  Address Validation KEURT een adres maar SOMT NIETS OP. Je kunt hem niet
+  vragen welke straten er in postcode 55246 liggen; Postcode.eu kon dat wel en
+  dáár kwam het keuzelijstje met straatnamen vandaan. Per land:
+    Nederland  postcode + huisnummer (Postcode.eu, ongewijzigd)
+    Verenigd Koninkrijk  postcode + huisnummer; de postcode wijst daar één
+                         straatdeel aan, dus Google leidt de straat zelf af
+    Belgie/Duitsland/Frankrijk/Spanje/rest  bezoeker TYPT de straat, zonder
+                         suggesties, en daarna keurt Google het adres
+  Wie dat lijstje terug wil heeft Places Autocomplete nodig: andere dienst,
+  ander tarief, andere invulmanier.
+  DE MELDING IS DAAROM HERSCHREVEN in alle vier de talen: "Kies je straat" ->
+  "Vul ook de straatnaam in, dan vullen we de rest aan." Er valt niets meer te
+  kiezen, en het lijstje wordt nu ook niet meer aan het veld gehangen als het
+  leeg is (anders toont de browser wel een pijltje maar niets erachter).
+  HOE WE BEPALEN OF HET ADRES KLOPT: validationGranularity PREMISE of
+  SUB_PREMISE. Alles daaronder (ROUTE, BLOCK, OTHER) betekent dat het
+  huisnummer niet thuis te brengen was. De documentatie raadt expliciet af om
+  op de bevestiging van LOSSE onderdelen te sturen, dus dit is de aangewezen
+  maat. hasInferredComponents wordt NIET afgekeurd: dat is juist de vlag die
+  aangaat als Google de straat zelf afleidt uit een Britse of Nederlandse
+  postcode, en dat is precies wat we willen.
+  EXTRA VANGNET: Google MAG een postcode corrigeren. Wijkt de teruggegeven
+  postcode af van wat de bezoeker typte (spaties en hoofdletters weggedacht),
+  dan vullen we niets in. Zonder die controle sluipt de PDOK-fout er via een
+  andere deur weer in: een net adres dat niet is wat er gevraagd werd.
+  ADRESREGELVOLGORDE PER LAND: in het VK staat het huisnummer vóór de straat,
+  op het vasteland erachter. Google is daar tolerant in, maar de gangbare
+  volgorde levert vaker een treffer op pandniveau.
+  OPGERUIMD: de hele internationale Postcode.eu-route is weg (de stappen-
+  zoektocht, de contexten, het ophalen van het adres) en daarmee ook het
+  SESSIE-ID — dat bestond alleen voor die dienst. Weg uit de provider, uit het
+  REST-eindpunt en uit offerte.js. De landenlijst heet nu sokkies_adres_landen()
+  en geeft ISO-2-codes (regionCode van Google) in plaats van ISO-3.
+  BEWUST DEZELFDE 14 LANDEN als voorheen, ook al kan Google er meer aan: zo
+  verandert er nergens iets aan wat de bezoeker ziet behalve waar het moest.
+  Een land erbij is één regel in die functie.
+  SLEUTEL: SOKKIES_GOOGLE_ADRES_KEY in wp-config.php, per omgeving, net als de
+  Postcode.eu-gegevens. Google Cloud-project met Address Validation API aan en
+  facturering actief. LET OP bij het beperken van de sleutel: de aanroep
+  gebeurt SERVERZIJDIG, dus beperken op IP-adres en NIET op verwijzende
+  website — een referrer-beperking laat een aanroep vanaf de server juist
+  stuklopen. Leeg = buiten Nederland vult het formulier niets automatisch in
+  en vraagt het de bezoeker de velden zelf te vullen (net als nu op dev).
+  EERLIJK OVER DE TESTDEKKING: er is GEEN aanroep naar de echte Google-API
+  gedaan — er is nog geen sleutel. Wat wél is getest: de Nederlandse route
+  ongewijzigd (2012ES/30 Julianastraat, 5473HE/45 De Morgenstond, 5211AB/12
+  netjes 404), de nette terugval zonder sleutel, en de verwerking van het
+  antwoord met NAGEBOOTSTE antwoorden via het filter pre_http_request — zes
+  gevallen: Britse treffer met afgeleide straat, Duits adres zonder straat
+  (straat_nodig, 0 suggesties), Duits adres mét straat, een antwoord waarin
+  Google de postcode vervangt (afgekeurd), alleen ROUTE-niveau (afgekeurd) en
+  HTTP 403 (onbereikbaar). De vorm van die antwoorden komt uit de
+  documentatie; zodra er een sleutel is moet dit tegen de echte dienst langs.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

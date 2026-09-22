@@ -181,19 +181,16 @@
       o.value = naam;
       lijst.appendChild(o);
     });
-    veld.setAttribute('list', 'of-stratenlijst');
+    /* Zonder namen ook geen keuzelijst aanhangen: een leeg lijstje geeft in
+       sommige browsers wel het pijltje maar niets om te kiezen. Google kan
+       geen straten opsommen, dus buiten Nederland is dat de normale
+       situatie geworden. */
+    if (lijst.children.length) {
+      veld.setAttribute('list', 'of-stratenlijst');
+    } else {
+      veld.removeAttribute('list');
+    }
   }
-
-  /* Sessie-id voor de internationale adresdienst: EEN id per bezoeker
-     die EEN adres invult. Postcode.eu is daar streng over — een nieuw id
-     bij elke aanroep telt als een nieuwe sessie en verhoogt de kosten.
-     Daarom een keer per pagina, en daarna hergebruiken. */
-  var adresSessie = (function () {
-    var s = '';
-    var hex = '0123456789abcdef';
-    for (var i = 0; i < 32; i++) { s += hex.charAt(Math.floor(Math.random() * 16)); }
-    return s;
-  }());
 
   /* Heeft de BEZOEKER het land gekozen, of vulden WIJ het in na een
      geslaagde opzoeking? Dat verschil telt: een land dat wij zelf hebben
@@ -277,7 +274,6 @@
          zoekopdracht. Zonder land gokt de server op Nederland zolang de
          postcode daarop lijkt. */
       '&land=' + encodeURIComponent(landKeuze()) +
-      '&sessie=' + encodeURIComponent(adresSessie) +
       '&land_bron=' + (landAutomatisch ? 'auto' : 'keuze') +
       '&straat=' + encodeURIComponent(straatNodig ? waarde('of-straat') : '');
 
