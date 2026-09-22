@@ -2975,6 +2975,49 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   de Franse straatnaam terug op een Nederlandse invoer (Anneessensstraat ->
   Rue Anneessens). Zelfde straat, andere taal.
 
+  POSTCODE.EU ER HELEMAAL UIT (2026-09-22, opdracht Kulwant: "remove
+  postcode.eu and replace it with google api"). Ook Nederland loopt nu langs
+  Google Address Validation; alle Postcode.eu-code en -constanten zijn weg.
+  WAT DIT KOST, en dat is niet niks — vooraf gemeten en gemeld:
+  (1) NEDERLANDSE BEZOEKERS MOETEN VOORTAAN OOK HUN STRAAT TYPEN. Google leidt
+  een straat niet af uit een postcode. Vier schrijfwijzen geprobeerd (postcode
+  in het eigen veld, mét spatie, alles op één regel, huisnummer vóór de
+  postcode): allemaal OTHER zonder route-onderdeel. Pas mét straatnaam erbij
+  komt er PREMISE uit. Tot nu toe vulde Postcode.eu het adres uit postcode +
+  huisnummer, dus dit is een stap terug voor de grootste groep bezoekers.
+  (2) DE HARDE "BESTAAT NIET" IS WEG VOOR NEDERLAND. Postcode.eu gaf 404 op
+  5211AB/12; Google geeft daar precies hetzelfde antwoord als op een bestaand
+  adres (OTHER, postcode CONFIRMED, geen route). Zonder straatnaam kan hij dus
+  niet zeggen of een combinatie bestaat.
+  WIE DIT TERUG WIL: de straatsuggesties kunnen alleen terugkomen via een
+  dienst die straten in een postcode kan OPSOMMEN. Address Validation kan dat
+  niet — die keurt alleen een compleet adres. Postcode.eu kon het wel, Google
+  Places Autocomplete kan een type-ahead (typen vanaf de eerste letters,
+  filterbaar op land maar niet strikt op postcode, aparte API en apart tarief).
+  DERDE POSTCODE-GEDRAG ONTDEKT, en dat maakte de controle strenger. Google
+  doet er namelijk DRIE dingen mee:
+    - hij echoot je postcode terug en zet er UNCONFIRMED bij (FR/BE/GB);
+    - hij bevestigt hem (goede adressen);
+    - hij VERVANGT hem en zet er CONFIRMED bij. NL 2012ES + Kalverstraat 30
+      kwam terug als 1012 PD Amsterdam, keurig bevestigd, terwijl 2012ES in
+      Haarlem ligt.
+  Op de bevestiging alleen glipte dat laatste er dus doorheen. De controle
+  eist nu ALLEBEI: postcode bevestigd (tegen het echoën) én gelijk aan wat de
+  bezoeker typte, spaties en hoofdletters weggedacht (tegen het vervangen).
+  PDOK BLIJFT staan, maar alleen als terugval voor Nederland wanneer er GEEN
+  Google-sleutel is. Dat is meteen de enige plek waar postcode + huisnummer
+  nog zonder straat werkt — met de bekende zwakte dat PDOK bij een onbekend
+  huisnummer iets in de buurt bij elkaar raadt.
+  GEVERIFIEERD tegen de echte dienst, zeven bestaande adressen in zes landen:
+  Julianastraat 30 (Haarlem), De Morgenstond 45 (Heeswijk-Dinther), Downing
+  Street 10 (Londen), Hauptstr. 2 (Wiesbaden), Anneessensstraat 1 (Brussel),
+  Chemin du Lavoir 4443 (Vernègues), Calle Bailen 1 (Madrid). Vijf verzinsels
+  geweigerd: Kalverstraat in 2012ES, Rue de Rivoli in 13116, Grotestraat in
+  1000, Abbey Road in SW1A2AA, Zzzzqxstrasse in 55246.
+  OPRUIMEN OP DE SERVERS: SOKKIES_POSTCODE_EU_KEY en _SECRET doen niets meer.
+  Ze staan nog in de wp-config.php van elke omgeving en kunnen daar weg; het
+  abonnement bij Postcode.eu is daarmee ook op te zeggen.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

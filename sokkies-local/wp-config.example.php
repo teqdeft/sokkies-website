@@ -27,26 +27,19 @@ define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_LOG', true );
 define( 'WP_DEBUG_DISPLAY', false );
 
-/* ADRESOPZOEKING op het offerte- en sampleformulier. Twee diensten, elk
-   voor een eigen deel van de wereld. Vul ze PER OMGEVING in: dit bestand
-   deployt niet mee, dus lokaal, dev en live hebben elk hun eigen kopie.
+/* ADRESOPZOEKING op het offerte- en sampleformulier: Google Address
+   Validation, voor alle landen. Eén sleutel uit een Google Cloud-project
+   waarin de Address Validation API is INGESCHAKELD en facturering aanstaat
+   (staat de API uit, dan antwoordt Google met 403 SERVICE_DISABLED).
 
-   Postcode.eu — alleen Nederland, maar dan wel exact: het bevraagt het
-   officiële register en zegt hard "bestaat niet" als een combinatie er
-   niet is. Basic auth, dus je hebt BEIDE waarden nodig; alleen de sleutel
-   geeft 401 "Password not correct". Laat je ze leeg, dan valt Nederland
-   terug op PDOK: gratis en zonder sleutel, maar die raadt bij een onbekend
-   huisnummer een adres in de buurt bij elkaar. */
-define( 'SOKKIES_POSTCODE_EU_KEY',    '' );
-define( 'SOKKIES_POSTCODE_EU_SECRET', '' );
+   De aanroep gebeurt SERVERZIJDIG, dus beperk de sleutel op IP-adres en
+   niet op verwijzende website: een referrer-beperking laat juist een
+   aanroep vanaf de server stuklopen.
 
-/* Google Address Validation — alle overige landen. Eén sleutel uit een
-   Google Cloud-project waarin de Address Validation API is ingeschakeld en
-   facturering aanstaat. De aanroep gebeurt SERVERZIJDIG, dus beperk de
-   sleutel op IP-adres en niet op verwijzende website: een
-   referrer-beperking laat een aanroep vanaf de server juist stuklopen.
-   Leeg = buiten Nederland vult het formulier niets automatisch in en
-   vraagt het de bezoeker de velden zelf te vullen. */
+   Vul hem PER OMGEVING in — dit bestand deployt niet mee, dus lokaal, dev
+   en live hebben elk hun eigen kopie. Leeg = het formulier vult buiten
+   Nederland niets automatisch in; Nederland valt dan terug op PDOK
+   (gratis en zonder sleutel, maar het raadt bij een onbekend huisnummer). */
 define( 'SOKKIES_GOOGLE_ADRES_KEY', '' );
 
 if ( ! defined( 'ABSPATH' ) ) {
