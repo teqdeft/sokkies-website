@@ -9945,16 +9945,15 @@ main.contact{
   .quote-card .gform_fields > .of-land,
   .quote-card .gform_fields > .of-land.is-zichtbaar,
   .quote-card .gform_fields > .of-land.gfield_error{ flex:1 1 175px; }
-  .quote-card .gform_fields > .of-land{ order:1; }
-  .quote-card .gform_fields > .of-rij-break,
-  .quote-card .gform_fields > .of-adres-paneel,
-  .quote-card .gform_fields > .of-straat,
-  .quote-card .gform_fields > .of-plaats,
-  .quote-card .gform_fields > .of-provincie,
-  .quote-card .gform_fields > .of-bedrijf,
-  .quote-card .gform_fields > .of-contact,
-  .quote-card .gform_fields > .of-email,
-  .quote-card .gform_fields > .of-telefoon{ order:2; }
+  /* De verhuizing zelf: alles wat in de DOM NA Toevoeging komt gaat naar
+     achteren, Land springt er tussenuit. Bewust op de plek in de DOM en
+     niet op een lijstje klassen: op het offerteformulier staan bedrijf,
+     contactpersoon, e-mail en telefoon ONDER het adresblok, op het
+     sampleformulier er juist BOVEN. Een vaste lijst zou die vier op het
+     sampleformulier mee naar beneden trekken (en dat deed hij ook, tot
+     deze correctie). Zo geldt de regel per formulier vanzelf. */
+  .quote-card .gform_fields > .of-toevoeging ~ .gfield{ order:2; }
+  .quote-card .gform_fields > .of-toevoeging ~ .of-land{ order:1; }
 
   .quote-card .of-kop h3{ margin:0 0 6px; }
 

@@ -2819,11 +2819,23 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   het bijschrift zijn alle drie instellingen van Gravity Forms en dus
   database — die deployt niet mee, dus dat had op dev en op live opnieuw
   gemoeten. Daarom staat de hele wijziging in het thema.
-  (1) VOLGORDE via flex order: Land krijgt order 1 en alles wat eronder hoort
-  order 2, zodat de eerste rij Postcode / Huisnummer / Toevoeging / Land
-  wordt terwijl het veld in de DOM gewoon onderaan het adresblok blijft
-  staan. Geldt vanzelf ook voor het sampleformulier, dat hetzelfde adresblok
-  met dezelfde of-classes gebruikt.
+  (1) VOLGORDE via flex order: alles wat in de DOM NA Toevoeging komt krijgt
+  order 2 en Land order 1, zodat de eerste rij Postcode / Huisnummer /
+  Toevoeging / Land wordt terwijl het veld in de DOM gewoon onderaan het
+  adresblok blijft staan.
+  DE SELECTOR GAAT OVER DE PLEK IN DE DOM (.of-toevoeging ~ .gfield) EN
+  NIET OVER EEN LIJSTJE KLASSEN, en dat is geen smaakkwestie: de eerste
+  versie zette order 2 op of-bedrijf/-contact/-email/-telefoon, wat op het
+  offerteformulier klopt (daar staan ze onder het adresblok) maar het
+  SAMPLEformulier sloopte, want daar staan diezelfde vier velden juist
+  BOVENAAN, meteen onder "Jouw gegevens". Ze verhuisden mee naar beneden
+  en het gevonden-adresvak belandde eronder. Gemeld door Kulwant met een
+  schermafbeelding naast de goede weergave. Met de siblingselector regelt
+  elk formulier zichzelf: op het sample blijven die vier boven staan omdat
+  ze voor Toevoeging in de DOM komen.
+  LES: een adresblok dat twee formulieren delen staat niet in allebei op
+  dezelfde plek in de pagina. Controleer een layoutregel die op of-classes
+  mikt dus altijd op BEIDE formulieren.
   BREEDTE = de rest van de rij (flex 1 1 175px), geen vaste helft: een halve
   kolom is op 1440 408px en dat past niet naast drie vaste kolommen van
   155px, waardoor het veld naar een eigen regel sprong. Gemeten ruimte na
