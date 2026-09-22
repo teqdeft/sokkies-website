@@ -27,6 +27,15 @@ define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_LOG', true );
 define( 'WP_DEBUG_DISPLAY', false );
 
+/* Postcode.eu — adresopzoeking op het offerte- en sampleformulier.
+   Basic auth: je hebt BEIDE nodig (alleen de sleutel geeft 401 "Password not
+   correct"). Te vinden in het Postcode.eu-account onder hetzelfde API-account.
+   Laat je ze leeg, dan valt de opzoeking terug op PDOK: gratis, zonder
+   sleutel, alleen Nederland. Vul ze per omgeving in — dit bestand deployt
+   niet mee. */
+define( 'SOKKIES_POSTCODE_EU_KEY',    '' );
+define( 'SOKKIES_POSTCODE_EU_SECRET', '' );
+
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
 }

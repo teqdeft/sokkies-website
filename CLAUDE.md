@@ -2727,6 +2727,65 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   "Home • Opties • Labels" — simple_hero rendert één label en kent de
   hiërarchie niet. Voorgelegd, niet gebouwd.
 
+  ADRESOPZOEKING VIA POSTCODE.EU (2026-09-21/22, opdracht Kulwant met sleutel
+  en secret). De offerte- en sampleformulieren vulden het adres eerst via PDOK
+  (gratis, Nederland-only, en aantoonbaar ONBETROUWBAAR op het huisnummer: een
+  vraag om nummer 12 leverde 21A — de controle keek alleen naar de postcode).
+  Nu loopt alles via Postcode.eu.
+  TWEE VERSCHILLENDE API'S ACHTER EEN DEUR. Nederland heeft een EXACTE
+  opzoeking (/nl/v1/addresses/postcode/{pc}/{nr}) die in een aanroep het hele
+  adres teruggeeft. De rest van Europa loopt via de internationale dienst, en
+  dat is een TYPE-AHEAD in stappen: postcode -> gebied, gebied -> straten,
+  straat -> huisnummers, en pas dan het adres. Elke stap vergt de header
+  X-Autocomplete-Session (8-64 tekens; één id per bezoeker die één adres
+  invult) en de 'context' van de vorige stap.
+  DE REGEL DIE ALLES BEPAALT, en waar ik eerst op stukliep: bij het
+  doordrillen moet de 'term' de 'value' van de vorige treffer zijn, LETTERLIJK
+  en met spaties en komma's intact, plus de nieuwe invoer erachter. Stuur je
+  alleen het huisnummer, dan negeert de dienst de context en zoekt hij het hele
+  land af. Daardoor concludeerde ik ten onrechte dat Engeland een straatkeuze
+  nodig had; met de juiste term lost SW1A2AA + 10 gewoon op naar Downing Street.
+  WAT DAT PER LAND OPLEVERT: Nederland en Engeland komen met postcode +
+  huisnummer rond. België, Duitsland, Frankrijk en Spanje niet — daar hoort een
+  postcode bij een hele gemeente, dus daar geeft de server de STRATEN in die
+  postcode terug ('straat_nodig' + suggesties, als datalist onder het
+  straatveld) en pas met de gekozen straat erbij volgt het adres.
+  HET LAND HOEFT DE BEZOEKER NIET TE KIEZEN: sokkies_land_uit_postcode() leidt
+  het af uit de VORM van de postcode. Alleen NL (1234AB) en GB (SW1A 2AA) zijn
+  eenduidig; BE/DE/FR zijn allemaal kale cijfers en dus niet uit elkaar te
+  houden — kiest de bezoeker daar niets, dan vraagt het formulier om een land.
+  Vulden wij het land zelf in na een eerdere opzoeking ('auto'), dan wint een
+  afwijkende postcode; een ZELFGEKOZEN land wint altijd. Die herkomst zit
+  daarom ook in de cachesleutel — zonder dat kreeg een bewust gekozen Nederland
+  het bewaarde Engelse antwoord.
+  DE PROVIDER STAAT GEÏSOLEERD in sokkies_offerte_adres_provider(); PDOK blijft
+  als terugval bestaan. Sleutel EN secret zijn allebei nodig (Basic auth) en
+  staan in wp-config.php — GEEN repo, GEEN deploy, dus per omgeving invullen.
+  VALKUIL BIJ HET TESTEN: twee adressen gaven 200 met een onzinnige sleutel
+  (gecachete antwoorden) en ik concludeerde bijna dat één sleutel volstond.
+  Test met een adres dat nog niet eerder is opgevraagd.
+  EIGEN LUS GEBOUWD EN WEER GESLOOPT (melding Kulwant met schermopname): vul()
+  vuurt een change-event, de landkeuze luisterde daarop en startte een nieuwe
+  opzoeking, die het land weer invulde — eindeloos, met flikkerende velden en
+  herhaalde BETAALDE aanroepen. Nu markeert vul() zijn eigen invulling
+  (zelfIngevuld) en slaat de handler die over. Tegelijk is de 'bezig'-rem
+  eruit: die liet een NIEUWERE opzoeking vallen, zodat je het antwoord op je
+  vorige postcode kreeg. Een volgnummer gooit nu het verouderde antwoord weg
+  in plaats van het verse.
+  TAAL EN CACHE BETEN ELKAAR (2026-09-22): de zin "Kies je straat..." werd MEE
+  bewaard in het antwoord terwijl de taal niet in de cachesleutel zit — wie een
+  postcode als eerste opzocht, bepaalde dus de taal voor iedereen daarna. Nu
+  wordt het antwoord zonder die zin bewaard en komt de zin er na het lezen bij.
+  Geverifieerd op één postcode in nl/en/de/fr.
+  MISLUKTE OPZOEKINGEN WORDEN NIET BEWAARD (alleen treffers en de straatvraag),
+  dus een storing bij de dienst blijft niet hangen. Wie deze code aanpast:
+  daarna de transients wissen (optienaam LIKE '%transient%sokkies_adres_%'),
+  anders test je op antwoorden van vóór je wijziging.
+  LET OP HET ABONNEMENT: het account meldt limiet 50. Wat daar precies onder
+  valt is onduidelijk (de teller bewoog niet na tientallen opzoekingen), maar
+  50 is te weinig voor een publiek formulier — navragen bij Postcode.eu vóór
+  livegang.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

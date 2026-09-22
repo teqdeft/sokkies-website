@@ -134,6 +134,65 @@
   /* ---------- 3. adresopzoeking ---------- */
   var bezig = false;
 
+  /* Volgnummer van de laatste opzoeking. Een antwoord dat hoort bij een
+     OUDERE aanvraag negeren we: anders overschrijft een traag antwoord
+     over een vorige postcode of een vorig land het verse resultaat. */
+  var adresTeller = 0;
+
+  /* Staat de straatvraag open? In Belgie, Duitsland en Frankrijk hoort
+     een postcode bij een hele gemeente, dus daar is postcode + huisnummer
+     te weinig. De server geeft dan de straten in die postcode terug en
+     zet deze vlag; pas daarna sturen we de straat mee. Buiten die
+     situatie sturen we hem NIET — bij een Britse of Nederlandse postcode
+     zou een half getypte straat de opzoeking juist laten mislukken. */
+  var straatNodig = false;
+
+  /* Staat er op dit moment een veld door ONS te worden ingevuld? vul()
+     zet hem aan tijdens het change-event dat het zelf afvuurt. De
+     handlers hieronder gebruiken hem om hun eigen invulacties niet als
+     een handeling van de bezoeker te lezen — anders start een geslaagde
+     opzoeking meteen de volgende. */
+  var zelfIngevuld = false;
+
+  /* De suggesties in een <datalist> hangen, zodat de browser ze zelf
+     onder het straatveld toont. Geen eigen keuzelijst: dit werkt met
+     toetsenbord en schermlezer zonder dat wij iets hoeven te bouwen. */
+  function toonStraten(namen) {
+    var veld = invoer('of-straat');
+    if (!veld) { return; }
+    var lijst = document.getElementById('of-stratenlijst');
+    if (!lijst) {
+      lijst = document.createElement('datalist');
+      lijst.id = 'of-stratenlijst';
+      veld.parentNode.appendChild(lijst);
+    }
+    lijst.innerHTML = '';
+    (namen || []).forEach(function (naam) {
+      var o = document.createElement('option');
+      o.value = naam;
+      lijst.appendChild(o);
+    });
+    veld.setAttribute('list', 'of-stratenlijst');
+  }
+
+  /* Sessie-id voor de internationale adresdienst: EEN id per bezoeker
+     die EEN adres invult. Postcode.eu is daar streng over — een nieuw id
+     bij elke aanroep telt als een nieuwe sessie en verhoogt de kosten.
+     Daarom een keer per pagina, en daarna hergebruiken. */
+  var adresSessie = (function () {
+    var s = '';
+    var hex = '0123456789abcdef';
+    for (var i = 0; i < 32; i++) { s += hex.charAt(Math.floor(Math.random() * 16)); }
+    return s;
+  }());
+
+  /* Heeft de BEZOEKER het land gekozen, of vulden WIJ het in na een
+     geslaagde opzoeking? Dat verschil telt: een land dat wij zelf hebben
+     ingevuld bij een vorige postcode mag de volgende opzoeking niet
+     kapen. Deed het dat wel, dan werd een Britse postcode als
+     Nederlandse opgezocht en kreeg de bezoeker "adres niet gevonden". */
+  var landAutomatisch = false;
+
   function invoer(klasse) {
     var veld = document.querySelector('.' + klasse);
     // Ook een <select>: het landveld hoort bij dezelfde groep als straat,
@@ -179,12 +238,19 @@
   function zoekAdres() {
     var pc = invoer('of-postcode');
     var hn = invoer('of-huisnummer');
-    if (!pc || !hn || bezig) { return; }
+    /* BEWUST NIET meer afbreken als er al een opzoeking loopt. Dat deed hij
+       eerder wel, en dan ging een NIEUWERE invoer verloren: wie eerst het
+       land koos (dat start een opzoeking) en meteen daarna zijn postcode
+       typte, kreeg het antwoord op de oude postcode. Twee opzoekingen naast
+       elkaar kan nu gewoon; het volgnummer hieronder zorgt dat alleen het
+       antwoord op de LAATSTE aanvraag het scherm nog aanraakt. */
+    if (!pc || !hn) { return; }
     var postcode = pc.value.trim();
     var huisnummer = hn.value.trim();
     if (!postcode || !huisnummer) { return; }
 
     bezig = true;
+    var ditVerzoek = ++adresTeller;
     meldFout('');
     var wrap = document.querySelector('.of-postcode');
     if (wrap) { wrap.classList.add('is-zoekend'); }
@@ -196,18 +262,63 @@
     var url = basis + (basis.indexOf('?') === -1 ? '?' : '&') +
       'postcode=' + encodeURIComponent(postcode) +
       '&huisnummer=' + encodeURIComponent(huisnummer) +
-      '&taal=' + encodeURIComponent((window.sokkiesOfferte && window.sokkiesOfferte.taal) || 'nl');
+      '&taal=' + encodeURIComponent((window.sokkiesOfferte && window.sokkiesOfferte.taal) || 'nl') +
+      /* Het land bepaalt WELKE dienst de server aanroept: Nederland gaat
+         exact op postcode + huisnummer, de rest via de internationale
+         zoekopdracht. Zonder land gokt de server op Nederland zolang de
+         postcode daarop lijkt. */
+      '&land=' + encodeURIComponent(landKeuze()) +
+      '&sessie=' + encodeURIComponent(adresSessie) +
+      '&land_bron=' + (landAutomatisch ? 'auto' : 'keuze') +
+      '&straat=' + encodeURIComponent(straatNodig ? waarde('of-straat') : '');
 
     fetch(url, { headers: { Accept: 'application/json' } })
       .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
       .then(function (res) {
+
+        // Inmiddels een nieuwere opzoeking gestart? Dan is dit antwoord
+        // achterhaald en laten we het scherm met rust.
+        if (ditVerzoek !== adresTeller) { return; }
+
+        /* Tussenstap: de postcode klopt, maar er lopen meer straten door.
+           Dan tonen we de straten en wachten we op een keuze. */
+        if (res.data.straat_nodig) {
+          /* Vraagt de server voor het EERST om een straat, dan hoort het
+             vorige adres van tafel: anders blijft er een straat en plaats
+             van een andere postcode staan. Vraagt hij er nog een keer om
+             (de getypte straat was niet eenduidig), dan laten we staan wat
+             de bezoeker net typte. */
+          if (!straatNodig) { vul('of-straat', '', true); }
+          vul('of-plaats', '', true);
+          vul('of-provincie', '', true);
+          straatNodig = true;
+          meldFout('');
+          meldInfo(res.data.melding || '');
+          if (res.data.land) { vul('of-land', landWaarde(res.data.land)); landAutomatisch = true; }
+          toonStraten(res.data.suggesties);
+          toonHandmatig(true);
+          var straatveld = invoer('of-straat');
+          if (straatveld) { straatveld.focus(); }
+          return;
+        }
+
         if (!res.ok || res.data.fout || res.data.melding) {
           // Ook de eerder gevonden gegevens wissen: anders blijft er een straat
           // uit een vórige postcode staan en lijkt het adres alsnog te kloppen.
           vul('of-straat', '', true);
           vul('of-plaats', '', true);
           vul('of-provincie', '', true);
-          vul('of-land', '', true);
+          /* Het land alleen wissen als WIJ het hadden ingevuld. Koos de
+             bezoeker het zelf, dan is het zijn invoer en blijft die staan —
+             anders stond er na een mislukte opzoeking ineens weer "Kies een
+             land" terwijl hij net Verenigd Koninkrijk had aangeklikt. */
+          if (landAutomatisch) {
+            vul('of-land', '', true);
+            landAutomatisch = false;
+          }
+          /* En het groene "Gevonden adres" bijwerken: zonder dit bleef het
+             adres van de VORIGE postcode staan onder een rode foutregel. */
+          toonAdres();
           /* 'melding' = geen fout maar een mededeling (postcode buiten
              Nederland). Een Belgische 1000 is een geldige postcode; die rood
              aanstrepen suggereert dat de bezoeker zich vergist. */
@@ -224,15 +335,19 @@
           return;
         }
         meldInfo('');
+        straatNodig = false;
         vul('of-straat', res.data.straat);
         vul('of-plaats', res.data.plaats);
         vul('of-provincie', res.data.provincie);
-        /* De opzoeking werkt alleen voor Nederland (zie de uitleg bij
-           sokkies_offerte_adres_provider), dus een gevonden adres IS een
-           Nederlands adres. Het land hoort bij dezelfde groep als straat
-           en plaats en wordt dus net zo automatisch ingevuld — anders zou
-           de bezoeker een verplicht veld moeten kiezen dat hij niet ziet. */
-        vul('of-land', landWaarde('Netherlands'));
+        /* Het land komt uit het ANTWOORD en staat niet meer vast op
+           Nederland: de opzoeking doet inmiddels ook het buitenland. Het
+           hoort bij dezelfde groep als straat en plaats en wordt dus net
+           zo automatisch ingevuld — anders zou de bezoeker een verplicht
+           veld moeten kiezen dat hij niet ziet. */
+        if (res.data.land) {
+          vul('of-land', landWaarde(res.data.land));
+          landAutomatisch = true;
+        }
         toonHandmatig(false);
         toonAdres();
       })
@@ -241,6 +356,7 @@
         toonHandmatig(true);
       })
       .finally(function () {
+        if (ditVerzoek !== adresTeller) { return; }
         bezig = false;
         if (wrap) { wrap.classList.remove('is-zoekend'); }
       });
@@ -251,7 +367,11 @@
     var el = invoer(klasse);
     if (el && (waarde || forceer)) {
       el.value = waarde || '';
+      /* Synchroon: dispatchEvent keert pas terug als alle handlers klaar
+         zijn, dus de vlag dekt precies dit ene event af. */
+      zelfIngevuld = true;
       el.dispatchEvent(new Event('change', { bubbles: true }));
+      zelfIngevuld = false;
     }
   }
 
@@ -259,6 +379,14 @@
      altijd Engels (die gaat zo de inzending in), maar het adrespaneel is
      voor de bezoeker — op de Franse pagina hoort daar "Pays-Bas" te staan
      en niet "Netherlands". Vandaar de tekst van de optie en niet de waarde. */
+  /* De WAARDE van het gekozen land (Engels). Leeg = nog niets gekozen.
+     Let op het verschil met landTekst() hieronder: die geeft de
+     zichtbare — en dus vertaalde — tekst, waar de server niets mee kan. */
+  function landKeuze() {
+    var sel = invoer('of-land');
+    return (sel && sel.value) ? sel.value : '';
+  }
+
   function landTekst() {
     var sel = invoer('of-land');
     if (!sel || !sel.options || sel.selectedIndex < 0) { return ''; }
@@ -512,9 +640,28 @@
   document.addEventListener('change', function (e) {
     var t = e.target;
     if (!t || !t.closest || !t.closest('form[id^="gform_"]')) { return; }
-    // Kiest de bezoeker zelf een ander land, dan moet het adrespaneel dat
-    // meteen laten zien — anders staat er een land in dat hij net wijzigde.
-    if (t.closest('.of-land')) { toonAdres(); }
+    /* Kiest de bezoeker zelf een ander land, dan moet het adrespaneel dat
+       meteen laten zien — anders staat er een land in dat hij net
+       wijzigde. En omdat het land bepaalt WELKE dienst de server
+       aanroept, zoeken we het adres er meteen bij opnieuw op: wie eerst
+       de postcode typt en daarna pas het land kiest, krijgt zo alsnog
+       zijn straat te zien. */
+    /* Een straat uit de suggestielijst kiezen geeft 'change'; blur komt
+       pas als de bezoeker het veld verlaat. Daarom hier ook, anders lijkt
+       de keuze niets te doen. */
+    if (straatNodig && !zelfIngevuld && t.closest('.of-straat') && waarde('of-straat')) {
+      zoekAdres();
+    }
+    if (t.closest('.of-land')) {
+      toonAdres();
+      /* Alleen een keuze van de BEZOEKER telt als keuze, en alleen die
+         start een nieuwe opzoeking. Vulden wij het land zelf in na een
+         gevonden adres, dan is er niets nieuws te zoeken. */
+      if (!zelfIngevuld) {
+        landAutomatisch = false;
+        zoekAdres();
+      }
+    }
     if ('checkbox' === t.type) {
       markeerKeuze(t);
       if (t.closest('.of-soktypes')) { pasSoktypesToe(t); }
@@ -542,6 +689,9 @@
     var t = e.target;
     if (!t || !t.closest) { return; }
     if (t.closest('.of-postcode') || t.closest('.of-huisnummer')) { zoekAdres(); }
+    /* Staat de straatvraag open, dan is de straat het laatste stukje:
+       zodra die ingevuld is kan het adres alsnog rond komen. */
+    if (straatNodig && !zelfIngevuld && t.closest('.of-straat') && waarde('of-straat')) { zoekAdres(); }
   }, true);
 
   // "Klopt niet? Handmatig invullen" onder het gevonden adres.
