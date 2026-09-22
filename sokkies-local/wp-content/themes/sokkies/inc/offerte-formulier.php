@@ -518,27 +518,57 @@ function sokkies_google_adres( $regiocode, $land, $postcode, $huisnummer, $straa
 		}
 		return '';
 	};
+	$bevestiging = function ( $soort ) use ( $onderdelen ) {
+		foreach ( $onderdelen as $onderdeel ) {
+			if ( $soort === ( isset( $onderdeel['componentType'] ) ? $onderdeel['componentType'] : '' ) ) {
+				return isset( $onderdeel['confirmationLevel'] ) ? $onderdeel['confirmationLevel'] : '';
+			}
+		}
+		return '';
+	};
 
 	$straatnaam       = $zoek( array( 'route' ) );
 	$plaats           = $zoek( array( 'locality', 'postal_town' ) );
 	$provincie        = $zoek( array( 'administrative_area_level_1' ) );
-	$gevonden_postcode = $zoek( array( 'postal_code' ) );
 
-	/* PREMISE of SUB_PREMISE is Google's eigen uitspraak dat het adres tot op
-	   het pand (of een deel ervan) klopt. Alles daaronder — ROUTE, BLOCK,
-	   OTHER — betekent dat het huisnummer niet thuis te brengen was. De
-	   documentatie raadt af om op de bevestiging van losse onderdelen te
-	   sturen; dit is de aangewezen maat. */
-	$op_pandniveau = in_array( $niveau, array( 'PREMISE', 'SUB_PREMISE' ), true );
+	/* WANNEER NEMEN WE HET ANTWOORD OVER? Bedenk waarvoor we het gebruiken: we
+	   vullen STRAAT, PLAATS en PROVINCIE in. Het huisnummer staat al in zijn
+	   eigen veld, getypt door de bezoeker; dat claimen we niet te hebben
+	   gecontroleerd. Zeker zijn over de STRAAT is dus genoeg, en dat kan op
+	   twee manieren:
+	     - PREMISE of SUB_PREMISE: Google plaatst het hele adres op een pand;
+	     - of de straat zelf staat op CONFIRMED, ook als het huisnummer niet
+	       te bevestigen was.
+	   Dat tweede geval is geen theorie: Chemin du Lavoir 4443 in 13116 bestaat
+	   (Postcode.eu vond hem), maar Google kent daar het huisnummer niet en
+	   geeft ROUTE met de straat CONFIRMED en het nummer
+	   UNCONFIRMED_BUT_PLAUSIBLE. Alleen PREMISE accepteren wees zulke ECHTE
+	   adressen af, en dat is erger dan een straat invullen die zeker klopt.
+	   Wat hiermee NIET binnenglipt: een antwoord zonder straat. PREMISE_PROXIMITY
+	   ("in de buurt van") levert er geen, en OTHER evenmin — dan blijft het bij
+	   de vraag om een straatnaam. */
+	$op_pandniveau = in_array( $niveau, array( 'PREMISE', 'SUB_PREMISE' ), true )
+		|| 'CONFIRMED' === $bevestiging( 'route' );
 
-	/* Google MAG een postcode corrigeren. Wijkt de gevonden postcode af van
-	   wat de bezoeker typte, dan hebben we een ander adres te pakken dan hij
-	   bedoelde — precies de stille fout waar PDOK ons eerder mee opzadelde.
-	   Dan liever niets invullen dan iets aannemelijks. */
-	$zelfde_postcode = '' === $gevonden_postcode
-		|| strtoupper( preg_replace( '/\s+/', '', $gevonden_postcode ) ) === $postcode;
+	/* DE POSTCODE MOET BEVESTIGD ZIJN, en let op HOE je dat vaststelt. Ik ging
+	   er eerst van uit dat Google een postcode zou CORRIGEREN als hij niet bij
+	   het adres hoort, en vergeleek daarom de teruggegeven waarde met wat de
+	   bezoeker typte. Dat is fout: hij ECHOOT je postcode gewoon terug en zet
+	   er een oordeel bij. Die vergelijking slaagde dus altijd.
+	   Wat er dan doorheen glipte, alle drie met een CONFIRMED straat:
+	     FR 13116 + Rue de Rivoli  -> Nîmes        (postcode SUSPICIOUS)
+	     BE 1000  + Grotestraat    -> Maasmechelen (postcode PLAUSIBLE)
+	     GB SW1A2AA + Abbey Road   -> Londen, maar de verkeerde wijk
+	   Stuk voor stuk een bestaande straat in een plaats die niets met de
+	   ingevulde postcode te maken heeft — precies het soort aannemelijke
+	   onzin waarvoor we van PDOK af wilden. De Belgische kwam zelfs terug als
+	   PREMISE met een bevestigd huisnummer, dus ook de strengere regel van
+	   hiervoor hield hem niet tegen.
+	   Alleen de BEVESTIGING van de postcode scheidt de goede van de slechte:
+	   bij elk adres dat wél klopt staat hij op CONFIRMED. */
+	$postcode_bevestigd = 'CONFIRMED' === $bevestiging( 'postal_code' );
 
-	if ( $op_pandniveau && '' !== $straatnaam && $zelfde_postcode ) {
+	if ( $op_pandniveau && '' !== $straatnaam && $postcode_bevestigd ) {
 		/* Een provincie bestaat lang niet overal (het Verenigd Koninkrijk kent
 		   hem niet), dus die mag leeg blijven — het veld is niet verplicht. */
 		return array(

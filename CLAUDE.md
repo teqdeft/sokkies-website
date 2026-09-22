@@ -2898,10 +2898,15 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   vragen welke straten er in postcode 55246 liggen; Postcode.eu kon dat wel en
   dáár kwam het keuzelijstje met straatnamen vandaan. Per land:
     Nederland  postcode + huisnummer (Postcode.eu, ongewijzigd)
-    Verenigd Koninkrijk  postcode + huisnummer; de postcode wijst daar één
-                         straatdeel aan, dus Google leidt de straat zelf af
-    Belgie/Duitsland/Frankrijk/Spanje/rest  bezoeker TYPT de straat, zonder
-                         suggesties, en daarna keurt Google het adres
+    ALLE ANDERE LANDEN  de bezoeker TYPT de straat, zonder suggesties, en
+                        daarna keurt Google het adres
+  GECORRIGEERD NA DE EERSTE ECHTE TEST: ik ging ervan uit dat Google in het
+  Verenigd Koninkrijk de straat wel zou afleiden uit de postcode, omdat een
+  Britse postcode één straatdeel aanwijst. Dat doet hij NIET. SW1A2AA + 10
+  geeft PREMISE_PROXIMITY zonder route-onderdeel; "Downing Street" staat er
+  nergens in. Hetzelfde geldt voor een Nederlandse postcode (2012ES + 30
+  geeft OTHER) — wat meteen bevestigt dat Nederland bij Postcode.eu houden
+  de juiste keuze was. Kortom: buiten Nederland is de straat ALTIJD nodig.
   Wie dat lijstje terug wil heeft Places Autocomplete nodig: andere dienst,
   ander tarief, andere invulmanier.
   DE MELDING IS DAAROM HERSCHREVEN in alle vier de talen: "Kies je straat" ->
@@ -2915,10 +2920,28 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   maat. hasInferredComponents wordt NIET afgekeurd: dat is juist de vlag die
   aangaat als Google de straat zelf afleidt uit een Britse of Nederlandse
   postcode, en dat is precies wat we willen.
-  EXTRA VANGNET: Google MAG een postcode corrigeren. Wijkt de teruggegeven
-  postcode af van wat de bezoeker typte (spaties en hoofdletters weggedacht),
-  dan vullen we niets in. Zonder die controle sluipt de PDOK-fout er via een
-  andere deur weer in: een net adres dat niet is wat er gevraagd werd.
+  HET VANGNET ZAT ANDERS IN ELKAAR DAN GEDACHT, en dat bleek pas tegen de
+  echte dienst. Ik nam aan dat Google een postcode zou CORRIGEREN als die
+  niet bij het adres hoort, en vergeleek de teruggegeven waarde met wat de
+  bezoeker typte. Hij ECHOOT je postcode echter gewoon terug en hangt er een
+  OORDEEL aan. Die vergelijking slaagde dus altijd, en hier glipte doorheen:
+    FR 13116 + Rue de Rivoli  -> Nîmes         (postcode SUSPICIOUS)
+    BE 1000  + Grotestraat    -> Maasmechelen  (postcode PLAUSIBLE)
+    GB SW1A2AA + Abbey Road   -> Londen, verkeerde wijk
+  Alle drie een bestaande straat in een plaats die niets met de ingevulde
+  postcode te maken heeft: precies de aannemelijke onzin waarvoor we van
+  PDOK af wilden. De Belgische kwam zelfs terug als PREMISE met een
+  BEVESTIGD huisnummer, dus ook de strengste variant hield hem niet tegen.
+  WAT WEL WERKT: de confirmationLevel van het postal_code-onderdeel. Bij elk
+  adres dat klopt staat die op CONFIRMED, bij alle vier de onzingevallen
+  niet. Dat is nu de harde eis, naast een gevonden straatnaam.
+  DE STRAAT HOEFT NIET OP PANDNIVEAU TE STAAN: we vullen straat, plaats en
+  provincie in, het huisnummer staat al in zijn eigen veld en dat claimen we
+  niet gecontroleerd te hebben. Daarom telt ook een CONFIRMED route zonder
+  bevestigd huisnummer als treffer. Zonder die verruiming wees het formulier
+  ECHTE adressen af: Chemin du Lavoir 4443 in 13116 bestaat (Postcode.eu
+  vond hem), maar Google kent daar het huisnummer niet en geeft ROUTE met
+  het nummer UNCONFIRMED_BUT_PLAUSIBLE.
   ADRESREGELVOLGORDE PER LAND: in het VK staat het huisnummer vóór de straat,
   op het vasteland erachter. Google is daar tolerant in, maar de gangbare
   volgorde levert vaker een treffer op pandniveau.
@@ -2937,16 +2960,20 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   website — een referrer-beperking laat een aanroep vanaf de server juist
   stuklopen. Leeg = buiten Nederland vult het formulier niets automatisch in
   en vraagt het de bezoeker de velden zelf te vullen (net als nu op dev).
-  EERLIJK OVER DE TESTDEKKING: er is GEEN aanroep naar de echte Google-API
-  gedaan — er is nog geen sleutel. Wat wél is getest: de Nederlandse route
-  ongewijzigd (2012ES/30 Julianastraat, 5473HE/45 De Morgenstond, 5211AB/12
-  netjes 404), de nette terugval zonder sleutel, en de verwerking van het
-  antwoord met NAGEBOOTSTE antwoorden via het filter pre_http_request — zes
-  gevallen: Britse treffer met afgeleide straat, Duits adres zonder straat
-  (straat_nodig, 0 suggesties), Duits adres mét straat, een antwoord waarin
-  Google de postcode vervangt (afgekeurd), alleen ROUTE-niveau (afgekeurd) en
-  HTTP 403 (onbereikbaar). De vorm van die antwoorden komt uit de
-  documentatie; zodra er een sleutel is moet dit tegen de echte dienst langs.
+  GETEST TEGEN DE ECHTE DIENST (2026-09-22, sleutel door Kulwant gezet; de
+  Address Validation API stond eerst nog uit in het Google Cloud-project —
+  403 SERVICE_DISABLED, wat als nette "vul zelf in" bij de bezoeker landde
+  met de echte reden in debug.log). Vijf bestaande adressen lukken:
+  Downing Street 10 (Londen), Hauptstr. 2 (Wiesbaden), Anneessensstraat 1
+  (Brussel), Chemin du Lavoir 4443 (Vernègues) en Calle Bailen 1 (Madrid).
+  Vier verzinsels worden geweigerd: Rue de Rivoli in 13116, Grotestraat in
+  1000, Abbey Road in SW1A2AA en Zzzzqxstrasse in 55246. Nederland blijft
+  ongewijzigd (2012ES/30 en 5473HE/45 goed, 5211AB/12 netjes niet gevonden).
+  TWEE DINGEN DIE OPVALLEN IN DE ANTWOORDEN en die niemand als fout moet
+  aanzien: de PROVINCIE komt bij Google vrijwel altijd leeg terug (Postcode.eu
+  gaf hem wel; het veld is niet verplicht), en in tweetalig Brussel geeft hij
+  de Franse straatnaam terug op een Nederlandse invoer (Anneessensstraat ->
+  Rue Anneessens). Zelfde straat, andere taal.
 
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
