@@ -222,6 +222,12 @@ function sokkies_adres_landen() {
 	);
 }
 
+/** Staan de inloggegevens van Postcode.eu klaar? Beide zijn nodig. */
+function sokkies_postcode_eu_gereed() {
+	return defined( 'SOKKIES_POSTCODE_EU_KEY' ) && defined( 'SOKKIES_POSTCODE_EU_SECRET' )
+		&& SOKKIES_POSTCODE_EU_KEY && SOKKIES_POSTCODE_EU_SECRET;
+}
+
 /**
  * Het land raden aan de VORM van de postcode.
  *
@@ -337,13 +343,10 @@ function sokkies_offerte_adres_provider( $postcode, $huisnummer, $land = '', $la
 			}
 			return new WP_Error( 'niet_gevonden', 'We konden dit adres niet vinden. Controleer postcode en huisnummer.' );
 		}
-		/* Zonder Google-sleutel valt Nederland terug op PDOK. Dat is de enige
-		   plek waar postcode + huisnummer nog zónder straatnaam werkt, maar het
-		   raadt bij een onbekend huisnummer een adres in de buurt bij elkaar —
-		   vandaar dat het alleen een terugval is en geen voorkeur. */
-		if ( ! sokkies_google_gereed() ) {
-			return sokkies_adres_pdok( $postcode, $huisnummer );
+		if ( sokkies_postcode_eu_gereed() ) {
+			return sokkies_adres_postcode_eu( $postcode, $huisnummer );
 		}
+		return sokkies_adres_pdok( $postcode, $huisnummer );
 	}
 
 	if ( ! sokkies_google_gereed() ) {
@@ -354,6 +357,66 @@ function sokkies_offerte_adres_provider( $postcode, $huisnummer, $land = '', $la
 	}
 
 	return sokkies_google_adres( $landen[ $land ], $land, $postcode, $huisnummer, $straat );
+}
+
+/** Een aanroep naar Postcode.eu. Geeft de body als array, of WP_Error. */
+function sokkies_postcode_eu_call( $url ) {
+	$headers = array(
+		'Authorization' => 'Basic ' . base64_encode( SOKKIES_POSTCODE_EU_KEY . ':' . SOKKIES_POSTCODE_EU_SECRET ),
+	);
+
+	$antwoord = wp_remote_get( $url, array( 'timeout' => 6, 'headers' => $headers ) );
+	if ( is_wp_error( $antwoord ) ) {
+		return new WP_Error( 'onbereikbaar', 'De adresservice is even niet bereikbaar. Vul de gegevens zelf in.' );
+	}
+
+	$status = (int) wp_remote_retrieve_response_code( $antwoord );
+
+	// 404 = de combinatie bestaat niet. Dat is een antwoord, geen storing.
+	if ( 404 === $status ) {
+		return new WP_Error( 'niet_gevonden', 'We konden dit adres niet vinden. Controleer postcode en huisnummer.' );
+	}
+
+	/* 401/403 = sleutel, geheim of tegoed klopt niet. Dat is een
+	   BEHEERPROBLEEM en geen fout van de bezoeker: die krijgt de nette "vul
+	   zelf in"-route, maar het moet wel in het log staan, anders staat de
+	   opzoeking stil zonder dat iemand het merkt. */
+	if ( 200 !== $status ) {
+		error_log( sprintf( 'Sokkies: Postcode.eu gaf status %d voor %s', $status, $url ) );
+		return new WP_Error( 'onbereikbaar', 'De adresservice is even niet bereikbaar. Vul de gegevens zelf in.' );
+	}
+
+	$data = json_decode( wp_remote_retrieve_body( $antwoord ), true );
+	if ( ! is_array( $data ) ) {
+		return new WP_Error( 'onbereikbaar', 'De adresservice is even niet bereikbaar. Vul de gegevens zelf in.' );
+	}
+
+	return $data;
+}
+
+/**
+ * Postcode.eu, Nederlandse adressen. Exacte opzoeking, dus geen naslag nodig.
+ */
+function sokkies_adres_postcode_eu( $postcode, $huisnummer ) {
+	$data = sokkies_postcode_eu_call( sprintf(
+		'https://api.postcode.eu/nl/v1/addresses/postcode/%s/%s',
+		rawurlencode( $postcode ),
+		rawurlencode( $huisnummer )
+	) );
+
+	if ( is_wp_error( $data ) ) {
+		return $data;
+	}
+	if ( empty( $data['street'] ) ) {
+		return new WP_Error( 'niet_gevonden', 'We konden dit adres niet vinden. Controleer postcode en huisnummer.' );
+	}
+
+	return array(
+		'straat'    => (string) $data['street'],
+		'plaats'    => (string) ( $data['city'] ?? '' ),
+		'provincie' => (string) ( $data['province'] ?? '' ),
+		'land'      => 'Netherlands',
+	);
 }
 
 /**
@@ -501,19 +564,9 @@ function sokkies_google_adres( $regiocode, $land, $postcode, $huisnummer, $straa
 	   onzin waarvoor we van PDOK af wilden. De Belgische kwam zelfs terug als
 	   PREMISE met een bevestigd huisnummer, dus ook de strengere regel van
 	   hiervoor hield hem niet tegen.
-	   EN ER IS EEN DERDE GEDRAG, gevonden toen Nederland ook naar Google ging:
-	   soms VERVANGT hij de postcode wél, en zet er CONFIRMED bij. NL 2012ES +
-	   Kalverstraat 30 kwam terug als 1012 PD Amsterdam, keurig bevestigd,
-	   terwijl 2012ES in Haarlem ligt. Op de bevestiging alleen glipte dat er
-	   dus alsnog doorheen.
-	   Vandaar TWEE eisen, elk voor een ander gedrag: de postcode moet
-	   bevestigd zijn (vangt het echoën af) én dezelfde zijn als wat de
-	   bezoeker typte, spaties en hoofdletters weggedacht (vangt het
-	   vervangen af). */
-	$gevonden_postcode  = $zoek( array( 'postal_code' ) );
-	$postcode_bevestigd = 'CONFIRMED' === $bevestiging( 'postal_code' )
-		&& '' !== $gevonden_postcode
-		&& strtoupper( preg_replace( '/\s+/', '', $gevonden_postcode ) ) === $postcode;
+	   Alleen de BEVESTIGING van de postcode scheidt de goede van de slechte:
+	   bij elk adres dat wél klopt staat hij op CONFIRMED. */
+	$postcode_bevestigd = 'CONFIRMED' === $bevestiging( 'postal_code' );
 
 	if ( $op_pandniveau && '' !== $straatnaam && $postcode_bevestigd ) {
 		/* Een provincie bestaat lang niet overal (het Verenigd Koninkrijk kent
