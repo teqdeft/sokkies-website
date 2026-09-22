@@ -2999,6 +2999,45 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   zolang Nederland niet langs Google loopt — gaat dat ooit tóch gebeuren, dan
   moet de VERGELIJKING van de postcodewaarde er weer bij.
 
+  STRAATSUGGESTIES TERUG, MAAR ALLEEN DAARVOOR (2026-09-22, verzoek Kulwant:
+  "can i have a street suggestion as a dropdown after filling postcode and
+  country"). De taakverdeling is nu:
+    Nederland      Postcode.eu, exact, postcode + huisnummer is genoeg
+    overige landen Postcode.eu somt de STRATEN in de postcode op, Google
+                   keurt het uiteindelijke adres
+  WAAROM POSTCODE.EU VOOR DAT LIJSTJE: Google kan het niet. Address Validation
+  KEURT een adres en somt niets op; Places Autocomplete is een type-ahead en
+  heeft dus eerst getypte letters nodig, terwijl de lijst hier moet verschijnen
+  zodra postcode en land er staan. Postcode.eu heeft wel een endpoint dat de
+  straten bij een postcode teruggeeft, en het abonnement liep toch al voor
+  Nederland.
+  MEEGENOMEN VOORDEEL: levert de postcode precies EEN straat op, dan vult de
+  code hem zelf in en hoeft de bezoeker niets te kiezen. Daarmee is postcode +
+  huisnummer weer genoeg in landen waar een postcode een straat aanwijst —
+  SW1A2AA + 10 komt zo weer als Downing Street binnen zonder dat iemand iets
+  typt.
+  NIEUW: sokkies_postcode_eu_straten() doet alleen stap 1 en 2 van de oude
+  internationale zoektocht (postcode -> gebied -> straten) en geeft NOOIT een
+  WP_Error terug: lukt het niet, dan komt er een lege lijst en vraagt het
+  formulier gewoon om een straatnaam. Een haperende suggestiedienst mag de
+  bezoeker niet blokkeren. Het sessie-id is daarvoor terug in de provider, het
+  REST-eindpunt en offerte.js; de exacte Nederlandse opzoeking stuurt hem niet
+  mee, want die heeft hem niet nodig.
+  TWEE CODESTELSELS naast elkaar: Google wil ISO-3166 alfa-2 ('DE'),
+  Postcode.eu alfa-3 ('deu'). sokkies_adres_landen() houdt alfa-2 aan en
+  sokkies_postcode_eu_iso3() zet dat om.
+  GEVERIFIEERD: DE 55246 geeft 10 straten, BE 1000 tien, FR 13116 tien, en de
+  keuzelijst rendert ook echt in het formulier (datalist met 10 opties, het
+  list-attribuut staat op het straatveld). Een gekozen straat komt door
+  Google's keuring: Hauptstr. 2 Wiesbaden, Anneessensstraat 1 Brussel, Chemin
+  du Lavoir 4443 Vernègues, Calle Bailen 1 Madrid. De onzincontroles blijven
+  staan: Grotestraat in 1000, Rue de Rivoli in 13116 en Zzzzqxstrasse in 55246
+  worden geweigerd, en Nederland doet 2012ES/30 goed en 5211AB/12 niet.
+  LET OP BIJ HET BEWERKEN VAN DIT BESTAND: na de git revert van eerder die dag
+  stond inc/offerte-formulier.php op CRLF terwijl een later ingevoegd blok LF
+  had — een zoek-en-vervang op regeleindes vond dan niets. Het bestand is nu
+  overal CRLF; controleer dat voordat je patcht.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

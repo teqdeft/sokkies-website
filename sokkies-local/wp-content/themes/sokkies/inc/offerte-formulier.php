@@ -288,7 +288,7 @@ function sokkies_land_uit_postcode( $postcode ) {
  * vullen we dus NIETS in en gaan de velden open — beter een adres dat de
  * bezoeker zelf typt dan een gok die er plausibel uitziet.
  */
-function sokkies_offerte_adres_provider( $postcode, $huisnummer, $land = '', $land_bron = 'keuze', $straat = '' ) {
+function sokkies_offerte_adres_provider( $postcode, $huisnummer, $land = '', $land_bron = 'keuze', $straat = '', $sessie = '' ) {
 	$postcode   = strtoupper( preg_replace( '/\s+/', '', (string) $postcode ) );
 	$huisnummer = trim( (string) $huisnummer );
 	$land       = trim( (string) $land );
@@ -356,14 +356,43 @@ function sokkies_offerte_adres_provider( $postcode, $huisnummer, $land = '', $la
 		);
 	}
 
+	/* NOG GEEN STRAAT? Dan eerst kijken welke straten er in deze postcode
+	   liggen. Is er maar EEN, dan hoeft de bezoeker niets te kiezen en vullen
+	   we hem zelf in — zo blijft postcode + huisnummer genoeg in landen waar
+	   een postcode precies een straat aanwijst, zoals het Verenigd Koninkrijk.
+	   Zijn er meer, dan gaan ze als keuzelijst terug naar het formulier.
+	   Levert de lijst niets op (dienst plat, land niet gedekt, geen sessie),
+	   dan vragen we gewoon om een straatnaam zonder suggesties. */
+	if ( '' === $straat ) {
+		$straten = sokkies_postcode_eu_straten( $landen[ $land ], $postcode, $sessie );
+		if ( 1 === count( $straten ) ) {
+			$straat = $straten[0];
+		} else {
+			return array(
+				'straat_nodig' => true,
+				'suggesties'   => $straten,
+				'land'         => $land,
+			);
+		}
+	}
+
 	return sokkies_google_adres( $landen[ $land ], $land, $postcode, $huisnummer, $straat );
 }
 
 /** Een aanroep naar Postcode.eu. Geeft de body als array, of WP_Error. */
-function sokkies_postcode_eu_call( $url ) {
+function sokkies_postcode_eu_call( $url, $sessie = '' ) {
 	$headers = array(
 		'Authorization' => 'Basic ' . base64_encode( SOKKIES_POSTCODE_EU_KEY . ':' . SOKKIES_POSTCODE_EU_SECRET ),
 	);
+
+	/* De internationale dienst wil een sessie-id dat hoort bij EEN bezoeker
+	   die EEN adres invult. De documentatie is daar streng over: een nieuw id
+	   per aanroep telt als een nieuwe sessie en verhoogt de kosten. De
+	   voorkant maakt er daarom een per pagina en stuurt hem mee. De exacte
+	   Nederlandse opzoeking heeft hem niet nodig en stuurt hem ook niet. */
+	if ( $sessie ) {
+		$headers['X-Autocomplete-Session'] = $sessie;
+	}
 
 	$antwoord = wp_remote_get( $url, array( 'timeout' => 6, 'headers' => $headers ) );
 	if ( is_wp_error( $antwoord ) ) {
@@ -417,6 +446,140 @@ function sokkies_adres_postcode_eu( $postcode, $huisnummer ) {
 		'provincie' => (string) ( $data['province'] ?? '' ),
 		'land'      => 'Netherlands',
 	);
+}
+
+/* -------------------------------------------------------------------------
+ * Straatsuggesties — Postcode.eu
+ * -------------------------------------------------------------------------
+ * Google keurt een adres maar SOMT NIETS OP: je kunt hem niet vragen welke
+ * straten er in postcode 55246 liggen, en zonder zo'n lijst kan het formulier
+ * geen keuzemenu tonen. Places Autocomplete kan het evenmin op de manier die
+ * we willen — dat is een type-ahead en heeft dus eerst getypte letters nodig,
+ * terwijl de lijst hier moet verschijnen zodra postcode en land er staan.
+ *
+ * Postcode.eu kan het wel. Daarom doet die dienst hier één ding: de STRATEN
+ * bij een postcode opnoemen. Het keuren van het uiteindelijke adres blijft
+ * bij Google.
+ *
+ * De opzoeking gaat in stappen: postcode -> gebied -> straten. Elke stap
+ * vraagt de 'context' van de vorige en een sessie-id.
+ * ------------------------------------------------------------------------- */
+
+/**
+ * ISO-3 landcode voor Postcode.eu, gezocht op de ISO-2 die we al hebben.
+ *
+ * Twee codestelsels omdat de twee diensten niet dezelfde spreken: Google wil
+ * alfa-2 ('DE'), Postcode.eu alfa-3 ('deu').
+ */
+function sokkies_postcode_eu_iso3( $iso2 ) {
+	$kaart = array(
+		'NL' => 'nld',
+		'BE' => 'bel',
+		'DE' => 'deu',
+		'FR' => 'fra',
+		'GB' => 'gbr',
+		'AT' => 'aut',
+		'CH' => 'che',
+		'DK' => 'dnk',
+		'ES' => 'esp',
+		'FI' => 'fin',
+		'IT' => 'ita',
+		'LU' => 'lux',
+		'NO' => 'nor',
+		'SE' => 'swe',
+	);
+	return isset( $kaart[ $iso2 ] ) ? $kaart[ $iso2 ] : '';
+}
+
+/**
+ * Eén stap in de internationale zoekopdracht.
+ *
+ * TWEE DINGEN DIE HIER GEMAKKELIJK MISGAAN (allebei zelf tegengekomen):
+ *
+ * 1. De 'term' moet de VOLLEDIGE waarde van de vorige treffer zijn, letterlijk
+ *    en met spaties en komma's intact, met de nieuwe invoer erachter. Stuur je
+ *    alleen het huisnummer, dan negeert de dienst de context en zoekt hij het
+ *    hele land af.
+ *
+ * 2. buildingListMode 'paged' geeft meer suggesties terug dan de standaard
+ *    'short'. Dat is precies wat we nodig hebben om te zien of een postcode
+ *    bij ÉÉN straat hoort of bij tien.
+ */
+function sokkies_postcode_eu_stap( $context, $term, $sessie ) {
+	return sokkies_postcode_eu_call(
+		'https://api.postcode.eu/international/v1/autocomplete/'
+			. rawurlencode( $context ) . '/' . rawurlencode( $term ) . '/en-GB/paged',
+		$sessie
+	);
+}
+
+/** Treffers van een bepaald niveau uit een antwoord vissen. */
+function sokkies_postcode_eu_treffers( $antwoord, $niveaus ) {
+	$uit = array();
+	foreach ( (array) ( $antwoord['matches'] ?? array() ) as $m ) {
+		if ( in_array( $m['precision'] ?? '', (array) $niveaus, true ) && ! empty( $m['context'] ) ) {
+			$uit[] = $m;
+		}
+	}
+	return $uit;
+}
+
+/**
+ * De straatnamen die bij een postcode horen.
+ *
+ * @return array Straatnamen (kan leeg zijn); nooit een WP_Error — lukt de
+ *               opzoeking niet, dan is dat geen reden om de bezoeker te
+ *               blokkeren. Hij typt de straat dan gewoon zelf.
+ */
+function sokkies_postcode_eu_straten( $iso2, $postcode, $sessie ) {
+	$iso3 = sokkies_postcode_eu_iso3( $iso2 );
+	if ( '' === $iso3 || ! sokkies_postcode_eu_gereed() || '' === $sessie ) {
+		return array();
+	}
+
+	// 1. De postcode zelf -> het gebied.
+	$stap1 = sokkies_postcode_eu_stap( $iso3, $postcode, $sessie );
+	if ( is_wp_error( $stap1 ) ) {
+		return array();
+	}
+	$gebieden = sokkies_postcode_eu_treffers( $stap1, 'PostalCode' );
+
+	/* Alleen gebieden die ook echt over DEZE postcode gaan. Zonder die zeef
+	   telt een treffer mee die de dienst er los bij zoekt, en dan zouden er
+	   straten uit een andere plaats in de lijst belanden. */
+	$passend = array();
+	foreach ( $gebieden as $g ) {
+		$plat = strtoupper( preg_replace( '/[^A-Za-z0-9]/', '', $g['label'] . $g['value'] ) );
+		if ( false !== strpos( $plat, $postcode ) ) {
+			$passend[] = $g;
+		}
+	}
+	if ( $passend ) {
+		$gebieden = $passend;
+	}
+	if ( ! $gebieden ) {
+		return array();
+	}
+
+	/* BELGIE GEEFT ER TWEE: "1000 Brussel" en "1000 Bruxelles" — dezelfde
+	   gemeente in de twee landstalen. Dat zijn geen concurrerende gebieden,
+	   dus de eerste is goed; de straten erachter zijn dezelfde straten. */
+
+	// 2. De straten binnen dat gebied.
+	$stap2 = sokkies_postcode_eu_stap( $gebieden[0]['context'], $gebieden[0]['value'], $sessie );
+	if ( is_wp_error( $stap2 ) ) {
+		return array();
+	}
+
+	$namen = array();
+	foreach ( sokkies_postcode_eu_treffers( $stap2, array( 'Street', 'Address' ) ) as $s ) {
+		$naam = trim( (string) $s['label'] );
+		if ( '' !== $naam && ! in_array( $naam, $namen, true ) ) {
+			$namen[] = $naam;
+		}
+	}
+
+	return array_slice( $namen, 0, 25 );
 }
 
 /**
@@ -1031,6 +1194,10 @@ add_action( 'rest_api_init', function () {
 				   genoeg bleken (Belgie, Duitsland, Frankrijk: daar hoort een
 				   postcode bij een hele gemeente). Leeg bij de eerste poging. */
 				'straat'     => array( 'required' => false ),
+				/* Sessie-id voor de stratenlijst van Postcode.eu: een per bezoeker
+				   die een adres invult. De voorkant maakt hem aan; zie de uitleg
+				   bij sokkies_postcode_eu_call(). */
+				'sessie'     => array( 'required' => false ),
 				/* De taal komt van de PAGINA mee. Dit eindpunt heeft zelf geen
 				   taalvoorvoegsel in de url, dus het kan de taal niet afleiden —
 				   en de meldingen hieronder belanden wel degelijk in beeld. */
@@ -1052,6 +1219,15 @@ add_action( 'rest_api_init', function () {
 				$land_bron = 'auto' === $request->get_param( 'land_bron' ) ? 'auto' : 'keuze';
 				$straat    = trim( (string) $request->get_param( 'straat' ) );
 
+				/* Het sessie-id gaat ONGEFILTERD naar een andere dienst, dus knippen
+				   we het terug tot waar het voor bedoeld is: 8 tot 64 tekens uit
+				   [A-Za-z0-9-]. Zo kan er niets anders in die header belanden. */
+				$sessie = preg_replace( '/[^A-Za-z0-9-]/', '', (string) $request->get_param( 'sessie' ) );
+				$sessie = substr( $sessie, 0, 64 );
+				if ( strlen( $sessie ) < 8 ) {
+					$sessie = '';
+				}
+
 				/* Antwoorden een dag bewaren: dezelfde postcode levert altijd
 				   hetzelfde adres, en het scheelt de provider verkeer (en geld,
 				   want de internationale opzoeking kost per aanroep). Het LAND
@@ -1071,7 +1247,7 @@ add_action( 'rest_api_init', function () {
 					return rest_ensure_response( $cache );
 				}
 
-				$adres = sokkies_offerte_adres_provider( $postcode, $huisnummer, $land, $land_bron, $straat );
+				$adres = sokkies_offerte_adres_provider( $postcode, $huisnummer, $land, $land_bron, $straat, $sessie );
 				if ( is_wp_error( $adres ) ) {
 					$code = $adres->get_error_code();
 					/* Niet elk "nee" is een fout. Een Belgische postcode, een

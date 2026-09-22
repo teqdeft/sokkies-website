@@ -154,6 +154,17 @@
      zet deze vlag; pas daarna sturen we de straat mee. Buiten die
      situatie sturen we hem NIET — bij een Britse of Nederlandse postcode
      zou een half getypte straat de opzoeking juist laten mislukken. */
+  /* Sessie-id voor de stratenlijst van Postcode.eu: EEN id per bezoeker
+     die EEN adres invult. Die dienst is daar streng over: een nieuw id bij
+     elke aanroep telt als een nieuwe sessie en verhoogt de kosten. Daarom
+     een keer per pagina, en daarna hergebruiken. */
+  var adresSessie = (function () {
+    var s = '';
+    var hex = '0123456789abcdef';
+    for (var i = 0; i < 32; i++) { s += hex.charAt(Math.floor(Math.random() * 16)); }
+    return s;
+  }());
+
   var straatNodig = false;
 
   /* Staat er op dit moment een veld door ONS te worden ingevuld? vul()
@@ -275,6 +286,7 @@
          postcode daarop lijkt. */
       '&land=' + encodeURIComponent(landKeuze()) +
       '&land_bron=' + (landAutomatisch ? 'auto' : 'keuze') +
+      '&sessie=' + encodeURIComponent(adresSessie) +
       '&straat=' + encodeURIComponent(straatNodig ? waarde('of-straat') : '');
 
     fetch(url, { headers: { Accept: 'application/json' } })
