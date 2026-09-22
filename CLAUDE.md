@@ -2786,6 +2786,33 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   50 is te weinig voor een publiek formulier — navragen bij Postcode.eu vóór
   livegang.
 
+  "GEEN EXTRA'S" WERKTE ALLEEN OP DE NEDERLANDSE PAGINA (2026-09-22, melding
+  Kulwant met een schermafbeelding van /en/offerte/ waarop alle vijf de
+  optiekaarten tegelijk aangevinkt staan).
+  OORZAAK: het script herkende de kaart aan de ZICHTBARE labeltekst
+  (labelTekst(v) === "Geen extra's"). TranslatePress vertaalt die tekst wel
+  ("No extras", "Keine Extras", "Pas d'extras") maar de WAARDE van het hokje
+  niet — die blijft in elke taal Nederlands. Op de vertaalde pagina's vond het
+  filter dus niets, viel de functie stil op `if (!geen) return;` en bestond de
+  hele uitsluiting niet meer. In het Nederlands werkte het bij TOEVAL, omdat
+  label en waarde daar gelijk zijn.
+  FIX: herkennen op de waarde. Als tweede anker het ONTWERP — alleen "Geen
+  extra's" heeft geen foto en krijgt het grijze doorstreepte vlak
+  (.extra-img-none), dus een herformulering in Gravity Forms breekt het niet.
+  DE DATA LIEP GEEN GEVAAR: de servercontrole vergelijkt de INGEZONDEN waarde
+  en die is overal Nederlands, dus "Labels + Geen extra's" was altijd al
+  geweigerd bij verzenden. Dit was puur een fout in de weergave.
+  BREDERE LES: vergelijk in JS nooit op tekst die op het scherm staat zolang
+  TranslatePress actief is. Waarden, classes en id's overleven de vertaling,
+  zichtbare tekst niet.
+  TWEE VERTAALFOUTEN GEZIEN (staan in de TranslatePress-woordenlijst, dus
+  database — niet in code te repareren): "Kaartjes" wordt in het Duits
+  "Tickets" en in het Frans "Billets" (allebei toegangsbewijzen/bankbiljetten);
+  moet "Karten" resp. "Cartes" zijn.
+  VERDER OPGEVALLEN: standaard staat "Labels" aangevinkt, terwijl het ontwerp
+  "Geen extra's" als standaard heeft — dat is de isSelected-instelling op de
+  keuze in Gravity Forms, dus database.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

@@ -20,6 +20,11 @@
      dus het getal komt per formulier-id mee uit PHP (wp_localize_script).
      Geen hardgecodeerde id's: Gravity Forms hernummert bij een import. */
   var STANDAARD_MAX = 2;
+  /* De optie die de andere uitsluit. We herkennen hem aan de WAARDE van het
+     hokje en niet aan het zichtbare label: TranslatePress vertaalt wel de
+     tekst op de kaart ("No extras", "Keine Extras") maar niet de waarde
+     die verzonden wordt. Vandaar dat de uitsluiting op de vertaalde
+     pagina's niets deed en alle opties tegelijk aan konden staan. */
   var GEEN_EXTRAS = "Geen extra's";
 
   function vakjes(veldClass) {
@@ -28,9 +33,13 @@
     return Array.prototype.slice.call(veld.querySelectorAll('input[type="checkbox"]'));
   }
 
-  function labelTekst(vakje) {
-    var lab = vakje.closest('.gchoice') && vakje.closest('.gchoice').querySelector('label');
-    return lab ? lab.textContent.trim() : '';
+  function isGeenExtras(vakje) {
+    if ((vakje.value || '').trim() === GEEN_EXTRAS) { return true; }
+    /* Wordt de keuzetekst in Gravity Forms ooit anders geformuleerd, dan
+       blijft de kaart herkenbaar aan het ontwerp: alleen "Geen extra's"
+       heeft geen foto en krijgt daarom het grijze doorstreepte vlak. */
+    var kaart = vakje.closest('.gchoice');
+    return !!(kaart && kaart.querySelector('.extra-img-none'));
   }
 
   /* ---------- 0. gekozen kaarten markeren ----------
@@ -107,7 +116,7 @@
   function pasExtrasToe(gewijzigd) {
     var lijst = vakjes('of-extras');
     if (!lijst.length) { return; }
-    var geen = lijst.filter(function (v) { return labelTekst(v) === GEEN_EXTRAS; })[0];
+    var geen = lijst.filter(isGeenExtras)[0];
     if (!geen) { return; }
     var anderen = lijst.filter(function (v) { return v !== geen; });
 
