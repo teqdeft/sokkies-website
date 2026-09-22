@@ -12484,7 +12484,7 @@
     padding-right:0;
   }
   .gift{
-    padding:90px 0 50px;
+    padding:130px 0 50px;
   }
   .gift h2{
     text-align:left;
@@ -12509,7 +12509,7 @@
   }
   .case-img.case-img-main{
     width:100%;
-    height:240px;
+    height:340px;
   }
   .case-img-col{
     display:grid;
@@ -12518,7 +12518,7 @@
     width:100%;
   }
   .case-img{
-    height:110px;
+    height:140px;
   }
   .case-text {
     width: 100%;
@@ -12544,8 +12544,8 @@
     margin-top:56px;
   }
   .designed-swiper .swiper-slide{
-    width:200px;
-    height:200px;
+    width:195px;
+    height:195px;
   }
   .brand-intro{
     padding:48px 0 100px;
@@ -12559,11 +12559,19 @@
   .faq{
     padding:70px 0 250px;
   }
+  .faq-icon {
+    position: relative;
+    top: 6px;
+  }
   .faq-left h2{
     font-size:var(--h2-font-size);
   }
+  .faq-item.is-open .faq-q{
+    padding-bottom: 8px;
+  }
   .faq-q{
     font-size:17px;
+    align-items: flex-start;
   }
   .cta-final-panel{
     padding:100px 0 60px;
