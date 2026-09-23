@@ -390,21 +390,21 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
     </section>
     <?php endif; ?>
 
-<section class="design-now">
-      <img class="design-duddle-sock" src="<?php echo esc_url( $assets ); ?>pdp-duddle-configurator.png" alt="" aria-hidden="true">
+    <!-- <section class="design-now">
+      <img class="design-duddle-sock" src="<//?php echo esc_url( $assets ); ?>pdp-duddle-configurator.png" alt="" aria-hidden="true">
       <div class="design-bg-union" aria-hidden="true"></div>
       <div class="container">
-        <h2 data-aos="fade-up"><?php echo sokkies_kop( $design_titel ); ?></h2>
+        <h2 data-aos="fade-up"><//?php echo sokkies_kop( $design_titel ); ?></h2>
         <div class="conf-preview">
           <div class="conf-preview-card">
-            <?php
+            <//?php
             /* Met een Expivi-product-ID staat hier de echte 3D-configurator;
                zonder ID blijft het de statische preview-foto. Die terugval is
                nodig: alleen dit soktype heeft een ID, de rest zou anders een
                lege kaart tonen. */
             $expivi_product_id = get_field( 'expivi_product_id' );
             ?>
-            <?php if ( $expivi_product_id ) : ?>
+            <//?php if ( $expivi_product_id ) : ?>
             <div class="expivi-configurator">
               <div class="expivi-viewer">
                 <div id="expivi-viewer"></div>
@@ -414,14 +414,14 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                 <div id="expivi-options"></div>
               </div>
             </div>
-            <?php else : ?>
-            <img src="<?php echo esc_url( $design_foto ? $design_foto['url'] : $assets . 'configurator-demo-pdp.png' ); ?>" alt="Sok preview">
-            <?php endif; ?>
+            <//?php else : ?>
+            <img src="<//?php echo esc_url( $design_foto ? $design_foto['url'] : $assets . 'configurator-demo-pdp.png' ); ?>" alt="Sok preview">
+            <//?php endif; ?>
           </div>
-          <a href="<?php echo esc_url( ! empty( $design_knop['url'] ) ? $design_knop['url'] : home_url( '/configurator/' ) ); ?>" class="conf-preview-button"><?php echo esc_html( ! empty( $design_knop['title'] ) ? $design_knop['title'] : 'Zelf ontwerpen' ); ?></a>
+          <a href="<//?php echo esc_url( ! empty( $design_knop['url'] ) ? $design_knop['url'] : home_url( '/configurator/' ) ); ?>" class="conf-preview-button"><//?php echo esc_html( ! empty( $design_knop['title'] ) ? $design_knop['title'] : 'Zelf ontwerpen' ); ?></a>
         </div>
       </div>
-    </section>
+    </section> -->
 
 <section class="usecases">
       <div class="container">
