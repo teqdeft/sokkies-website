@@ -1209,7 +1209,7 @@ font-weight: 600;
   }
   .collection-card{
     background:#fff;
-    border-radius:20px;
+    border-radius:15px;
     padding:10px 10px 20px;
     text-decoration:none;
     color:var(--text);
