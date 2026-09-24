@@ -567,10 +567,10 @@
   }
   .faq-grid {
     grid-template-columns: 482px 1fr;
-    gap: 135px;
+    gap: 35px;
   }
   .faq-left p {
-    max-width: 100%;
+    max-width: 80%;
   }
   .faq-a-inner p{
     max-width: 92%;
@@ -5651,15 +5651,19 @@
        aanpak als in de >=992-band. */
     grid-auto-rows:calc((100% - 60px) / 5);
     overflow-y:auto;
+    /* zelfde huisstijl-scrollbar als in de >=992-band */
     scrollbar-width:thin;
-    scrollbar-color:rgb(40 18 27 / 35%) transparent;
+    scrollbar-color:var(--coral) rgb(40 18 27 / 10%);
     gap:15px;
   }
-  .prod-thumbs::-webkit-scrollbar{ width:4px; }
-  .prod-thumbs::-webkit-scrollbar-track{ background:transparent; }
+  .prod-thumbs::-webkit-scrollbar{ width:6px; }
+  .prod-thumbs::-webkit-scrollbar-track{
+    background:rgb(40 18 27 / 10%);
+    border-radius:20px;
+  }
   .prod-thumbs::-webkit-scrollbar-thumb{
-    background:rgb(40 18 27 / 35%);
-    border-radius:4px;
+    background:var(--coral);
+    border-radius:20px;
   }
   .prod-thumb{
     min-height:0;
@@ -9406,15 +9410,19 @@
        aanpak als in de >=992-band. */
     grid-auto-rows:calc((100% - 60px) / 5);
     overflow-y:auto;
+    /* zelfde huisstijl-scrollbar als in de >=992-band */
     scrollbar-width:thin;
-    scrollbar-color:rgb(40 18 27 / 35%) transparent;
+    scrollbar-color:var(--coral) rgb(40 18 27 / 10%);
     gap:15px;
   }
-  .prod-thumbs::-webkit-scrollbar{ width:4px; }
-  .prod-thumbs::-webkit-scrollbar-track{ background:transparent; }
+  .prod-thumbs::-webkit-scrollbar{ width:6px; }
+  .prod-thumbs::-webkit-scrollbar-track{
+    background:rgb(40 18 27 / 10%);
+    border-radius:20px;
+  }
   .prod-thumbs::-webkit-scrollbar-thumb{
-    background:rgb(40 18 27 / 35%);
-    border-radius:4px;
+    background:var(--coral);
+    border-radius:20px;
   }
   .prod-thumb{
     min-height:0;
@@ -12585,10 +12593,11 @@
   }
   .cta-final-panel > .container > p{
     font-size:17px;
+    margin-bottom: 20px;
   }
   /* footer: 50px zij-padding at kolombreedte op */
   .footer-grid{
-    padding-top:30px;
+    padding-top:60px;
   }
   /* footer (specs Kulwant, deel 1) */
   .footer-logo svg{
@@ -12596,7 +12605,7 @@
     height:auto;
   }
   .footer-logo{
-    margin-bottom:20px;
+    margin-bottom:16px;
   }
   .footer-brand{
     padding-top:0;
@@ -12606,8 +12615,8 @@
   .footer-certs{
     flex-direction:row;
     align-items:center;
-    gap:15px;
-    justify-content: space-between;
+    gap: 15px;
+    justify-content: flex-start;
   }
   .footer-certs-list{
     display:flex;

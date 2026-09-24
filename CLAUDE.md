@@ -3023,6 +3023,29 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   wordt nog steeds geweigerd (Grotestraat in 1000, Rue de Rivoli in 13116), en
   Nederland doet 2012ES/30 goed en 5211AB/12 niet.
 
+  SCROLLBAR VAN DE THUMBNAILKOLOM IN DE HUISSTIJL (2026-09-24, melding Kulwant
+  met een schermafbeelding van kerstsokken waarop de grijze standaardbalk naast
+  de miniaturen rood omcirkeld staat).
+  WAT ER MIS WAS: de kolom stond op scrollbar-color rgb(40 18 27 / 35%) op een
+  TRANSPARANTE baan — een vage grijze duim zonder baan, wat als een
+  browserstandaard oogt in plaats van als onderdeel van het ontwerp.
+  DE SITE HEEFT AL EEN SCROLLBAR-ONTWERP: .compare-scroll (vergelijkingstabel)
+  gebruikt een zachte baan met een massieve duim, allebei met ronde hoeken. Dat
+  patroon is nu overgenomen, omgekeerd voor een lichte achtergrond: duim
+  var(--coral), baan rgb(40 18 27 / 10%).
+  LET OP, DE VALKUIL DIE HIER AL EERDER SPEELDE (notitie 2026-08-24): zodra
+  scrollbar-width gezet is, negeert Chrome de ::-webkit-scrollbar-regels
+  volledig — die 4px deed dus niets. De webkit-regels blijven staan voor Safari,
+  dat de standaardeigenschappen niet kent, en zijn nu GELIJKGETROKKEN met de
+  standaardregel. Stonden ze uit elkaar: Chrome toonde grijs, Safari coral.
+  DRIE BANDEN aangepast (>=992 in style.css, 768-991 en 521-767 in
+  responsive.css). De band <=520 is bewust ongemoeid: daar is de kolom een
+  HORIZONTALE rij met scrollbar-width:none, net als elke andere mobiele
+  kaartenrij op de site (gift, collection, topbar, chips).
+  GEEN LAYOUTVERSCHUIVING: gemeten voor en na is de kolom 110px, de thumb 100px
+  en de scrollbar 10px breed — de bekende 10px die scrollbar-width:thin kost
+  blijft precies gelijk.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
