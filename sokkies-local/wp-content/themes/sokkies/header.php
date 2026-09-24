@@ -19,7 +19,7 @@
 
 <header>
       <div class="container">
-        <div class="nav-wrap">
+        <div class="nav-wrap<?php echo sokkies_mini_header() ? " navbar-mini-main" : ""; ?><?php echo sokkies_landing_header() ? " navbar-mini-main" : ""; ?>">
           <nav class="navbar<?php echo sokkies_mini_header() ? " navbar-mini" : ""; ?><?php echo sokkies_landing_header() ? " navbar-mini navbar-landing" : ""; ?>">
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="logo">
             <svg id="Group_235" data-name="Group 235" xmlns="http://www.w3.org/2000/svg" width="134.897" height="42" viewBox="0 0 134.897 42">
