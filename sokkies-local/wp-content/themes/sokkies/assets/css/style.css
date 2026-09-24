@@ -5889,7 +5889,7 @@ font-weight: 600;
          standaardeigenschappen niet kent. Beide dus GELIJK houden,
          anders ziet de ene browser iets anders dan de andere. */
       scrollbar-width:thin;
-      scrollbar-color:var(--coral) rgb(40 18 27 / 10%);
+      scrollbar-color:var(--coral) rgb(40 18 27 / 0%);
     }
     .prod-thumbs::-webkit-scrollbar{ width:6px; }
     .prod-thumbs::-webkit-scrollbar-track{
@@ -5902,6 +5902,13 @@ font-weight: 600;
     }
     /* niet laten krimpen wanneer de kolom scrollt */
     .prod-thumb{ flex:0 0 auto; }
+  }
+
+  /* Alleen ALS de kolom echt scrolt (klasse komt uit custom.js, CSS kan
+     dat zelf niet zien): 2px lucht rechts in de thumb. Staat er geen
+     scrollbar, dan blijft de foto de volle breedte houden. */
+  .prod-thumbs.heeft-scrollbar .prod-thumb{
+    padding-right:2px;
   }
   .prod-thumb-play{
     position:absolute;

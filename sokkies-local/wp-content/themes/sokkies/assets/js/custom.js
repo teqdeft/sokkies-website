@@ -2159,3 +2159,34 @@
       if (e.key === 'Escape' && !popup.hidden) close();
     });
   })();
+
+  /* ── Thumbnailkolom: markeren wanneer er ECHT een scrollbar staat ──
+     Alleen dan krijgt .prod-thumb zijn extra padding-right (zie style.css).
+     CSS kan niet zien of een element scrolt, vandaar deze klasse.
+
+     Alleen VERTICAAL meten: in de band <=520 is de kolom een horizontale
+     rij, daar scrolt scrollWidth en blijft scrollHeight gelijk — die band
+     krijgt de klasse dus vanzelf niet, precies zoals bedoeld.
+
+     Opnieuw meten bij resize: per band verschillen de thumbhoogte en de
+     kolomhoogte, dus of er een scrollbar staat verschilt mee. */
+  (function () {
+    var kolommen = document.querySelectorAll('.prod-thumbs');
+    if (!kolommen.length) { return; }
+
+    function meet() {
+      kolommen.forEach(function (kolom) {
+        kolom.classList.toggle('heeft-scrollbar', kolom.scrollHeight > kolom.clientHeight);
+      });
+    }
+
+    meet();
+    /* Foto's die nog laden kunnen de hoogte nog veranderen. */
+    window.addEventListener('load', meet);
+
+    var wacht;
+    window.addEventListener('resize', function () {
+      clearTimeout(wacht);
+      wacht = setTimeout(meet, 150);
+    });
+  })();
