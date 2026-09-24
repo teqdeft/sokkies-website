@@ -3042,17 +3042,18 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   responsive.css). De band <=520 is bewust ongemoeid: daar is de kolom een
   HORIZONTALE rij met scrollbar-width:none, net als elke andere mobiele
   kaartenrij op de site (gift, collection, topbar, chips).
-  VERVOLG (verzoek Kulwant): .prod-thumb krijgt 2px padding-right, maar ALLEEN
-  als de kolom echt scrolt. CSS kan dat niet zien, dus een kleine IIFE in
-  custom.js zet de klasse heeft-scrollbar op .prod-thumbs (verticaal gemeten,
-  dus de horizontale mobiele rij krijgt hem vanzelf niet) en hermeet bij
-  resize en na window.load. Gemeten: kerstsokken (10 fotos, scrolt) thumb
-  100px met foto 94px; reguliere sokken (5 fotos, scrolt niet) geen klasse,
-  padding 0, foto 106px.
-  LET OP WAT DIT DOET: .prod-thumb heeft overflow:hidden met een foto op
-  100%, dus die padding maakt de FOTO 2px smaller — de knop zelf blijft even
-  breed. Er komt dus geen lucht tussen de thumb en de scrollbar; wie dat wil,
-  moet de padding op de container .prod-thumbs zetten.
+  VERVOLG (verzoek Kulwant): 2px lucht tussen de thumbs en de scrollbar, maar
+  ALLEEN als de kolom echt scrolt. CSS kan niet zien of een element scrolt,
+  dus een kleine IIFE in custom.js zet de klasse heeft-scrollbar op
+  .prod-thumbs (verticaal gemeten, dus de horizontale mobiele rij krijgt hem
+  vanzelf niet) en hermeet bij resize en na window.load.
+  DE PADDING HOORT OP DE CONTAINER, niet op de thumb. Eerst stond hij op
+  .prod-thumb, maar dat is een knop met overflow:hidden en een foto op 100%:
+  dan wordt alleen de FOTO smaller en blijft de knop even breed, dus er komt
+  geen lucht bij de scrollbar. Op .prod-thumbs werkt het wel.
+  GEMETEN met scrollbar: container padding 2px, thumb 98px (was 100), foto
+  94px, afstand van de thumbrand tot de kolomrand 12px (2px padding + 10px
+  scrollbar). Zonder scrollbar: geen klasse, padding 0, thumb 110, foto 106.
   GEEN LAYOUTVERSCHUIVING: gemeten voor en na is de kolom 110px, de thumb 100px
   en de scrollbar 10px breed — de bekende 10px die scrollbar-width:thin kost
   blijft precies gelijk.

@@ -5907,7 +5907,7 @@ font-weight: 600;
   /* Alleen ALS de kolom echt scrolt (klasse komt uit custom.js, CSS kan
      dat zelf niet zien): 2px lucht rechts in de thumb. Staat er geen
      scrollbar, dan blijft de foto de volle breedte houden. */
-  .prod-thumbs.heeft-scrollbar .prod-thumb{
+  .prod-thumbs.heeft-scrollbar{
     padding-right:2px;
   }
   .prod-thumb-play{
