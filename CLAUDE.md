@@ -3058,6 +3058,31 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   en de scrollbar 10px breed — de bekende 10px die scrollbar-width:thin kost
   blijft precies gelijk.
 
+  CASEDETAIL: TWEE FOTO'S NAAST HET VERHAAL (2026-09-25, melding Kulwant met
+  een schermafbeelding van /cases/easyflex/ waarop de fotorij en de lege
+  ruimte ernaast allebei rood omkaderd staan).
+  WAT ER MIS WAS: de lichte weergave zet de fotorij BOVEN het verhaal over de
+  volle containerbreedte. Met drie foto's vult die rij zich netjes, maar de
+  tekstkolom eronder is .impact-left en dus maar 40% breed — bij twee foto's
+  bleef daardoor 790px van de 1320px naast de tekst leeg (gemeten op 1440).
+  FIX: bij PRECIES TWEE foto's gaan ze gestapeld naast het verhaal staan.
+  De sectie krijgt de class case-story-duo en de fotorij wordt dan BINNEN
+  .case-story-inner uitgevoerd in plaats van erboven. Gemeten na de fix op
+  1440: tekst 722px links, fotokolom 528px rechts, twee foto's van 528x396.
+  EEN OF DRIE FOTO'S BLIJVEN ONGEMOEID: die vullen de rij boven het verhaal
+  wel. De markup staat maar op EEN plek in het sjabloon — hij wordt met
+  ob_start() een keer opgebouwd en daarna op de juiste plek uitgevoerd.
+  ONDER 992px VERANDERT ER NIETS: daar is geen ruimte voor een kolom ernaast,
+  dus de inner staat op flex-direction:column met de foto's op order -1 —
+  weer boven de tekst. Nagemeten op 900 en 390: foto's boven, geen
+  horizontale scroll, op 390 nog steeds 350x420 gestapeld zoals voorheen.
+  GEVERIFIEERD met het ECHTE sjabloonblok tegen stubgegevens (licht 1/2/3 en
+  standaard 2/3): alleen de tweefoto-situatie krijgt de duo-class en de rij
+  naast de tekst; de standaardvariant houdt zijn twee schuivende kolommen.
+  Van de 20 cases gebruikt alleen easyflex de lichte weergave; sanquin-23 is
+  apart nagemeten omdat er markup is verplaatst (2 kolommen, 14 slides,
+  742x540 — onveranderd).
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

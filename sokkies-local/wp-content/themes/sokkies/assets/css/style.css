@@ -2412,7 +2412,15 @@ font-weight: 600;
   }
   /* WP-toevoeging 2026-08-21 (verzoek team, conform sokkies.com): links die
    redacteuren in FAQ-antwoorden/spec-teksten zetten — roze + semi-bold. */
-  .faq-a-inner a,
+  .faq-a-inner a{
+    color:var(--coral);
+    font-weight:600;
+    transition: 0.2s ease-in-out;
+    text-decoration: none;
+  }
+  .faq-a-inner a:hover{
+    text-decoration: underline;
+  }
   .spec-a-inner a{
     color:var(--pink);
     font-weight:600;
@@ -5159,7 +5167,7 @@ font-weight: 600;
     border-radius:15px;
     overflow:hidden;
     background:#f0f0f0;
-    border: 1px solid #dddd;
+    outline: 1px solid #dddd;
   }
   .case-card-img img{
     width:100%;
@@ -5633,6 +5641,41 @@ font-weight: 600;
     border-radius:25px;
         border: 1px solid #dddddd;
   }
+  /* TWEE FOTO'S: gestapeld NAAST het verhaal in plaats van in een rij
+     erboven. Over de volle breedte vullen twee foto's de rij wel, maar
+     dan blijft de halve breedte naast de tekst leeg (gemeten 790px van
+     de 1320px op 1440). De markup komt uit single-sokkies_case.php, die
+     de fotorij bij precies twee foto's binnen .case-story-inner zet.
+     SMAL (onder 992px) blijft alles zoals het was: kolomrichting met de
+     foto's op order -1, dus weer boven de tekst — naast elkaar is daar
+     geen ruimte voor. */
+  .case-story-licht.case-story-duo .case-story-inner{
+    display:flex;
+    flex-direction:column;
+  }
+  .case-story-licht.case-story-duo .case-story-fotos{
+    order:-1;
+  }
+  @media (min-width:992px){
+    .case-story-licht.case-story-duo .case-story-inner{
+      flex-direction:row;
+      align-items:flex-start;
+      gap:70px;
+    }
+    .case-story-licht.case-story-duo .case-story-fotos{
+      order:0;
+      /* vaste kolom: de tekst ernaast krijgt de rest via flex:1 */
+      flex:0 0 55%;
+      margin-bottom:0;
+    }
+    /* De 420px-bandhoogte is voor de VOLLE breedte; in een kolom van 40%
+       zou dat een bijna vierkante uitsnede geven. Liggend 4:3 houdt de
+       foto's in verhouding met de rij-variant. */
+    .case-story-licht.case-story-duo .case-story-fotos img{
+      height:auto;
+      aspect-ratio:4 / 3;
+    }
+  }
   /* Eén foto vult anders een vierkant van de halve paginabreedte — dat
      wordt een torenhoog blok naast de tekst. Liggend staat daar beter. */
   .case-story-fotos:has(img:only-child) img{
@@ -5715,6 +5758,7 @@ font-weight: 600;
     object-fit:cover;
     border-radius:14px;
     display:block;
+    outline: 1px solid #dddd;
   }
 
   .case-quote{
@@ -5836,7 +5880,7 @@ font-weight: 600;
     border-radius:25px;
     box-shadow:0 16px 36px rgba(0,0,0,.14);
     padding:18px 20px;
-    width:240px;
+    width:max-content;
   }
   .prod-cost-title{
     display:block;
@@ -6776,7 +6820,7 @@ font-weight: 600;
   .promo-float-body{
     display:flex;
     flex-direction:column;
-    padding:8px 24px 4px 0;
+    padding:8px 30px 4px 0;
   }
   .promo-float-body h5{
     font-family:var(--roc-grotesk);

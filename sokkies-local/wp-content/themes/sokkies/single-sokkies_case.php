@@ -62,21 +62,38 @@ if ( $story ) {
        De lichte variant is er voor cases met maar een paar foto's — de
        schuivende kolommen herhalen dezelfde foto's dan zichtbaar. */
     $story_variant = get_field( 'story_variant' ) ?: 'standaard';
+
+    /* Bij PRECIES TWEE foto's staan ze NAAST het verhaal, gestapeld, in
+       plaats van in een rij erboven. Over de volle breedte vullen twee
+       foto's de rij wel, maar dan blijft de halve breedte naast de tekst
+       leeg — gemeten 790px op 1440. Een, drie of meer foto's houden de
+       rij erboven: die vullen hem netjes. */
+    $story_duo = ( 'licht' === $story_variant && $story_urls && 2 === count( $story_urls ) );
+
+    /* De fotorij wordt hier EEN keer opgebouwd en verderop op de juiste
+       plek uitgevoerd — boven het verhaal of ernaast. Zo staat de markup
+       maar op een plek. */
+    $story_fotos = '';
+    if ( $story_urls && 'licht' === $story_variant ) :
+      ob_start();
+      ?>
+      <div class="case-story-fotos">
+        <?php foreach ( array_slice( $story_urls, 0, 3 ) as $story_url ) : ?>
+        <img src="<?php echo esc_url( $story_url ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>" loading="lazy">
+        <?php endforeach; ?>
+      </div>
+      <?php
+      $story_fotos = ob_get_clean();
+    endif;
     ?>
     <?php if ( $aanleiding || $verhaal ) : ?>
     <!-- Hoe het ging -->
-    <section class="case-story case-story-<?php echo esc_attr( $story_variant ); ?>">
+    <section class="case-story case-story-<?php echo esc_attr( $story_variant ); ?><?php echo $story_duo ? ' case-story-duo' : ''; ?>">
       <div class="container">
-        <?php if ( $story_urls && 'licht' === $story_variant ) : ?>
         <?php /* Lichte weergave: de foto's staan BOVEN het verhaal, over de
-                 volle breedte, stil. De rij voegt zich naar het aantal — 1, 2
-                 of 3 vullen hem elk. */ ?>
-        <div class="case-story-fotos">
-          <?php foreach ( array_slice( $story_urls, 0, 3 ) as $story_url ) : ?>
-          <img src="<?php echo esc_url( $story_url ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>" loading="lazy">
-          <?php endforeach; ?>
-        </div>
-        <?php endif; ?>
+                 volle breedte, stil. Bij twee foto's gaan ze juist NAAST de
+                 tekst — dan worden ze hieronder uitgevoerd. */ ?>
+        <?php if ( ! $story_duo ) { echo $story_fotos; } ?>
         <div class="impact-inner case-story-inner">
           <div class="impact-left case-story-left">
             <h2>Hoe het ging</h2>
@@ -91,6 +108,9 @@ if ( $story ) {
             <p><?php echo sokkies_tekst_regels( $verhaal ); ?></p>
             <?php endif; ?>
           </div>
+
+          <?php /* Twee foto's: gestapeld naast het verhaal. */ ?>
+          <?php if ( $story_duo ) { echo $story_fotos; } ?>
 
           <?php if ( $story_urls && 'licht' !== $story_variant ) : $n = count( $story_urls ); ?>
           <?php /* TWEE kolommen (was drie). Elke kolom start een foto verder,
