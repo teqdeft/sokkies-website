@@ -3188,6 +3188,39 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   Op 390 is de padding nog steeds 9.1px, dus de rekensom klopt daar ook; geen
   horizontale scroll.
 
+  GEKOZEN EN NIET-GEKOZEN KEUZEKAARTEN (2026-09-28, verzoek Kulwant: "op 10%
+  zie je niet wat een optie is zonder hem aan en uit te klikken").
+  NIEUWE STATEN, op beide formulieren en in alle stappen:
+    niet gekozen : foto op 75%, lichtgrijze rand om het beeld, geen vinkje
+    wel gekozen  : foto op 100%, rand zwart, vinkje groen
+  GEEN NIEUWE KLEUREN: de rand is #dddddd, dezelfde lichtgrijze beeldrand als
+  de kaartfoto's op de overzichten; het groen is var(--green) (#1DD665),
+  hetzelfde groen als de afgeronde stappen in de stepper en de vinkjes in
+  "Wat krijg je?" — dat vinkje was donker (var(--text)) en is nu groen.
+  De overgang blijft 0.2s en geldt nu OOK voor de randkleur; zonder dat
+  springt de rand hard van grijs naar zwart terwijl de foto opfadet.
+  De rand kost geen ruimte: box-sizing staat globaal op border-box.
+  DE AANVULLENDE OPTIES KREGEN DEZELFDE BEHANDELING (stap 2). "Geen extra's"
+  blijft bewust op 100%: dat is geen foto maar het grijze vlak uit het
+  ontwerp, dat hoeft niet te faden.
+  MEETVALKUIL DIE HIER TWEE KEER TOESLOEG — en die elke volgende meting aan
+  deze kaarten zal raken: opacity EN border-color staan nu allebei in de
+  transition, en in het browserpaneel van Claude lopen CSS-transities NIET
+  door. Een gekozen kaart meet daar dus eeuwig 0.75 en grijs: dat is de
+  BEGINwaarde van een overgang die nooit start. Met een tijdelijke
+  `*{transition:none}` erin kwamen de juiste waarden er meteen uit
+  (1 / rgb(40,18,27) / rgb(29,214,101)). Meet de eindtoestand, niet de
+  animatie.
+  DROPBOX HEEFT EEN BEWERKING OVERSCHREVEN, hier vastgelegd omdat het
+  ongemerkt gebeurde: na een geslaagde patch en een geslaagde browsercontrole
+  was de regel `border-color:var(--text)` op .is-selected .pick-img even later
+  van schijf VERDWENEN, terwijl de vijf andere bewerkingen in hetzelfde
+  bestand er nog stonden. Geen conflictkopie in de map. Dit is precies het
+  risico dat onder MULTI-MACHINE staat. Na het opnieuw toevoegen meteen
+  gecommit. LES: bij werk in dit bestand na de controle nog één keer op
+  schijf verifiëren en zo snel mogelijk committen — git is de enige
+  betrouwbare kopie.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

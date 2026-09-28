@@ -3615,7 +3615,7 @@ font-weight: 600;
      offerte- en het sampleformulier: die delen deze classes. */
   .type-pick-outer {
     padding: 9.1px;
-    border: 0.5px solid var(--dark);
+    border: 0.5px solid #dddddd;
     border-radius: 10px;
     margin-bottom: 18px;
     position: relative;
@@ -3631,14 +3631,27 @@ font-weight: 600;
     opacity:0; 
     pointer-events:none;
   }
+
+  /* GEKOZEN EN NIET-GEKOZEN KAARTEN (verzoek: op 10% zie je niet wat een
+     optie is zonder hem aan en uit te klikken).
+       niet gekozen : foto op 75%, lichtgrijze rand om het beeld, geen vinkje
+       wel gekozen  : foto op 100%, rand zwart, vinkje groen
+     De rand is #dddddd, dezelfde lichtgrijze beeldrand als de kaartfoto's op
+     de overzichten; het groen is var(--green), hetzelfde groen als de
+     afgeronde stappen in de stepper en de vinkjes in "Wat krijg je?" —
+     geen nieuwe kleur er dus bij.
+     De rand kost geen ruimte: box-sizing staat globaal op border-box.
+     De overgang blijft 0.2s en geldt nu ook voor de randkleur, anders
+     springt de rand hard van grijs naar zwart terwijl de foto opfadet. */
   .pick-img{
     display:block;
     height:182px;
-    border-radius:1px; /* concentrisch: 10 - 9.1 */
+    border-radius:10px; 
     overflow:hidden;
     background:#f0f0f0;
-    opacity: 10%;
-    transition: opacity 0.2s;
+    border:1px solid #dddddd;
+    opacity: 75%;
+    transition: opacity 0.2s, border-color 0.2s;
   }
   .pick-img img{ width:100%;height:100%;object-fit:cover; }
   
@@ -3655,6 +3668,7 @@ font-weight: 600;
   }
   .is-selected .pick-img{
     opacity: 100%;
+    border-color:var(--text);
   }
   .is-selected .type-pick-outer{
     border: 1.5px solid var(--dark);
@@ -3670,7 +3684,7 @@ font-weight: 600;
     bottom:-15px;top:auto;left:50%;
     width:30px;
     height:30px;
-    background:var(--text);
+    background:var(--green);
     border-radius:50%;
   }
   .pick-card.is-selected .pick-check::after{
@@ -3849,15 +3863,19 @@ font-weight: 600;
     text-align:center;
     padding:0;
   }
+  /* De aanvullende opties krijgen exact dezelfde behandeling als de
+     soktypes hierboven; ze stonden alleen nog zonder overgang. */
   .extra-img{
     display:flex;
     align-items:center;
     justify-content:center;
     height:182px;
-    border-radius:1px; /* concentrisch: 10 - 9.1 */
+    border-radius:10px;
     overflow:hidden;
     background:#f0f0f0;
-    opacity: 10%;
+    border:1px solid #dddddd;
+    opacity: 75%;
+    transition: opacity 0.2s, border-color 0.2s;
   }
   .extra-img img{ width:100%;height:100%;object-fit:cover; }
   .extra-img-none{ 
@@ -3876,7 +3894,7 @@ font-weight: 600;
   .extra-card.is-selected .pick-check{
     display:block;
     bottom:-15px;top:auto;left:50%;transform:translateX(-50%);
-    width:30px;height:30px;background:var(--text);border-radius:50%;
+    width:30px;height:30px;background:var(--green);border-radius:50%;
   }
   .extra-card.is-selected .extra-img{
     opacity: 100%;
