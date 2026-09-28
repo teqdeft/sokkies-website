@@ -5963,6 +5963,51 @@ font-weight: 600;
      de specificiteit, dus erna zou display:none ook op desktop winnen. */
   .prod-thumbs-nav{ display:none; }
 
+  /* ===== Pijlen bij de fotostrip: vanaf 521px =====
+     Overal waar de strip VERTICAAL staat, staan de pijlen erbij. Onder
+     521px is het een horizontale rij die de bezoeker veegt; daar is de
+     afgesneden thumb aan de rand het signaal en zijn knoppen overbodig.
+     Standaard absoluut: in de banden 521-991 is .prod-gallery relatief en
+     staat de strip rechts (width 110px). right:33px = (110 - 44) / 2, dus
+     de knop staat midden boven de strip. Vanaf 992px wordt dit vervangen
+     door een plek in het raster (zie verderop). */
+  @media (min-width:521px){
+    .prod-thumbs-nav{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:absolute;
+      right:33px;
+      z-index:2;
+      width:44px;
+      height:30px;
+      padding:0;
+      border:1.5px solid var(--dark);
+      border-radius:7px;
+      background:#fff;
+      cursor:pointer;
+      transition:all .2s;
+    }
+    .prod-thumbs-nav.is-vorige{ top:6px; }
+    .prod-thumbs-nav.is-volgende{ bottom:6px; }
+    /* Eén pijlfiguur uit de bestaande nav-familie, hier gedraaid naar
+       boven en onder omdat deze strip verticaal loopt. */
+    .prod-thumbs-nav.is-vorige svg{ transform:rotate(-90deg); }
+    .prod-thumbs-nav.is-volgende svg{ transform:rotate(90deg); }
+    /* zelfde hover als .gallery-nav en de andere pijl-navs */
+    .prod-thumbs-nav:hover:not(:disabled){
+      background:var(--light-beige);
+      border-color:var(--dark);
+      transform:translateY(-2px);
+    }
+    .prod-thumbs-nav:hover:not(:disabled) svg path{ stroke:var(--dark); }
+    /* Een pijl die niets meer kan, gaat WEG in plaats van uitgegrijsd.
+       De andere pijl-navs op de site staan op een egale achtergrond, daar
+       leest opacity:.4 prima; hier ligt de knop op een foto en blijft er
+       dan een spookknop over de eerste thumb staan. */
+    .prod-thumbs-nav:disabled{ visibility:hidden; }
+  }
+
   /* Meer dan 5 thumbnails paste niet: 5 x 140 + 4 x 10 = 740, precies de
      hoogte van .prod-main. Bij 6+ rekte de grid-rij mee en stak de strip
      onder de hoofdfoto uit (melding Kulwant, kerstsokken heeft er 10).
@@ -5987,18 +6032,12 @@ font-weight: 600;
          hieronder volledig — die blijven staan voor Safari, dat de
          standaardeigenschappen niet kent. Beide dus GELIJK houden,
          anders ziet de ene browser iets anders dan de andere. */
-      scrollbar-width:thin;
-      scrollbar-color:var(--coral) rgb(40 18 27 / 0%);
+    /* Geen zichtbare scrollbar: de pijlen wijzen de weg en de
+       halve zesde thumb laat zien dat er meer is. */
+    scrollbar-width:none;
     }
-    .prod-thumbs::-webkit-scrollbar{ width:6px; }
-    .prod-thumbs::-webkit-scrollbar-track{
-      background:transparent;
-      border-radius:20px;
-    }
-    .prod-thumbs::-webkit-scrollbar-thumb{
-      background:var(--coral);
-      border-radius:20px;
-    }
+    /* Safari kent scrollbar-width niet, die heeft deze regel nodig. */
+    .prod-thumbs::-webkit-scrollbar{ display:none; }
     /* niet laten krimpen wanneer de kolom scrollt */
     .prod-thumb{ flex:0 0 auto; }
 
@@ -6016,56 +6055,22 @@ font-weight: 600;
       height:calc((100% - 5 * var(--thumb-gap)) / 5.5);
     }
 
-    /* De pijlen liggen in dezelfde rastercel als de strip (kolom 2,
-       rij 1) en dus eroverheen. Geen absolute positionering: dan zou
-       .prod-gallery een position nodig hebben en zou de plek per band
-       nagerekend moeten worden. Een raster-item in dezelfde cel schuift
-       niets op en volgt de kolombreedte vanzelf. */
+    /* Op desktop is .prod-gallery een raster: de pijlen krijgen dezelfde
+       cel als de strip (kolom 2, rij 1) en liggen er dus overheen, zonder
+       dat er iets hoeft te worden nagerekend. In de smallere banden staat
+       de strip absoluut en gebeurt dat hierboven met right/top/bottom. */
     .prod-thumbs-nav{
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      position:static;
       grid-column:2;
       grid-row:1;
       justify-self:center;
-      z-index:2;
-      width:44px;
-      height:30px;
-      padding:0;
-      border:1.5px solid var(--dark);
-      border-radius:7px;
-      background:#fff;
-      cursor:pointer;
-      transition:all .2s;
+      right:auto;
     }
-    .prod-thumbs-nav.is-vorige{ align-self:start; margin-top:6px; }
-    .prod-thumbs-nav.is-volgende{ align-self:end; margin-bottom:6px; }
-    /* Eén pijlfiguur uit de bestaande nav-familie, hier gedraaid naar
-       boven en onder omdat deze strip verticaal loopt. */
-    .prod-thumbs-nav.is-vorige svg{ transform:rotate(-90deg); }
-    .prod-thumbs-nav.is-volgende svg{ transform:rotate(90deg); }
-    /* zelfde hover als .gallery-nav en de andere pijl-navs */
-    .prod-thumbs-nav:hover:not(:disabled){
-      background:var(--light-beige);
-      border-color:var(--dark);
-      transform:translateY(-2px);
-    }
-    .prod-thumbs-nav:hover:not(:disabled) svg path{ stroke:var(--dark); }
-    /* Een pijl die niets meer kan, gaat WEG in plaats van uitgegrijsd.
-       De andere pijl-navs op de site staan op een egale achtergrond, daar
-       leest opacity:.4 prima; hier ligt de knop op een foto en blijft er
-       dan een spookknop over de eerste thumb staan. visibility houdt de
-       plek in het raster bezet, dus er verspringt niets. */
-    .prod-thumbs-nav:disabled{ visibility:hidden; }
+    .prod-thumbs-nav.is-vorige{ top:auto; align-self:start; margin-top:6px; }
+    .prod-thumbs-nav.is-volgende{ bottom:auto; align-self:end; margin-bottom:6px; }
   }
 
 
-  /* Alleen ALS de kolom echt scrolt (klasse komt uit custom.js, CSS kan
-     dat zelf niet zien): 2px lucht rechts in de thumb. Staat er geen
-     scrollbar, dan blijft de foto de volle breedte houden. */
-  .prod-thumbs.heeft-scrollbar{
-    padding-right:2px;
-  }
   .prod-thumb-play{
     position:absolute;
     top:50%; left:50%;

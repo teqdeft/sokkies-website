@@ -3482,6 +3482,57 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   vraagt. Nagemeten: 90x90 thumbs, scrollbreedte 686 in een venster van 370,
   geen horizontale paginascroll.
 
+
+  PIJLEN TOT 520px EN DE SCROLLBAR WEG (2026-09-28, vervolgverzoek Kulwant met
+  een schermafbeelding op 768px: "add arrow till 520px and remove scrollbar").
+  (1) DE PIJLEN STAAN NU IN ELKE BAND WAAR DE STRIP VERTICAAL LOOPT, dus vanaf
+  521px. Onder die grens is het een horizontale rij die de bezoeker veegt; daar
+  blijft de afgesneden thumb aan de rand het signaal. Grens nagemeten: op 520
+  staan de knoppen op display:none en is de rij horizontaal, op 521 staan ze er
+  en loopt de strip verticaal.
+  DE PLAATSING VERSCHILT PER BAND, want de opbouw verschilt: vanaf 992px is
+  .prod-gallery een raster en krijgen de pijlen dezelfde cel als de strip; in
+  521-991 staat de strip absoluut rechts (110px breed) en staan de pijlen dus
+  ook absoluut, met right:33px = (110 - 44) / 2 zodat ze midden boven de strip
+  hangen. De opmaak (maat, rand, hover, verdwijnen als de pijl niets kan) staat
+  één keer in een blok vanaf 521px; het 992-blok overschrijft alleen de
+  PLAATSING. Zo staat het uiterlijk niet twee keer in het bestand.
+  (2) DE SCROLLBAR IS WEG in alle banden. Hij was er sinds 2026-09-24 juist
+  bewust in de huisstijl gezet, maar met pijlen erbij is een balk naast de
+  thumbs dubbelop. Dat levert meteen breedte op: de thumbs zijn weer 140px in
+  plaats van 130 (de dunne balk kostte 10px), en in de tabletband 110 in plaats
+  van 100.
+  BEIDE MANIEREN ZETTEN: scrollbar-width:none kent Safari niet, die heeft
+  ::-webkit-scrollbar{display:none} nodig. Ik had bij het opruimen eerst álle
+  webkit-regels van de strip weggehaald, inclusief die ene in de mobiele band
+  die de balk daar juist VERBORG — dat zou Safari op mobiel een balk hebben
+  gegeven. Nu staan beide regels in elke band die de balk verbergt.
+  (3) OPGERUIMD: de klasse heeft-scrollbar en de meting die hem zette zijn weg.
+  Die bestonden alleen om 2px lucht naast de scrollbar te maken; zonder balk is
+  er niets om ruimte voor te houden. 0 verwijzingen over in het thema.
+  BUGJE DAT DAARBIJ BOVENKWAM EN IS OPGELOST: de pijlen stonden op 768px allebei
+  uit. De stand werd één keer berekend op het moment dat het script draaide, en
+  dan staan de hoogtes er vaak nog niet (de foto's moeten nog laden), dus leek
+  de strip niet te scrollen. Er hing wel een load- en resize-luisteraar aan,
+  maar dat is te laat en te grof. Nu kijkt een ResizeObserver naar de strip
+  zelf: die corrigeert zodra de hoogte klopt, en ook bij een bandwissel of een
+  gedraaide telefoon. Met een terugval op load/resize voor browsers zonder
+  ResizeObserver.
+  MEETVALKUIL, NIEUW EN GOED OM TE ONTHOUDEN: het browserpaneel van Claude
+  rapporteert `visibility` niet goed. Een uitgeschakelde pijl bleef daar
+  "visible" melden, ook nadat ik de eigenschap er met een INLINE stijl op zette
+  — wat in een echte browser onmogelijk is. Precies daardoor leek de
+  verdwijn-regel kapot. In een headless screenshot op 768 en 600 is duidelijk te
+  zien dat de bovenste pijl gewoon weg is. Bij twijfel over visibility dus niet
+  meten in het paneel maar kijken naar een echte render. (Eerder stonden al op
+  dit lijstje: CSS-transities, smooth scrollen, scroll-events en een viewport
+  die nog niet is verwerkt.)
+  GEMETEN na de wijziging: 1920 -> thumbs 140 breed, zesde 63 van 125 zichtbaar;
+  768 -> thumbs 110 breed, zesde 43 van 86; 600 -> idem naar verhouding; 521 ->
+  pijlen aanwezig, bovenste uit omdat de strip bovenaan staat; 520 en 390 ->
+  geen pijlen, horizontale rij, vierde thumb valt half weg. Overal geen
+  scrollbar en geen horizontale paginascroll.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

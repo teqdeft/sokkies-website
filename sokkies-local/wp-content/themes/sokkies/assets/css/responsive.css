@@ -5656,25 +5656,19 @@
     grid-auto-rows:calc((100% - 4 * var(--thumb-gap)) / 5);
     overflow-y:auto;
     /* zelfde huisstijl-scrollbar als in de >=992-band */
-    scrollbar-width:thin;
-    scrollbar-color:var(--coral) rgb(40 18 27 / 10%);
+    /* Geen zichtbare scrollbar: de pijlen wijzen de weg en de
+       halve zesde thumb laat zien dat er meer is. */
+    scrollbar-width:none;
     --thumb-gap:15px;
     gap:var(--thumb-gap);
   }
+  /* Safari kent scrollbar-width niet, die heeft deze regel nodig. */
+  .prod-thumbs::-webkit-scrollbar{ display:none; }
   /* Meer dan vijf foto's: 5,5 rij in dezelfde kolomhoogte, zodat de
      zesde half in beeld staat en te zien is dat de strip scrolt (R2-9).
      De klasse komt uit de template, die de foto's gewoon telt. */
   .prod-thumbs.heeft-meer{
     grid-auto-rows:calc((100% - 5 * var(--thumb-gap)) / 5.5);
-  }
-  .prod-thumbs::-webkit-scrollbar{ width:6px; }
-  .prod-thumbs::-webkit-scrollbar-track{
-    background:rgb(40 18 27 / 10%);
-    border-radius:20px;
-  }
-  .prod-thumbs::-webkit-scrollbar-thumb{
-    background:var(--coral);
-    border-radius:20px;
   }
   .prod-thumb{
     min-height:0;
@@ -9429,25 +9423,19 @@
     grid-auto-rows:calc((100% - 4 * var(--thumb-gap)) / 5);
     overflow-y:auto;
     /* zelfde huisstijl-scrollbar als in de >=992-band */
-    scrollbar-width:thin;
-    scrollbar-color:var(--coral) rgb(40 18 27 / 10%);
+    /* Geen zichtbare scrollbar: de pijlen wijzen de weg en de
+       halve zesde thumb laat zien dat er meer is. */
+    scrollbar-width:none;
     --thumb-gap:15px;
     gap:var(--thumb-gap);
   }
+  /* Safari kent scrollbar-width niet, die heeft deze regel nodig. */
+  .prod-thumbs::-webkit-scrollbar{ display:none; }
   /* Meer dan vijf foto's: 5,5 rij in dezelfde kolomhoogte, zodat de
      zesde half in beeld staat en te zien is dat de strip scrolt (R2-9).
      De klasse komt uit de template, die de foto's gewoon telt. */
   .prod-thumbs.heeft-meer{
     grid-auto-rows:calc((100% - 5 * var(--thumb-gap)) / 5.5);
-  }
-  .prod-thumbs::-webkit-scrollbar{ width:6px; }
-  .prod-thumbs::-webkit-scrollbar-track{
-    background:rgb(40 18 27 / 10%);
-    border-radius:20px;
-  }
-  .prod-thumbs::-webkit-scrollbar-thumb{
-    background:var(--coral);
-    border-radius:20px;
   }
   .prod-thumb{
     min-height:0;
@@ -13387,9 +13375,8 @@
     margin-right:-20px;
     padding-right:20px;
   }
-  .prod-thumbs::-webkit-scrollbar{
-    display:none;
-  }
+  /* Safari kent scrollbar-width niet, die heeft deze regel nodig. */
+  .prod-thumbs::-webkit-scrollbar{ display:none; }
   .prod-thumb{
     min-height:0;
     flex:0 0 90px;
