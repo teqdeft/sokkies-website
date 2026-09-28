@@ -3596,6 +3596,51 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   onze build, of bestaat het al op de huidige site?) en welke bestanden horen
   er standaard in de mail.
 
+
+  SAMPLEFORMULIER: KEUZEKNOP WEG, FORMULIER ALTIJD VOLLEDIG (2026-09-28,
+  verzoek Kulwant met een rood kader om "Ik wil toch een ontwerp").
+  De knop vinkte alleen een verborgen radioveld aan; daarop hing de
+  voorwaardelijke logica van TWAALF velden (aantal, opmerkingen, upload en het
+  hele adresblok). Alleen de knop weghalen was dus niet genoeg: dan raakte dat
+  veld nooit meer gevuld en bleef de halve pagina verborgen.
+  IN CODE OPGELOST, NIET IN GRAVITY FORMS: het radioveld en die twaalf regels
+  staan in de DATABASE en deployen niet mee. De keuze wordt nu standaard
+  aangevinkt via gform_pre_render / _pre_validation / _pre_submission_filter,
+  zodat de regels blijven staan en gewoon altijd op waar uitkomen. Zo weet ook
+  de SERVER dat aantal, postcode en huisnummer verplicht zijn — gemeten: een
+  lege inzending geeft vier meldingen (aantal, postcode, huisnummer, land).
+  DE REGELS NIET WEGGOOIEN was een bewuste keuze: dan zou de keuze leeg in de
+  inzending en in de mail belanden en is in het beheerscherm niet meer te zien
+  wat er is aangevraagd. Nu staat "Ik wil toch een proefontwerp" er gewoon in.
+  DE WAARDE WORDT OPGEHAALD, NIET OVERGETYPT: de code leest uit de
+  voorwaardelijke regels zelf welke waarde erbij hoort en vinkt die keuze aan.
+  Dat bleek nodig ook: in een eerdere meting las ik de waarde als "Ik wil toch
+  en proefontwerp" (met een typefout), terwijl er in het formulier gewoon "een"
+  staat — dat was de vertaallaag van de tooloutput die de hex verminkte. Met
+  een hardgecodeerde string was dit stil kapot gegaan.
+  OPGERUIMD: de klik-handler van de knop en pasProefknopToe() in offerte.js
+  zijn weg (0 verwijzingen over). De uitzondering die de proefkeuze NIET
+  terugzet bij een verversing blijft juist staan, maar om een andere reden dan
+  voorheen: zou het terugzetten alle radiovakjes leegmaken, dan viel de nu
+  vastgezette keuze weg en klapte het halve formulier alsnog dicht. Het
+  commentaar daar legt dat nu zo uit.
+  BIJVANGST: de oude beperking "aantal, opmerkingen en adres overleven geen
+  verversing" (die kwam doordat GF de velden van een verborgen blok uitschakelt)
+  is hiermee verdwenen — die velden staan nu altijd aan en worden dus bewaard.
+  GEVOLG DAT KULWANT MOET WETEN: de route "alleen een sample, zonder adres"
+  bestaat niet meer. Elke aanvraag vraagt nu om aantal, postcode, huisnummer en
+  land. Dat is precies wat er gevraagd is, maar het is wel het omgekeerde van
+  de eerdere opzet (waarin een gratis sample bewust zonder adres kon).
+  NOG VOOR TE LEGGEN: de kop boven dat blok heet nog "Liever toch een
+  proefontwerp?" en dat leest raar nu er niets meer te kiezen valt. Die tekst
+  is een veld in Gravity Forms (database); zeg maar wat er moet staan, dan zet
+  ik hem in code om zodat hij meedeployt.
+  GETEST end-to-end met uitgaande mail geblokkeerd (tijdelijke mu-plugin):
+  formulier toont alle velden bij het laden, knop 0x aanwezig, radio aangevinkt
+  met de juiste waarde; lege inzending -> vier meldingen; volledige inzending ->
+  door naar /bedankt-sample/ met alle waarden in de inzending, inclusief de
+  proefkeuze. Testinzending en mu-plugin daarna verwijderd (0 inzendingen over).
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
