@@ -2727,6 +2727,36 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 					array( 'key' => 'field_si_mega_usp_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'text' ),
 				),
 			),
+
+			/* ── Aanvullende opties ───────────────────────────────────────────
+			   De vier kaartjes bij "Aanvullende opties" op het offerteformulier.
+			   De soktypekaarten halen hun foto van het soktype zelf, maar deze
+			   vier zijn geen soktype en hebben dus geen eigen post; daarom
+			   staan ze hier bij de website-instellingen.
+			   Leeg laten mag: dan valt de kaart terug op het beeld uit het
+			   thema, zoals het nu ook staat. ───────────────────────────────── */
+			array( 'key' => 'field_si_tab_extras', 'label' => 'Aanvullende opties', 'type' => 'tab' ),
+			array(
+				'key'          => 'field_si_extras',
+				'label'        => 'Foto per optie',
+				'name'         => 'offerte_extras',
+				'type'         => 'repeater',
+				'layout'       => 'table',
+				'button_label' => 'Optie toevoegen',
+				'instructions' => 'De kaartjes bij "Aanvullende opties" op het offerteformulier. Zet bij Optie de naam zoals de keuze in het formulier heet: Labels, Geschenkdoosjes, Kaartjes, Inpak &amp; verzending. Een optie zonder foto houdt het beeld uit het thema. "Geen extra&#039;s" krijgt bewust geen foto — dat is in het ontwerp het grijze vlak.',
+				'sub_fields'   => array(
+					array( 'key' => 'field_si_extra_naam', 'label' => 'Optie', 'name' => 'naam', 'type' => 'text' ),
+					array(
+						'key'           => 'field_si_extra_foto',
+						'label'         => 'Foto',
+						'name'          => 'foto',
+						'type'          => 'image',
+						'return_format' => 'id',
+						'preview_size'  => 'thumbnail',
+						'library'       => 'all',
+					),
+				),
+			),
 		),
 		'location' => array(
 			array(

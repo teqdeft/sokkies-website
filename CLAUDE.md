@@ -3221,6 +3221,39 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   schijf verifiëren en zo snel mogelijk committen — git is de enige
   betrouwbare kopie.
 
+  FOTO'S VAN DE AANVULLENDE OPTIES NU OOK UIT HET CMS (2026-09-28, verzoek
+  Kulwant met een schermafbeelding van stap 2 en van Website-instellingen:
+  "can we make these images dynamic and add upload option from [hier]").
+  De soktypekaarten halen hun foto sinds vandaag van het soktype zelf, maar de
+  vier kaartjes op stap 2 zijn geen soktype en hebben dus geen post om een
+  uitgelichte afbeelding aan te hangen. Ze staan nu op de opties-pagina.
+  PAD VOOR DE KLANT: WordPress > Website-instellingen > tabblad "Aanvullende
+  opties" > per rij een Optie (de naam zoals de keuze in het formulier heet)
+  en een Foto uit de mediabibliotheek.
+  KOPPELEN op dezelfde woordvergelijking als bij de soktypes, die daarvoor is
+  losgetrokken naar sokkies_kaartfoto_kies(). Zo matcht "Inpak & verzending"
+  ook als de rij "Inpak en verzending" heet, en wint bij twijfel niemand.
+  LEEG LATEN MAG EN IS DE STANDAARD: zonder rij (of zonder foto) valt de kaart
+  terug op het beeld uit het thema, precies zoals het stond. Het tabblad is
+  dus een UITBREIDING, geen vervanging — op een omgeving waar niemand het
+  invult verandert er niets. De VELDDEFINITIE reist mee met de code, de
+  INGEVULDE waarden niet: die staan per omgeving in de database.
+  VONDST ONDERWEG, en meteen de reden dat dit nodig was: het extras-veld heeft
+  geen vijf maar ZES keuzes. Naast Labels, Geschenkdoosjes, Kaartjes, Inpak &
+  verzending en "Geen extra's" staat er een zesde, "Borduren", die iemand in
+  Gravity Forms heeft toegevoegd. Die had geen foto in de themalijst en toonde
+  dus het grijze vlak — precies wat er niet meer kan gebeuren nu de klant er
+  zelf een foto bij kan zetten.
+  LET OP bij tellen in de HTML: `grep -c` telt REGELS, en de hele pagina staat
+  op een paar regels. Daardoor las ik eerder "1 leeg vak" waar er twee waren.
+  Tel met `grep -o ... | wc -l`.
+  GETEST door twee rijen te zetten (Labels en Borduren, met een bestaande
+  bijlage): Labels pakte de CMS-foto in plaats van gift1.png, Borduren kreeg
+  voor het eerst een foto, de drie niet-ingevulde opties bleven op hun
+  themabeeld en alleen "Geen extra's" bleef leeg. Daarna de rijen weer
+  verwijderd en gecontroleerd dat de terugval terug is (4x gift1-4, 2 lege
+  vakken) — er staat dus geen testinhoud in de database.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

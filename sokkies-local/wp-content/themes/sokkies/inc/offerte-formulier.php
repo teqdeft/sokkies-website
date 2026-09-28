@@ -991,15 +991,19 @@ function sokkies_soktype_kaartfotos() {
 	return $cache;
 }
 
-function sokkies_soktype_kaartfoto( $keuzetekst ) {
+/**
+ * Dezelfde woordvergelijking wordt door twee soorten kaarten gebruikt, dus
+ * staat hij los: geef er een lijst van array('woorden'=>…, 'url'=>…) aan mee.
+ */
+function sokkies_kaartfoto_kies( $keuzetekst, $lijst ) {
 	$zoek = sokkies_soktype_woorden( $keuzetekst );
-	if ( ! $zoek ) {
+	if ( ! $zoek || ! $lijst ) {
 		return '';
 	}
 	$beste  = 0;
 	$url    = '';
 	$gelijk = 0;
-	foreach ( sokkies_soktype_kaartfotos() as $type ) {
+	foreach ( $lijst as $type ) {
 		$score = 0;
 		foreach ( $zoek as $woord ) {
 			foreach ( $type['woorden'] as $ander ) {
@@ -1020,6 +1024,65 @@ function sokkies_soktype_kaartfoto( $keuzetekst ) {
 		}
 	}
 	return ( $beste > 0 && 1 === $gelijk ) ? $url : '';
+}
+
+function sokkies_soktype_kaartfoto( $keuzetekst ) {
+	return sokkies_kaartfoto_kies( $keuzetekst, sokkies_soktype_kaartfotos() );
+}
+
+/**
+ * DE VIER AANVULLENDE OPTIES ZIJN OOK IN HET CMS TE ZETTEN.
+ *
+ * Ze zijn geen soktype en hebben dus geen eigen post om een uitgelichte
+ * afbeelding aan te hangen. Daarom staan ze op de opties-pagina:
+ * Website-instellingen > Aanvullende opties, met per rij een naam en een
+ * foto. Gekoppeld wordt op dezelfde woordvergelijking als bij de soktypes,
+ * zodat "Inpak & verzending" ook matcht als de rij "Inpak en verzending"
+ * heet.
+ *
+ * LEEG LATEN MAG: zonder rij (of zonder foto) valt de kaart terug op het
+ * beeld uit het thema, precies zoals het stond. Zo blijft het formulier
+ * werken op een omgeving waar dit tabblad nog niet is ingevuld — de
+ * VELDDEFINITIE reist mee met de code, de INGEVULDE waarden niet.
+ */
+function sokkies_extra_kaartfotos() {
+	static $cache = null;
+	if ( null !== $cache ) {
+		return $cache;
+	}
+	$cache = array();
+	$rijen = function_exists( 'get_field' ) ? get_field( 'offerte_extras', 'option' ) : array();
+	if ( ! is_array( $rijen ) ) {
+		return $cache;
+	}
+	foreach ( $rijen as $rij ) {
+		$naam = isset( $rij['naam'] ) ? trim( (string) $rij['naam'] ) : '';
+		$foto = isset( $rij['foto'] ) ? (int) $rij['foto'] : 0;
+		if ( '' === $naam || ! $foto ) {
+			continue;
+		}
+		$url = wp_get_attachment_image_url( $foto, 'medium_large' );
+		if ( ! $url ) {
+			$url = wp_get_attachment_image_url( $foto, 'full' );
+		}
+		$woorden = sokkies_soktype_woorden( $naam );
+		if ( $url && $woorden ) {
+			$cache[] = array( 'woorden' => $woorden, 'url' => $url );
+		}
+	}
+	return $cache;
+}
+
+function sokkies_extra_kaartfoto( $keuzetekst ) {
+	$url = sokkies_kaartfoto_kies( $keuzetekst, sokkies_extra_kaartfotos() );
+	if ( $url ) {
+		return $url;
+	}
+	/* Niets in het CMS: terugvallen op het beeld uit het thema. */
+	$thema = sokkies_offerte_extra_fotos();
+	return empty( $thema[ $keuzetekst ] )
+		? ''
+		: get_template_directory_uri() . '/assets/media/' . $thema[ $keuzetekst ];
 }
 
 /**
@@ -1057,10 +1120,7 @@ add_filter( 'gform_field_choice_markup_pre_render', function ( $markup, $choice,
 	if ( 'pick' === $soort ) {
 		$url = sokkies_soktype_kaartfoto( $tekst );
 	} else {
-		$extras = sokkies_offerte_extra_fotos();
-		$url    = empty( $extras[ $tekst ] )
-			? ''
-			: get_template_directory_uri() . '/assets/media/' . $extras[ $tekst ];
+		$url = sokkies_extra_kaartfoto( $tekst );
 	}
 
 	if ( $url ) {
