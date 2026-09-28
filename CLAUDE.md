@@ -3124,6 +3124,44 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   Op 390 dezelfde vijf blokken, geen horizontale scroll; offerte in nl/en/de/
   fr plus sample, contact en home allemaal 200, geen PHP-fouten.
 
+  SOKTYPEKAARTEN HALEN HUN FOTO UIT HET SOKTYPE (2026-09-28, melding Kulwant
+  met een schermafbeelding van stap 1: tien lege kaarten met het doorstreepte
+  rondje, "where does the client upload them?").
+  WAT ER MIS WAS: de foto's kwamen uit een VASTE LIJST in het thema die
+  keuzetekst aan een bestandsnaam koppelde ("Reguliere sokken" =>
+  FLEUROPP_LARGE_2.png). Het formulier noemt de keuzes inmiddels "Regulier",
+  "Sport", "Bamboe" enzovoort, dus geen enkele sleutel matchte nog en alle
+  tien de kaarten vielen terug op het lege vak. De foto moest bovendien op
+  twee plekken worden bijgehouden.
+  FIX: de kaart leest nu de UITGELICHTE AFBEELDING van het bijbehorende
+  soktype. Dat is dezelfde bron als de collectiepagina, de productpagina en
+  het uitklapmenu al gebruiken, dus de klant beheert de foto op EEN plek.
+  PAD VOOR DE KLANT: WordPress > Soktypes > [soktype] > rechterkolom
+  "Uitgelichte afbeelding". Opslaan en de kaart op het offerte- EN het
+  sampleformulier volgt meteen.
+  KOPPELEN OP WOORDEN, niet op de hele tekst: de keuze heet "Regulier" en het
+  soktype "Reguliere sokken". Een woord telt als treffer bij gelijkheid of als
+  het ene woord met het andere begint (vanaf vier letters); "sokken" telt niet
+  mee. Zo matchen alle tien. Passen er twee soktypes even goed, dan wint er
+  GEEN en blijft het vak leeg — liever leeg dan de foto van een ander type.
+  LET OP EEN NAAMVERSCHIL: de keuze heet "Kids & baby" maar het soktype heet
+  "Baby sokken" (korte naam "Baby"). Op het gedeelde woord "baby" komen ze bij
+  elkaar, maar netter is het om die twee in het CMS gelijk te trekken.
+  HET VELD WORDT HERKEND OP cssClass (of-soktypes / of-extras) en niet meer op
+  het LABEL. Precies dat label was hernoemd, en daar ging de oude lijst op
+  stuk; een class is geen redactionele tekst.
+  DE VIER AANVULLENDE OPTIES houden hun foto uit het thema: dat zijn geen
+  soktypes en er is dus geen post om een afbeelding aan te hangen. "Geen
+  extra's" heeft in het ontwerp bewust geen foto (nagemeten: 4 met, 1 zonder).
+  GEVERIFIEERD lokaal: 10 kaarten, 10 foto's, 0 lege vakken op zowel het
+  offerte- als het sampleformulier, en de bron is wp-content/uploads in plaats
+  van het thema.
+  LET OP BIJ LOKAAL TESTEN: de foto's geven op deze machine een 302 omdat de
+  BESTANDEN hier ontbreken — de database komt via WP Migrate DB binnen maar
+  uploads reizen niet mee. Dat is geen gevolg van deze wijziging: de
+  collectiepagina, die deze uitgelichte afbeeldingen al gebruikte, geeft op
+  dezelfde bestanden exact dezelfde 302. Beoordeel dit dus op dev.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

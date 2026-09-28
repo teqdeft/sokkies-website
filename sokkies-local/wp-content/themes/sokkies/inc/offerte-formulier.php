@@ -923,33 +923,116 @@ add_filter( 'gform_field_content', function ( $content, $field ) {
  * ooit een soktype bij komt of de volgorde verandert, blijft de rest kloppen
  * en mist alleen de nieuwe optie een foto.
  * ------------------------------------------------------------------------- */
-function sokkies_offerte_keuze_fotos() {
+/**
+ * DE FOTO VAN EEN SOKTYPEKAART KOMT VAN HET SOKTYPE ZELF.
+ *
+ * Hiervoor stond hier een vaste lijst van keuzetekst naar bestandsnaam in het
+ * thema. Die brak zodra iemand de keuzes hernoemde: stap 1 stond vol lege
+ * kaarten omdat de lijst nog "Reguliere sokken" verwachtte terwijl het
+ * formulier inmiddels "Regulier" zegt. Bovendien moest dezelfde foto op twee
+ * plekken worden bijgehouden.
+ *
+ * Nu leest de kaart de UITGELICHTE AFBEELDING van het bijbehorende soktype
+ * (Soktypes > [type] > Uitgelichte afbeelding). Dat is dezelfde bron als de
+ * collectiepagina, de productpagina en het uitklapmenu gebruiken, dus de klant
+ * onderhoudt de foto op EEN plek en overal staat hetzelfde beeld.
+ *
+ * KOPPELEN OP WOORDEN, niet op de hele tekst: de keuze heet "Regulier" en het
+ * soktype "Reguliere sokken", en "Kids & baby" hoort bij "Baby sokken". Een
+ * woord telt als treffer bij gelijkheid of als het ene met het andere begint
+ * (vanaf vier letters, korter matcht te veel). Het woord "sokken" telt niet
+ * mee, want dat staat in bijna elke titel.
+ *
+ * BIJ TWIJFEL GEEN FOTO: passen er twee soktypes even goed, dan wint er geen.
+ * Liever het lege vak uit het ontwerp dan de foto van een ander soktype.
+ */
+function sokkies_soktype_woorden( $tekst ) {
+	$t   = html_entity_decode( (string) $tekst, ENT_QUOTES, 'UTF-8' );
+	$t   = preg_replace( '/[^a-z0-9]+/', ' ', mb_strtolower( $t, 'UTF-8' ) );
+	$uit = array();
+	foreach ( preg_split( '/\s+/', trim( $t ) ) as $woord ) {
+		if ( '' === $woord || in_array( $woord, array( 'sokken', 'sok', 'socks', 'en' ), true ) ) {
+			continue;
+		}
+		$uit[] = $woord;
+	}
+	return $uit;
+}
+
+function sokkies_soktype_kaartfotos() {
+	static $cache = null;
+	if ( null !== $cache ) {
+		return $cache;
+	}
+	$cache = array();
+	$types = get_posts( array(
+		'post_type'      => 'sokkies_soktype',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'no_found_rows'  => true,
+	) );
+	foreach ( $types as $type ) {
+		$url = get_the_post_thumbnail_url( $type->ID, 'medium_large' );
+		if ( ! $url ) {
+			$url = get_the_post_thumbnail_url( $type->ID, 'full' );
+		}
+		if ( ! $url ) {
+			continue; // geen uitgelichte afbeelding: dit type kan geen kaart vullen
+		}
+		$kort    = function_exists( 'get_field' ) ? get_field( 'korte_naam', $type->ID ) : '';
+		$woorden = array_unique( array_merge(
+			sokkies_soktype_woorden( $type->post_title ),
+			sokkies_soktype_woorden( $kort )
+		) );
+		if ( $woorden ) {
+			$cache[] = array( 'woorden' => $woorden, 'url' => $url );
+		}
+	}
+	return $cache;
+}
+
+function sokkies_soktype_kaartfoto( $keuzetekst ) {
+	$zoek = sokkies_soktype_woorden( $keuzetekst );
+	if ( ! $zoek ) {
+		return '';
+	}
+	$beste  = 0;
+	$url    = '';
+	$gelijk = 0;
+	foreach ( sokkies_soktype_kaartfotos() as $type ) {
+		$score = 0;
+		foreach ( $zoek as $woord ) {
+			foreach ( $type['woorden'] as $ander ) {
+				$kort = strlen( $woord ) < strlen( $ander ) ? $woord : $ander;
+				$lang = strlen( $woord ) < strlen( $ander ) ? $ander : $woord;
+				if ( $woord === $ander || ( strlen( $kort ) >= 4 && 0 === strpos( $lang, $kort ) ) ) {
+					$score++;
+					break;
+				}
+			}
+		}
+		if ( $score > $beste ) {
+			$beste  = $score;
+			$url    = $type['url'];
+			$gelijk = 1;
+		} elseif ( $score > 0 && $score === $beste ) {
+			$gelijk++;
+		}
+	}
+	return ( $beste > 0 && 1 === $gelijk ) ? $url : '';
+}
+
+/**
+ * De aanvullende opties zijn GEEN soktypes en hebben dus geen eigen post om
+ * een foto aan te hangen; die vier houden hun beeld uit het thema. "Geen
+ * extra's" heeft in het ontwerp bewust geen foto.
+ */
+function sokkies_offerte_extra_fotos() {
 	return array(
-		'Wat wil je laten bedrukken?' => array(
-			'soort'  => 'pick',
-			'fotos'  => array(
-				'Reguliere sokken'      => 'FLEUROPP_LARGE_2.png',
-				'Sportsokken'           => 'Fleuropp_Sokkies_CocaCola.png',
-				'Bamboesokken'          => 'Bamboe-sokken-gecomprimeerd.png',
-				'Yoga & pilates sokken' => 'yoga-pilates-sokken-bedrukken-1.png',
-				'Werksokken'            => 'Werk.png',
-				'Kerstsokken'           => 'APMsok.png',
-				'Wielersokken'          => 'Fleuropp_Sokkies_Eindhoven.png',
-				'Antislipsokken'        => 'anti-slip-sokken-bedrukken-2.png',
-				'Kids & baby sokken'    => 'sd.png',
-				'Zorgsokken'            => 'slider6.png',
-			),
-		),
-		'Aanvullende opties' => array(
-			'soort' => 'extra',
-			'fotos' => array(
-				'Labels'             => 'gift1.png',
-				'Geschenkdoosjes'    => 'gift2.png',
-				'Kaartjes'           => 'gift3.png',
-				'Inpak & verzending' => 'gift4.png',
-				// "Geen extra's" heeft in het ontwerp bewust geen foto.
-			),
-		),
+		'Labels'             => 'gift1.png',
+		'Geschenkdoosjes'    => 'gift2.png',
+		'Kaartjes'           => 'gift3.png',
+		'Inpak & verzending' => 'gift4.png',
 	);
 }
 
@@ -957,20 +1040,31 @@ add_filter( 'gform_field_choice_markup_pre_render', function ( $markup, $choice,
 	if ( ! is_object( $field ) || ! sokkies_form_eigen_opmaak( $field->formId ) ) {
 		return $markup;
 	}
-	$kaarten = sokkies_offerte_keuze_fotos();
-	if ( ! isset( $kaarten[ $field->label ] ) ) {
+	/* WELK VELD dit is, bepalen we op de cssClass en NIET op het label.
+	   Het label is redactionele tekst: toen de keuzes hernoemd werden van
+	   "Reguliere sokken" naar "Regulier" stond stap 1 vol lege kaarten. */
+	$css   = ' ' . preg_replace( '/\s+/', ' ', trim( (string) $field->cssClass ) ) . ' ';
+	$soort = false !== strpos( $css, ' of-soktypes ' ) ? 'pick'
+		: ( false !== strpos( $css, ' of-extras ' ) ? 'extra' : '' );
+	if ( ! $soort ) {
 		return $markup;
 	}
-	$soort = $kaarten[ $field->label ]['soort'];
-	$fotos = $kaarten[ $field->label ]['fotos'];
 	// Gedecodeerd vergelijken EN tonen: zo valt de foto niet weg als de
 	// keuzetekst gecodeerd is opgeslagen, en codeert esc_html() hieronder
 	// precies één keer (anders zou "&amp;" op de kaart komen te staan).
 	$tekst = sokkies_offerte_keuzetekst( isset( $choice['text'] ) ? $choice['text'] : '' );
 
-	$assets = get_template_directory_uri() . '/assets/media/';
-	if ( ! empty( $fotos[ $tekst ] ) ) {
-		$beeld = '<span class="' . $soort . '-img"><img src="' . esc_url( $assets . $fotos[ $tekst ] ) . '" alt="" loading="lazy"></span>';
+	if ( 'pick' === $soort ) {
+		$url = sokkies_soktype_kaartfoto( $tekst );
+	} else {
+		$extras = sokkies_offerte_extra_fotos();
+		$url    = empty( $extras[ $tekst ] )
+			? ''
+			: get_template_directory_uri() . '/assets/media/' . $extras[ $tekst ];
+	}
+
+	if ( $url ) {
+		$beeld = '<span class="' . $soort . '-img"><img src="' . esc_url( $url ) . '" alt="" loading="lazy"></span>';
 	} else {
 		/* Zonder foto krijgt de kaart het grijze vlak met het doorstreepte
 		   rondje uit het ontwerp — dat is de weergave van "Geen extra's". */
