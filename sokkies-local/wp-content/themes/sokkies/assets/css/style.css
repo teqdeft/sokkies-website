@@ -3668,7 +3668,6 @@ font-weight: 600;
   }
   .is-selected .pick-img{
     opacity: 100%;
-    border-color:var(--text);
   }
   .is-selected .type-pick-outer{
     border: 1.5px solid var(--dark);
@@ -3895,6 +3894,11 @@ font-weight: 600;
     display:block;
     bottom:-15px;top:auto;left:50%;transform:translateX(-50%);
     width:30px;height:30px;background:var(--green);border-radius:50%;
+  }
+  /* Een extra die alleen bij bepaalde soktypes hoort en er nu niet bij past.
+     offerte.js zet de class; het vakje wordt daarbij ook uitgevinkt. */
+  .quote-card .gfield_checkbox .gchoice.is-verborgen{
+    display:none;
   }
   .extra-card.is-selected .extra-img{
     opacity: 100%;

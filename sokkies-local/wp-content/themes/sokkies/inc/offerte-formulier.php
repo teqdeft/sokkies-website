@@ -1136,6 +1136,126 @@ add_filter( 'acf/load_field/key=field_si_extra_naam', function ( $veld ) {
 	return $veld;
 } );
 
+/**
+ * EXTRA'S DIE MAAR BIJ BEPAALDE SOKTYPES HOREN.
+ *
+ * Twee opties bestaan alleen voor twee soorten sok. Gravity Forms kan dat
+ * NIET met zijn eigen voorwaardelijke logica: die werkt per VELD, niet per
+ * losse keuze binnen een checkboxveld. Vandaar hier.
+ *
+ * De koppeling staat in het CMS (Website-instellingen > Aanvullende opties >
+ * "Alleen bij deze soktypes") en niet in code: welke extra bij welk soktype
+ * hoort is redactie, en zo hoeft er niets aangepast te worden als de matrix
+ * groeit of als een keuze anders gaat heten.
+ */
+function sokkies_offerte_soktype_keuzes() {
+	static $cache = null;
+	if ( null !== $cache ) {
+		return $cache;
+	}
+	$cache = array();
+	if ( ! class_exists( 'GFAPI' ) ) {
+		return $cache;
+	}
+	foreach ( array( 'sokkies_offerte_form_id', 'sokkies_sample_form_id' ) as $bron ) {
+		if ( ! function_exists( $bron ) || ! $bron() ) {
+			continue;
+		}
+		$form = GFAPI::get_form( $bron() );
+		if ( ! $form || empty( $form['fields'] ) ) {
+			continue;
+		}
+		foreach ( $form['fields'] as $veld ) {
+			$css = ' ' . preg_replace( '/\s+/', ' ', trim( (string) $veld->cssClass ) ) . ' ';
+			if ( false === strpos( $css, ' of-soktypes ' ) || empty( $veld->choices ) ) {
+				continue;
+			}
+			foreach ( (array) $veld->choices as $keuze ) {
+				$tekst = sokkies_offerte_keuzetekst( isset( $keuze['text'] ) ? $keuze['text'] : '' );
+				if ( '' !== $tekst ) {
+					$cache[ $tekst ] = $tekst;
+				}
+			}
+		}
+	}
+	return $cache;
+}
+
+add_filter( 'acf/load_field/key=field_si_extra_types', function ( $veld ) {
+	$keuzes = sokkies_offerte_soktype_keuzes();
+	if ( $keuzes ) {
+		$veld['choices'] = $keuzes;
+	}
+	return $veld;
+} );
+
+/** Per extra-optie de soktypes waarbij hij hoort; leeg = altijd tonen. */
+function sokkies_offerte_extra_voorwaarden() {
+	static $cache = null;
+	if ( null !== $cache ) {
+		return $cache;
+	}
+	$cache = array();
+	$rijen = function_exists( 'get_field' ) ? get_field( 'offerte_extras', 'option' ) : array();
+	if ( ! is_array( $rijen ) ) {
+		return $cache;
+	}
+	foreach ( $rijen as $rij ) {
+		$naam  = isset( $rij['naam'] ) ? trim( (string) $rij['naam'] ) : '';
+		$types = isset( $rij['soktypes'] ) ? array_filter( (array) $rij['soktypes'] ) : array();
+		if ( '' !== $naam && $types ) {
+			$cache[ $naam ] = array_values( $types );
+		}
+	}
+	return $cache;
+}
+
+/**
+ * VANGNET OP DE SERVER: een kaart die verborgen is kan met een aangepaste
+ * verzending alsnog worden meegestuurd. De waarde wordt er dan hier uit
+ * gehaald, zodat een offerte nooit een extra bevat die niet bij het gekozen
+ * soktype hoort. Het scherm doet hetzelfde, maar JS kan uitvallen.
+ */
+add_action( 'gform_pre_submission', function ( $form ) {
+	if ( ! is_array( $form ) || ! sokkies_form_eigen_opmaak( $form['id'] ) ) {
+		return;
+	}
+	$voorwaarden = sokkies_offerte_extra_voorwaarden();
+	if ( ! $voorwaarden ) {
+		return;
+	}
+	$gekozen = array();
+	$extras  = array();
+	foreach ( $form['fields'] as $veld ) {
+		$css = ' ' . preg_replace( '/\s+/', ' ', trim( (string) $veld->cssClass ) ) . ' ';
+		$soort = false !== strpos( $css, ' of-soktypes ' ) ? 'type'
+			: ( false !== strpos( $css, ' of-extras ' ) ? 'extra' : '' );
+		if ( ! $soort ) {
+			continue;
+		}
+		foreach ( (array) $veld->inputs as $invoer ) {
+			$sleutel = 'input_' . str_replace( '.', '_', $invoer['id'] );
+			if ( empty( $_POST[ $sleutel ] ) ) {
+				continue;
+			}
+			$tekst = sokkies_offerte_keuzetekst( wp_unslash( $_POST[ $sleutel ] ) );
+			if ( 'type' === $soort ) {
+				$gekozen[] = $tekst;
+			} else {
+				$extras[ $sleutel ] = $tekst;
+			}
+		}
+	}
+	foreach ( $extras as $sleutel => $tekst ) {
+		if ( empty( $voorwaarden[ $tekst ] ) ) {
+			continue;
+		}
+		if ( ! array_intersect( $voorwaarden[ $tekst ], $gekozen ) ) {
+			unset( $_POST[ $sleutel ] );
+		}
+	}
+} );
+
 function sokkies_extra_kaartfoto( $keuzetekst ) {
 	$url = sokkies_kaartfoto_kies( $keuzetekst, sokkies_extra_kaartfotos() );
 	if ( $url ) {
@@ -1202,6 +1322,20 @@ add_filter( 'gform_field_choice_markup_pre_render', function ( $markup, $choice,
 	   geldige HTML. */
 	$binnen = '<div class="type-pick-outer">' . $beeld . '<span class="pick-check"></span></div>'
 		. '<span class="' . $soort . '-name">' . esc_html( $tekst ) . '</span>';
+
+	/* Hoort deze optie maar bij bepaalde soktypes, dan gaat die lijst als
+	   data-attribuut mee; offerte.js toont of verbergt de kaart daarop. */
+	if ( 'extra' === $soort ) {
+		$voorwaarden = sokkies_offerte_extra_voorwaarden();
+		if ( ! empty( $voorwaarden[ $tekst ] ) ) {
+			$markup = preg_replace(
+				'#^(\s*<[a-z]+)#i',
+				'$1 data-alleen-bij="' . esc_attr( implode( '|', $voorwaarden[ $tekst ] ) ) . '"',
+				$markup,
+				1
+			);
+		}
+	}
 
 	/* Alleen de INHOUD van het label vervangen; de attributen (for/id) blijven
 	   staan, anders werkt het aanklikken van de kaart niet meer. */

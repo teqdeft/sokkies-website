@@ -3267,6 +3267,75 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   verwijderd en gecontroleerd dat de terugval terug is (4x gift1-4, 2 lege
   vakken) — er staat dus geen testinhoud in de database.
 
+
+  EXTRA'S DIE MAAR BIJ BEPAALDE SOKTYPES HOREN (2026-09-28, R2-4.4: "Custom
+  anti-slip" en "Frills" alleen bij Antislip en Yoga & pilates, met de
+  aanwijzing dat de voorwaardelijke logica van Gravity Forms op het veld van
+  stap 1 dat wel zou afdekken).
+  DAT KAN GRAVITY FORMS NIET, en dat is de kern van deze wijziging: zijn
+  voorwaardelijke logica werkt op VELDNIVEAU — een heel veld tonen of
+  verbergen. Per losse KEUZE binnen een checkboxveld bestaat die instelling
+  niet. Het hele extras-veld verbergen is niet wat gevraagd is (Labels en
+  Geschenkdoosjes moeten blijven staan), dus dit zit in code.
+  WELKE EXTRA BIJ WELK SOKTYPE HOORT, STAAT IN HET CMS: Website-instellingen >
+  Aanvullende opties > per rij het nieuwe veld "Alleen bij deze soktypes"
+  (meerkeuze). Leeg = altijd tonen, dus bestaande rijen veranderen niet. De
+  lijst in dat veld komt rechtstreeks uit de soktype-keuzes van het formulier
+  (zelfde truc als bij de Optie-kolom), zodat er niets te typen valt en de
+  namen niet uiteen kunnen lopen. De matrix zit bewust NIET in code: welke
+  combinatie geldt is een keuze van de klant, geen techniek.
+  DRIE LAGEN: de kaart krijgt data-alleen-bij="Antislip|Yoga & pilates" mee
+  (section-partial), offerte.js toont/verbergt hem bij elke wijziging van stap
+  1, en gform_pre_submission gooit de waarde er alsnog uit als hij toch is
+  meegestuurd — JS kan uitvallen of omzeild worden, en een offerte mag nooit
+  een extra bevatten die niet bij het gekozen soktype hoort. Beide getest:
+  soktype Sport verwijdert input_6_7, soktype Antislip laat hem staan.
+  EEN VERBORGEN KAART WORDT OOK UITGEVINKT. Anders blijft een keuze staan die
+  de bezoeker niet meer ziet en belandt die in de offerte. Blijft er daarna
+  niets over, dan gaat "Geen extra's" weer aan.
+  LES BIJ DAT LAATSTE: pasExtrasToe() leidt de terugval af uit het vakje dat je
+  MEEGEEFT, niet uit de huidige stand — met null doet hij niets. Mijn eerste
+  versie riep hem met null aan en beweerde in een comment dat "de bestaande
+  uitsluiting" het zou regelen; gemeten bleef stap 2 daarna zonder enige keuze
+  staan. Nu geven we een nog aangevinkte andere optie mee (die blijft dan
+  staan) of anders "Geen extra's" zelf.
+  BUG GEVONDEN EN GEFIKST DIE HIER LOS VAN STAAT (zat al op live): de
+  herkenning van "Geen extra's" had naast de keuzetekst een tweede anker op het
+  ONTWERP — "alleen die optie heeft geen foto en krijgt het grijze doorstreepte
+  vlak". Dat anker is niet eenduidig: sinds iemand "Borduren" in Gravity Forms
+  toevoegde zonder foto was DAT de eerste kaart zonder foto, en gold Borduren
+  dus als "Geen extra's" — aanvinken wiste alle andere extra's. Gemeten en
+  daarna opnieuw gemeten: Labels + Borduren + een derde optie blijven nu netjes
+  naast elkaar staan. Het vormanker geldt alleen nog als er PRECIES ÉÉN kaart
+  zonder foto is. Geldt ook voor het sampleformulier (gedeelde JS).
+  VERGELIJKEN OP DE WAARDE, NIET OP DE TEKST — gemeten, want ze zijn hier niet
+  gelijk: Gravity Forms bewaart de keuzeTEKST HTML-gecodeerd ("Yoga &amp;
+  pilates") en de WAARDE rauw ("Yoga & pilates"). De data-attributen en het CMS
+  houden daarom de gedecodeerde vorm aan, en de JS vergelijkt tegen input.value.
+  Dat is meteen de reden dat het op /en/ en /de/ ook werkt: TranslatePress
+  vertaalt de zichtbare labels maar niet de waarden. Op de Engelse pagina
+  geverifieerd.
+  GETEST met twee tijdelijke keuzes in het formulier: verse pagina = beide
+  kaarten verborgen; Antislip of Yoga aan = beide zichtbaar; soktype weer uit =
+  verborgen én uitgevinkt terwijl een andere extra (Labels) blijft staan; als
+  laatste keuze weg = "Geen extra's" terug; display none, 6 van de 8 kaarten in
+  beeld.
+  DE TWEE KEUZES ZIJN DAARNA WEER VERWIJDERD en de input-ids zijn teruggezet op
+  6.1..6.6 (gecontroleerd), dus er staat geen testinhoud in de database. Reden:
+  de definitieve NEDERLANDSE knoptekst is niet bekend — "Custom anti-slip" en
+  "Frills" komen uit de Engelse feedback, en zelf verzonnen klantcopy in het
+  formulier zetten is erger dan een functie die nog niets doet.
+  WAT ER OP DEV/LIVE NOG MOET GEBEUREN (database, deployt niet mee): (1) de
+  twee keuzes aanmaken in Gravity Forms > Offerte — website > het veld met
+  cssClass of-extras; (2) op Website-instellingen > Aanvullende opties per
+  keuze een rij met een foto en de soktypes Antislip + Yoga & pilates. Zonder
+  stap 1 staat er niets in de keuzelijst van stap 2 — dat is geen fout.
+  LET OP BIJ HET AANMAKEN VIA EEN SCRIPT: Gravity Forms koppelt een keuze aan
+  een input op INDEX, niet op id. Een keuze ergens tussenvoegen terwijl de
+  input achteraan wordt toegevoegd verschuift dus de betekenis van alle ids
+  daarna, en een oude inzending leest daarna een andere optie dan er destijds
+  is gekozen. Via de beheerschermen van Gravity Forms gebeurt dat niet.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

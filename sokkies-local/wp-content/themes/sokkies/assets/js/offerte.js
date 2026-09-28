@@ -34,12 +34,28 @@
   }
 
   function isGeenExtras(vakje) {
-    if ((vakje.value || '').trim() === GEEN_EXTRAS) { return true; }
-    /* Wordt de keuzetekst in Gravity Forms ooit anders geformuleerd, dan
-       blijft de kaart herkenbaar aan het ontwerp: alleen "Geen extra's"
-       heeft geen foto en krijgt daarom het grijze doorstreepte vlak. */
-    var kaart = vakje.closest('.gchoice');
-    return !!(kaart && kaart.querySelector('.extra-img-none'));
+    return (vakje.value || '').trim() === GEEN_EXTRAS;
+  }
+
+  /* WELK vakje is "Geen extra's"? De keuzetekst is leidend. Is de keuze in
+   * Gravity Forms anders geformuleerd, dan blijft de kaart herkenbaar aan
+   * het ontwerp: die optie heeft geen foto en krijgt het grijze
+   * doorstreepte vlak.
+   *
+   * MAAR ALLEEN ALS ER PRECIES ÉÉN zo'n kaart is. "Geen foto" betekent
+   * namelijk niet per se "Geen extra's": een optie waarvoor nog geen foto
+   * is ingesteld ziet er exact zo uit. Toen "Borduren" in het formulier
+   * werd toegevoegd zonder foto, was dat de EERSTE kaart zonder foto en
+   * gold hij dus als "Geen extra's" — aanvinken wiste alle andere extra's.
+   * Vandaar dat de vorm alleen nog de doorslag geeft als hij eenduidig is. */
+  function geenExtrasVakje(lijst) {
+    var opTekst = lijst.filter(isGeenExtras)[0];
+    if (opTekst) { return opTekst; }
+    var zonderFoto = lijst.filter(function (v) {
+      var kaart = v.closest('.gchoice');
+      return !!(kaart && kaart.querySelector('.extra-img-none'));
+    });
+    return 1 === zonderFoto.length ? zonderFoto[0] : null;
   }
 
   /* ---------- 0. gekozen kaarten markeren ----------
@@ -116,7 +132,7 @@
   function pasExtrasToe(gewijzigd) {
     var lijst = vakjes('of-extras');
     if (!lijst.length) { return; }
-    var geen = lijst.filter(isGeenExtras)[0];
+    var geen = geenExtrasVakje(lijst);
     if (!geen) { return; }
     var anderen = lijst.filter(function (v) { return v !== geen; });
 
@@ -669,7 +685,7 @@
     }
     if ('checkbox' === t.type) {
       markeerKeuze(t);
-      if (t.closest('.of-soktypes')) { pasSoktypesToe(t); }
+      if (t.closest('.of-soktypes')) { pasSoktypesToe(t); pasExtrasVoorwaarden(); }
       if (t.closest('.of-extras')) { pasExtrasToe(t); markeerAlles(); }
     }
     bewaar();
@@ -756,7 +772,42 @@
   });
 
   // Bij het laden en na elke stap opnieuw de staat toepassen.
-  function init() { markeerAlles(); pasSoktypesToe(); pasExtrasToe(null); initAdres(); pasProefknopToe(); }
+  /* ---------- extra's die maar bij bepaalde soktypes horen ----------
+   * Welke dat zijn staat in het CMS en komt als data-alleen-bij op de kaart
+   * binnen (zie inc/offerte-formulier.php). Gravity Forms kan dit zelf niet:
+   * zijn voorwaardelijke logica werkt per veld, niet per losse keuze.
+   * Een kaart die niet mag, wordt ook UITGEVINKT — anders zou een keuze
+   * blijven staan die de bezoeker niet meer ziet. */
+  function pasExtrasVoorwaarden() {
+    var kaarten = document.querySelectorAll('.of-extras [data-alleen-bij]');
+    if (!kaarten.length) { return; }
+    var gekozen = [];
+    vakjes('of-soktypes').forEach(function (v) {
+      if (v.checked) { gekozen.push((v.value || '').trim()); }
+    });
+    var iets = false;
+    Array.prototype.forEach.call(kaarten, function (kaart) {
+      var toegestaan = (kaart.getAttribute('data-alleen-bij') || '').split('|');
+      var mag = gekozen.some(function (g) { return toegestaan.indexOf(g) !== -1; });
+      kaart.classList.toggle('is-verborgen', !mag);
+      if (!mag) {
+        var vakje = kaart.querySelector('input[type="checkbox"]');
+        if (vakje && vakje.checked) { vakje.checked = false; markeerKeuze(vakje); iets = true; }
+      }
+    });
+    if (!iets) { return; }
+    /* Valt de laatste extra weg, dan hoort "Geen extra's" weer aan —
+       anders staat stap 2 zonder enige keuze. pasExtrasToe() leidt dat af
+       uit het vakje dat we MEEGEVEN, niet uit de huidige stand: met null
+       doet hij niets. Is er nog een andere optie aangevinkt, dan geven we
+       die mee (die blijft dan staan); anders "Geen extra's" zelf. */
+    var alle = vakjes('of-extras');
+    var geen = geenExtrasVakje(alle);
+    var nogAan = alle.filter(function (v) { return v !== geen && v.checked; })[0];
+    pasExtrasToe(nogAan || geen);
+  }
+
+  function init() { markeerAlles(); pasSoktypesToe(); pasExtrasVoorwaarden(); pasExtrasToe(null); initAdres(); pasProefknopToe(); }
 
   document.addEventListener('DOMContentLoaded', function () {
     init();
