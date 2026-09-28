@@ -3533,6 +3533,58 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   geen pijlen, horizontale rij, vierde thumb valt half weg. Overal geen
   scrollbar en geen horizontale paginascroll.
 
+
+  DOWNLOADS: KOPPEN, LIGGENDE BEELDEN EN BESTANDEN PER TAAL (2026-09-28,
+  R2-11 via Rick).
+  (1) KOPPEN BOVEN DE GROEPEN. De pagina gebruikte AL TWEE losse
+  Download-kaarten-secties (3 downloads, 5 templates); er ontbrak alleen een
+  titel. Daarom een kop per SECTIE en niet per kaart: dat sluit aan op hoe de
+  pagina al in elkaar zit en is één veld in plaats van een veld op elke kaart.
+  PAD VOOR RICK: Pagina Downloads > Secties > Download-kaarten > "Kop boven
+  deze groep". Meer groepen = nog een blok Download-kaarten met een eigen kop.
+  Leeg laten kan gewoon: dan rendert het blok precies als voorheen.
+  Ik heb "Downloads" en "Templates" alvast ingevuld, zodat het meteen klopt;
+  hernoemen mag natuurlijk.
+  (2) LIGGEND BEELDVLAK, NIETS AFGESNEDEN. Het vak was 195 x 200 (bijna
+  vierkant) met object-fit:cover, en de brochuremockups zijn 1672 x 941 — die
+  werden dus tot een strookje bijgesneden. Nu 16:9 met object-fit:contain.
+  GEMETEN AAN DE ECHTE BESTANDEN voordat ik een verhouding koos: beide
+  brochures zijn 16:9 (1,78) en de vijf templatebeelden 500 x 417 (1,20).
+  16:9 past de brochures dus exact; de templates krijgen beige randen links en
+  rechts in plaats van dat er iets wegvalt. Dat is de afweging die in de
+  opdracht stond: dezelfde verhouding op elke kaart en niets bijsnijden.
+  Wil Lennart minder beige bij de templates, dan is 3:2 het compromis (dan
+  krijgen de brochures juist smalle randen boven en onder) — één regel.
+  DE BREEDTE SCHAALT MEE, met een bovengrens: flex:0 0 min(45%, 320px). Een
+  vaste 288px liet op 992px maar 118px over voor de titel (de kaart is daar
+  455 breed) en dan wikkelde "Labeltemplate - horizontaal" over drie regels.
+  Gemeten na de fix: 1920 -> 320x180, 992 -> 192x108 met 143-214px tekst,
+  768 -> 297x167 (gestapeld), 390 -> 154x87. Overal 16:9 en 0 h-scroll.
+  (3) BESTAND PER TAAL. TranslatePress vertaalt tekst maar verwisselt geen
+  PDF, dus een Engelse bezoeker kreeg de Nederlandse brochure. Elke kaart heeft
+  nu Bestand (NL) / (EN) / (DE). Leeg = de Nederlandse; Frans heeft geen eigen
+  veld en krijgt dus ook de Nederlandse.
+  PAD VOOR RICK: dezelfde kaart in Pagina Downloads > Secties >
+  Download-kaarten > Kaarten > per kaart de velden Bestand (EN) en (DE).
+  De keuze loopt via sokkies_download_bestand( $kaart, $taal ), met $taal als
+  OPTIONEEL argument. Dat is met opzet: een mail wordt later verstuurd dan het
+  verzoek waarin hij is aangevraagd, dus die moet de taal kunnen meegeven in
+  plaats van te vertrouwen op de taal van het moment. De taal zelf komt uit
+  $GLOBALS['TRP_LANGUAGE'] met get_locale() als terugval.
+  GETEST met drie verschillende PDF's op één kaart: /nl/ gaf de NL, /en/ de
+  EN, /de/ de DE en /fr/ weer de NL. Daarna de testbestanden weer losgekoppeld
+  (gecontroleerd: beide velden leeg, NL-bestand nog intact).
+  NIET GEDAAN, EN DAT IS EEN ECHTE BLOKKADE: "de mail stuurt het bestand van
+  de taal waarop de bezoeker zat". Die mail bestaat in deze build niet. Het
+  blok "Mis niets" op /downloads/ is nog de statische htmlv-stub
+  (#dlMisNietsForm) zonder enige verzending, en er zijn maar drie Gravity
+  Forms: Offerte, Sample en Contact. Er is dus geen formulier en geen
+  notificatie om aan te passen. Zodra dat formulier er is, is het aanhaken één
+  regel: sokkies_download_bestand( $kaart, $taal_van_de_inzending ).
+  Wat daarvoor nodig is: waar moet dat formulier komen (nieuw Gravity Form op
+  onze build, of bestaat het al op de huidige site?) en welke bestanden horen
+  er standaard in de mail.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

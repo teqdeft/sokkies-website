@@ -8833,9 +8833,20 @@ font-weight: 600;
     border-radius:16px;
     padding:14px;
   }
+  /* Het beeldvlak is LIGGEND (16:9) en snijdt niets af. De mockups van
+     Sokkies zijn liggend — de brochures meten 1672 x 941 — en die werden
+     in het oude, bijna vierkante vak van 195 x 200 met object-fit:cover
+     tot een strookje bijgesneden (R2-11.2).
+     object-fit:contain in plaats van cover: het hele product blijft in
+     beeld. Een afbeelding met een andere verhouding (de templates zijn
+     500 x 417) krijgt dus beige randen links en rechts in plaats van dat
+     er iets wegvalt; alle kaarten houden daardoor hetzelfde formaat. */
   .dl-card-img{
-    flex:0 0 195px;
-    height:200px;
+    /* Meeschalend met de kaart, met een bovengrens. Een vaste 288px liet
+       op 992px maar 118px over voor de titel (de kaart is daar 455 breed),
+       en dan wikkelt "Labeltemplate - horizontaal" over drie regels. */
+    flex:0 0 min(45%, 320px);
+    aspect-ratio:16 / 9;
     background:var(--light-beige);
     border-radius:12px;
     display:flex;
@@ -8846,7 +8857,15 @@ font-weight: 600;
   .dl-card-img img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+  }
+  /* Kop boven een groep kaarten (Downloads / Templates). Elke sectie
+     heeft er een, dus er is geen extra ruimte bovenin nodig: de
+     sectiepadding zorgt al voor de afstand tot het blok erboven. */
+  .dl-groep-kop{
+    font-family:var(--roc-grotesk-condensed);
+    text-transform:uppercase;
+    margin-bottom:30px;
   }
   .dl-card-body{
     padding-right:24px;

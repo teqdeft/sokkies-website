@@ -2,6 +2,12 @@
 /**
  * Sectie: Download-kaarten (.dl-cards) — 1:1 uit downloads.html. Kaart met
  * geüpload bestand linkt als download; anders de gekozen link; anders '#'.
+ *
+ * KOP: de sectie heeft een eigen "Kop boven deze groep", zodat downloads en
+ * templates als twee zichtbaar gescheiden blokken op de pagina staan. De
+ * downloadspagina gebruikte al TWEE van deze secties onder elkaar; ze misten
+ * alleen een titel. Meer groepen = nog een blok met een eigen kop. Leeg = geen
+ * kop en dus precies de weergave van hiervoor.
  */
 $rijen = get_sub_field( 'kaarten' );
 $standaard = array(
@@ -21,23 +27,31 @@ function sokkies_dl_tabblad( $href ) {
 	return ( '' !== $href && '#' !== substr( $href, 0, 1 ) ) ? ' target="_blank" rel="noopener"' : '';
 }
 }
+
+$kop = trim( (string) get_sub_field( 'titel' ) );
 ?>
 <section class="dl-cards">
   <div class="container">
+    <?php if ( '' !== $kop ) : ?>
+    <h2 class="dl-groep-kop"><?php echo esc_html( $kop ); ?></h2>
+    <?php endif; ?>
+    <?php if ( $rijen ) : ?>
     <div class="dl-cards-grid">
-      <?php if ( $rijen ) : foreach ( $rijen as $i => $rij ) :
+      <?php foreach ( $rijen as $teller => $rij ) :
         $href  = '#';
         $label = 'Download';
         $download = '';
-        if ( ! empty( $rij['bestand'] ) ) {
-            $href = $rij['bestand']['url'];
+        /* Het bestand in de taal van de bezoeker; leeg = de Nederlandse. */
+        $bestand = sokkies_download_bestand( $rij );
+        if ( $bestand ) {
+            $href = $bestand['url'];
             $download = ' download';
         } elseif ( ! empty( $rij['link']['url'] ) ) {
             $href  = $rij['link']['url'];
             $label = ! empty( $rij['link']['title'] ) ? $rij['link']['title'] : $label;
         }
       ?>
-      <div class="dl-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
+      <div class="dl-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $teller ); ?>">
         <div class="dl-card-img"><?php if ( ! empty( $rij['foto'] ) ) : ?><img src="<?php echo esc_url( $rij['foto']['url'] ); ?>" alt="<?php echo esc_attr( $rij['titel'] ); ?>"><?php else : ?><span class="dl-ph">Image placeholder</span><?php endif; ?></div>
         <div class="dl-card-body">
           <h3><?php echo esc_html( $rij['titel'] ); ?></h3>
@@ -48,7 +62,11 @@ function sokkies_dl_tabblad( $href ) {
           </a>
         </div>
       </div>
-      <?php endforeach; else : foreach ( $standaard as $i => $rij ) : ?>
+      <?php endforeach; ?>
+    </div>
+    <?php else : ?>
+    <div class="dl-cards-grid">
+      <?php foreach ( $standaard as $i => $rij ) : ?>
       <div class="dl-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
         <div class="dl-card-img"><span class="dl-ph">Image placeholder</span></div>
         <div class="dl-card-body">
@@ -60,7 +78,8 @@ function sokkies_dl_tabblad( $href ) {
           </a>
         </div>
       </div>
-      <?php endforeach; endif; ?>
+      <?php endforeach; ?>
     </div>
+    <?php endif; ?>
   </div>
 </section>

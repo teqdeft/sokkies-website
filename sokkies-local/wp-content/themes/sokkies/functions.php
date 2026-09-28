@@ -272,6 +272,41 @@ function sokkies_kop( $tekst, $klasse = 'text-yellow' ) {
 }
 
 /**
+ * De taal waarin de bezoeker de pagina bekijkt, als nl/en/de/fr.
+ *
+ * TranslatePress zet de gekozen taal in $GLOBALS['TRP_LANGUAGE'] (nl_NL,
+ * en_GB, de_DE, fr_FR) en stuurt daar ook get_locale() mee. We kijken naar
+ * allebei, zodat het ook klopt als het thema buiten een TranslatePress-
+ * verzoek draait, bijvoorbeeld bij het versturen van een mail.
+ */
+function sokkies_taal() {
+	$locale = isset( $GLOBALS['TRP_LANGUAGE'] ) ? (string) $GLOBALS['TRP_LANGUAGE'] : get_locale();
+	return strtolower( substr( $locale, 0, 2 ) );
+}
+
+/**
+ * Het downloadbestand van een kaart in de juiste taal.
+ *
+ * TranslatePress vertaalt tekst, maar verwisselt GEEN PDF: een Engelse
+ * bezoeker kreeg dus de Nederlandse brochure. Daarom heeft elke kaart een
+ * eigen veld per taal. Staat er voor die taal niets, dan valt hij terug op
+ * het Nederlandse bestand — beter een brochure in de verkeerde taal dan een
+ * knop die nergens heen gaat.
+ *
+ * $taal is optioneel, zodat een mail die LATER wordt verstuurd het bestand
+ * kan opvragen voor de taal waarin de bezoeker het formulier invulde, en
+ * niet voor de taal van het verzoek waarin de mail toevallig vertrekt.
+ */
+function sokkies_download_bestand( $kaart, $taal = null ) {
+	$taal = $taal ? strtolower( substr( (string) $taal, 0, 2 ) ) : sokkies_taal();
+	$velden = array( 'en' => 'bestand_en', 'de' => 'bestand_de' );
+	if ( isset( $velden[ $taal ] ) && ! empty( $kaart[ $velden[ $taal ] ]['url'] ) ) {
+		return $kaart[ $velden[ $taal ] ];
+	}
+	return empty( $kaart['bestand']['url'] ) ? null : $kaart['bestand'];
+}
+
+/**
  * Datum in het Nederlands, bijvoorbeeld "28 augustus 2026, 14:32".
  *
  * BEWUST NIET wp_date()/date_i18n(): de site draait op locale en_US zonder
