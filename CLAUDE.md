@@ -3562,8 +3562,9 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   768 -> 297x167 (gestapeld), 390 -> 154x87. Overal 16:9 en 0 h-scroll.
   (3) BESTAND PER TAAL. TranslatePress vertaalt tekst maar verwisselt geen
   PDF, dus een Engelse bezoeker kreeg de Nederlandse brochure. Elke kaart heeft
-  nu Bestand (NL) / (EN) / (DE). Leeg = de Nederlandse; Frans heeft geen eigen
-  veld en krijgt dus ook de Nederlandse.
+  nu Bestand (NL) / (EN) / (DE) / (FR) — alle vier de talen van de site. Leeg
+  = de Nederlandse. (FR kwam er op 2026-09-28 bij op verzoek van Kulwant;
+  daarvoor viel Frans op Nederlands terug.)
   PAD VOOR RICK: dezelfde kaart in Pagina Downloads > Secties >
   Download-kaarten > Kaarten > per kaart de velden Bestand (EN) en (DE).
   De keuze loopt via sokkies_download_bestand( $kaart, $taal ), met $taal als

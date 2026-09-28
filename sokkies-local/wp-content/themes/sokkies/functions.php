@@ -291,7 +291,8 @@ function sokkies_taal() {
  * bezoeker kreeg dus de Nederlandse brochure. Daarom heeft elke kaart een
  * eigen veld per taal. Staat er voor die taal niets, dan valt hij terug op
  * het Nederlandse bestand — beter een brochure in de verkeerde taal dan een
- * knop die nergens heen gaat.
+ * knop die nergens heen gaat. Alle vier de talen van de site (nl/en/de/fr)
+ * hebben een eigen veld.
  *
  * $taal is optioneel, zodat een mail die LATER wordt verstuurd het bestand
  * kan opvragen voor de taal waarin de bezoeker het formulier invulde, en
@@ -299,7 +300,7 @@ function sokkies_taal() {
  */
 function sokkies_download_bestand( $kaart, $taal = null ) {
 	$taal = $taal ? strtolower( substr( (string) $taal, 0, 2 ) ) : sokkies_taal();
-	$velden = array( 'en' => 'bestand_en', 'de' => 'bestand_de' );
+	$velden = array( 'en' => 'bestand_en', 'de' => 'bestand_de', 'fr' => 'bestand_fr' );
 	if ( isset( $velden[ $taal ] ) && ! empty( $kaart[ $velden[ $taal ] ]['url'] ) ) {
 		return $kaart[ $velden[ $taal ] ];
 	}
