@@ -3083,6 +3083,47 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   apart nagemeten omdat er markup is verplaatst (2 kolommen, 14 slides,
   742x540 — onveranderd).
 
+  ADRESBLOK VAN HET OFFERTEFORMULIER AF (2026-09-28, opdracht Kulwant met
+  een schermafbeelding van stap 3 waarop alles van Postcode tot en met de
+  groene balk "Gevonden adres" omkaderd staat: "a quote request doesn't need
+  a delivery address").
+  WAT ER WEG IS op /offerte/ stap 3 "Jouw gegevens": postcode, huisnummer,
+  toevoeging, land, het vak "Gevonden adres" met de link "Klopt niet?
+  Handmatig invullen", de verborgen velden straat/plaats/provincie en de twee
+  lege "Rijovergang"-velden. Wat blijft: de kop, Bedrijfsnaam, Contactpersoon,
+  E-mail, Telefoon en daaronder Terug + "Vraag offerte aan".
+  DE VELDEN ZIJN NIET UIT DE FORMULIERBOUWER GEHAALD, op verzoek: ze staan
+  alle tien nog in de database (nagemeten: 41 velden voor en na) en het
+  SAMPLEformulier gebruikt ze onveranderd. Ze worden alleen op de front-end
+  uit het offerteformulier gefilterd.
+  WAAROM IN CODE EN NIET IN GRAVITY FORMS: de veldenlijst is DATABASE en die
+  deployt niet mee — schrappen in de bouwer had op dev en live opnieuw
+  gemoeten. Zelfde afweging als eerder bij de veldvolgorde en het bijschrift
+  onder Land.
+  DRIE HAKEN, en dat is de kern: alleen gform_pre_render is NIET genoeg.
+  Postcode, huisnummer en land staan in Gravity Forms op VERPLICHT, dus
+  zonder gform_pre_validation zou de bezoeker blijven hangen op een controle
+  van velden die hij niet ziet. gform_pre_submission_filter houdt ze ook uit
+  de inzending. is_admin() sluit de beheeromgeving uit, zodat de bouwer en
+  het inzendingenscherm de velden gewoon tonen.
+  HERKENNING OP cssClass, niet op label (redactionele tekst). Het vak
+  "Gevonden adres" bleek zijn class of-adres-paneel op het VELD te dragen en
+  niet in de veldinhoud — de eerste versie liet het paneel daardoor staan.
+  DE JS HOEFDE NIET OM: zoekAdres() valt stil op `if (!pc || !hn) return;` en
+  toonAdres() op `if (!veld) return;`, dus zonder adresvelden doet offerte.js
+  op deze pagina vanzelf niets.
+  GEVERIFIEERD: stap 3 toont nog exact vijf blokken (kop + de vier
+  contactvelden), geen restant van postcode/land/paneel/handmatig/straat/
+  rijovergang; kop eindigt op 279 en de eerste veldrij begint op 301, dus
+  geen lege band; twee rijen van twee met de voet op 511. Volledige
+  inzending gedaan met uitgaande mail geblokkeerd (tijdelijke mu-plugin):
+  0 validatiefouten, doorverwezen naar de bedankpagina, en de inzending
+  bevatte geen enkele adreswaarde. Testinzending en mu-plugin daarna
+  verwijderd (0 inzendingen over). Sampleformulier nagemeten: alle
+  adresvelden nog aanwezig, 41 velden voor en na hetzelfde filter.
+  Op 390 dezelfde vijf blokken, geen horizontale scroll; offerte in nl/en/de/
+  fr plus sample, contact en home allemaal 200, geen PHP-fouten.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

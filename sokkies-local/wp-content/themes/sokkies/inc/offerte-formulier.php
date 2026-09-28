@@ -740,6 +740,77 @@ add_filter( 'gform_pre_render', function ( $form ) {
 	return $form;
 } );
 
+/**
+ * HET ADRESBLOK STAAT NIET MEER OP HET OFFERTEFORMULIER (stap 3).
+ *
+ * Een offerteaanvraag heeft geen bezorgadres nodig, dus postcode,
+ * huisnummer, toevoeging, land, het vak "Gevonden adres" met de link
+ * "Klopt niet? Handmatig invullen" en de verborgen velden straat,
+ * plaats en provincie verdwijnen daar. Onder "Jouw gegevens" blijven
+ * alleen Bedrijfsnaam, Contactpersoon, E-mail en Telefoon staan.
+ *
+ * DE VELDEN ZELF BLIJVEN BESTAAN in Gravity Forms — ze zijn hier alleen
+ * uit het formulier gefilterd. Dat is bewust: het SAMPLEformulier deelt
+ * dezelfde opzet en heeft het adres wel nodig, en weggooien in de
+ * formulierbouwer zou bovendien een DATABASE-wijziging zijn — die
+ * deployt niet mee, dus op dev en live had het opnieuw gemoeten.
+ * Daarom staat het hier in code, net als de veldvolgorde en het
+ * bijschrift hierboven.
+ *
+ * OOK DE TWEE LEGE "Rijovergang"-velden gaan mee: die bestonden puur om
+ * de adresrij af te dwingen (zie de notitie over flex-wrap). Zonder
+ * adresblok dwingen ze een rij af die er niet meer is.
+ *
+ * DRIE HAKEN, want alleen verbergen bij het RENDEREN is niet genoeg:
+ * postcode, huisnummer en land staan in Gravity Forms op verplicht, dus
+ * zonder gform_pre_validation zou de bezoeker niet langs een controle
+ * komen op velden die hij niet ziet. gform_pre_submission_filter zorgt
+ * dat er ook niets leegs in de inzending belandt.
+ *
+ * NIET in de beheeromgeving (is_admin): de formulierbouwer en het
+ * inzendingenscherm moeten de velden gewoon blijven tonen.
+ */
+function sokkies_offerte_adresveld( $veld ) {
+	$klassen = array(
+		'of-postcode', 'of-huisnummer', 'of-toevoeging', 'of-land',
+		'of-straat', 'of-plaats', 'of-provincie', 'of-rij-break',
+		/* het vak "Gevonden adres" draagt zijn class op het veld zelf */
+		'of-adres-paneel',
+	);
+	$css = ' ' . trim( preg_replace( '/\s+/', ' ', (string) $veld->cssClass ) ) . ' ';
+	foreach ( $klassen as $klasse ) {
+		if ( false !== strpos( $css, ' ' . $klasse . ' ' ) ) {
+			return true;
+		}
+	}
+
+	/* Het vak "Gevonden adres" is een HTML-veld zonder eigen cssClass. Het
+	   is te herkennen aan de markup die offerte.js aanspreekt; dat anker
+	   is steviger dan de zichtbare tekst, want die is redactioneel. */
+	return 'html' === $veld->type
+		&& false !== strpos( (string) $veld->content, 'of-adres-paneel' );
+}
+
+function sokkies_offerte_adresblok_weg( $form ) {
+	if ( is_admin() || ! is_array( $form ) || empty( $form['fields'] ) ) {
+		return $form;
+	}
+	$offerte = sokkies_offerte_form_id();
+	if ( ! $offerte || (int) $form['id'] !== (int) $offerte ) {
+		return $form;
+	}
+	foreach ( $form['fields'] as $i => $veld ) {
+		if ( sokkies_offerte_adresveld( $veld ) ) {
+			unset( $form['fields'][ $i ] );
+		}
+	}
+	$form['fields'] = array_values( $form['fields'] );
+	return $form;
+}
+add_filter( 'gform_pre_render', 'sokkies_offerte_adresblok_weg' );
+add_filter( 'gform_pre_validation', 'sokkies_offerte_adresblok_weg' );
+add_filter( 'gform_pre_submission_filter', 'sokkies_offerte_adresblok_weg' );
+
 add_filter( 'gform_field_content', function ( $content, $field ) {
 	if ( ! is_object( $field ) || ! sokkies_form_eigen_opmaak( $field->formId ) ) {
 		return $content;
