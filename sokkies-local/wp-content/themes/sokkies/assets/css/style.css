@@ -3596,10 +3596,27 @@ font-weight: 600;
     gap:20px var(--h5-font-size);
     margin-bottom:26px;
   }
+
+  /* HOEKRONDING VAN DE KEUZEKAARTEN (verzoek: 14px was te rond voor zulke
+     kleine vakjes). De KAART is .type-pick-outer — die draagt de rand en
+     de padding — en .pick-card ligt er als label precies overheen, dus
+     die twee moeten gelijk blijven, anders schemert er een rondere hoek
+     doorheen.
+
+     DE FOTO BINNENIN GAAT MEE, CONCENTRISCH. Een binnenvlak met dezelfde
+     ronding als de kaart geeft in de hoek een sikkeltje, want het ligt
+     1px rand + 9.1px padding naar binnen. De regel is: binnenronding =
+     kaartronding - de afstand ertussen, dus 10 - 9.1 = afgerond 1px. Met
+     zoveel lucht rond de foto is de hoek daarbinnen vrijwel recht; dat
+     hoort zo. Wil je de foto zichtbaar rond houden, dan moet de padding
+     omlaag, niet de binnenronding omhoog.
+
+     Geldt voor de soktypes EN de aanvullende opties, en daarmee voor het
+     offerte- en het sampleformulier: die delen deze classes. */
   .type-pick-outer {
     padding: 9.1px;
     border: 0.5px solid var(--dark);
-    border-radius: 15px;
+    border-radius: 10px;
     margin-bottom: 18px;
     position: relative;
 }
@@ -3607,7 +3624,7 @@ font-weight: 600;
     position:relative;
     cursor:pointer;
     text-align:center;
-    border-radius:14px;
+    border-radius:10px;
   }
   .pick-card input{ 
     position:absolute; 
@@ -3617,7 +3634,7 @@ font-weight: 600;
   .pick-img{
     display:block;
     height:182px;
-    border-radius:14px;
+    border-radius:1px; /* concentrisch: 10 - 9.1 */
     overflow:hidden;
     background:#f0f0f0;
     opacity: 10%;
@@ -3837,7 +3854,7 @@ font-weight: 600;
     align-items:center;
     justify-content:center;
     height:182px;
-    border-radius:10px;
+    border-radius:1px; /* concentrisch: 10 - 9.1 */
     overflow:hidden;
     background:#f0f0f0;
     opacity: 10%;

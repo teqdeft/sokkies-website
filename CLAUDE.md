@@ -3162,6 +3162,32 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   collectiepagina, die deze uitgelichte afbeeldingen al gebruikte, geeft op
   dezelfde bestanden exact dezelfde 302. Beoordeel dit dus op dev.
 
+  KEUZEKAARTEN VAN 14/15px NAAR 10px (2026-09-28, verzoek Kulwant: "14px is
+  te rond voor vakjes van dit formaat", geldt voor beide formulieren en alle
+  stappen).
+  WAT DE KAART IS: niet .pick-card maar .type-pick-outer — die draagt de rand
+  (1px) en de padding (9.1px). .pick-card is het label en ligt er precies
+  overheen. Die twee stonden op 15 en 14px; allebei nu op 10px, want laat je
+  er een op 14 staan, dan schemert die rondere hoek door de kaart heen.
+  DE FOTO ERBINNEN GAAT CONCENTRISCH MEE. Een binnenvlak met dezelfde ronding
+  als de kaart geeft in de hoek een sikkeltje: het ligt 1px rand + 9.1px
+  padding naar binnen. De regel die Kulwant meegaf: binnenronding =
+  kaartronding - de afstand ertussen, dus 10 - 9.1 = afgerond 1px. Dat geldt
+  voor .pick-img (stond op 14) en .extra-img (stond op 10).
+  GEVOLG DAT JE MOET WILLEN ZIEN: met 9.1px lucht rond de foto is de hoek
+  daarbinnen vrijwel recht. Dat is geen slordigheid maar precies wat
+  concentrisch betekent bij zoveel padding. Wil de foto zichtbaar rond
+  blijven, dan moet de PADDING omlaag, niet de binnenronding omhoog.
+  EEN REGEL DEKT ALLES: de soktypekaarten en de aanvullende opties delen deze
+  classes, en het offerte- en het sampleformulier delen ze ook — beide
+  formulieren renderen .type-pick-outer via dezelfde filter in
+  inc/offerte-formulier.php. Er staan geen radius-overrides in responsive.css,
+  dus alle banden volgen.
+  GEMETEN na de wijziging op /offerte/ en /sample-request/: kaart 10px, label
+  10px, foto 1px, ook bij de extra's en bij het lege vak van "Geen extra's".
+  Op 390 is de padding nog steeds 9.1px, dus de rekensom klopt daar ook; geen
+  horizontale scroll.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
