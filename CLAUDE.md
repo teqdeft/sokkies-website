@@ -3423,6 +3423,65 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   Het gedrag van R2-5 daarna opnieuw nagelopen: vers verborgen, na twee keuzes
   nog steeds verborgen, derde kaart geweigerd -> zichtbaar, raster blijft 836.
 
+
+  FOTOSTRIP OP DE PRODUCTPAGINA LAAT NU ZIEN DAT HIJ SCROLT (2026-09-28,
+  R2-9: "met meer dan vijf foto's zijn de extra thumbs er wel, maar niets
+  vertelt de bezoeker dat de strip scrolt").
+  DE OORZAAK WAS EEN TE MOOIE REKENSOM: vijf thumbs plus vier gaps zijn samen
+  precies zo hoog als de hoofdfoto (5 x 140 + 4 x 10 = 740). De zesde begon
+  dus exact onder de rand — geen streepje, geen halve foto, niets. Door de
+  scrollbar-fix van 2026-08-24 stond er wel een dunne corale balk, maar die
+  leest als versiering en niet als "er is meer".
+  WAT ER NU GEBEURT: vanaf zes foto's passen er 5,5 in dezelfde hoogte. De
+  zesde staat half in beeld, en dat afgesneden plaatje is het signaal.
+  Gemeten per band (thumbhoogte -> zichtbaar deel van de zesde / de helft):
+    1920: 125 -> 63/62   1440 en 1280: 99 -> 50/50   992: 73 -> 36/36
+    768: 86 -> 43/43     600: 65 -> 33/33
+  EEN REKENSOM IN PLAATS VAN ZES GETALLEN: de hoogte is
+  calc((100% - 5 * var(--thumb-gap)) / 5.5) — vijf en een halve thumb plus
+  vijf gaps vullen samen de kolom. Daarvoor is de gap per band een variabele
+  geworden (--thumb-gap), zodat een band die de gap wijzigt de rekensom
+  meeneemt. De tabletbanden doen hetzelfde met grid-auto-rows.
+  PIJLTJES ALLEEN OP DESKTOP, zoals gevraagd: een omhoog- en een omlaagknop
+  in de bestaande nav-stijl (1,5px rand, wit, radius 7, beige hover met een
+  sprongetje van 2px), gedraaid omdat deze strip verticaal loopt. Onder 992px
+  staan ze op display:none — daar veegt de bezoeker en is de afgesneden thumb
+  genoeg. Een klik schuift precies één thumb op; die stap wordt bij elke klik
+  opnieuw gemeten, want thumbhoogte en gap verschillen per band.
+  EEN PIJL DIE NIETS MEER KAN, VERDWIJNT (visibility:hidden) in plaats van
+  uitgegrijsd te worden. De andere pijl-navs staan op een egale achtergrond,
+  daar leest opacity:.4 prima; hier ligt de knop op een FOTO en bleef er een
+  spookknop over de eerste thumb staan. Op een screenshot meteen zichtbaar,
+  in een meting niet — vandaar dat dit pas bij het kijken opviel.
+  GEEN LIMIET op het aantal foto's, conform de opdracht: de template telt
+  alleen of het er meer dan vijf zijn en zet dan een klasse. Bij vijf of
+  minder verandert er niets — nagemeten op reguliere sokken: 5 thumbs, nog
+  steeds 140px, strip scrolt niet, geen pijlen in de markup.
+  TELLEN IN DE TEMPLATE EN NIET IN CSS: het aantal foto's is gewoon bekend in
+  PHP. Een :has()-selector zou ook kunnen, maar dan hangt het gedrag aan
+  browserondersteuning terwijl de klasse altijd klopt.
+  VALKUIL DIE TOESLOEG — EXPLICIET GEPLAATSTE RASTER-ITEMS GAAN VOOR: de
+  pijlen staan in dezelfde rastercel als de strip (kolom 2, rij 1) en liggen
+  er dus overheen, zonder absolute positionering en zonder dat .prod-gallery
+  een position nodig heeft. Maar zodra zij die cel expliciet claimden, plaatste
+  het raster de STRIP automatisch in een NIEUWE rij van 0px hoog: de strip
+  klapte dicht (min-height:100% van 0) en de thumbs werden 4px. Oplossing:
+  ook de strip expliciet in kolom 2, rij 1 zetten. Gemeten bewijs vooraf:
+  grid-template-rows stond op "740px 0px".
+  TESTVALKUIL, en die kost hier twee keer een verkeerde conclusie: in het
+  browserpaneel van Claude werkt scrollBy met behavior:'smooth' NIET (de
+  scrollpositie blijft 0) en worden er bij een programmatische scroll GEEN
+  scroll-events afgeleverd. Met behavior:'auto' schuift hij wel, en met een
+  handmatig verstuurd scroll-event klopt de aan/uit-stand van de pijlen exact:
+  bovenaan de omhoogpijl weg, na één stap allebei aan, onderaan de
+  omlaagpijl weg, nog een klik doet niets, en terug omhoog staat de bovenste
+  weer weg. De stap meet 135px = 125 thumb + 10 gap.
+  MOBIEL ONGEMOEID: daar is de strip een horizontale rij die tot buiten het
+  scherm doorloopt (margin-right -20 met padding-right 20), dus de vierde
+  thumb valt al half weg op 390 — precies het signaal dat de opdracht daar
+  vraagt. Nagemeten: 90x90 thumbs, scrollbreedte 686 in een venster van 370,
+  geen horizontale paginascroll.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

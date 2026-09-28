@@ -2184,6 +2184,47 @@
     /* Foto's die nog laden kunnen de hoogte nog veranderen. */
     window.addEventListener('load', meet);
 
+    /* ---------- pijlen bij de fotostrip (R2-9) ----------
+       Vanaf zes foto's scrolt de strip. De half afgesneden zesde thumb
+       laat dat zien, deze twee knoppen schuiven er telkens een thumb bij
+       op. Ze staan alleen in de markup als er echt meer dan vijf foto's
+       zijn en zijn onder 992px met CSS verborgen — daar veegt de
+       bezoeker. De stap wordt bij elke klik opnieuw gemeten, want de
+       thumbhoogte en de gap verschillen per band. */
+    kolommen.forEach(function (strip) {
+      var gallerij = strip.closest('.prod-gallery');
+      var vorige   = gallerij && gallerij.querySelector('.prod-thumbs-nav.is-vorige');
+      var volgende = gallerij && gallerij.querySelector('.prod-thumbs-nav.is-volgende');
+      if (!vorige || !volgende) { return; }
+
+      function stap() {
+        var thumb = strip.querySelector('.prod-thumb');
+        if (!thumb) { return 0; }
+        var gat = parseFloat(getComputedStyle(strip).rowGap) || 0;
+        return thumb.getBoundingClientRect().height + gat;
+      }
+
+      /* Een pijl die niets meer kan doen, gaat uit — zelfde uitgegrijsde
+         staat als .gallery-nav button:disabled. De marge van 1px vangt
+         afrondingen op: scrollTop is zelden precies 0 of precies het
+         maximum. */
+      function standBijwerken() {
+        vorige.disabled   = strip.scrollTop <= 1;
+        volgende.disabled = strip.scrollTop + strip.clientHeight >= strip.scrollHeight - 1;
+      }
+
+      vorige.addEventListener('click', function () {
+        strip.scrollBy({ top: -stap(), behavior: 'smooth' });
+      });
+      volgende.addEventListener('click', function () {
+        strip.scrollBy({ top: stap(), behavior: 'smooth' });
+      });
+      strip.addEventListener('scroll', standBijwerken);
+      window.addEventListener('load', standBijwerken);
+      window.addEventListener('resize', standBijwerken);
+      standBijwerken();
+    });
+
     var wacht;
     window.addEventListener('resize', function () {
       clearTimeout(wacht);

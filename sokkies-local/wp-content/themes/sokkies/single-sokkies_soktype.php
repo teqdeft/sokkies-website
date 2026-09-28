@@ -95,7 +95,16 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                  <?php endif; ?>
                </div>
                <?php if ( count( $fotos ) > 1 || $video ) : ?>
-               <div class="prod-thumbs">
+               <?php
+                 /* De strip toont er vijf: vijf thumbs plus de gaps zijn samen precies
+                    zo hoog als de hoofdfoto. Vanaf zes moet hij dus scrollen, en dat is
+                    ook het moment dat de zesde half in beeld komt en de pijlen
+                    verschijnen. Het tellen gebeurt hier, want de template weet het
+                    aantal gewoon; CSS kan dat niet zien. */
+                 $aantal_thumbs = count( $fotos ) + ( $video ? 1 : 0 );
+                 $meer_thumbs   = $aantal_thumbs > 5;
+               ?>
+               <div class="prod-thumbs<?php echo $meer_thumbs ? ' heeft-meer' : ''; ?>">
                  <?php foreach ( $fotos as $i => $foto ) : ?>
                  <button type="button" class="prod-thumb<?php echo 0 === $i ? ' is-active' : ''; ?>"><img src="<?php echo esc_url( $foto['url'] ); ?>" alt=""></button>
                  <?php endforeach; ?>
@@ -110,6 +119,12 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                  </button>
                  <?php endif; ?>
                </div>
+               <?php if ( $meer_thumbs ) : ?>
+               <?php /* Staan in dezelfde rastercel als de strip en liggen er dus overheen;
+                        onder 992px verbergt de CSS ze, daar wordt geveegd. */ ?>
+               <button type="button" class="prod-thumbs-nav is-vorige" aria-label="Eerdere foto's"><svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39" aria-hidden="true"><g transform="translate(0.5 0.683)"><path d="M1289.087,547h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/><path d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/></g></svg></button>
+               <button type="button" class="prod-thumbs-nav is-volgende" aria-label="Meer foto's"><svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39" aria-hidden="true"><g transform="translate(0.5 0.683)"><path d="M1289.087,547h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/><path d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(-1209 -541.602)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/></g></svg></button>
+               <?php endif; ?>
                <?php endif; ?>
              </div>
            </div>

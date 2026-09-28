@@ -867,7 +867,8 @@
     height:590px;
   }
   .prod-thumbs{
-    gap:9px;
+    --thumb-gap:9px;
+    gap:var(--thumb-gap);
   }
   .prod-thumb{
     height:110px;
@@ -2000,7 +2001,8 @@
     height:590px;
   }
   .prod-thumbs{
-    gap:9px;
+    --thumb-gap:9px;
+    gap:var(--thumb-gap);
   }
   .prod-thumb{
     height:110px;
@@ -3343,7 +3345,8 @@
     height:445px;
   }
   .prod-thumbs{
-    gap:9px;
+    --thumb-gap:9px;
+    gap:var(--thumb-gap);
   }
   .prod-thumb{
     height:82px;
@@ -5629,7 +5632,8 @@
     aspect-ratio:1/1;
   }
   .prod-thumbs{
-    gap:9px;
+    --thumb-gap:9px;
+    gap:var(--thumb-gap);
   }
   .prod-thumb{
     height:auto;
@@ -5649,12 +5653,19 @@
        thumbs nu al hadden — 5 rijen plus 4 gaps van 15px — dus bij 5 of
        minder verandert er niets en scrollt de kolom pas daarboven. Zelfde
        aanpak als in de >=992-band. */
-    grid-auto-rows:calc((100% - 60px) / 5);
+    grid-auto-rows:calc((100% - 4 * var(--thumb-gap)) / 5);
     overflow-y:auto;
     /* zelfde huisstijl-scrollbar als in de >=992-band */
     scrollbar-width:thin;
     scrollbar-color:var(--coral) rgb(40 18 27 / 10%);
-    gap:15px;
+    --thumb-gap:15px;
+    gap:var(--thumb-gap);
+  }
+  /* Meer dan vijf foto's: 5,5 rij in dezelfde kolomhoogte, zodat de
+     zesde half in beeld staat en te zien is dat de strip scrolt (R2-9).
+     De klasse komt uit de template, die de foto's gewoon telt. */
+  .prod-thumbs.heeft-meer{
+    grid-auto-rows:calc((100% - 5 * var(--thumb-gap)) / 5.5);
   }
   .prod-thumbs::-webkit-scrollbar{ width:6px; }
   .prod-thumbs::-webkit-scrollbar-track{
@@ -9394,7 +9405,8 @@
     aspect-ratio:1/1;
   }
   .prod-thumbs{
-    gap:9px;
+    --thumb-gap:9px;
+    gap:var(--thumb-gap);
   }
   .prod-thumb{
     height:auto;
@@ -9414,12 +9426,19 @@
        thumbs nu al hadden — 5 rijen plus 4 gaps van 15px — dus bij 5 of
        minder verandert er niets en scrollt de kolom pas daarboven. Zelfde
        aanpak als in de >=992-band. */
-    grid-auto-rows:calc((100% - 60px) / 5);
+    grid-auto-rows:calc((100% - 4 * var(--thumb-gap)) / 5);
     overflow-y:auto;
     /* zelfde huisstijl-scrollbar als in de >=992-band */
     scrollbar-width:thin;
     scrollbar-color:var(--coral) rgb(40 18 27 / 10%);
-    gap:15px;
+    --thumb-gap:15px;
+    gap:var(--thumb-gap);
+  }
+  /* Meer dan vijf foto's: 5,5 rij in dezelfde kolomhoogte, zodat de
+     zesde half in beeld staat en te zien is dat de strip scrolt (R2-9).
+     De klasse komt uit de template, die de foto's gewoon telt. */
+  .prod-thumbs.heeft-meer{
+    grid-auto-rows:calc((100% - 5 * var(--thumb-gap)) / 5.5);
   }
   .prod-thumbs::-webkit-scrollbar{ width:6px; }
   .prod-thumbs::-webkit-scrollbar-track{
