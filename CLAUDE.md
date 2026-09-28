@@ -3574,6 +3574,17 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   GETEST met drie verschillende PDF's op één kaart: /nl/ gaf de NL, /en/ de
   EN, /de/ de DE en /fr/ weer de NL. Daarna de testbestanden weer losgekoppeld
   (gecontroleerd: beide velden leeg, NL-bestand nog intact).
+  (4) RUIMTE TUSSEN DE GROEPEN KLEINER (verzoek Kulwant met een rood kader om
+  het gat). Twee groepen zijn twee secties, en die zetten samen 110 + 80 =
+  190px tussen de laatste kaart en de volgende kop — dat leest als een gat in
+  de pagina. Nu 70px op desktop en 40px op mobiel, via
+  .dl-cards:has(+ .dl-cards) plus padding-top:0 op de volgende sectie. Ruim
+  meer dan de 30px tussen de kaartenrijen onderling, dus de groepen blijven
+  herkenbaar. Browsers zonder :has() houden de oude 110px — geen breuk.
+  MEETVALKUIL: de kaarten hebben data-aos, en zolang ze niet in beeld zijn
+  gescrold staat er nog een transform op. getBoundingClientRect() gaf daardoor
+  een NEGATIEF gat (-30 en -60). Zet AOS eerst uit of meet de padding zelf.
+
   NIET GEDAAN, EN DAT IS EEN ECHTE BLOKKADE: "de mail stuurt het bestand van
   de taal waarop de bezoeker zat". Die mail bestaat in deze build niet. Het
   blok "Mis niets" op /downloads/ is nog de statische htmlv-stub

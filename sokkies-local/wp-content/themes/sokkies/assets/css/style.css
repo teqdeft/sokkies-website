@@ -8819,6 +8819,17 @@ font-weight: 600;
     background:var(--white);
     padding:80px 0 110px;
   }
+  /* Twee groepen onder elkaar (Downloads en Templates) zijn twee van deze
+     secties, en die zetten samen 110 + 80 = 190px tussen de laatste kaart
+     en de volgende kop. Dat leest als een gat in de pagina. Samen 70px is
+     genoeg: duidelijk meer dan de 30px tussen de kaartenrijen onderling,
+     zonder dat de groepen uit elkaar vallen. */
+  .dl-cards:has(+ .dl-cards){
+    padding-bottom:70px;
+  }
+  .dl-cards + .dl-cards{
+    padding-top:0;
+  }
   .dl-cards-grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);

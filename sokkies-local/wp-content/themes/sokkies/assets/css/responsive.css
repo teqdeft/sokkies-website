@@ -15026,6 +15026,10 @@
   .dl-cards{
     padding:60px 0 80px;
   }
+  /* zelfde afspraak als in de basis, maar krapper op een klein scherm */
+  .dl-cards:has(+ .dl-cards){
+    padding-bottom:40px;
+  }
   .dl-cards-grid{
     gap:15px 10px;
     grid-template-columns:repeat(2, minmax(0,1fr));
