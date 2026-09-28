@@ -3299,7 +3299,7 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   uitsluiting" het zou regelen; gemeten bleef stap 2 daarna zonder enige keuze
   staan. Nu geven we een nog aangevinkte andere optie mee (die blijft dan
   staan) of anders "Geen extra's" zelf.
-  BUG GEVONDEN EN GEFIKST DIE HIER LOS VAN STAAT (zat al op live): de
+  BUG GEVONDEN EN GEFIKST DIE HIER LOS VAN STAAT: de
   herkenning van "Geen extra's" had naast de keuzetekst een tweede anker op het
   ONTWERP — "alleen die optie heeft geen foto en krijgt het grijze doorstreepte
   vlak". Dat anker is niet eenduidig: sinds iemand "Borduren" in Gravity Forms
@@ -3308,6 +3308,11 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   daarna opnieuw gemeten: Labels + Borduren + een derde optie blijven nu netjes
   naast elkaar staan. Het vormanker geldt alleen nog als er PRECIES ÉÉN kaart
   zonder foto is. Geldt ook voor het sampleformulier (gedeelde JS).
+  STOND AL IN DE GEDEPLOYDE CODE, maar bijt pas zodra er een TWEEDE optie
+  zonder foto is. Lokaal was dat zo (Borduren), op dev nog niet: daar staan
+  5 extras en 1 grijs vlak. Het defect was daar dus sluimerend en zou
+  verschijnen zodra de database wordt gesynchroniseerd — gemeten, niet
+  aangenomen, want ik had het eerst als "zat al op live" opgeschreven.
   VERGELIJKEN OP DE WAARDE, NIET OP DE TEKST — gemeten, want ze zijn hier niet
   gelijk: Gravity Forms bewaart de keuzeTEKST HTML-gecodeerd ("Yoga &amp;
   pilates") en de WAARDE rauw ("Yoga & pilates"). De data-attributen en het CMS
