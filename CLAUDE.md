@@ -3390,6 +3390,39 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   uitsteekt — hier waren dat alleen de items van de topbar-marquee, die bewust
   buiten hun geknipte container vallen.
 
+
+  DIRECT DAARNA STUK GEMELD EN HERSTELD (2026-09-28, schermafbeelding Kulwant
+  van /en/sample-request/: de tien soktypekaarten stonden als losse smalle
+  kolommetjes buiten het formulier, deels onder de zijkolom "Wat krijg je?").
+  DIT WAS MIJN EIGEN WIJZIGING VAN HIERBOVEN. Het raster .gfield_checkbox kwam
+  op 0 breed uit zodra de hint uit de flow werd gehaald; gemeten: 1084px zonder
+  de klasse, 0px ermee. Met een raster van 0 breed valt repeat(5, 1fr) terug op
+  de min-content van elke kaart — vandaar die ongelijke kolommen van 87, 60, 67,
+  54 en 49 pixels: dat zijn gewoon de langste woorden uit de labels.
+  DE OORZAAK ZIT IN DE <fieldset>: het binnenvlak daarvan zakt terug naar de
+  breedte van zijn inhoud zodra de enige gewone regel erboven verdwijnt. Niet
+  één bepaalde eigenschap is de dader — position:absolute, height en zelfs
+  white-space gaven los van elkaar hetzelfde resultaat, wat het als
+  fieldset-eigenaardigheid aanwijst en niet als iets in de hint zelf.
+  FIX: width:100% op .of-soktypes .gfield_checkbox en (voor dezelfde val in de
+  toekomst) op .of-extras .gfield_checkbox. Een blokraster is normaal al zo
+  breed als zijn ouder, dus de regel verandert niets aan de goede situatie; hij
+  zorgt alleen dat de breedte niet meer afhangt van wat de buren doen.
+  WAAROM MIJN EIGEN CONTROLE DIT MISTE, want dat is de echte les: ik heb de
+  toestand wel GEMETEN (hint zichtbaar/verborgen, 350px breed, twee kolommen op
+  390) maar nooit het RASTER nagemeten en er ook nooit naar gekeken. Twee
+  kolommen op mobiel klopte toevallig, en op 1440 in het paneel viel het buiten
+  mijn metingen. Meet bij een layoutwijziging dus ook het blok eromheen, en maak
+  een screenshot: dat had dit in één oogopslag laten zien.
+  GEMETEN NA DE FIX, telkens met een VERSE load: 1840 -> 1084px raster, 5 gelijke
+  kolommen van 198; 1440 -> 836/5/159; 1280 -> 706/5/133; 992 -> 855/5/163;
+  768 -> 631/4/150; 390 -> 350/2/168. Overal binnen de kaart en 0 horizontale
+  paginascroll. Het offerteformulier op 390 ongewijzigd (350/2/168, hint gewoon
+  zichtbaar). Screenshot op 1840 gemaakt om het ook echt te zien: 5 kaarten per
+  rij, twee rijen, netjes binnen het formulier.
+  Het gedrag van R2-5 daarna opnieuw nagelopen: vers verborgen, na twee keuzes
+  nog steeds verborgen, derde kaart geweigerd -> zichtbaar, raster blijft 836.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

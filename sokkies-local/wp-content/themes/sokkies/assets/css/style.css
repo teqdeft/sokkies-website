@@ -10234,13 +10234,22 @@ main.contact{
        2. htmlv markeert de keuze met .is-selected via eigen JS, GF heeft
           gewoon :checked — de input staat vóór het label, dus met de
           +-combinator is dezelfde staat te pakken. */
+  /* width:100% is GEEN overbodige regel. Deze rasters staan in een
+     <fieldset>, en daar zakt het binnenvlak terug naar de breedte van zijn
+     inhoud zodra de regel erboven (de hint) uit de flow wordt gehaald. Het
+     raster kwam dan op 0 breed uit, waarna repeat(5, 1fr) terugviel op de
+     min-content van elke kaart en de kaarten als losse kolommetjes naast
+     het formulier belandden. Gemeten: 1084px met deze regel, 0px zonder.
+     Zo hangt de breedte niet langer af van wat de buren doen. */
   .quote-card .of-soktypes .gfield_checkbox{
     display:grid;
+    width:100%;
     grid-template-columns:repeat(5, 1fr);
     gap:20px var(--h5-font-size);
   }
   .quote-card .of-extras .gfield_checkbox{
     display:grid;
+    width:100%;
     grid-template-columns:repeat(5, 1fr);
     gap:var(--h5-font-size);
   }
