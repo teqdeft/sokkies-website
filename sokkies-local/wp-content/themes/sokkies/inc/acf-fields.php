@@ -2743,7 +2743,7 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				'type'         => 'repeater',
 				'layout'       => 'table',
 				'button_label' => 'Optie toevoegen',
-				'instructions' => 'De kaartjes bij "Aanvullende opties" op het offerteformulier. Zet bij Optie de naam zoals de keuze in het formulier heet: Labels, Geschenkdoosjes, Kaartjes, Inpak &amp; verzending. Een optie zonder foto houdt het beeld uit het thema. "Geen extra&#039;s" krijgt bewust geen foto — dat is in het ontwerp het grijze vlak.',
+				'instructions' => 'De kaartjes bij "Aanvullende opties" op het offerteformulier. De lijst bij Optie komt rechtstreeks uit Gravity Forms, dus kiezen is genoeg — komt er een optie bij in het formulier, dan staat hij hier vanzelf tussen. Een optie zonder foto houdt het beeld uit het thema. "Geen extra&#039;s" krijgt bewust geen foto: dat is in het ontwerp het grijze vlak.',
 				'sub_fields'   => array(
 					array( 'key' => 'field_si_extra_naam', 'label' => 'Optie', 'name' => 'naam', 'type' => 'text' ),
 					array(

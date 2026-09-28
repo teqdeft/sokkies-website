@@ -3244,6 +3244,19 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   Gravity Forms heeft toegevoegd. Die had geen foto in de themalijst en toonde
   dus het grijze vlak — precies wat er niet meer kan gebeuren nu de klant er
   zelf een foto bij kan zetten.
+  VERVOLG (melding Kulwant: "current options are of gravity form"). Terecht:
+  de opties zelf worden in Gravity Forms beheerd, dus de naam laten INTYPEN op
+  de opties-pagina zet dezelfde tekst op twee plekken. Hernoemt iemand daar een
+  keuze, dan wijst de rij hier stil nergens meer naar en valt de foto weg —
+  exact hoe de soktypekaarten eerder leeg kwamen te staan.
+  HET VELD "Optie" IS NU EEN KEUZELIJST die rechtstreeks uit Gravity Forms
+  wordt gevuld (acf/load_field op field_si_extra_naam). De redacteur kiest dus
+  uit de keuzes die ECHT in het formulier staan en kan niet mistypen; komt er
+  een optie bij, dan staat hij hier vanzelf tussen. Gemeten: zes keuzes in de
+  lijst, gelijk aan het formulier.
+  ZONDER GRAVITY FORMS blijft het een gewoon tekstveld — een lege keuzelijst
+  zou het tabblad onbruikbaar maken. De lijst wordt per request één keer
+  opgehaald (static cache), want load_field vuurt ook op de front-end.
   LET OP bij tellen in de HTML: `grep -c` telt REGELS, en de hele pagina staat
   op een paar regels. Daardoor las ik eerder "1 leeg vak" waar er twee waren.
   Tel met `grep -o ... | wc -l`.

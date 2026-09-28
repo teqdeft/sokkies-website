@@ -1073,6 +1073,69 @@ function sokkies_extra_kaartfotos() {
 	return $cache;
 }
 
+/**
+ * DE OPTIENAAM IS EEN KEUZELIJST UIT GRAVITY FORMS, GEEN TIKVELD.
+ *
+ * De opties zelf worden in Gravity Forms beheerd. Liet je de naam op de
+ * opties-pagina intypen, dan staat dezelfde tekst op twee plekken en loopt
+ * hij vroeg of laat uiteen: hernoemt iemand een keuze in het formulier, dan
+ * wijst de rij hier stilletjes nergens meer naar en valt de foto weg zonder
+ * dat iemand het merkt. Precies zo stonden de soktypekaarten eerder leeg.
+ * Daarom kiest de redacteur uit de keuzes die ECHT in het formulier staan.
+ *
+ * ZONDER GRAVITY FORMS (of zonder formulier) blijft het een gewoon
+ * tekstveld: dan is er niets om uit te kiezen, en een lege keuzelijst zou
+ * het tabblad onbruikbaar maken.
+ */
+function sokkies_offerte_extra_keuzes() {
+	static $cache = null;
+	if ( null !== $cache ) {
+		return $cache;
+	}
+	$cache = array();
+	if ( ! class_exists( 'GFAPI' ) ) {
+		return $cache;
+	}
+	foreach ( array( 'sokkies_offerte_form_id', 'sokkies_sample_form_id' ) as $bron ) {
+		if ( ! function_exists( $bron ) ) {
+			continue;
+		}
+		$id = $bron();
+		if ( ! $id ) {
+			continue;
+		}
+		$form = GFAPI::get_form( $id );
+		if ( ! $form || empty( $form['fields'] ) ) {
+			continue;
+		}
+		foreach ( $form['fields'] as $veld ) {
+			$css = ' ' . preg_replace( '/\s+/', ' ', trim( (string) $veld->cssClass ) ) . ' ';
+			if ( false === strpos( $css, ' of-extras ' ) || empty( $veld->choices ) ) {
+				continue;
+			}
+			foreach ( (array) $veld->choices as $keuze ) {
+				$tekst = sokkies_offerte_keuzetekst( isset( $keuze['text'] ) ? $keuze['text'] : '' );
+				if ( '' !== $tekst ) {
+					$cache[ $tekst ] = $tekst;
+				}
+			}
+		}
+	}
+	return $cache;
+}
+
+add_filter( 'acf/load_field/key=field_si_extra_naam', function ( $veld ) {
+	$keuzes = sokkies_offerte_extra_keuzes();
+	if ( ! $keuzes ) {
+		return $veld; // geen formulier gevonden: gewoon een tekstveld laten
+	}
+	$veld['type']       = 'select';
+	$veld['choices']    = $keuzes;
+	$veld['allow_null'] = 1;
+	$veld['ui']         = 0;
+	return $veld;
+} );
+
 function sokkies_extra_kaartfoto( $keuzetekst ) {
 	$url = sokkies_kaartfoto_kies( $keuzetekst, sokkies_extra_kaartfotos() );
 	if ( $url ) {
