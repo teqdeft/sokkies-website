@@ -9914,6 +9914,24 @@ main.contact{
   .quote-card .gfield_required{ color:var(--coral); font-weight:600; }
   /* Het ontwerp zet een spatie tussen label en sterretje ("Postcode *"). */
   .quote-card .gfield_required{ margin-left:.28em; }
+  /* De hint onder "Wat wil je laten bedrukken?" staat buiten beeld tot
+     een derde kaart geweigerd wordt; offerte.js zet en haalt de klasse.
+     BEWUST GEEN display:none: de vakjes verwijzen met aria-describedby
+     naar deze regel, en dat is voor een schermlezer de enige plek waar
+     de limiet staat. Zo blijft hij daar hoorbaar en is hij alleen niet
+     te zien. */
+  .quote-card .of-soktypes.max-hint-verborgen > .gfield_description{
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    border:0;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    clip-path:inset(50%);
+    white-space:nowrap;
+  }
   .quote-card .gfield_description{
     font-size:calc(var(--body-font-size) - 2px);
     color:var(--text);

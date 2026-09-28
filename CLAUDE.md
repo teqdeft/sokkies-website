@@ -3341,6 +3341,55 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   daarna, en een oude inzending leest daarna een andere optie dan er destijds
   is gekozen. Via de beheerschermen van Gravity Forms gebeurt dat niet.
 
+
+  HINT "MAX. 2 SELECTEERBAAR" PAS BIJ EEN GEWEIGERDE DERDE KLIK (2026-09-28,
+  R2-5 met een schermafbeelding van /nl/sample-request/: de regel staat er
+  voordat iemand iets heeft aangeklikt).
+  WAAROM: de zin vertelt de bezoeker vooral dat hij er twee MAG kiezen, en dan
+  doen er ook meer dat. Hij hoort pas te verschijnen op het moment dat een
+  derde kaart geweigerd wordt — dan is hij een antwoord op wat er net gebeurde
+  in plaats van een uitnodiging vooraf. Na twee keuzes staat er dus nog niets.
+  DE KLIK IS AL GEWEIGERD, dat hoefde niet gebouwd te worden: bij het maximum
+  zet offerte.js de overige vakjes op disabled (.is-uitgeschakeld, opacity .4).
+  Een uitgeschakeld vakje vuurt zelf geen muisgebeurtenis, maar het LABEL wel —
+  de hele kaart is dat label. Daar wordt op geluisterd. Gemeten om het zeker te
+  weten: een kaart die nog mag geeft twee klikgebeurtenissen (label plus het
+  doorgegeven vakje), een geweigerde precies één. De check is dus niet "de
+  hoeveelste klik" maar "is dit vakje uitgeschakeld".
+  ALLEEN WAAR ER IETS TE WEIGEREN VALT: de klasse wordt in JS gezet en alleen
+  bij een maximum van twee of meer. Het OFFERTEformulier staat op één soort en
+  gedraagt zich daar als een radiogroep — een nieuwe kaart vervangt de vorige,
+  er wordt nooit iets geweigerd. Zijn hint ("Kies één soort sok.") zou verborgen
+  dus nooit meer tevoorschijn komen en blijft daarom staan. Nagemeten: op
+  /offerte/ blijft de regel zichtbaar en wisselt de keuze nog steeds netjes.
+  BEWUST GEEN display:none MAAR UIT BEELD (clip): de vakjes verwijzen met
+  aria-describedby naar deze regel, en het is de enige plek waar de limiet
+  staat. Met display:none hoort iemand met een schermlezer nergens meer dat er
+  een maximum is. Nu is hij alleen niet te ZIEN; verschijnen betekent dan het
+  weghalen van de klasse, waarna de oude opmaak (13px, opacity .7, 8px eronder)
+  onveranderd terug is — nagemeten.
+  ZONDER JS blijft de hint gewoon staan: dat is de oude weergave en dus een
+  veilige terugval.
+  DE HINT BLIJFT DAARNA STAAN als de bezoeker iets uitvinkt (in de opdracht
+  expliciet vrijgelaten). Weghalen zou hem laten knipperen bij elke wijziging.
+  LET OP: bij een nieuwe render van het formulier (een validatiefout, of de
+  volgende stap) draait init() opnieuw en is de hint weer verborgen. Dat is
+  bewust — dat is een verse weergave — en hij komt terug zodra er weer een
+  derde kaart wordt aangeklikt.
+  GEMETEN op de echte pagina (1440 en 390), vijf toestanden: verse pagina
+  verborgen, 1 gekozen verborgen, 2 gekozen nog steeds verborgen, derde
+  geweigerd -> zichtbaar (350px breed op 390, 2 regels) met nog steeds 2
+  aangevinkt, en na het uitvinken blijft hij staan. Op 390 schuiven de kaarten
+  52px omlaag als hij verschijnt; geen horizontale paginascroll.
+  MEETVALKUIL, opnieuw en nu met een getal erbij: direct na het instellen van
+  een mobiele viewport meldde de pagina 141px horizontale scroll. Dat is exact
+  531 - 390, oftewel het verschil tussen de nog niet verwerkte en de nieuwe
+  breedte: innerWidth gaf 531 terwijl clientWidth al 390 was. Na het afwachten
+  gaf beide 390 en was de scroll 0. Controleer bij een gemelde overloop dus
+  eerst of innerWidth en clientWidth gelijk zijn, en kijk daarna WELK element
+  uitsteekt — hier waren dat alleen de items van de topbar-marquee, die bewust
+  buiten hun geknipte container vallen.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

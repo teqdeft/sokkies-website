@@ -807,7 +807,51 @@
     pasExtrasToe(nogAan || geen);
   }
 
-  function init() { markeerAlles(); pasSoktypesToe(); pasExtrasVoorwaarden(); pasExtrasToe(null); initAdres(); pasProefknopToe(); }
+  /* ---------- de hint "Max. 2 selecteerbaar" ----------
+   * Die regel staat standaard NIET in beeld. Hij vertelt de bezoeker
+   * vooral dat hij er twee MAG kiezen, en dat doen er dan ook meer; hij
+   * hoort pas op het moment dat een derde kaart geweigerd wordt, als
+   * antwoord op wat er net gebeurde.
+   *
+   * ALLEEN WAAR ER ECHT IETS TE WEIGEREN VALT, dus bij een maximum van
+   * twee of meer. Staat het veld op één soort (het offerteformulier),
+   * dan gedraagt de rij zich als een radiogroep: een nieuwe kaart
+   * vervangt de vorige, er wordt nooit iets geweigerd, en een verborgen
+   * hint zou daar dus nooit meer tevoorschijn komen.
+   *
+   * DE REGEL BLIJFT LEESBAAR VOOR EEN SCHERMLEZER: de vakjes verwijzen
+   * er met aria-describedby naar, dus display:none zou de enige uitleg
+   * van de limiet weghalen voor wie het scherm niet ziet. De CSS zet hem
+   * daarom buiten beeld in plaats van weg.
+   *
+   * ZONDER JS blijft de hint gewoon staan — dat is de oude weergave en
+   * dus een veilige terugval. */
+  function maxHintVerbergen() {
+    var lijst = vakjes('of-soktypes');
+    if (!lijst.length) { return; }
+    var veld = lijst[0].closest('.of-soktypes');
+    if (veld && maxSoktypes(lijst[0]) > 1) { veld.classList.add('max-hint-verborgen'); }
+  }
+
+  /* Een GEWEIGERDE klik: de kaart is uitgeschakeld omdat het maximum al
+     bereikt is. Het vakje zelf vuurt dan niets (een uitgeschakeld veld
+     krijgt geen muisgebeurtenissen), maar het LABEL wel — daar luisteren
+     we dus op. Een klik op een kaart die nog wél mag doet niets: na twee
+     keuzes hoort er nog geen hint te staan.
+     De hint blijft daarna staan; hem weer weghalen zou hem laten
+     knipperen zodra de bezoeker iets uitvinkt. */
+  function maxHintTonen(e) {
+    var kaart = (e.target && e.target.closest) ? e.target.closest('.of-soktypes .gchoice') : null;
+    if (!kaart) { return; }
+    var vakje = kaart.querySelector('input[type="checkbox"]');
+    if (!vakje || !vakje.disabled) { return; }
+    var veld = kaart.closest('.of-soktypes');
+    if (veld) { veld.classList.remove('max-hint-verborgen'); }
+  }
+
+  document.addEventListener('click', maxHintTonen, true);
+
+  function init() { markeerAlles(); maxHintVerbergen(); pasSoktypesToe(); pasExtrasVoorwaarden(); pasExtrasToe(null); initAdres(); pasProefknopToe(); }
 
   document.addEventListener('DOMContentLoaded', function () {
     init();
