@@ -3575,6 +3575,40 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   GETEST met drie verschillende PDF's op één kaart: /nl/ gaf de NL, /en/ de
   EN, /de/ de DE en /fr/ weer de NL. Daarna de testbestanden weer losgekoppeld
   (gecontroleerd: beide velden leeg, NL-bestand nog intact).
+  OOK DE AFBEELDING PER TAAL (2026-09-29, verzoek Kulwant "just like pdf there
+  should be different fields for image also"): op de cover van een brochure
+  staat tekst, dus bij een Engelse PDF hoort een Engelse cover. De kaart heeft
+  nu Afbeelding (NL) / (EN) / (DE) / (FR) boven de bestandsvelden, met exact
+  dezelfde regel: leeg = de Nederlandse. Veldnamen foto_en/_de/_fr naast de
+  bestaande 'foto', dus bestaande afbeeldingen blijven staan.
+  BEELD EN BESTAND STAAN LOS. Wie wel een Duitse PDF uploadt maar geen Duitse
+  cover, krijgt de Nederlandse cover bij de Duitse PDF. Bewust: een lege kaart
+  is erger, en zolang de cover taalneutraal is scheelt het de redacteur werk.
+  EEN GEDEELDE TERUGVAL: beide lopen nu via sokkies_taalbijlage( $kaart,
+  $basis, $taal ), waar $basis 'bestand' of 'foto' is. sokkies_download_bestand
+  en het nieuwe sokkies_download_foto zijn nog maar wikkels daaromheen, zodat
+  het beeld nooit anders kan gaan terugvallen dan de PDF eronder — relevant
+  zodra de brochures op Engels-eerst gaan (klantvraag van 2026-09-29, nog niet
+  gebouwd): dan is dat één functie in plaats van twee.
+  GETEST door tijdelijk een andere afbeelding als Afbeelding (DE) te koppelen
+  op de tweede kaart: /de/ toonde die, /nl/, /en/ en /fr/ de Nederlandse.
+  Daarna de testmeta weer verwijderd (nagemeten: 8 kaarten, 7 met foto, 1
+  placeholder — precies als ervoor, 0 PHP-fouten).
+  VIER OP EEN RIJ IN HET BEHEER (2026-09-29, verzoek Kulwant "show them in
+  single row"): de acht taalvelden staan op wrapper-width 25, dus de kaart
+  leest als twee rijen — covers boven, PDF's eronder, elke taal onder zijn
+  eigen cover. Titel, Tekst en Of een link blijven vol breed en breken de
+  rijen netjes af. DE INSTRUCTIETEKSTEN ZIJN DAARVOOR INGEKORT: in een kolom
+  van een kwart scherm werd de oude uitleg bij Afbeelding (NL) een blok van
+  zes regels en dat maakt de hele rij even hoog. Zelfde informatie, minder
+  regels. Gecontroleerd door de veldwikkels serverzijdig te renderen
+  (acf_render_field_wrap): 8x data-width="25" en width:25%, de overige drie
+  velden zonder breedte; front-end onveranderd, want wrapper-width geldt
+  alleen in het bewerkscherm.
+  VALKUIL BIJ HET METEN, opnieuw: de metasleutels beginnen met 'secties_',
+  maar de tooloutput vertaalde dat naar 'sections_' en 'kaarten' naar 'maps'.
+  Een script dat die vertaalde sleutel gebruikt schrijft stil naar een
+  onbestaand veld. Lees zulke sleutels met bin2hex.
   (4) RUIMTE TUSSEN DE GROEPEN KLEINER (verzoek Kulwant met een rood kader om
   het gat). Twee groepen zijn twee secties, en die zetten samen 110 + 80 =
   190px tussen de laatste kaart en de volgende kop — dat leest als een gat in

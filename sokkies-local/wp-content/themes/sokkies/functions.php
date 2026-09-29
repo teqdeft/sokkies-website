@@ -299,12 +299,44 @@ function sokkies_taal() {
  * niet voor de taal van het verzoek waarin de mail toevallig vertrekt.
  */
 function sokkies_download_bestand( $kaart, $taal = null ) {
-	$taal = $taal ? strtolower( substr( (string) $taal, 0, 2 ) ) : sokkies_taal();
-	$velden = array( 'en' => 'bestand_en', 'de' => 'bestand_de', 'fr' => 'bestand_fr' );
-	if ( isset( $velden[ $taal ] ) && ! empty( $kaart[ $velden[ $taal ] ]['url'] ) ) {
-		return $kaart[ $velden[ $taal ] ];
+	return sokkies_taalbijlage( $kaart, 'bestand', $taal );
+}
+
+/**
+ * De afbeelding van een download-kaart in de juiste taal.
+ *
+ * Zelfde verhaal als het bestand hierboven: op de cover van een brochure
+ * staat tekst, dus een Engelse bezoeker hoort de Engelse cover te zien bij
+ * de Engelse PDF. Velden Afbeelding (NL/EN/DE/FR); leeg = de Nederlandse.
+ *
+ * BEELD EN BESTAND STAAN LOS VAN ELKAAR. Wie alleen een Duitse PDF uploadt
+ * en geen Duitse cover, krijgt de Nederlandse cover bij de Duitse PDF — dat
+ * is met opzet beter dan de kaart leeg laten, en het scheelt de redacteur
+ * werk zolang de cover taalneutraal is.
+ */
+function sokkies_download_foto( $kaart, $taal = null ) {
+	return sokkies_taalbijlage( $kaart, 'foto', $taal );
+}
+
+/**
+ * De bijlage (bestand of afbeelding) van een kaart in de juiste taal.
+ *
+ * Eén plek voor de terugvalregel, zodat het beeld nooit anders kan gaan
+ * werken dan de PDF eronder: $basis is het veld van de standaardtaal
+ * (bestand/foto) en {$basis}_{taal} is de vertaling ervan. Is die leeg, dan
+ * krijgt de bezoeker de Nederlandse — beter dan een lege kaart of een knop
+ * die nergens heen gaat.
+ */
+function sokkies_taalbijlage( $kaart, $basis, $taal = null ) {
+	$taal  = $taal ? strtolower( substr( (string) $taal, 0, 2 ) ) : sokkies_taal();
+	$talen = array( 'en', 'de', 'fr' );
+	$veld  = $basis . '_' . $taal;
+
+	if ( in_array( $taal, $talen, true ) && ! empty( $kaart[ $veld ]['url'] ) ) {
+		return $kaart[ $veld ];
 	}
-	return empty( $kaart['bestand']['url'] ) ? null : $kaart['bestand'];
+
+	return empty( $kaart[ $basis ]['url'] ) ? null : $kaart[ $basis ];
 }
 
 /**

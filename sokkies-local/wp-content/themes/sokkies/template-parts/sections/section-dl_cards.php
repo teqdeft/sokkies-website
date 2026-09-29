@@ -41,8 +41,11 @@ $kop = trim( (string) get_sub_field( 'titel' ) );
         $href  = '#';
         $label = 'Download';
         $download = '';
-        /* Het bestand in de taal van de bezoeker; leeg = de Nederlandse. */
+        /* Bestand en afbeelding in de taal van de bezoeker; leeg = de
+           Nederlandse. Beeld en bestand staan los: een Duitse PDF zonder
+           Duitse cover krijgt gewoon de Nederlandse cover. */
         $bestand = sokkies_download_bestand( $rij );
+        $foto    = sokkies_download_foto( $rij );
         if ( $bestand ) {
             $href = $bestand['url'];
             $download = ' download';
@@ -52,7 +55,7 @@ $kop = trim( (string) get_sub_field( 'titel' ) );
         }
       ?>
       <div class="dl-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $teller ); ?>">
-        <div class="dl-card-img"><?php if ( ! empty( $rij['foto'] ) ) : ?><img src="<?php echo esc_url( $rij['foto']['url'] ); ?>" alt="<?php echo esc_attr( $rij['titel'] ); ?>"><?php else : ?><span class="dl-ph">Image placeholder</span><?php endif; ?></div>
+        <div class="dl-card-img"><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $rij['titel'] ); ?>"><?php else : ?><span class="dl-ph">Image placeholder</span><?php endif; ?></div>
         <div class="dl-card-body">
           <h3><?php echo esc_html( $rij['titel'] ); ?></h3>
           <p><?php echo esc_html( $rij['tekst'] ); ?></p>

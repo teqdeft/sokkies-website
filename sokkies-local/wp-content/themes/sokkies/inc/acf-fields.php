@@ -1436,13 +1436,26 @@ add_action( 'acf/init', function () {
 								'button_label' => 'Kaart toevoegen',
 								'instructions' => 'Leeg = de vier standaardkaarten. Upload een bestand \u00f3f kies een link; een bestand wint en opent als download. Met het veld "Kop boven deze kaart" deel je de rij op in groepen, bijvoorbeeld Downloads en Templates.',
 								'sub_fields'   => array(
-									array( 'key' => 'field_dl_kaart_foto', 'label' => 'Afbeelding', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Leeg = nette placeholder (zoals het ontwerp). LIGGEND aanleveren, 16:9 — bijvoorbeeld 1600 x 900 px. De afbeelding wordt niet bijgesneden: een andere verhouding krijgt beige randen.' ),
+									/* De vier afbeeldingen staan NAAST elkaar (wrapper-width 25%),
+									   zodat de taalversies van één cover in één oogopslag te
+									   vergelijken zijn in plaats van over vier schermen verspreid.
+									   Daarom staat de technische uitleg hieronder kort: in een
+									   kolom van een kwart scherm wordt een lange instructie een
+									   blok van zes regels en wordt de rij onnodig hoog. */
+									array( 'key' => 'field_dl_kaart_foto', 'label' => 'Afbeelding (NL)', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'wrapper' => array( 'width' => '25' ), 'instructions' => 'Ook de terugval voor de andere talen. Leeg = nette placeholder. LIGGEND, 16:9 (bijv. 1600 x 900 px); een andere verhouding krijgt beige randen.' ),
+									array( 'key' => 'field_dl_kaart_foto_en', 'label' => 'Afbeelding (EN)', 'name' => 'foto_en', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'wrapper' => array( 'width' => '25' ), 'instructions' => 'Engelse cover. Leeg = de Nederlandse.' ),
+									array( 'key' => 'field_dl_kaart_foto_de', 'label' => 'Afbeelding (DE)', 'name' => 'foto_de', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'wrapper' => array( 'width' => '25' ), 'instructions' => 'Duitse cover. Leeg = de Nederlandse.' ),
+									array( 'key' => 'field_dl_kaart_foto_fr', 'label' => 'Afbeelding (FR)', 'name' => 'foto_fr', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'wrapper' => array( 'width' => '25' ), 'instructions' => 'Franse cover. Leeg = de Nederlandse.' ),
 									array( 'key' => 'field_dl_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 									array( 'key' => 'field_dl_kaart_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
-									array( 'key' => 'field_dl_kaart_bestand', 'label' => 'Bestand (NL)', 'name' => 'bestand', 'type' => 'file', 'return_format' => 'array', 'instructions' => 'De Nederlandse versie. Dit bestand is ook de terugval: staat er voor een taal niets, dan krijgt de bezoeker deze.' ),
-									array( 'key' => 'field_dl_kaart_bestand_en', 'label' => 'Bestand (EN)', 'name' => 'bestand_en', 'type' => 'file', 'return_format' => 'array', 'instructions' => 'Engelse versie. Leeg = de Nederlandse.' ),
-									array( 'key' => 'field_dl_kaart_bestand_de', 'label' => 'Bestand (DE)', 'name' => 'bestand_de', 'type' => 'file', 'return_format' => 'array', 'instructions' => 'Duitse versie. Leeg = de Nederlandse.' ),
-									array( 'key' => 'field_dl_kaart_bestand_fr', 'label' => 'Bestand (FR)', 'name' => 'bestand_fr', 'type' => 'file', 'return_format' => 'array', 'instructions' => 'Franse versie. Leeg = de Nederlandse.' ),
+									/* Vier op een rij, net als de afbeeldingen hierboven: zo staat
+									   elke taal onder zijn eigen cover en lees je de kaart als twee
+									   rijen (covers boven, PDF's eronder). Instructies kort houden,
+									   anders wordt een kolom van een kwart scherm onnodig hoog. */
+									array( 'key' => 'field_dl_kaart_bestand', 'label' => 'Bestand (NL)', 'name' => 'bestand', 'type' => 'file', 'return_format' => 'array', 'wrapper' => array( 'width' => '25' ), 'instructions' => 'Ook de terugval: staat er voor een taal niets, dan krijgt de bezoeker deze.' ),
+									array( 'key' => 'field_dl_kaart_bestand_en', 'label' => 'Bestand (EN)', 'name' => 'bestand_en', 'type' => 'file', 'return_format' => 'array', 'wrapper' => array( 'width' => '25' ), 'instructions' => 'Engelse versie. Leeg = de Nederlandse.' ),
+									array( 'key' => 'field_dl_kaart_bestand_de', 'label' => 'Bestand (DE)', 'name' => 'bestand_de', 'type' => 'file', 'return_format' => 'array', 'wrapper' => array( 'width' => '25' ), 'instructions' => 'Duitse versie. Leeg = de Nederlandse.' ),
+									array( 'key' => 'field_dl_kaart_bestand_fr', 'label' => 'Bestand (FR)', 'name' => 'bestand_fr', 'type' => 'file', 'return_format' => 'array', 'wrapper' => array( 'width' => '25' ), 'instructions' => 'Franse versie. Leeg = de Nederlandse.' ),
 									array( 'key' => 'field_dl_kaart_link', 'label' => 'Of een link', 'name' => 'link', 'type' => 'link' ),
 								),
 							),
