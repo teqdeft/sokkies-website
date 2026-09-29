@@ -289,10 +289,7 @@ function sokkies_taal() {
  *
  * TranslatePress vertaalt tekst, maar verwisselt GEEN PDF: een Engelse
  * bezoeker kreeg dus de Nederlandse brochure. Daarom heeft elke kaart een
- * eigen veld per taal. Staat er voor die taal niets, dan valt hij terug op
- * het Nederlandse bestand — beter een brochure in de verkeerde taal dan een
- * knop die nergens heen gaat. Alle vier de talen van de site (nl/en/de/fr)
- * hebben een eigen veld.
+ * eigen veld per taal, met de terugvalketen uit sokkies_taalbijlage().
  *
  * $taal is optioneel, zodat een mail die LATER wordt verstuurd het bestand
  * kan opvragen voor de taal waarin de bezoeker het formulier invulde, en
@@ -307,7 +304,7 @@ function sokkies_download_bestand( $kaart, $taal = null ) {
  *
  * Zelfde verhaal als het bestand hierboven: op de cover van een brochure
  * staat tekst, dus een Engelse bezoeker hoort de Engelse cover te zien bij
- * de Engelse PDF. Velden Afbeelding (NL/EN/DE/FR); leeg = de Nederlandse.
+ * de Engelse PDF. Velden Afbeelding (NL/EN/DE/FR), met dezelfde keten.
  *
  * BEELD EN BESTAND STAAN LOS VAN ELKAAR. Wie alleen een Duitse PDF uploadt
  * en geen Duitse cover, krijgt de Nederlandse cover bij de Duitse PDF — dat
@@ -323,20 +320,42 @@ function sokkies_download_foto( $kaart, $taal = null ) {
  *
  * Eén plek voor de terugvalregel, zodat het beeld nooit anders kan gaan
  * werken dan de PDF eronder: $basis is het veld van de standaardtaal
- * (bestand/foto) en {$basis}_{taal} is de vertaling ervan. Is die leeg, dan
- * krijgt de bezoeker de Nederlandse — beter dan een lege kaart of een knop
- * die nergens heen gaat.
+ * (bestand/foto) en {$basis}_{taal} is de vertaling ervan.
+ *
+ * DE KETEN IS: gevraagde taal -> Engels -> Nederlands (2026-09-29, besluit
+ * van de klant). Engels stond eerst niet in die rij en alles viel meteen
+ * terug op Nederlands. De terugval raakt per definitie alleen bezoekers die
+ * GEEN Nederlands lezen — een Nederlandse bezoeker krijgt immers gewoon het
+ * Nederlandse veld — en voor die groep is Engels een stuk begrijpelijker.
+ * Nederlands blijft wel de laatste stap: is er ook geen Engelse versie, dan
+ * is een Nederlandse PDF nog altijd beter dan een knop die nergens heen gaat.
+ *
+ * LET OP: de keten kan geen bestand verzinnen dat er niet is. Zolang er
+ * alleen een Nederlandse versie bestaat, verandert er voor de bezoeker
+ * niets — dat is precies de bedoeling, niet een fout.
  */
 function sokkies_taalbijlage( $kaart, $basis, $taal = null ) {
 	$taal  = $taal ? strtolower( substr( (string) $taal, 0, 2 ) ) : sokkies_taal();
 	$talen = array( 'en', 'de', 'fr' );
-	$veld  = $basis . '_' . $taal;
 
-	if ( in_array( $taal, $talen, true ) && ! empty( $kaart[ $veld ]['url'] ) ) {
-		return $kaart[ $veld ];
+	/* LET OP DE VOLGORDE VOOR NEDERLANDS. Voor een Nederlandse bezoeker IS
+	   het kale veld de gevraagde taal, dus dat moet als eerste — anders
+	   krijgt juist de Nederlandse site de Engelse PDF zodra die bestaat.
+	   Engels blijft er als vangnet achter staan voor het geval het
+	   Nederlandse veld leeg is. Een onbekende taal volgt dezelfde weg. */
+	if ( in_array( $taal, $talen, true ) ) {
+		$volgorde = array( $basis . '_' . $taal, $basis . '_en', $basis );
+	} else {
+		$volgorde = array( $basis, $basis . '_en' );
 	}
 
-	return empty( $kaart[ $basis ]['url'] ) ? null : $kaart[ $basis ];
+	foreach ( array_unique( $volgorde ) as $veld ) {
+		if ( ! empty( $kaart[ $veld ]['url'] ) ) {
+			return $kaart[ $veld ];
+		}
+	}
+
+	return null;
 }
 
 /**

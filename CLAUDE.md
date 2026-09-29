@@ -3586,12 +3586,41 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   is erger, en zolang de cover taalneutraal is scheelt het de redacteur werk.
   EEN GEDEELDE TERUGVAL: beide lopen nu via sokkies_taalbijlage( $kaart,
   $basis, $taal ), waar $basis 'bestand' of 'foto' is. sokkies_download_bestand
-  en het nieuwe sokkies_download_foto zijn nog maar wikkels daaromheen, zodat
-  het beeld nooit anders kan gaan terugvallen dan de PDF eronder — relevant
-  zodra de brochures op Engels-eerst gaan (klantvraag van 2026-09-29, nog niet
-  gebouwd): dan is dat één functie in plaats van twee.
-  GETEST door tijdelijk een andere afbeelding als Afbeelding (DE) te koppelen
-  op de tweede kaart: /de/ toonde die, /nl/, /en/ en /fr/ de Nederlandse.
+  en sokkies_download_foto zijn nog maar wikkels daaromheen, zodat het beeld
+  nooit anders kan gaan terugvallen dan de PDF eronder.
+  DE KETEN IS ENGELS-EERST (2026-09-29, besluit klant na advies): gevraagde
+  taal -> ENGELS -> Nederlands, voor de PDF's en de covers, op ALLE
+  download-kaarten en niet alleen de brochures. Redenering: de terugval raakt
+  per definitie alleen bezoekers die geen Nederlands lezen - een Nederlandse
+  bezoeker krijgt gewoon het Nederlandse veld - en voor die groep is Engels
+  begrijpelijker dan Nederlands. Nederlands blijft de laatste stap, want een
+  Nederlandse PDF is nog altijd beter dan een dode knop; een kaart met alleen
+  een Nederlands bestand eindigt dus gewoon in het Nederlands.
+  DE VOLGORDE VOOR NEDERLANDS IS EEN VALKUIL, en hij sloeg hier ook toe: voor
+  een Nederlandse bezoeker IS het kale veld de gevraagde taal, dus dat moet
+  vooraan. De eerste versie zette Engels altijd vóór het kale veld, waardoor
+  juist de Nederlandse site de Engelse PDF zou tonen zodra die bestaat - het
+  enige wat niet mocht veranderen. Gevonden met een waarheidstabel over zes
+  vulcombinaties x vier talen; zonder die tabel was het pas op live opgevallen,
+  want met de huidige inhoud (alleen NL gevuld) geeft de foute volgorde exact
+  hetzelfde resultaat. Nu: extra taal -> [taal, en, kaal], nl/onbekend ->
+  [kaal, en].
+  DE HELPTEKSTEN ZEGGEN WAT DE CODE DOET (verzoek klant): DE/FR-velden "Leeg =
+  Engels, anders Nederlands", het EN-veld "Engelse versie, en de terugval voor
+  alle andere talen. Leeg = Nederlands" (dáár is Engels-eerst zinloos) en de
+  NL-velden "Laatste terugval: alleen als er voor de taal én in het Engels
+  niets staat".
+  LET OP BIJ HET UITROLLEN: de keten kan geen bestand verzinnen. Zolang er
+  alleen Nederlandse PDF's staan, ziet een Duitse bezoeker nog steeds de
+  Nederlandse - dat is de bedoeling en geen mislukte deploy. De winst komt pas
+  als de Engelse versies geüpload zijn.
+  GETEST met een waarheidstabel (alles gevuld / alleen NL / NL+EN / NL+DE /
+  alleen EN / leeg, elk in nl-en-de-fr): 24 uitkomsten, allemaal zoals bedoeld,
+  en het beeld gedraagt zich identiek aan het bestand. Daarna op de echte
+  pagina met een Engels testbestand + testcover op de tweede kaart: /nl/ hield
+  de Nederlandse PDF en cover, /en/ /de/ /fr/ pakten alle drie de Engelse.
+  Eerder al getest door een afbeelding als Afbeelding (DE) te koppelen:
+  /de/ toonde die, de rest de Nederlandse.
   Daarna de testmeta weer verwijderd (nagemeten: 8 kaarten, 7 met foto, 1
   placeholder — precies als ervoor, 0 PHP-fouten).
   VIER OP EEN RIJ IN HET BEHEER (2026-09-29, verzoek Kulwant "show them in
