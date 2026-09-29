@@ -3565,41 +3565,6 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   nu Bestand (NL) / (EN) / (DE) / (FR) — alle vier de talen van de site. Leeg
   = de Nederlandse. (FR kwam er op 2026-09-28 bij op verzoek van Kulwant;
   daarvoor viel Frans op Nederlands terug.)
-  DE VELDEN GROEIEN SINDS 2026-09-29 VANZELF MEE (vraag Kulwant: "field should
-  be there for new language automatically"). Ze stonden alle drie handmatig in
-  inc/acf-fields.php, dus een vijfde taal kostte twee code-aanpassingen en tot
-  die tijd kregen die bezoekers stil de Nederlandse PDF. Nu bouwt
-  sokkies_dl_taalvelden() de rij op uit sokkies_download_talen() = de
-  gepubliceerde talen van TranslatePress (publish-languages) MINUS de
-  standaardtaal (default-language) - die heeft immers het gewone veld
-  'bestand' en is de terugval. Publiceert iemand Arabisch, dan staat Bestand
-  (AR) er bij de volgende paginalading; haalt iemand een taal weg, dan
-  verdwijnt het veld en blijft een al geupload bestand als wees in de database
-  staan (onschadelijk: er zijn dan ook geen bezoekers meer in die taal).
-  VELDNAMEN ZIJN BEWUST NIET VERANDERD: bestand_{code} met sleutel
-  field_dl_kaart_bestand_{code} geeft voor en/de/fr exact dezelfde namen en
-  sleutels als de handgeschreven velden, dus bestaande uploads blijven staan.
-  Nagemeten na de ombouw: de acht subvelden van field_dl_kaarten hebben
-  byte-identieke namen en sleutels als ervoor (met bin2hex vergeleken - de
-  tooloutput vertaalt Nederlandse strings, dus "bestand_en" las als "file_and";
-  hex is daar de enige betrouwbare uitlezing).
-  TWEE DINGEN OM TE WETEN: (a) de code is tweeletterig, dus en_GB en en_US
-  zouden een veld delen - bewust, want sokkies_taal() kan die twee bij een
-  bezoek ook niet uit elkaar houden; (b) zonder TranslatePress valt
-  sokkies_taal_keuzes() terug op nl/en/de/fr, zodat het bewerkscherm nooit
-  leeg raakt. De Nederlandse namen staan in sokkies_taal_naam() (14 talen);
-  een taal die daar niet in staat werkt gewoon en heet naar zijn code.
-  GETEST door met een filter op pre_option_trp_settings te doen alsof Arabisch
-  gepubliceerd is, zonder de database aan te raken: velden en/de/fr/ar met de
-  juiste sleutels, label "Bestand (AR)", instructie "De versie voor Arabisch.
-  Leeg = de versie voor Nederlands.", en de resolutie nl->NL, en->EN,
-  de (leeg)->NL, fr->NL, ar->AR, onbekende taal->NL. Alle vier de talen van
-  /downloads/ nog 200 en 0 PHP-fouten van deze wijziging (de negen
-  ACF-select-waarschuwingen op home/partners/offerte staan er met en zonder
-  de wijziging, dus die zijn ouder). LET OP bij zo'n filtertest: haal de echte
-  optie OP voordat je de filter toevoegt - een get_option() binnen de
-  pre_option-filter roept zichzelf aan, en de PHP-CLI stopt dan zonder enige
-  uitvoer en met exitcode 0, wat op een leeg script lijkt.
   PAD VOOR RICK: dezelfde kaart in Pagina Downloads > Secties >
   Download-kaarten > Kaarten > per kaart de velden Bestand (EN) en (DE).
   De keuze loopt via sokkies_download_bestand( $kaart, $taal ), met $taal als
