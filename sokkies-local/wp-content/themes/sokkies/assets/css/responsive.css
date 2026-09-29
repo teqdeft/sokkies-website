@@ -1323,6 +1323,9 @@
   .landing .cta-final::before {
     width: 672px;
   }
+  .quote-card .of-extras .gfield_checkbox {
+    grid-template-columns: repeat(4, 1fr);
+  }
   
 }
 
