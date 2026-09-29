@@ -1435,15 +1435,17 @@ add_action( 'acf/init', function () {
 								'layout'       => 'block',
 								'button_label' => 'Kaart toevoegen',
 								'instructions' => 'Leeg = de vier standaardkaarten. Upload een bestand \u00f3f kies een link; een bestand wint en opent als download. Met het veld "Kop boven deze kaart" deel je de rij op in groepen, bijvoorbeeld Downloads en Templates.',
-								'sub_fields'   => array(
-									array( 'key' => 'field_dl_kaart_foto', 'label' => 'Afbeelding', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Leeg = nette placeholder (zoals het ontwerp). LIGGEND aanleveren, 16:9 — bijvoorbeeld 1600 x 900 px. De afbeelding wordt niet bijgesneden: een andere verhouding krijgt beige randen.' ),
-									array( 'key' => 'field_dl_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
-									array( 'key' => 'field_dl_kaart_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
-									array( 'key' => 'field_dl_kaart_bestand', 'label' => 'Bestand (NL)', 'name' => 'bestand', 'type' => 'file', 'return_format' => 'array', 'instructions' => 'De Nederlandse versie. Dit bestand is ook de terugval: staat er voor een taal niets, dan krijgt de bezoeker deze.' ),
-									array( 'key' => 'field_dl_kaart_bestand_en', 'label' => 'Bestand (EN)', 'name' => 'bestand_en', 'type' => 'file', 'return_format' => 'array', 'instructions' => 'Engelse versie. Leeg = de Nederlandse.' ),
-									array( 'key' => 'field_dl_kaart_bestand_de', 'label' => 'Bestand (DE)', 'name' => 'bestand_de', 'type' => 'file', 'return_format' => 'array', 'instructions' => 'Duitse versie. Leeg = de Nederlandse.' ),
-									array( 'key' => 'field_dl_kaart_bestand_fr', 'label' => 'Bestand (FR)', 'name' => 'bestand_fr', 'type' => 'file', 'return_format' => 'array', 'instructions' => 'Franse versie. Leeg = de Nederlandse.' ),
-									array( 'key' => 'field_dl_kaart_link', 'label' => 'Of een link', 'name' => 'link', 'type' => 'link' ),
+								'sub_fields'   => array_merge(
+									array(
+										array( 'key' => 'field_dl_kaart_foto', 'label' => 'Afbeelding', 'name' => 'foto', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Leeg = nette placeholder (zoals het ontwerp). LIGGEND aanleveren, 16:9 — bijvoorbeeld 1600 x 900 px. De afbeelding wordt niet bijgesneden: een andere verhouding krijgt beige randen.' ),
+										array( 'key' => 'field_dl_kaart_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
+										array( 'key' => 'field_dl_kaart_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'textarea', 'rows' => 2, 'new_lines' => '' ),
+										array( 'key' => 'field_dl_kaart_bestand', 'label' => 'Bestand (' . strtoupper( sokkies_standaardtaal() ) . ')', 'name' => 'bestand', 'type' => 'file', 'return_format' => 'array', 'instructions' => 'De versie voor ' . sokkies_taal_naam( sokkies_standaardtaal() ) . '. Dit bestand is ook de terugval: staat er voor een taal niets, dan krijgt de bezoeker deze.' ),
+									),
+									sokkies_dl_taalvelden(),
+									array(
+										array( 'key' => 'field_dl_kaart_link', 'label' => 'Of een link', 'name' => 'link', 'type' => 'link' ),
+									)
 								),
 							),
 						),

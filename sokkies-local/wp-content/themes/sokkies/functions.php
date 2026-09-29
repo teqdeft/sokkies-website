@@ -290,19 +290,26 @@ function sokkies_taal() {
  * TranslatePress vertaalt tekst, maar verwisselt GEEN PDF: een Engelse
  * bezoeker kreeg dus de Nederlandse brochure. Daarom heeft elke kaart een
  * eigen veld per taal. Staat er voor die taal niets, dan valt hij terug op
- * het Nederlandse bestand — beter een brochure in de verkeerde taal dan een
- * knop die nergens heen gaat. Alle vier de talen van de site (nl/en/de/fr)
- * hebben een eigen veld.
+ * het bestand van de standaardtaal — beter een brochure in de verkeerde taal
+ * dan een knop die nergens heen gaat. De terugval gaat in ÉÉN stap naar de
+ * standaardtaal en nooit naar een andere vertaling: zo is er bij een
+ * verkeerde download altijd maar één veld om te controleren.
+ *
+ * DE TALEN STAAN NIET IN CODE. Ze komen uit sokkies_download_talen(), die de
+ * gepubliceerde talen van TranslatePress leest. Publiceert iemand er een bij,
+ * dan verschijnt het veld vanzelf in het bewerkscherm en kent deze functie
+ * het meteen — zonder dat er iets aangepast hoeft te worden.
  *
  * $taal is optioneel, zodat een mail die LATER wordt verstuurd het bestand
  * kan opvragen voor de taal waarin de bezoeker het formulier invulde, en
  * niet voor de taal van het verzoek waarin de mail toevallig vertrekt.
  */
 function sokkies_download_bestand( $kaart, $taal = null ) {
-	$taal = $taal ? strtolower( substr( (string) $taal, 0, 2 ) ) : sokkies_taal();
-	$velden = array( 'en' => 'bestand_en', 'de' => 'bestand_de', 'fr' => 'bestand_fr' );
-	if ( isset( $velden[ $taal ] ) && ! empty( $kaart[ $velden[ $taal ] ]['url'] ) ) {
-		return $kaart[ $velden[ $taal ] ];
+	$taal   = $taal ? strtolower( substr( (string) $taal, 0, 2 ) ) : sokkies_taal();
+	$talen  = sokkies_download_talen();
+	$veld   = 'bestand_' . $taal;
+	if ( isset( $talen[ $taal ] ) && ! empty( $kaart[ $veld ]['url'] ) ) {
+		return $kaart[ $veld ];
 	}
 	return empty( $kaart['bestand']['url'] ) ? null : $kaart['bestand'];
 }
@@ -476,28 +483,120 @@ function sokkies_aos_stap( $i ) {
  * bewerkscherm nooit een leeg keuzeveld toont.
  */
 function sokkies_taal_keuzes() {
+	$instellingen = get_option( 'trp_settings', array() );
+	$gepubliceerd = isset( $instellingen['publish-languages'] ) ? (array) $instellingen['publish-languages'] : array();
+
+	$codes = array();
+	foreach ( $gepubliceerd as $locale ) {
+		$deel    = explode( '_', (string) $locale );
+		$codes[] = strtolower( $deel[0] );
+	}
+
+	// Zonder TranslatePress terug naar de vier talen die de site nu heeft.
+	if ( ! $codes ) {
+		$codes = array( 'nl', 'en', 'de', 'fr' );
+	}
+
+	$uit = array();
+	foreach ( $codes as $code ) {
+		$uit[ $code ] = sokkies_taal_naam( $code );
+	}
+
+	return $uit;
+}
+
+/**
+ * De Nederlandse naam bij een taalcode, bijvoorbeeld 'de' => 'Duits'.
+ *
+ * Een taal die hier niet in staat werkt gewoon, maar heet dan naar zijn
+ * code (AR). Een regel erbij is dus puur cosmetisch: nergens in de code
+ * wordt op deze lijst gecontroleerd, en een onbekende taal krijgt evengoed
+ * zijn velden.
+ */
+function sokkies_taal_naam( $code ) {
 	$namen = array(
 		'nl' => 'Nederlands',
 		'en' => 'Engels',
 		'de' => 'Duits',
 		'fr' => 'Frans',
+		'es' => 'Spaans',
+		'it' => 'Italiaans',
+		'pt' => 'Portugees',
+		'pl' => 'Pools',
+		'da' => 'Deens',
+		'sv' => 'Zweeds',
+		'no' => 'Noors',
+		'fi' => 'Fins',
+		'tr' => 'Turks',
+		'ar' => 'Arabisch',
 	);
 
+	$code = strtolower( substr( (string) $code, 0, 2 ) );
+
+	return isset( $namen[ $code ] ) ? $namen[ $code ] : strtoupper( $code );
+}
+
+/**
+ * De standaardtaal van de site als tweeletterige code, bijvoorbeeld 'nl'.
+ *
+ * Dit is de taal die GEEN eigen taalveld krijgt: die inhoud staat in het
+ * gewone veld en is tegelijk de terugval voor alle andere talen.
+ */
+function sokkies_standaardtaal() {
 	$instellingen = get_option( 'trp_settings', array() );
-	$gepubliceerd = isset( $instellingen['publish-languages'] ) ? (array) $instellingen['publish-languages'] : array();
+	$locale       = isset( $instellingen['default-language'] ) ? (string) $instellingen['default-language'] : 'nl_NL';
+	$deel         = explode( '_', $locale );
 
-	if ( ! $gepubliceerd ) {
-		return $namen;
+	return strtolower( $deel[0] );
+}
+
+/**
+ * De talen waarvoor een download een EIGEN bestand kan hebben: code => naam.
+ *
+ * Alle gepubliceerde talen op de standaardtaal na — die heeft het gewone
+ * veld 'bestand'. Zo levert het publiceren van een taal in TranslatePress
+ * vanzelf een extra uploadveld op, en hoeft er voor een nieuwe taal niets in
+ * de code bij. Het omgekeerde geldt ook: haalt iemand een taal weg, dan
+ * verdwijnt het veld. Een al geüpload bestand blijft dan in de database
+ * staan maar wordt niet meer getoond of geserveerd — en dat klopt, want er
+ * zijn dan ook geen bezoekers meer in die taal.
+ *
+ * LET OP: de code is tweeletterig, dus twee varianten van dezelfde taal
+ * (en_GB én en_US) delen één veld. Dat is bewust — sokkies_taal() kan die
+ * twee bij een bezoek ook niet uit elkaar houden, dus een tweede veld zou
+ * nooit bereikbaar zijn.
+ */
+function sokkies_download_talen() {
+	$talen = sokkies_taal_keuzes();
+	unset( $talen[ sokkies_standaardtaal() ] );
+
+	return $talen;
+}
+
+/**
+ * De uploadvelden per taal voor een download-kaart, klaar voor ACF.
+ *
+ * Wordt in inc/acf-fields.php tussen de vaste velden gezet. De veldnaam is
+ * altijd bestand_{code} en de sleutel field_dl_kaart_bestand_{code}; precies
+ * de namen die de drie handgeschreven velden (EN/DE/FR) al hadden, zodat
+ * bestaande uploads gewoon in hun veld blijven staan.
+ */
+function sokkies_dl_taalvelden() {
+	$velden    = array();
+	$standaard = sokkies_taal_naam( sokkies_standaardtaal() );
+
+	foreach ( sokkies_download_talen() as $code => $naam ) {
+		$velden[] = array(
+			'key'           => 'field_dl_kaart_bestand_' . $code,
+			'label'         => 'Bestand (' . strtoupper( $code ) . ')',
+			'name'          => 'bestand_' . $code,
+			'type'          => 'file',
+			'return_format' => 'array',
+			'instructions'  => 'De versie voor ' . $naam . '. Leeg = de versie voor ' . $standaard . '.',
+		);
 	}
 
-	$uit = array();
-	foreach ( $gepubliceerd as $code ) {
-		$deel = explode( '_', $code );
-		$taal = strtolower( $deel[0] );
-		$uit[ $taal ] = isset( $namen[ $taal ] ) ? $namen[ $taal ] : strtoupper( $taal );
-	}
-
-	return $uit;
+	return $velden;
 }
 
 /**
