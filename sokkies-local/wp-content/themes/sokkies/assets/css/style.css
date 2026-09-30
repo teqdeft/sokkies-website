@@ -5030,6 +5030,10 @@ font-weight: 600;
     justify-content:center;
     margin-bottom:24px;
   }
+  .step-card-img img{
+    width: 100%;
+    height: 100%;
+  }
   .step-card-ph{
     background:var(--light-beige);
     color:var(--text);
