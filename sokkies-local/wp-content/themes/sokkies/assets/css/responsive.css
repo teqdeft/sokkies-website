@@ -14402,7 +14402,13 @@
     margin-top:0px;
   }
   .toepassingen .cases:before{
-    background-position:left 80% top -120px;
+    background-position: left 80% top -120px;
+    width: 104%;
+    left: -1%;
+    height: 13%;
+    top: -6%;
+    border-radius: 0;
+    background: var(--light-beige);
   }
   .toepassingen .cases:after{
     width:130px;
