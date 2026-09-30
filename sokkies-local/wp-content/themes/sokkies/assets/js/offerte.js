@@ -574,11 +574,14 @@
     try { sessionStorage.removeItem(opslagSleutel()); } catch (e) {}
   }
 
-  /* De proefontwerp-keuze wordt niet mee teruggezet en ook niet gewist.
-     Sinds 2026-09-28 staat die keuze vast (het formulier is altijd volledig,
-     zie inc/sample-formulier.php) en zet de server hem al aangevinkt neer.
-     Zou het terugzetten alle radiovakjes leegmaken, dan viel die keuze weg en
-     klapte het halve formulier na een verversing dicht. */
+  /* De proefontwerp-keuze op het sampleformulier wordt BEWUST niet
+     teruggezet. Dat blok hoort alleen open te gaan als de bezoeker op "Ik wil
+     toch een proefontwerp" klikt; na een verversing stond het anders alsnog
+     open omdat de eerdere keuze werd hersteld.
+     GEVOLG, en dat is een bewuste afweging: aantal, opmerkingen en adres uit
+     dat blok komen na een verversing NIET terug. Gravity Forms schakelt de
+     velden van een verborgen blok uit, en uitgeschakelde velden slaan we niet
+     op. De contactgegevens en de gekozen soktypes blijven wel bewaard. */
   function isProefKeuze(el) {
     return !!(el && el.closest && el.closest('.of-proef'));
   }
@@ -723,6 +726,37 @@
     if (eerste) { eerste.focus(); }
   });
 
+  /* Sampleformulier: "Ik wil toch een proefontwerp".
+     De knop kiest alleen; het verborgen radioveld doet het echte werk, zodat
+     GF's voorwaardelijke logica het proefontwerp- en adresblok opent én de
+     server weet dat die velden dan verplicht zijn. Na de keuze verdwijnt de
+     knop, net als in het ontwerp waar de knoppenbalk wordt vervangen. */
+  document.addEventListener('click', function (e) {
+    var knop = e.target && e.target.closest ? e.target.closest('.of-proef-open') : null;
+    if (!knop) { return; }
+    e.preventDefault();
+    var keuzes = document.querySelectorAll('.of-proef input[type="radio"]');
+    if (keuzes.length < 2) { return; }
+    keuzes[1].checked = true;
+    // GF luistert op change om zijn regels opnieuw te draaien.
+    keuzes[1].dispatchEvent(new Event('change', { bubbles: true }));
+    if (window.jQuery) { jQuery(keuzes[1]).trigger('change'); }
+    pasProefknopToe();
+    var blok = document.querySelector('.of-aantal');
+    if (blok) { blok.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+  });
+
+  /* De keuzeknop hoort weg te blijven zodra het proefontwerp gekozen is.
+     Niet één keer verbergen bij de klik: na een mislukte verzending bouwt GF
+     de voet opnieuw op en stond de knop er weer, terwijl de blokken al open
+     waren. Daarom bij elke render opnieuw bepalen. */
+  function pasProefknopToe() {
+    var knop = document.querySelector('.of-proef-open');
+    if (!knop) { return; }
+    var gekozen = document.querySelector('.of-proef input[type="radio"]:checked');
+    var isProef = gekozen && gekozen.value && gekozen.value.indexOf('Ik wil') === 0;
+    knop.style.display = isProef ? 'none' : '';
+  }
 
   /* "Overslaan" op stap 2 doet precies hetzelfde als "Volgende" — het is in
      het ontwerp puur het signaal dat die stap optioneel is. Daarom klikt hij
@@ -817,7 +851,7 @@
 
   document.addEventListener('click', maxHintTonen, true);
 
-  function init() { markeerAlles(); maxHintVerbergen(); pasSoktypesToe(); pasExtrasVoorwaarden(); pasExtrasToe(null); initAdres(); }
+  function init() { markeerAlles(); maxHintVerbergen(); pasSoktypesToe(); pasExtrasVoorwaarden(); pasExtrasToe(null); initAdres(); pasProefknopToe(); }
 
   document.addEventListener('DOMContentLoaded', function () {
     init();

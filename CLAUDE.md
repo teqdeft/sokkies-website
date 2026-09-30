@@ -3661,7 +3661,19 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   er standaard in de mail.
 
 
-  SAMPLEFORMULIER: KEUZEKNOP WEG, FORMULIER ALTIJD VOLLEDIG (2026-09-28,
+  SAMPLEFORMULIER: KEUZEKNOP WEG, FORMULIER ALTIJD VOLLEDIG -- TERUGGEDRAAID
+  OP 2026-09-30 (verzoek Kulwant met een schermafbeelding waarop "Ik wil toch
+  een ontwerp" rood omkaderd staat: "revert this point"). Commit 7a0a5f2 is
+  met git revert ongedaan gemaakt, dus de knop is terug en het proefblok
+  (aantal, opmerkingen, upload en het adresblok) staat weer dicht tot de
+  bezoeker erop klikt. De route "alleen een sample, zonder adres" bestaat dus
+  weer, en daarmee ook de oude beperking dat aantal/opmerkingen/adres een
+  verversing niet overleven (GF schakelt de velden van een verborgen blok uit).
+  De beschrijving hieronder blijft staan omdat de VALKUIL nog geldt: wie de
+  knop ooit opnieuw weghaalt, moet het verborgen radioveld zelf vullen --
+  anders blijft de halve pagina verborgen.
+
+  WAT ER TOEN IS GEBOUWD (2026-09-28,
   verzoek Kulwant met een rood kader om "Ik wil toch een ontwerp").
   De knop vinkte alleen een verborgen radioveld aan; daarop hing de
   voorwaardelijke logica van TWAALF velden (aantal, opmerkingen, upload en het
