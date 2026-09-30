@@ -10298,6 +10298,20 @@ main.contact{
      het offerteformulier, en daar staan die velden onder elkaar. */
   .sample-card .gform_fields > .of-aantal{ flex:0 0 200px; }
   .sample-card .gform_fields > .of-wensen{ flex:1 1 240px; }
+  /* ... en ze beginnen op DEZELFDE HOOGTE. Los van elkaar dragen .of-aantal
+     en .of-wensen een eigen margin-top (45 en 20 op desktop, 40 en 20 in de
+     tabletband), en dat zette de twee velden 25px uit elkaar: boven "Aantal
+     paar" viel een gat terwijl "Opmerkingen" er al stond. In het ontwerp is
+     dit een grid met align-items:start, dus daar staan de labels gelijk.
+     Hier vervalt die losse marge; de ruimte onder de kop komt dan uit de
+     22px die elke kop op deze kaart al meekrijgt, net als bij "Jouw
+     gegevens" en "Waar sturen we het heen?".
+     Twee classes diep, dus dit wint ook van de bandregels in responsive.css
+     (die staan op .of-aantal en zijn een class minder specifiek).
+     Het OFFERTEformulier houdt zijn marge: daar staat Aantal paar alleen op
+     een regel en dient die 45px als lucht onder de soktypekaarten. */
+  .sample-card .gform_fields > .of-aantal,
+  .sample-card .gform_fields > .of-wensen{ margin-top:0; }
   /* Het cijferveld vult binnen die 200px de hele breedte; de algemene regel
      zet er een max-width van 200px op, wat hier hetzelfde uitkomt. */
   .sample-card .of-aantal input[type="number"]{ width:100%; }

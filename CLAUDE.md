@@ -3731,6 +3731,35 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   laden. Vul je met een script in vlak na het laden, dan overschrijft dat
   terugzetten je invoer een tel later. Wis sokkies-formulier-* en wacht even
   voordat je begint.
+  GAT BOVEN "AANTAL PAAR" WEG (2026-09-30, melding Kulwant met een rood kader
+  om de lege plek). In het proefontwerpblok staan Aantal paar en Opmerkingen
+  naast elkaar, maar ze begonnen niet op dezelfde hoogte: boven het label
+  "Aantal paar" viel 25px leeg terwijl "Opmerkingen" er al stond.
+  OORZAAK: twee losse regels in style.css (r3518, toegevoegd op 2026-09-02 in
+  "losse opmaakwerk") geven .of-aantal margin-top 45px en .of-wensen 20px, en
+  de rij lijnt boven uit (align-items:flex-start). Het verschil van 25px IS
+  het gat. In de tabletband 768-1279 staat .of-aantal op 40px, dus daar was
+  het 20px — hetzelfde euvel, kleiner.
+  In htmlv bestaat dit niet: daar is .sample-proof-grid een grid van 200px +
+  1fr met align-items:start, dus de labels staan per definitie gelijk.
+  FIX: .sample-card .gform_fields > .of-aantal/.of-wensen krijgen margin-top 0.
+  De ruimte onder de kop komt dan uit de 22px die elke kop op deze kaart al
+  meebrengt, net als bij "Jouw gegevens" en "Waar sturen we het heen?".
+  TWEE CLASSES DIEP, en dat is met opzet: de bandregels in responsive.css
+  staan op de kale .of-aantal en zijn dus minder specifiek. Eén regel dekt
+  daarmee alle breedtes; een kopie per band is niet nodig.
+  HET OFFERTEFORMULIER HOUDT ZIJN MARGE. Daar staat Aantal paar alleen op een
+  regel en dient die 45px als lucht onder de soktypekaarten — nagemeten voor
+  en na: soktypes 762, aantal 1286, upload 1412, onveranderd.
+  GEMETEN op de sample: 1440 en 1000 -> beide velden op dezelfde y (1318 resp.
+  1276), 22px onder de kop, 0 horizontale scroll; 390 -> gestapeld, ongewijzigd.
+  Ook echt bekeken op een screenshot, niet alleen gemeten.
+  NOG NIET AANGERAAKT, wel gezien: onder het invoerveld staan TWEE regels die
+  hetzelfde zeggen — "Vul een aantal in van minimaal 50." (die zet Gravity
+  Forms er zelf bij op een getalveld met een minimum) en "Minimaal 50 paar."
+  (de veldbeschrijving uit het formulier). Eén van de twee kan weg; de
+  beschrijving is een databaseveld, de automatische regel is met een filter te
+  onderdrukken. Voorleggen welke.
 
 
   SAMPLEFORMULIER: KEUZEKNOP WEG, FORMULIER ALTIJD VOLLEDIG -- TERUGGEDRAAID
