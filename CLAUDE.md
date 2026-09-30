@@ -3760,6 +3760,34 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   (de veldbeschrijving uit het formulier). Eén van de twee kan weg; de
   beschrijving is een databaseveld, de automatische regel is met een filter te
   onderdrukken. Voorleggen welke.
+  ADRES BOVEN HET PROEFONTWERPBLOK (2026-09-30, vervolgmelding Kulwant met een
+  pijl van het adresblok omhoog naar de contactrij). Met het proefblok DICHT
+  sloot het adres netjes op Telefoon aan — zo is het ook gemeten en gemeld —
+  maar zodra de bezoeker "Ik wil toch een ontwerp" aanklikte schoof het onder
+  Aantal paar, Opmerkingen en het uploadvlak door. In de formulierbouwer staat
+  het adres nu eenmaal ACHTER het proefblok.
+  OPGELOST IN DEZELFDE FUNCTIE: sokkies_sample_adres_altijd() verplaatst het
+  blok (kop + alle adresvelden) nu ook naar vóór de proefkop. Weer in code, om
+  dezelfde reden als de voorwaardelijke logica: de veldvolgorde is database.
+  DE VELDEN VERHUIZEN ALS GROEP op verzamelde indexen, niet als aaneengesloten
+  stuk. Nu is het toevallig wel aaneengesloten (12, 13-17, 18-20, 41, 21), maar
+  komt er ooit een veld tussen, dan blijft dat anders achter.
+  HET PROEFBLOK BEGINT bij de kop boven "Aantal paar", weer op positie bepaald
+  omdat alle drie de koppen of-kop heten.
+  WAAROM DE CSS NIET MEE HOEFDE, en dat is het aardige: de rij Postcode /
+  Huisnummer / Toevoeging / Land komt van ".of-toevoeging ~ .gfield{order:2}",
+  een selector die naar de PLEK IN DE DOM kijkt. Door de verhuizing valt het
+  proefblok daar nu ook onder en belandt het vanzelf achter het adres. Die
+  regel en deze functie hebben elkaar dus nodig — wie een van de twee aanraakt,
+  moet de ander nalopen.
+  GEMETEN op 1440, beide standen: dicht = kop 1268 / adresrij 1318 (155/155/155/
+  311 op een regel) / adresvak 1419; open = daarna pas "Liever toch een
+  proefontwerp?" 1506, Aantal paar en Opmerkingen samen op 1556, uploadvlak
+  1738. Ook op 1000 en 390 in de goede volgorde, overal 0 horizontale scroll.
+  Verzending opnieuw getest met de mail geblokkeerd: 2012ES/30 vult
+  Julianastraat/Haarlem/Noord-Holland, de inzending bevat alle adreswaarden
+  inclusief land, en de keuze staat op "Nee, alleen een sample". Testinzending
+  en mu-plugin daarna verwijderd, lege debug.log.
 
 
   SAMPLEFORMULIER: KEUZEKNOP WEG, FORMULIER ALTIJD VOLLEDIG -- TERUGGEDRAAID

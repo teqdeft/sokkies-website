@@ -86,7 +86,8 @@ add_filter( 'gform_submit_button', function ( $button, $form ) {
 }, 10, 2 );
 
 /**
- * Het adresblok staat op het sampleformulier ALTIJD in beeld.
+ * Het adresblok staat op het sampleformulier ALTIJD in beeld, en DIRECT
+ * ONDER de contactgegevens.
  *
  * Een sample wordt verstuurd, dus we hebben het adres nodig — ook als de
  * bezoeker geen proefontwerp wil. In Gravity Forms hangt het adresblok
@@ -161,6 +162,70 @@ function sokkies_sample_adres_altijd( $form ) {
 			$veld->conditionalLogic = '';
 		}
 	}
+
+	/* En het blok staat DIRECT ONDER de contactgegevens, dus VOOR het
+	   proefontwerpblok. In de formulierbouwer staat het erachter, wat
+	   klopte zolang het proefblok altijd dicht was: dan sloot het adres
+	   gewoon op Telefoon aan. Zodra de bezoeker "Ik wil toch een ontwerp"
+	   aanklikt schoof het adres onder Aantal paar, Opmerkingen en het
+	   uploadvlak door, en dat is niet waar het hoort.
+	   HIER EN NIET IN DE BOUWER, om dezelfde reden als hierboven: de
+	   veldvolgorde is databasewerk en deployt niet mee.
+	   HET PROEFBLOK BEGINT bij de kop boven "Aantal paar" — weer op
+	   positie bepaald, want alle koppen delen dezelfde class. */
+	$proef = null;
+	foreach ( $form['fields'] as $i => $veld ) {
+		$css = ' ' . trim( preg_replace( '/\s+/', ' ', (string) $veld->cssClass ) ) . ' ';
+		if ( false !== strpos( $css, ' of-aantal ' ) ) {
+			$proef = $i;
+			break;
+		}
+	}
+	if ( null !== $proef && $proef > 0 ) {
+		$vorige = $form['fields'][ $proef - 1 ];
+		$css    = ' ' . trim( preg_replace( '/\s+/', ' ', (string) $vorige->cssClass ) ) . ' ';
+		if ( 'html' === $vorige->type && false !== strpos( $css, ' of-kop ' ) ) {
+			$proef--;
+		}
+	}
+
+	$start = ( null !== $kop ) ? $kop : $eerste;
+	if ( null === $proef || $proef >= $start ) {
+		/* Staat het adres al boven het proefblok (of is er geen proefblok),
+		   dan valt er niets te verplaatsen. */
+		return $form;
+	}
+
+	/* Het hele blok verhuist als groep. Bewust de losse indexen verzamelen
+	   en niet een aaneengesloten stuk knippen: komt er ooit een veld tussen
+	   te staan, dan blijft dat anders achter en staat het los van de rest. */
+	$blok  = array();
+	$rest  = array();
+	foreach ( $form['fields'] as $i => $veld ) {
+		if ( $i === $kop || sokkies_offerte_adresveld( $veld ) ) {
+			$blok[] = $veld;
+		} else {
+			$rest[ $i ] = $veld;
+		}
+	}
+
+	$nieuw = array();
+	foreach ( $rest as $i => $veld ) {
+		if ( $i === $proef ) {
+			foreach ( $blok as $adresveld ) {
+				$nieuw[] = $adresveld;
+			}
+		}
+		$nieuw[] = $veld;
+	}
+	$form['fields'] = $nieuw;
+
+	/* LET OP voor wie de CSS erbij pakt: de rij Postcode / Huisnummer /
+	   Toevoeging / Land komt van ".of-toevoeging ~ .gfield{order:2}" in
+	   style.css, en die selector kijkt naar de plek in de DOM. Door deze
+	   verhuizing valt het proefblok daar nu ook onder en belandt het
+	   vanzelf achter het adres — precies de bedoeling, maar het betekent
+	   wel dat die CSS-regel en deze functie elkaar nodig hebben. */
 
 	return $form;
 }
