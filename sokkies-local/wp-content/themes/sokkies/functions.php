@@ -702,10 +702,19 @@ function sokkies_footer_slotregel() {
 	$btw       = sokkies_optie( 'footer_btw', 'NL865014218B01' );
 
 	// Juridische links: uit de instellingen of de twee uit het ontwerp.
-	$links = array();
-	$rijen = sokkies_optie( 'footer_legal', array() );
+	$links    = array();
+	$taal_nu  = sokkies_huidige_taal();
+	$rijen    = sokkies_optie( 'footer_legal', array() );
 	if ( is_array( $rijen ) ) {
 		foreach ( $rijen as $rij ) {
+			/* Zelfde regel als in het footermenu: geen taal aangevinkt =
+			   overal, anders alleen in de aangevinkte talen. Zo staat het
+			   Impressum (Duitse wettelijke plicht) alleen in de Duitse
+			   slotregel, terwijl de pagina zelf overal bereikbaar blijft. */
+			$talen = isset( $rij['talen'] ) ? (array) $rij['talen'] : array();
+			if ( $talen && ! in_array( $taal_nu, $talen, true ) ) {
+				continue;
+			}
 			$link  = isset( $rij['link'] ) ? $rij['link'] : null;
 			$url   = is_array( $link ) ? ( isset( $link['url'] ) ? $link['url'] : '' ) : (string) $link;
 			$label = isset( $rij['label'] ) && '' !== trim( (string) $rij['label'] )

@@ -2716,6 +2716,15 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				'sub_fields'   => array(
 					array( 'key' => 'field_si_fi_legal_label', 'label' => 'Label', 'name' => 'label', 'type' => 'text' ),
 					array( 'key' => 'field_si_fi_legal_link', 'label' => 'Link', 'name' => 'link', 'type' => 'link' ),
+					array(
+						'key'          => 'field_si_fi_legal_talen',
+						'label'        => 'Alleen in deze talen',
+						'name'         => 'talen',
+						'type'         => 'checkbox',
+						'choices'      => sokkies_taal_keuzes(),
+						'layout'       => 'vertical',
+						'instructions' => 'Niets aanvinken = in ALLE talen. Zelfde regel als bij het Footermenu hiernaast: het Impressum staat alleen in het Duits.',
+					),
 				),
 			),
 

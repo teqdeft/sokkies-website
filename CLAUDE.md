@@ -4047,6 +4047,45 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   de talen 200; 0 PHP-fouten van deze wijziging. De mini-footer
   (contact/offerte/sample/bedankt) heeft geen linkkolommen en is dus
   ongemoeid.
+  IMPRESSUM VAN DE LINKKOLOM NAAR DE SLOTREGEL (2026-09-30, melding Kulwant met
+  een pijl van de link in de rechter footerkolom omlaag naar de regel met
+  copyright, Algemene voorwaarden en Cookieverklaring). Het hoort bij de
+  juridische regels onderaan, niet tussen de gewone navigatielinks.
+  DE SLOTREGEL IS NET ZO CMS-BAAR als het footermenu: de repeater 'footer_legal'
+  op Website-instellingen > Footer-inhoud vult hem, met de twee links uit het
+  ontwerp als terugval. Die repeater had alleen nog geen taalvoorwaarde.
+  TOEGEVOEGD: hetzelfde veld "Alleen in deze talen" als op het footermenu
+  (field_si_fi_legal_talen), met dezelfde regel - niets aanvinken = alle talen -
+  en dezelfde filtering in sokkies_footer_slotregel() via
+  sokkies_huidige_taal(). Eén begrip voor beide lijsten; wie straks nog iets
+  per taal wil tonen hoeft geen nieuw mechanisme te verzinnen.
+  DE VERHUIZING ZELF IS DATABASE (de rij, niet het veld): de Impressum-regel is
+  uit 'footermenu' gehaald en als derde rij aan 'footer_legal' toegevoegd met
+  Duits aangevinkt. De rij is herkend aan de URL en niet aan het label - dat
+  laatste is redactionele tekst. Op dev/live komt dit mee met de volgende
+  WP Migrate DB-sync; gebeurt dat niet, dan is het daar twee handelingen in
+  Website-instellingen.
+  WAAR HIJ TERECHTKOMT: de functie verdeelt de inhoud over drie spans
+  (copyright + eerste link | de rest + KVK | BTW), dus Impressum landt in de
+  tweede span achter Cookie-Erklärung. Dat is geen toeval maar de bestaande
+  verdeling; met drie links schuift de derde gewoon mee.
+  GEMETEN op /de/ bij 1440: één regel, "© 2026 Sokkies • Allgemeine
+  Geschäftsbedingungen | Cookie-Erklärung • Impressum • KVK: 89538226 |
+  Übrigens: NL865014218B01", 10 links in de kolommen en 0 keer Impressum
+  daartussen. Op 390 vallen de drie spans weer als blokken onder elkaar met de
+  scheidingstekens uit - precies de drie regels uit het ontwerp. nl, en en fr
+  tonen de link nergens (0 treffers in de hele pagina), terwijl /nl/impressum/,
+  /en/impressum/ en /fr/impressum/ gewoon 200 geven. Geen horizontale scroll,
+  lege debug.log.
+  NIET GERAAKT EN WEL HET VERMELDEN WAARD: de MINI-footer (contact, offerte,
+  sample, bedankt) heeft zijn eigen, hardgecodeerde slotregel in
+  deel-mini-footer.php met alleen Algemene voorwaarden en Cookieverklaring. Die
+  roept sokkies_footer_slotregel() niet aan, dus daar staat het Impressum ook in
+  het Duits niet. Moet dat wel, dan is dat een aparte keuze - voorleggen.
+  TESTVALKUIL, opnieuw en nu met de oplossing erbij: TranslatePress stuurde het
+  browserpaneel op browsertaal naar /en/, ook na een directe navigatie naar
+  /de/. Wat wel werkt is de taalwisselaar aanklikken:
+  document.querySelector('a.trp-language-item[href*="/de/"]').click().
 
   "ALLEEN BIJ DEZE SOKTYPES" TOONDE ELK TYPE TWEE KEER (2026-09-30, vraag
   Rick: komt dat door hernoemde pagina's of staan de andere talen erin?).
