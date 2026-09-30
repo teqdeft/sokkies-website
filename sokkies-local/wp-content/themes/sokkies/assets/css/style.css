@@ -3294,6 +3294,30 @@ font-weight: 600;
     gap: 20px;
     padding: 0 60px;
   }
+
+  /* HET TEKSTBLOK KRIJGT EEN VASTE BREEDTE, anders bepaalt de LENGTE VAN DE
+     TEKST waar een stap begint (melding Rick 2026-09-30: "punt 4 lijnt niet
+     uit" op /collectie/). De li staat op justify-content:space-between met
+     een tekstblok op flex:0 1 auto, dus dat blok is zo breed als zijn eigen
+     inhoud en wordt naar rechts geduwd. Stap 4 heeft een kortere alinea (1
+     regel i.p.v. 2), is daardoor smaller en begint dus verder naar rechts.
+     Gemeten op /nl/collectie/: chevron en titel van stap 4 stonden 27px naar
+     rechts t.o.v. 1 t/m 3.
+     HET IS GEEN BAND-KWESTIE maar een breedtevenster: het valt alleen op
+     zolang de rij breder is dan de korte alinea (511px) en smaller dan de
+     lange (538px). Nagemeten: fout op 1440, 1550 en 600; toevallig goed op
+     1920, 1680, 1280, 992, 768 en 390. Daarom hier in de BASIS en niet in
+     één band - met andere copy of een andere taal verschuift dat venster.
+     min() houdt de huidige weergave exact intact: is er ruimte, dan is het
+     blok 538px (precies wat stap 1 t/m 3 nu al meten op 1440 t/m 1920); is
+     er minder, dan krimpt het mee zoals nu. Het getal is vanaf hier een
+     ONTWERPbreedte en geen gevolg meer van de tekstlengte.
+     De configurator (.conf-works) en de landingsvariant (.process-landing)
+     hebben verderop hun eigen width en blijven dus ongemoeid - daar is
+     precies dezelfde klacht eerder met een vaste breedte opgelost. */
+  .process-split .process-inner {
+    width: min(538px, 100%);
+  }
   .process-row-body h3{
   font-weight: 700;
     color:var(--text);

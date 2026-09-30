@@ -16,6 +16,88 @@ function sokkies_setup() {
 }
 add_action( 'after_setup_theme', 'sokkies_setup' );
 
+/**
+ * Ververst de permalink-regels één keer per omgeving na een slugwijziging.
+ *
+ * WAAROM DIT NODIG IS: WordPress bewaart de rewrite-regels in de OPTIE
+ * rewrite_rules, en de database deployt niet mee. Verandert er in de code een
+ * rewrite-slug, dan draait dev/live daarna nog op de oude regels en geeft de
+ * nieuwe URL een 404 tot iemand Instellingen > Permalinks opent. Dat is niet
+ * te zien aan de code, dus makkelijk om over het hoofd te zien.
+ *
+ * Verhoog SOKKIES_REWRITE_VERSIE bij elke volgende slugwijziging; de flush
+ * draait dan precies één keer per omgeving. Bewust NIET elke pageload:
+ * flush_rewrite_rules() herschrijft de hele optie en is traag.
+ */
+define( 'SOKKIES_REWRITE_VERSIE', '2026-09-30-cases' );
+
+/**
+ * Stuurt de oude case-URL's door naar de nieuwe: /cases/... -> /reviews-en-cases/...
+ *
+ * De rewrite-slug van sokkies_case ging op 2026-09-30 van 'cases' naar
+ * 'reviews-en-cases'. WordPress vangt zoiets NIET zelf op: wp_old_slug_redirect
+ * kent alleen een gewijzigde POSTslug, niet een gewijzigde rewrite-BASE. Zonder
+ * deze functie geeft elke gedeelde of geïndexeerde oude link dus een 404.
+ *
+ * WERKT OP SEGMENTNIVEAU, niet op een tekstvervanging: alleen een paddeel dat
+ * exact 'cases' is wordt vervangen. Zo blijft /reviews-en-cases/ zelf met rust
+ * (daar staat 'cases' alleen als deel van een langer woord) en kan er geen lus
+ * ontstaan, want na de vervanging is dat kale segment weg.
+ *
+ * ALLE TALEN IN ÉÉN REGEL: het taalvoorvoegsel blijft staan, dus /de/cases/x/
+ * wordt /de/reviews-en-cases/x/ en TranslatePress maakt daar zelf de Duitse
+ * slug van. TP VERTAALT DE SLUG NAMELIJK WEL - dat is hier eerst verkeerd
+ * geconcludeerd omdat `curl -L` de EINDcode toont en de tussenliggende 301 dus
+ * onzichtbaar bleef. De echte basis per taal (met hex nagemeten, want de
+ * tooloutput vertaalt deze strings):
+ *     nl  reviews-en-cases          de  rezensionen-und-fallbeispiele
+ *     en  reviews-and-cases         fr  avis-et-temoignages
+ * Daarom hoeft die lijst hier NIET in de code te staan: TP houdt hem bij en
+ * een hardgecodeerde kopie zou stil verouderen zodra iemand een vertaling
+ * bijwerkt.
+ * KOSTEN: de ketting wordt daardoor langer - nl 1 hop, en 2, de/fr 3. Alle
+ * vier eindigen op 200. Drie hops is netjes binnen wat zoekmachines volgen,
+ * maar wie het korter wil moet hier de vertaalde slug opvragen bij TP.
+ *
+ * ALLEEN OP EEN 404: bestaat er ooit een echte pagina op /cases/, dan resolvet
+ * die gewoon en grijpt deze functie niet in.
+ */
+function sokkies_cases_oude_url() {
+	if ( ! is_404() || empty( $_SERVER['REQUEST_URI'] ) ) {
+		return;
+	}
+
+	$verzoek = (string) wp_unslash( $_SERVER['REQUEST_URI'] );
+	$stukken = explode( '?', $verzoek, 2 );
+	$index   = array_search( 'cases', explode( '/', $stukken[0] ), true );
+
+	if ( false === $index ) {
+		return;
+	}
+
+	$segmenten            = explode( '/', $stukken[0] );
+	$segmenten[ $index ]  = 'reviews-en-cases';
+	$doel                 = implode( '/', $segmenten );
+
+	if ( isset( $stukken[1] ) && '' !== $stukken[1] ) {
+		$doel .= '?' . $stukken[1];
+	}
+
+	wp_safe_redirect( $doel, 301 );
+	exit;
+}
+add_action( 'template_redirect', 'sokkies_cases_oude_url' );
+
+function sokkies_rewrite_versie() {
+	if ( get_option( 'sokkies_rewrite_versie' ) === SOKKIES_REWRITE_VERSIE ) {
+		return;
+	}
+
+	flush_rewrite_rules();
+	update_option( 'sokkies_rewrite_versie', SOKKIES_REWRITE_VERSIE );
+}
+add_action( 'init', 'sokkies_rewrite_versie', 99 );
+
 function sokkies_asset_versie( $pad ) {
 	$bestand = get_template_directory() . $pad;
 	return file_exists( $bestand ) ? (string) filemtime( $bestand ) : '0.1.0';
@@ -915,6 +997,33 @@ add_action( 'admin_head', function () {
 } );
 
 /**
+ * Hulpscript voor Website-instellingen (2026-09-30, verzoek Kulwant: een
+ * optie die al gekozen is hoort niet meer in de keuzelijst van de andere
+ * rijen te staan).
+ *
+ * ALLEEN OP DIE PAGINA geladen: het script hangt aan één veldsleutel en
+ * heeft elders niets te zoeken. De schermcontrole gaat op de menu-slug,
+ * want ACF maakt er per subpagina een eigen hook-naam van.
+ *
+ * Waarom dit niet in PHP kan: de keuzelijst wordt serverzijdig één keer
+ * gezet voor het hele veld, terwijl WELKE rij wat gekozen heeft pas in het
+ * scherm bekend is - en tijdens het bewerken verandert.
+ */
+add_action( 'admin_enqueue_scripts', function ( $hook ) {
+	if ( false === strpos( (string) $hook, 'sokkies-instellingen' ) ) {
+		return;
+	}
+	$pad = get_template_directory() . '/assets/js/admin-opties.js';
+	wp_enqueue_script(
+		'sokkies-admin-opties',
+		get_template_directory_uri() . '/assets/js/admin-opties.js',
+		array(),
+		file_exists( $pad ) ? filemtime( $pad ) : null,
+		true
+	);
+} );
+
+/**
  * FAQ-antwoord veilig renderen: alleen eenvoudige opmaak. Geplakte
  * layout-HTML (divs/classes, bijv. een gekopieerd accordeon-item uit de
  * statische site) wordt gestript — structuurtags in een antwoord braken
@@ -1214,6 +1323,7 @@ function sokkies_footermenu() {
 	}
 
 	$kolommen = array( 1 => array(), 2 => array() );
+	$taal_nu  = sokkies_huidige_taal();
 
 	foreach ( $rijen as $rij ) {
 		$link  = isset( $rij['link'] ) ? $rij['link'] : array();
@@ -1223,6 +1333,19 @@ function sokkies_footermenu() {
 		}
 		if ( '' === $label ) {
 			continue; // lege rij overslaan
+		}
+
+		/* TAALFILTER PER LINK (2026-09-30, verzoek via Rick: het Impressum is
+		   een Duitse wettelijke plicht en hoort alleen in de Duitse footer).
+		   Niets aangevinkt = in ALLE talen, dus bestaande rijen veranderen
+		   niet; pas als er talen zijn aangevinkt verschijnt de link daar
+		   alleen. Exact hetzelfde begrip als bij de merklogo's
+		   (sokkies_logos_voor_taal), zodat er maar één regel te onthouden is.
+		   DE PAGINA ZELF BLIJFT BEREIKBAAR in elke taal - dit verbergt alleen
+		   de link, niet de URL. */
+		$talen = isset( $rij['talen'] ) ? (array) $rij['talen'] : array();
+		if ( $talen && ! in_array( $taal_nu, $talen, true ) ) {
+			continue;
 		}
 		$kolom = ( isset( $rij['kolom'] ) && '2' === (string) $rij['kolom'] ) ? 2 : 1;
 
@@ -1656,7 +1779,7 @@ add_filter( 'gform_field_css_class', 'sokkies_naam_veld_class', 10, 3 );
  *    waarom het resultaat er staat.
  *
  * WAT er doorzocht wordt: alleen types met een eigen klikbare pagina —
- * pagina's, soktypes (/collectie/{slug}/), cases (/cases/{slug}/) en
+ * pagina's, soktypes (/collectie/{slug}/), cases (/reviews-en-cases/{slug}/) en
  * blogs (/blog/{slug}/). FAQ-vragen, reviews en merklogo's zijn
  * hulp-CPT's zonder permalink; een treffer daarop zou nergens heen leiden.
  *

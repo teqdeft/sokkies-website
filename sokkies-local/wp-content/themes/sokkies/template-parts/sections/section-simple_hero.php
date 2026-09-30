@@ -4,12 +4,25 @@
  * reviews-en-cases.html: beige vlak, donkere breadcrumb, gecentreerde
  * titel + subtekst. Elke regel in het subtekst-veld wordt een <br>.
  */
-$breadcrumb = get_sub_field( 'breadcrumb' ) ?: 'Reviews en cases';
-$titel      = get_sub_field( 'titel' ) ?: 'Zo pakte het uit voor anderen';
-$subtekst   = get_sub_field( 'subtekst' ) ?: "1.000.000+ paar sokken geproduceerd, een 9.5 over\n250+ reviews. Hier lees je hoe het ze verging.";
+$breadcrumb = trim( (string) get_sub_field( 'breadcrumb' ) );
+$titel      = trim( (string) get_sub_field( 'titel' ) );
+$subtekst   = trim( (string) get_sub_field( 'subtekst' ) );
+
+/* LEEG VELD = NIETS TONEN (2026-09-30, feedback Rick via de optiepagina's).
+   Hier stond de copy van reviews-en-cases als terugval, dus wie het titel-
+   of subtekstveld leegmaakte kreeg "Zo pakte het uit voor anderen" en de
+   1.000.000+ regel te zien op bijvoorbeeld /opties/geschenkdoosjes/. Dat is
+   precies de valkuil die op 2026-09-21 al in dit document stond.
+   GEEN ENKELE PAGINA VERANDERT HIERDOOR: alle 41 pagina's die deze kop
+   gebruiken hebben alle drie de velden gevuld (nagemeten voor de wijziging),
+   dus de terugval was in de praktijk alleen een val voor de redacteur. */
+if ( '' === $breadcrumb && '' === $titel && '' === $subtekst ) {
+	return; // niets ingevuld: geen kop en dus ook geen witruimte
+}
 ?>
 <div class="hero-section simple-hero">
   <div class="container">
+    <?php if ( '' !== $breadcrumb ) : ?>
     <nav class="breadcrumb" aria-label="Kruimelpad">
       <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
         <svg xmlns="http://www.w3.org/2000/svg" width="15.211" height="16" viewBox="0 0 15.211 16">
@@ -21,9 +34,16 @@ $subtekst   = get_sub_field( 'subtekst' ) ?: "1.000.000+ paar sokken geproduceer
       <span>&nbsp;&bull;&nbsp;</span>
       <span><?php echo esc_html( $breadcrumb ); ?></span>
     </nav>
+    <?php endif; ?>
+    <?php if ( '' !== $titel || '' !== $subtekst ) : ?>
     <div class="simple-hero-content" data-aos="fade-up">
+      <?php if ( '' !== $titel ) : ?>
       <h1><?php echo sokkies_kop( $titel ); ?></h1>
+      <?php endif; ?>
+      <?php if ( '' !== $subtekst ) : ?>
       <p><?php echo sokkies_tekst_regels( $subtekst ); ?></p>
+      <?php endif; ?>
     </div>
+    <?php endif; ?>
   </div>
 </div>

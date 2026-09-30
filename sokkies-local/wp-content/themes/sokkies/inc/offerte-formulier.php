@@ -1133,6 +1133,14 @@ add_filter( 'acf/load_field/key=field_si_extra_naam', function ( $veld ) {
 	$veld['choices']    = $keuzes;
 	$veld['allow_null'] = 1;
 	$veld['ui']         = 0;
+	/* Van een TEKSTveld een select maken betekent ook de select-instellingen
+	   meegeven. Zonder deze drie logde ACF bij elke paginalading "Undefined
+	   array key multiple/return_format" (class-acf-field-select.php 517, 712
+	   en 714) - de waarschuwingen die hier maandenlang als "bestaand" zijn
+	   afgedaan, maar gewoon uit dit filter kwamen. */
+	$veld['multiple']      = 0;
+	$veld['ajax']          = 0;
+	$veld['return_format'] = 'value';
 	return $veld;
 } );
 
@@ -1148,7 +1156,76 @@ add_filter( 'acf/load_field/key=field_si_extra_naam', function ( $veld ) {
  * hoort is redactie, en zo hoeft er niets aangepast te worden als de matrix
  * groeit of als een keuze anders gaat heten.
  */
-function sokkies_offerte_soktype_keuzes() {
+/**
+ * Bedoelen twee keuzeteksten hetzelfde soktype? ("Antislip" / "Antislipsokken")
+ *
+ * Zelfde woordregel als sokkies_kaartfoto_kies: een woord telt als treffer bij
+ * gelijkheid of als het ene met het andere begint (vanaf vier letters), en
+ * "sokken" telt niet mee. Alle woorden van de kortste tekst moeten raak zijn,
+ * zodat "Kids & baby" en "Kerst" niet per ongeluk samenvallen.
+ */
+function sokkies_soktype_zelfde( $a, $b ) {
+	$wa = sokkies_soktype_woorden( $a );
+	$wb = sokkies_soktype_woorden( $b );
+	if ( ! $wa || ! $wb ) {
+		return false;
+	}
+	$kortste = count( $wa ) <= count( $wb ) ? $wa : $wb;
+	$andere  = count( $wa ) <= count( $wb ) ? $wb : $wa;
+
+	foreach ( $kortste as $woord ) {
+		$raak = false;
+		foreach ( $andere as $ander ) {
+			$kort = strlen( $woord ) < strlen( $ander ) ? $woord : $ander;
+			$lang = strlen( $woord ) < strlen( $ander ) ? $ander : $woord;
+			if ( $woord === $ander || ( strlen( $kort ) >= 4 && 0 === strpos( $lang, $kort ) ) ) {
+				$raak = true;
+				break;
+			}
+		}
+		if ( ! $raak ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Alle schrijfwijzen van één soktype, over BEIDE formulieren heen.
+ *
+ * De redacteur vinkt in het CMS één regel aan ("Antislip"), maar op het
+ * sampleformulier heet dezelfde sok "Antislipsokken" - en de vergelijking op
+ * de voorkant gaat op de WAARDE van het aangevinkte vakje. Zonder deze
+ * vertaalslag zou een voorwaarde dus alleen op het offerteformulier werken.
+ * Geeft altijd minstens de meegegeven naam terug.
+ */
+function sokkies_soktype_varianten( $naam ) {
+	static $cache = array();
+	$naam = trim( (string) $naam );
+	if ( '' === $naam ) {
+		return array();
+	}
+	if ( isset( $cache[ $naam ] ) ) {
+		return $cache[ $naam ];
+	}
+
+	$uit = array( $naam );
+	foreach ( sokkies_offerte_soktype_teksten() as $tekst ) {
+		if ( $tekst !== $naam && sokkies_soktype_zelfde( $naam, $tekst ) ) {
+			$uit[] = $tekst;
+		}
+	}
+
+	$cache[ $naam ] = array_values( array_unique( $uit ) );
+	return $cache[ $naam ];
+}
+
+/**
+ * ALLE keuzeteksten van beide formulieren, ongefilterd - de ruwe bron waar
+ * zowel de (ontdubbelde) keuzelijst als sokkies_soktype_varianten op leunen.
+ */
+function sokkies_offerte_soktype_teksten() {
 	static $cache = null;
 	if ( null !== $cache ) {
 		return $cache;
@@ -1178,6 +1255,57 @@ function sokkies_offerte_soktype_keuzes() {
 			}
 		}
 	}
+	$cache = array_values( $cache );
+	return $cache;
+}
+
+function sokkies_offerte_soktype_keuzes() {
+	static $cache = null;
+	if ( null !== $cache ) {
+		return $cache;
+	}
+	$cache = array();
+	if ( ! class_exists( 'GFAPI' ) ) {
+		return $cache;
+	}
+	foreach ( array( 'sokkies_offerte_form_id', 'sokkies_sample_form_id' ) as $bron ) {
+		if ( ! function_exists( $bron ) || ! $bron() ) {
+			continue;
+		}
+		$form = GFAPI::get_form( $bron() );
+		if ( ! $form || empty( $form['fields'] ) ) {
+			continue;
+		}
+		foreach ( $form['fields'] as $veld ) {
+			$css = ' ' . preg_replace( '/\s+/', ' ', trim( (string) $veld->cssClass ) ) . ' ';
+			if ( false === strpos( $css, ' of-soktypes ' ) || empty( $veld->choices ) ) {
+				continue;
+			}
+			foreach ( (array) $veld->choices as $keuze ) {
+				$tekst = sokkies_offerte_keuzetekst( isset( $keuze['text'] ) ? $keuze['text'] : '' );
+				if ( '' === $tekst ) {
+					continue;
+				}
+				/* ÉÉN REGEL PER SOKTYPE, ook al heten ze in de twee
+				   formulieren anders (2026-09-30, vraag Rick: "de lijst toont
+				   elk soktype twee keer of vaker"). Het offerteformulier
+				   noemt ze kort ("Antislip"), het sampleformulier voluit
+				   ("Antislipsokken"); op de letterlijke tekst vallen die dus
+				   niet samen en stonden er 20 regels in plaats van 10.
+				   Hier telt of twee teksten HETZELFDE soktype bedoelen, met
+				   dezelfde woordvergelijking die ook de kaartfoto's koppelt.
+				   Het offerteformulier komt als eerste langs, dus dat is de
+				   schrijfwijze die de redacteur ziet; de andere blijft
+				   bruikbaar via sokkies_soktype_varianten(). */
+				foreach ( array_keys( $cache ) as $bestaand ) {
+					if ( sokkies_soktype_zelfde( $bestaand, $tekst ) ) {
+						continue 2;
+					}
+				}
+				$cache[ $tekst ] = $tekst;
+			}
+		}
+	}
 	return $cache;
 }
 
@@ -1203,9 +1331,18 @@ function sokkies_offerte_extra_voorwaarden() {
 	foreach ( $rijen as $rij ) {
 		$naam  = isset( $rij['naam'] ) ? trim( (string) $rij['naam'] ) : '';
 		$types = isset( $rij['soktypes'] ) ? array_filter( (array) $rij['soktypes'] ) : array();
-		if ( '' !== $naam && $types ) {
-			$cache[ $naam ] = array_values( $types );
+		if ( '' === $naam || ! $types ) {
+			continue;
 		}
+		/* De keuzelijst toont nog één schrijfwijze per soktype, maar op het
+		   sampleformulier heet dezelfde sok anders. Daarom wordt elke
+		   aangevinkte naam hier uitgeklapt naar alle schrijfwijzen, zodat
+		   één vinkje op BEIDE formulieren werkt. */
+		$alle = array();
+		foreach ( $types as $type ) {
+			$alle = array_merge( $alle, sokkies_soktype_varianten( $type ) );
+		}
+		$cache[ $naam ] = array_values( array_unique( $alle ) );
 	}
 	return $cache;
 }

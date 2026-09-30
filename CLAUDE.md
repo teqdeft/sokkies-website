@@ -3705,6 +3705,286 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   door naar /bedankt-sample/ met alle waarden in de inzending, inclusief de
   proefkeuze. Testinzending en mu-plugin daarna verwijderd (0 inzendingen over).
 
+  CASES OP /reviews-en-cases/{slug}/ (2026-09-30, verzoek Kulwant met een
+  schermafbeelding waarin 'cases' in de adresbalk omcirkeld staat). De
+  rewrite-slug van de CPT sokkies_case stond op 'cases', dus een case leefde op
+  /cases/sanquin/ terwijl het overzicht op /reviews-en-cases/ staat. Nu delen ze
+  dezelfde prefix.
+  DAT MAG, en dat is hier de kern: bij een EXACTE match wint de pagina, dus
+  /reviews-en-cases/ blijft het overzicht en /reviews-en-cases/{case}/ is de
+  detailpagina. Precies dezelfde constructie als de soktypes op /collectie/,
+  die daar al sinds 2026-08-18 zo draait. Nagemeten na de wijziging: het
+  overzicht rendert nog steeds zijn eigen sectie (caseGrid, 16 kaarten, 11
+  chips) en de detailpagina rendert de case (h1 "Sanquin Bloedbanken").
+  WAT HET WEL KOST: een KINDpagina onder /reviews-en-cases/ kan niet meer. De
+  CPT-regel matcht dan eerst, vindt geen case met die naam en geeft 404 - exact
+  wat er op dev gebeurde toen Kaartjes en Geschenkdoosjes onder Collectie
+  hingen. Vooraf gecontroleerd: pagina #157 had 0 kindpagina's, dus er brak
+  niets. Wie er later toch een wil, kiest een andere ouder.
+  OUDE URL'S KRIJGEN EEN 301 (feedbackpunt R3, zelfde dag): /cases/ en
+  /cases/{slug}/ gaan via sokkies_cases_oude_url() op template_redirect naar de
+  nieuwe basis. wp_old_slug_redirect vangt dit namelijk NIET op - die kent
+  alleen een gewijzigde POSTslug, niet een gewijzigde rewrite-BASE, dus zonder
+  deze functie geeft elke gedeelde of geindexeerde oude link een 404.
+  DE VERVANGING GAAT OP SEGMENTNIVEAU en niet met str_replace: alleen een
+  paddeel dat exact 'cases' is wordt vervangen. Zo blijft /reviews-en-cases/
+  zelf met rust (daar zit 'cases' in een langer woord) en kan er geen lus
+  ontstaan. Hij draait alleen op een 404, dus een echte toekomstige pagina op
+  /cases/ zou gewoon voorgaan.
+  TRANSLATEPRESS VERTAALT DE SLUG WEL - EN DAT HAD IK EERST FOUT. Ik
+  concludeerde "geen slugvertaling" omdat /en/reviews-en-cases/sanquin/ 200 gaf,
+  maar dat was de EINDcode van `curl -L`: de 301 ertussen bleef onzichtbaar.
+  Met hex nagemeten (de tooloutput vertaalt deze strings zelf, dus platte
+  uitvoer misleidt hier dubbel) is de basis per taal:
+      nl  reviews-en-cases            de  rezensionen-und-fallbeispiele
+      en  reviews-and-cases           fr  avis-et-temoignages
+  Die lijst staat BEWUST NIET in de code: TP houdt hem bij en een kopie zou
+  stil verouderen zodra iemand een vertaling bijwerkt. Gevolg is wel een
+  langere ketting - nl 1 hop, en 2, de/fr 3 - en alle vier eindigen op 200.
+  Ook de oude VERTAALDE bases lossen nog op (/de/falle/lotus/ en
+  /fr/cas/jysk/ komen goed uit), maar dat doet TP zelf; reken er niet op zodra
+  iemand de slugvertalingen opnieuw opslaat.
+  has_archive stond al op false, dus daar hoefde niets aan te gebeuren.
+  DE SLUG sanquin-23 IS EEN DEV-DATABASEKWESTIE, niet op te lossen in code.
+  Lokaal heet de case gewoon 'sanquin' (ID 1031) en zijn alle 16 slugs schoon;
+  op dev staat sanquin-23 (nagemeten: /nl/cases/sanquin-23/ gaf daar 200 en de
+  kaartlinks op het dev-overzicht wijzen ernaar). Het achtervoegsel betekent dat
+  de slug bij het aanmaken al bezet was. Oplossen: op dev de slug terugzetten
+  naar 'sanquin' - WordPress zet dan zelf een 301 vanaf sanquin-23 - of de
+  lokale database pushen, want die heeft de schone slug al.
+  DE PRULLENBAK BLOKKEERT NIETS: de 20 weggegooide cases hebben allemaal het
+  achtervoegsel __trashed, dus ze houden geen slug bezet (gecontroleerd op
+  sanquin). Definitief legen blijft een inhoudelijke keuze voor de klant.
+  NIEUW EN BELANGRIJKER DAN DE SLUG ZELF - EEN EENMALIGE FLUSH PER OMGEVING:
+  WordPress bewaart de rewrite-regels in de OPTIE rewrite_rules, en de database
+  deployt niet mee. Zonder ingreep draait dev/live na deze push dus nog op de
+  oude regels en geeft elke case daar 404 tot iemand Instellingen > Permalinks
+  opent - en dat is aan de code niet te zien. functions.php heeft daarom
+  sokkies_rewrite_versie() met de constante SOKKIES_REWRITE_VERSIE: wijkt de
+  opgeslagen waarde af, dan volgt één flush en wordt de nieuwe waarde bewaard.
+  BIJ EEN VOLGENDE SLUGWIJZIGING DIE CONSTANTE OPHOGEN, anders blijft de flush
+  uit. Bewust niet bij elke pageload: flush_rewrite_rules() herschrijft de hele
+  optie en is traag.
+  GEVERIFIEERD lokaal: /nl/reviews-en-cases/ 200, /nl/reviews-en-cases/sanquin/
+  en /veloretti/ 200, /en/... en /de/... 200, oude /nl/cases/sanquin/ 404, de
+  kaartlinks in het overzicht wijzen naar de nieuwe URL en er zijn 0 PHP-fouten.
+  Geen mobiele controle gedaan en die is hier ook niet zinnig: dit raakt
+  uitsluitend de routering, er verandert geen markup of CSS.
+
+  STAP 4 IN HET GENUMMERDE BLOK LIJNDE NIET UIT (2026-09-30, melding Rick via
+  Lennart over /nl/collectie/, zonder screenshot en zonder schermbreedte).
+  GEREPRODUCEERD EN DE BREEDTES ERBIJ, want dat was de eerste vraag: fout op
+  1440 en 1550 (chevron en titel van stap 4 stonden 27px naar rechts) en op
+  600 (14px). Toevallig GOED op 1920, 1680, 1280, 992, 768 en 390 - dus wie
+  op die breedtes kijkt ziet niets.
+  OORZAAK: elke li is flex met justify-content:space-between en een tekstblok
+  (.process-inner) op flex:0 1 auto. Dat blok is dus zo breed als zijn EIGEN
+  inhoud en wordt naar rechts geduwd. Stap 4 heeft een kortere alinea (1 regel
+  i.p.v. 2) en is daardoor 511px breed waar 1 t/m 3 op 538px uitkomen; het
+  verschil van 27px is precies de misuitlijning. Het is dus geen bandkwestie
+  maar een BREEDTEVENSTER: zodra de rij breder is dan 511 en smaller dan 538
+  valt stap 4 uit de pas. Daarom zit de fix in de BASIS en niet in één band -
+  met andere copy of een andere taal schuift dat venster gewoon mee.
+  FIX: .process-split .process-inner{width:min(538px,100%)} in style.css. Bij
+  genoeg ruimte is het blok 538px (exact wat stap 1 t/m 3 nu al meten op 1440
+  t/m 1920), bij minder ruimte krimpt het mee zoals voorheen. Vanaf nu is die
+  538 een ONTWERPbreedte en geen gevolg meer van hoe lang de tekst toevallig is.
+  HETZELFDE PATROON ALS DE TWEE ANDERE VARIANTEN: .conf-works en
+  .process-landing kregen eerder al een vaste breedte tegen exact deze klacht
+  ("stap 03 stond ver naar links"); alleen de standaardvariant had hem nooit
+  gekregen. Die twee blijven ongemoeid: hun eigen width-regels staan later in
+  style.css (4863 en 11344) en in vier banden van responsive.css, dus ze
+  winnen op volgorde resp. specificiteit. De ≤520-regel op .process-inner zet
+  alleen padding en gap en botst niet.
+  DE BUG ZIT OOK IN HTMLV (gemeten: stap 4 daar 12px naar rechts), dus het is
+  geen CMS-gevolg maar een fout in de statische build. htmlv blijft zoals
+  afgesproken onaangeroerd; alleen het thema is aangepast.
+  GEVERIFIEERD op acht breedtes (1920/1680/1550/1440/1280/992/768/600/390) op
+  /collectie/ EN /toepassingen/, die hetzelfde blok heeft en dezelfde fout had:
+  alle vier de stappen nu gelijk, en op elke breedte die al goed stond zijn de
+  waarden van stap 1 t/m 3 ONVERANDERD (1920 innerL 188, 1680 114, 1440 en
+  1550 72, 1280/992/768/600 35, 390 56). Op 390 geen horizontale scroll.
+  NIET VISUEEL GECONTROLEERD: de configurator. Pagina #14 staat op CONCEPT en
+  geeft dus een 404 op de voorkant - losstaand van deze wijziging, maar wel
+  iets om na te vragen. De cascade is daar eenduidig, zie hierboven.
+  TESTVALKUIL: TranslatePress stuurt de browser op browsertaal naar /en/, dus
+  het meten gebeurde eerst ongemerkt op de Engelse pagina. De cookie zelf
+  zetten hielp niet (er stonden er twee, en die van TP won); wat wel werkt is
+  de NL-link in de taalwisselaar aanklikken.
+
+  LEEG VELD = NIETS OP DE OPTIEPAGINA'S (2026-09-30, feedback Rick: "een leeg
+  veld toont op de voorkant nog steeds iets - kop en intro op
+  /opties/geschenkdoosjes/, bodytekst op /opties/kaartjes/"; met de opdracht
+  ALLE velden van het optiesjabloon na te lopen, niet alleen die twee).
+  DE OPTIEPAGINA'S GEBRUIKEN VIJF LAYOUTS: simple_hero, 2x lp_media,
+  fp_tekst_kolommen en cta_final; /opties/ zelf heeft simple_hero,
+  optie_kaarten en cta_final. (Die namen met bin2hex uitgelezen - de
+  tooloutput maakte er "fp_text_columns" en "option_cards" van, wat naar
+  niet-bestaande bestanden wees.)
+  TWEE OVERTREDERS GEVONDEN, allebei aangepast:
+  (1) fp_tekst_kolommen had voorbeeldtekst als terugval op alle vier de
+  velden ("Sectiekop", een introzin en twee keer dezelfde lap bodytekst).
+  Precies de melding: op geschenkdoosjes waren kop en intro leeg, op kaartjes
+  de twee kolommen. Nu tonen lege velden niets, valt het kolommenraster weg
+  als beide kolommen leeg zijn, en vervalt de hele sectie (inclusief ruimte)
+  als alles leeg is.
+  (2) simple_hero had de copy van reviews-en-cases als terugval op
+  kruimelpad, titel en subtekst - de valkuil die op 2026-09-21 al in dit
+  document stond. Nu leeg = niets, en is alles leeg dan rendert de kop niet.
+  DIT VERANDERT NIETS AAN BESTAANDE PAGINA'S: van de 41 pagina's met
+  simple_hero heeft er GEEN ENKELE een leeg veld (nagemeten vóór de
+  wijziging), dus die terugval was in de praktijk alleen een val voor de
+  redacteur. Bij fp_tekst_kolommen zijn het precies geschenkdoosjes en
+  kaartjes die veranderen; /flexibele-pagina/ houdt zijn voorbeeldtekst,
+  want daar staat die als ECHTE veldwaarde in de database.
+  LET OP BIJ ZO'N INVENTARIS: van de dertien "pagina's" met deze layout
+  bleken er zeven status `inherit` te hebben (revisies van de optiepagina's)
+  en één `trash`. Live zijn het er dus vijf. Filter op post_status voordat je
+  een impactlijst rapporteert.
+  TWEE LAYOUTS VOLDEDEN AL: lp_media slaat lege onderdelen over en stopt
+  helemaal als er niets staat, en optie_kaarten rendert niets zonder kaarten.
+  lp_media heeft wel een standaardFOTO als er geen foto gekozen is - op de
+  optiepagina's nooit zichtbaar (alle foto's gevuld) en site-breed valt maar
+  één sectie erop terug; de andere zes lege fotovelden staan bewust op de
+  placeholder-keuze. Daarom ongemoeid gelaten.
+  BEWUST NIET AANGERAAKT - cta_final. Die heeft ook terugvalcopy (titel en
+  subtekst), maar staat op 493 secties, waarvan er 236 een lege titel en 262
+  een lege subtekst hebben. De terugval weghalen zou dus op ongeveer de helft
+  van de site het slotblok onthoofden. Op de vijf optiepagina's zelf zijn
+  titel en subtekst allemaal gevuld, dus daar speelt de melding niet. Dit is
+  een besluit voor de klant: overal leeg-is-leeg (en dan eerst die 236
+  pagina's vullen), of alleen op de optiepagina's via de bestaande
+  page-scope class .optie-pagina.
+  GEVERIFIEERD: alle vier de optiepagina's + /opties/ 200 en 0 keer de
+  voorbeeldtekst; geschenkdoosjes houdt zijn twee kolommen, kaartjes houdt
+  kop en intro en heeft nu 0 kolommen i.p.v. twee met opvultekst; de
+  reviews-en-cases-kop is ongewijzigd (kruimelpad, h1 en subtekst allemaal
+  aanwezig); /flexibele-pagina/ en /landing/ onveranderd; de optiepagina's
+  in nl/en/de/fr allemaal 200; 0 PHP-fouten van deze wijziging (de negen
+  ACF-select-waarschuwingen staan er met en zonder).
+  LET OP: de Duitse en Franse variant van /opties/ draaien op de Nederlandse
+  slug (/de/opties/, /fr/opties/); alleen Engels heeft /en/options/.
+
+  IMPRESSUM ALLEEN IN DE DUITSE FOOTER (2026-09-30, verzoek via Rick: het is
+  een Duitse wettelijke plicht, dus tonen op /de/ en verbergen op nl/en/fr;
+  de pagina mag in elke taal bereikbaar blijven).
+  DE BEGINSITUATIE WAS ANDERS DAN DE MELDING AANNAM: de link stond in
+  HELEMAAL GEEN footer, niet lokaal en niet op dev (in alle vier de talen 0
+  keer gevonden). De pagina bestond en gaf overal 200. Het was dus geen
+  verbergen maar toevoegen - alleen in het Duits.
+  HOE HET WERKT (dit is wat Rick moet weten): de footer-repeater in
+  Website-instellingen > Footermenu heeft er een veld bij, "Alleen in deze
+  talen". Niets aanvinken = de link staat in ALLE talen, dus alle bestaande
+  tien links veranderen niet. Vink je talen aan, dan verschijnt de link
+  alleen daar. Het Impressum staat nu op alleen Duits, in de rechterkolom.
+  GEKOZEN VOOR EEN VOORWAARDE PER LINK en niet voor een apart footermenu per
+  taal: dat laatste zou vier lijsten opleveren die uit elkaar gaan lopen
+  zodra iemand er één bijwerkt. Bovendien bestaat dit begrip al bij de
+  merklogo's (sokkies_logos_voor_taal, veld 'talen'), dus het is dezelfde
+  regel op een tweede plek in plaats van een nieuw mechanisme. De filtering
+  zit in sokkies_footermenu() en gebruikt sokkies_huidige_taal(); de
+  keuzelijst komt uit sokkies_taal_keuzes(), zodat er automatisch een taal
+  bij komt te staan zodra die gepubliceerd wordt.
+  ALLEEN DE LINK WORDT VERBORGEN, niet de pagina: /nl/impressum/,
+  /en/impressum/ en /fr/impressum/ geven nog gewoon 200 - precies zoals
+  gevraagd.
+  LET OP - HET VELD DEPLOYT, DE INGEVULDE RIJ NIET. De velddefinitie zit in
+  de code en komt dus vanzelf op dev/live; het footermenu zelf staat in de
+  database (optiepagina). Op dev/live moet de Impressum-regel daar dus nog
+  toegevoegd worden, of hij komt mee met de volgende WP Migrate DB-sync.
+  VALKUIL BIJ HET WEGSCHRIJVEN VAN DE URL: home_url() gaat door
+  TranslatePress en levert in de PHP-CLI een /en/-voorvoegsel op, dus de
+  eerste poging zette er /en/impressum/ in. De andere rijen staan zonder
+  voorvoegsel. Gebruik get_option('home') - dat is de ruwe waarde - en laat
+  TP er op de voorkant zelf /de/impressum/ van maken (nagemeten: dat doet hij).
+  GEVERIFIEERD: de footerkolommen tellen 10 links op nl, en en fr en 11 op
+  de; de Duitse link wijst naar /de/impressum/; de pagina geeft in alle vier
+  de talen 200; 0 PHP-fouten van deze wijziging. De mini-footer
+  (contact/offerte/sample/bedankt) heeft geen linkkolommen en is dus
+  ongemoeid.
+
+  "ALLEEN BIJ DEZE SOKTYPES" TOONDE ELK TYPE TWEE KEER (2026-09-30, vraag
+  Rick: komt dat door hernoemde pagina's of staan de andere talen erin?).
+  GEEN VAN BEIDE, en ook niet de aangedragen verdenking (vertalingen,
+  concepten of prullenbakkopieën van soktype-POSTS). Het veld bevraagt
+  helemaal geen posts: sokkies_offerte_soktype_keuzes() leest GRAVITY FORMS
+  en verzamelt de keuzes van elk veld met cssClass of-soktypes - en dat doet
+  het over TWEE formulieren, offerte (hier ID 28) en sample (ID 29).
+  DE TWEE FORMULIEREN NOEMEN DEZELFDE SOK ANDERS: offerte kort (Regulier,
+  Sport, Bamboe, Yoga & pilates, Werk, Kerst, Wieler, Antislip, Kids & baby,
+  Zorg), sample voluit (Reguliere sokken, Sportsokken, ... Zorgsokken). De
+  lijst werd op de letterlijke tekst ontdubbeld, dus die twee schrijfwijzen
+  vielen niet samen: 10 + 10 = 20 regels, elk type twee keer in bijna
+  dezelfde bewoording. Precies wat Rick zag.
+  GEWIJZIGD: de lijst telt nog één regel per soktype (nagemeten: 20 -> 10).
+  Twee teksten gelden als hetzelfde type via sokkies_soktype_zelfde(), die
+  dezelfde woordregel gebruikt als de kaartfoto-koppeling (gelijk of het ene
+  woord begint met het andere vanaf vier letters, "sokken" telt niet mee) -
+  met de extra eis dat ALLE woorden van de kortste tekst raak moeten zijn,
+  anders zouden Kerst en Kids kunnen samenvallen. Nagemeten dat alle tien de
+  typen overblijven en dat Kerst -> Kerstsokken gaat en niet naar Kids.
+  Het offerteformulier komt als eerste langs, dus dat is de schrijfwijze die
+  de redacteur ziet.
+  ER IS NIETS VERWIJDERD uit Gravity Forms; de formulieren en hun keuzes zijn
+  onaangeroerd. Alleen de manier waarop het CMS-veld zijn lijst opbouwt is
+  veranderd.
+  TWEEDE VONDST, die achter de cosmetische zat: de voorwaarde wordt op de
+  voorkant vergeleken met de WAARDE van het aangevinkte vakje, en die waardes
+  verschillen dus per formulier. Een regel met "Antislip" zou daarom nooit op
+  het sampleformulier werken. sokkies_soktype_varianten() klapt een
+  aangevinkte naam nu uit naar alle schrijfwijzen, zodat één vinkje op beide
+  formulieren geldt (data-alleen-bij bevat nu "Antislip|Antislipsokken|Yoga &
+  pilates|Yoga & pilates sokken").
+  EERLIJK ERBIJ: dat is vandaag nog ONZICHTBAAR, want alleen het
+  offerteformulier heeft een of-extras-veld; het sampleformulier heeft er
+  geen. Het is dus vangnet voor zodra dat blok daar ook komt, geen zichtbare
+  reparatie.
+  GEVERIFIEERD in de browser op /nl/offerte/: verse pagina beide kaarten
+  verborgen, Antislip aanvinken maakt ze zichtbaar, weer uitvinken verbergt
+  ze - onveranderd gedrag met de bredere lijst. Routes nl/en/de 200, geen
+  PHP-fouten uit het thema (de ACF-select-waarschuwingen staan er al langer).
+  LET OP VOOR WIE DIT NAKIJKT: de formulier-ID's zijn hier 28 en 29, niet de
+  5 en 6 die eerder in dit document staan. Alles zoekt op titel, dus dat
+  maakt voor de code niet uit - maar bij handmatig speuren wel.
+
+  EEN GEKOZEN OPTIE VERDWIJNT UIT DE ANDERE RIJEN (2026-09-30, verzoek
+  Kulwant met een schermafbeelding van Website-instellingen > Aanvullende
+  opties: rij 1 en 2 stonden op Custom anti-slip en Frills, maar rij 3 bood
+  ze nog gewoon aan). Elke rij hoort over één optie te gaan; twee rijen met
+  dezelfde optie is geen geldige situatie en levert stil een dubbele kaart op
+  het offerteformulier op.
+  DIT KAN NIET IN PHP: de keuzelijst wordt serverzijdig één keer voor het
+  hele veld gezet, terwijl WELKE rij wat gekozen heeft pas in het scherm
+  bekend is en tijdens het bewerken verandert. Daarom een klein adminscript,
+  assets/js/admin-opties.js, dat de al bezette opties in de andere rijen
+  verbergt (hidden én disabled - er zijn browsers die hidden op een <option>
+  negeren). De eigen keuze van een rij blijft staan en een optie komt meteen
+  weer beschikbaar zodra de rij die hem bezette wordt leeggemaakt.
+  ALLEEN OP DIE PAGINA geladen, via admin_enqueue_scripts met een check op de
+  menu-slug. Nagemeten: wel op toplevel_page_sokkies-instellingen, niet op de
+  subpagina Prijzen & staffels, niet op index.php of post.php.
+  DRAAIT DIRECT ÉN OP acf-haken: eerst liep hij alleen na een wijziging,
+  omdat DOMContentLoaded al gepasseerd was toen het script laadde. Nu is er
+  een directe aanroep plus 'append', 'remove' en 'ready' van ACF, zodat een
+  net toegevoegde rij ook meteen de juiste lijst toont. bijwerken() is
+  idempotent.
+  GETEST tegen nagebouwde ACF-markup (de admin vereist een login, die is hier
+  niet beschikbaar): bij het laden toont rij 3 noch Custom anti-slip noch
+  Frills terwijl rij 1 en 2 hun eigen keuze houden; kiest rij 3 Labels dan
+  verdwijnt Labels uit 1 en 2; maakt rij 1 zichzelf leeg dan komt Custom
+  anti-slip overal terug. De koppeling zelf (enqueue + veldsleutel) is
+  serverzijdig geverifieerd, de werking van het script in de browser.
+  BIJVANGST - DE ACF-WAARSCHUWINGEN ZIJN WEG. De meldingen "Undefined array
+  key multiple/return_format" (class-acf-field-select.php 517/712/714) die in
+  dit document meermaals als "bestaand, niet van deze wijziging" zijn
+  afgedaan, kwamen gewoon uit het filter op field_si_extra_naam: dat maakt van
+  een TEKSTveld een select zonder de select-instellingen mee te geven. Met
+  multiple/ajax/return_format erbij logt een sweep over home, partners,
+  offerte, sample, collectie en opties nu 0 PHP-waarschuwingen - voor het
+  eerst een schone debug.log. De opgehaalde waarden zijn onveranderd
+  (8 optiekeuzes, 10 soktypes, beide voorwaarden 4 varianten) en de kaarten
+  op /offerte/ reageren nog precies zo op Yoga & pilates.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

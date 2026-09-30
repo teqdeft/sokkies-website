@@ -2523,6 +2523,15 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 						'default_value' => '1',
 						'instructions'  => 'In welke van de twee kolommen het item staat.',
 					),
+					array(
+						'key'          => 'field_si_fm_talen',
+						'label'        => 'Alleen in deze talen',
+						'name'         => 'talen',
+						'type'         => 'checkbox',
+						'choices'      => sokkies_taal_keuzes(),
+						'layout'       => 'vertical',
+						'instructions' => 'Niets aanvinken = de link staat in ALLE talen (zo staan alle bestaande links ingesteld). Vink je talen aan, dan verschijnt de link alleen in die talen — bijvoorbeeld het Impressum, dat een Duitse wettelijke plicht is en alleen in de Duitse footer hoort. De pagina zelf blijft in elke taal bereikbaar via de URL; dit verbergt alleen de link.',
+					),
 				),
 			),
 

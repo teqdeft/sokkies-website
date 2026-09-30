@@ -130,7 +130,18 @@ add_action( 'init', function () {
 	) );
 
 	// Cases: titel = casetitel; foto's/punten via ACF. Elke case krijgt
-	// AUTOMATISCH een detailpagina op /cases/{slug}/ (single-sokkies_case.php).
+	// AUTOMATISCH een detailpagina op /reviews-en-cases/{slug}/
+	// (single-sokkies_case.php).
+	//
+	// DE SLUG IS GELIJK AAN DIE VAN DE OVERZICHTSPAGINA (2026-09-30, verzoek
+	// Kulwant; was 'cases'). Dat mag: bij een exacte match wint de PAGINA, dus
+	// /reviews-en-cases/ blijft het overzicht en /reviews-en-cases/{case}/ is
+	// de detailpagina — dezelfde constructie als de soktypes op /collectie/.
+	// WAT NIET MEER KAN: een KINDpagina onder /reviews-en-cases/ hangen. De
+	// CPT-regel matcht dan eerst, vindt geen case met die naam en geeft een
+	// 404 — precies wat er op dev gebeurde toen Kaartjes en Geschenkdoosjes
+	// onder Collectie hingen. Bij het aanmaken van zo'n pagina dus een andere
+	// ouder kiezen. Gecontroleerd vóór de wijziging: 0 kindpagina's.
 	register_post_type( 'sokkies_case', array(
 		'labels' => array(
 			'name'               => 'Cases',
@@ -149,7 +160,7 @@ add_action( 'init', function () {
 		'public'              => true,
 		'publicly_queryable'  => true,
 		'has_archive'         => false,
-		'rewrite'             => array( 'slug' => 'cases', 'with_front' => false ),
+		'rewrite'             => array( 'slug' => 'reviews-en-cases', 'with_front' => false ),
 		'show_ui'             => true,
 		'show_in_menu'        => true,
 		'menu_position'       => 29,
@@ -218,10 +229,11 @@ add_action( 'init', function () {
 	// cases — dit thema gebruikt de standaardeditor nergens).
 	//
 	// LET OP de rewrite-slug: die is BEWUST enkelvoud 'blog', terwijl de
-	// overzichtspagina de slug 'blogs' krijgt. Precies zoals bij de cases
-	// ('cases' voor het posttype, 'reviews-en-cases' voor de pagina): een
-	// posttype-slug die gelijk is aan een paginaslug vecht om dezelfde URL
-	// en dan wint er willekeurig één.
+	// overzichtspagina de slug 'blogs' krijgt. De cases delen sinds
+	// 2026-09-30 juist WEL hun slug met de overzichtspagina; dat kan, maar
+	// het kost de mogelijkheid om kindpagina's onder die URL te hangen (zie
+	// de uitleg bij sokkies_case). Wie dat hier ook wil, moet die afweging
+	// bewust maken — nu blijft /blogs/ vrij voor eventuele subpagina's.
 	register_post_type( 'sokkies_blog', array(
 		'labels' => array(
 			'name'               => 'Blogs',
