@@ -3660,15 +3660,91 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   onze build, of bestaat het al op de huidige site?) en welke bestanden horen
   er standaard in de mail.
 
+  ADRESBLOK TERUG OP HET SAMPLEFORMULIER, NU ALTIJD ZICHTBAAR (2026-09-30,
+  ticket via Rick: "een sample wordt verstuurd, dus het sampleformulier heeft
+  het adres nodig" -- het blok dat in R2-1 van het OFFERTEformulier is gehaald
+  hoort hier juist wel).
+  DE VELDEN STONDEN ER AL, alleen onbereikbaar. Postcode, huisnummer,
+  toevoeging, land, het vak "Gevonden adres" met "Klopt niet? Handmatig
+  invullen" en de verborgen straat/plaats/provincie zitten allemaal in
+  formulier "Sample — website". Ze hingen aan dezelfde voorwaardelijke logica
+  als het proefontwerpblok: het verborgen radioveld stuurde TWAALF velden
+  tegelijk aan, dus zonder klik op "Ik wil toch een ontwerp" was er geen adres.
+  Vandaar dat het ticket zegt "no address fields" terwijl ze in de bouwer
+  gewoon bestaan.
+  FIX: sokkies_sample_adres_altijd() maakt de voorwaardelijke logica van de
+  ADRESvelden leeg, zodat GF ze als gewone velden behandelt. Het
+  PROEFONTWERPblok (kop, Aantal paar, Opmerkingen, Upload) houdt zijn regels en
+  blijft achter de knop zitten. Drie haken, om dezelfde reden als bij het
+  offerteformulier: zonder gform_pre_validation beschouwt de SERVER de velden
+  nog steeds als verborgen en slaat hij de controle over, waardoor een lege
+  postcode er ongemerkt doorheen glipt; gform_pre_submission_filter zorgt dat
+  de ingevulde waarden ook echt in de inzending belanden.
+  IN CODE EN NIET IN DE FORMULIERBOUWER: die regels staan in de DATABASE en
+  die deployt niet mee -- weghalen daar had op dev en live opnieuw gemoeten.
+  DE VELDSET WORDT HERGEBRUIKT: sokkies_offerte_adresveld() herkende de hele
+  set al (voor het WEGHALEN op de offerte). Dezelfde functie bepaalt hier wat
+  ZICHTBAAR moet blijven, dus de twee formulieren kunnen niet uit elkaar gaan
+  lopen. De offerte is nagemeten na de wijziging: daar staat nog steeds 0x
+  postcode/huisnummer/land/paneel/straat/rij-break.
+  DE KOP GAAT OP POSITIE, NIET OP TEKST: "Waar sturen we het heen?" is een
+  html-veld met class of-kop -- net als "Jouw gegevens" en "Liever toch een
+  proefontwerp?". Drie keer dezelfde class, dus die kop is alleen te vinden als
+  "het of-kop-veld dat direct vóór het eerste adresveld staat". Op de zichtbare
+  tekst matchen kan niet: dat is redactionele inhoud.
+  VERPLICHT STOND AL GOED in Gravity Forms en is niet aangeraakt: postcode,
+  huisnummer en land verplicht, toevoeging optioneel -- exact wat het ticket
+  vraagt. Nagemeten met een lege inzending: 7 meldingen (soktypes, bedrijf,
+  contact, e-mail, postcode, huisnummer, land), geen melding op toevoeging en
+  geen op "Aantal paar" -- het proefblok blijft dus netjes buiten de controle.
+  POSITIE 1:1 UIT HET TICKET, en dat WIJKT BEWUST AF VAN HTMLV: daar staat het
+  adres BOVEN de contactgegevens (sample-request.html r362). Het ticket zet het
+  eronder. Gemeten op 1440: Jouw gegevens 1016, bedrijf/contact 1066,
+  e-mail/telefoon 1167, "Waar sturen we het heen?" 1268, dan postcode 155px /
+  huisnummer 155 / toevoeging 155 / land 311 op EEN rij (y 1318), het adresvak
+  vol breed op 1419, en daaronder de regel "Je sample is gratis..." met de twee
+  knoppen. Klikt de bezoeker alsnog op de knop, dan schuift het proefblok
+  ertussen (telefoon 1167 -> aantal 1363 -> postcode 1720 -> voet 1940).
+  HET ADRESVAK TOONT TOT DE EERSTE OPZOEKING "Voorbeeldstraat 12, 1234 AB
+  Plaatsnaam". Dat is geen restje: het staat zo in htmlv (r383) en is eerder op
+  uitdrukkelijk verzoek ook op het offerteformulier zo gezet.
+  GETEST met uitgaande mail geblokkeerd (tijdelijke mu-plugin):
+    - NL-opzoeking: 2012ES/30 vult Julianastraat, Haarlem, Noord-Holland en
+      zet het land op Nederland; straat/plaats blijven achter "Handmatig
+      invullen".
+    - BUITENLAND HANDMATIG, ZONDER FOUTEN (de regel uit punt 30 van ronde 1):
+      land Duitsland + 65183/2 opent de velden zelf, Hauptstr./Wiesbaden met de
+      hand erin, verzenden lukt -> door naar /bedankt-sample/ en in de
+      inzending staan postcode 65183, huisnummer 2, Hauptstr., Wiesbaden en
+      Germany. De keuze staat daarbij op "Nee, alleen een sample", dus het
+      adres wordt nu ook vastgelegd bij een gewone sample-aanvraag -- precies
+      waar het ticket om vraagt.
+    - 390: alles gestapeld op 350px tussen telefoon en de voetregel, 0
+      horizontale scroll. Routes nl/en 200, fr en de via hun eigen 301, offerte
+      en contact 200, lege debug.log.
+  Testinzending en mu-plugin daarna verwijderd (0 inzendingen over).
+  MEETVALKUIL, nieuw: element.blur() vuurt in het browserpaneel GEEN
+  blur-event, want het document heeft geen focus. De adresopzoeking hangt aan
+  blur, dus die leek kapot terwijl er niets mis was. Dispatch het event zelf
+  (new FocusEvent('blur')) -- de luisteraar staat op capture, dus dat werkt.
+  TWEEDE VALKUIL: het formulier zet zijn velden in sessionStorage terug bij het
+  laden. Vul je met een script in vlak na het laden, dan overschrijft dat
+  terugzetten je invoer een tel later. Wis sokkies-formulier-* en wacht even
+  voordat je begint.
+
 
   SAMPLEFORMULIER: KEUZEKNOP WEG, FORMULIER ALTIJD VOLLEDIG -- TERUGGEDRAAID
   OP 2026-09-30 (verzoek Kulwant met een schermafbeelding waarop "Ik wil toch
   een ontwerp" rood omkaderd staat: "revert this point"). Commit 7a0a5f2 is
   met git revert ongedaan gemaakt, dus de knop is terug en het proefblok
-  (aantal, opmerkingen, upload en het adresblok) staat weer dicht tot de
-  bezoeker erop klikt. De route "alleen een sample, zonder adres" bestaat dus
-  weer, en daarmee ook de oude beperking dat aantal/opmerkingen/adres een
-  verversing niet overleven (GF schakelt de velden van een verborgen blok uit).
+  (aantal, opmerkingen en upload) staat weer dicht tot de bezoeker erop klikt.
+  LET OP, DIRECT DAARNA AANGEPAST: het ADRESblok hing aan diezelfde knop en
+  staat sinds de notitie hierboven altijd in beeld -- een sample moet immers
+  ergens heen. De route "alleen een sample, zonder adres" bestaat dus NIET
+  weer; alleen het proefontwerpblok zit nog achter de knop, en de oude
+  beperking dat aantal en opmerkingen een verversing niet overleven geldt
+  alleen voor die drie velden (GF schakelt de velden van een verborgen blok
+  uit).
   De beschrijving hieronder blijft staan omdat de VALKUIL nog geldt: wie de
   knop ooit opnieuw weghaalt, moet het verborgen radioveld zelf vullen --
   anders blijft de halve pagina verborgen.

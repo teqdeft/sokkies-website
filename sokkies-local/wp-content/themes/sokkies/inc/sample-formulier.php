@@ -84,3 +84,86 @@ add_filter( 'gform_submit_button', function ( $button, $form ) {
 	return '<div class="sample-actions">' . $zin
 		. '<div class="sample-actions-right">' . $alt . $button . '</div></div>';
 }, 10, 2 );
+
+/**
+ * Het adresblok staat op het sampleformulier ALTIJD in beeld.
+ *
+ * Een sample wordt verstuurd, dus we hebben het adres nodig — ook als de
+ * bezoeker geen proefontwerp wil. In Gravity Forms hangt het adresblok
+ * echter aan dezelfde voorwaardelijke logica als het proefontwerpblok: het
+ * verborgen radioveld "Wil je er een proefontwerp bij?" stuurt alle twaalf
+ * velden tegelijk aan. Zolang de bezoeker niet op "Ik wil toch een ontwerp"
+ * klikt, blijft het adres dus weg.
+ *
+ * IN CODE EN NIET IN DE FORMULIERBOUWER: die voorwaardelijke regels staan in
+ * de DATABASE en die deployt niet mee. Ze daar weghalen had op dev en live
+ * opnieuw gemoeten — en het is precies dezelfde afweging als bij het
+ * adresblok van het offerteformulier hierboven.
+ *
+ * WAT ER GEBEURT: bij de ADRESvelden wordt de voorwaardelijke logica
+ * leeggemaakt, zodat Gravity Forms ze als gewone velden behandelt. Het
+ * PROEFONTWERPblok (kop, Aantal paar, Opmerkingen, Upload) houdt zijn regels
+ * en blijft dus gewoon achter de knop zitten.
+ *
+ * DRIE HAKEN, om dezelfde reden als bij het offerteformulier: zonder
+ * gform_pre_validation beschouwt de server de velden nog steeds als verborgen
+ * en slaat hij de controle over, waardoor een lege postcode er ongemerkt
+ * doorheen glipt; gform_pre_submission_filter zorgt dat de ingevulde waarden
+ * ook echt in de inzending belanden.
+ *
+ * VERPLICHT BLIJFT VERPLICHT: postcode, huisnummer en land staan in Gravity
+ * Forms al op verplicht en toevoeging niet — dat hoeft hier dus niet gezet te
+ * worden. Straat, plaats en provincie blijven optioneel en blijven achter
+ * "Klopt niet? Handmatig invullen" zitten, zodat een land waar de opzoeking
+ * niets vindt gewoon met de hand in te vullen is.
+ *
+ * NIET in de beheeromgeving (is_admin): daar moet het formulier zijn eigen
+ * instellingen blijven tonen.
+ */
+function sokkies_sample_adres_altijd( $form ) {
+	if ( is_admin() || ! is_array( $form ) || empty( $form['fields'] ) ) {
+		return $form;
+	}
+	if ( ! sokkies_is_sample( $form ) ) {
+		return $form;
+	}
+
+	/* Het eerste adresveld in de DOM; sokkies_offerte_adresveld() herkent de
+	   hele set (postcode/huisnummer/toevoeging/land, het vak "Gevonden
+	   adres", straat/plaats/provincie en de lege rijovergangen). */
+	$eerste = null;
+	foreach ( $form['fields'] as $i => $veld ) {
+		if ( sokkies_offerte_adresveld( $veld ) ) {
+			$eerste = $i;
+			break;
+		}
+	}
+	if ( null === $eerste ) {
+		return $form;
+	}
+
+	/* De kop boven het blok ("Waar sturen we het heen?") hoort er ook bij,
+	   maar heeft geen eigen class: alle drie de koppen van dit formulier
+	   dragen of-kop. Daarom op POSITIE bepaald — de kop die direct vóór het
+	   eerste adresveld staat. Dat is steviger dan de zichtbare tekst, want
+	   die is redactioneel. */
+	$kop = null;
+	if ( $eerste > 0 ) {
+		$vorige = $form['fields'][ $eerste - 1 ];
+		$css    = ' ' . trim( preg_replace( '/\s+/', ' ', (string) $vorige->cssClass ) ) . ' ';
+		if ( 'html' === $vorige->type && false !== strpos( $css, ' of-kop ' ) ) {
+			$kop = $eerste - 1;
+		}
+	}
+
+	foreach ( $form['fields'] as $i => $veld ) {
+		if ( $i === $kop || sokkies_offerte_adresveld( $veld ) ) {
+			$veld->conditionalLogic = '';
+		}
+	}
+
+	return $form;
+}
+add_filter( 'gform_pre_render', 'sokkies_sample_adres_altijd' );
+add_filter( 'gform_pre_validation', 'sokkies_sample_adres_altijd' );
+add_filter( 'gform_pre_submission_filter', 'sokkies_sample_adres_altijd' );
