@@ -4513,6 +4513,50 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   een anker dat \n bevat mislukt stil; dit is met PHP en expliciete \r\n gedaan
   en daarna nageteld (885/885 CRLF behouden).
 
+  FOOTERINHOUD VIEL ACHTER DE MOBIELE KNOPPENBALK (2026-10-01, melding Kulwant
+  met een schermafbeelding van /nl/toepassingen/ op 414px: de regel
+  "© 2026 Sokkies · Algemene voorwaarden" ligt onder de balk).
+  NIET DE WAARDE MAAR DE SELECTOR. responsive.css heeft al sinds de
+  mobiele rondes clearance-regels, en het zijn BROER-selectors:
+    .pdp-sticky ~ footer    padding-bottom 115px
+    .conf-sticky ~ footer   65px
+    .funnel-sticky ~ footer 60px
+    .uc-sticky ~ footer     130px
+  Maar in het THEMA werd elke balk BINNEN <main> gerenderd (page.php r21/23/25,
+  single-sokkies_soktype.php r768, single-sokkies_case.php r235), terwijl
+  <footer> een kind van <body> is. Een broer-selector matcht dan nooit.
+  Gemeten op /toepassingen/ vóór de fix: footer padding-bottom 0px, selector
+  matcht niet, en de legal-regel liep 56px ACHTER de balk langs.
+  DIT GOLD SITE-BREED, niet alleen op de gemelde pagina: alle vier de regels
+  stonden dood. Elke pagina met een mobiele balk (toepassingen, collectie,
+  werkwijze, vgv, reviews, configurator, alle soktypes, alle cases, offerte,
+  sample, de bedankpagina's en contact) had dus onderaan verborgen footer.
+  FIX IN DE TEMPLATES, NIET IN DE CSS: de balk staat nu NA </main> en is dus
+  een broer van <footer>. Daarmee gaan de bestaande regels werken zoals ze
+  altijd bedoeld waren, in elke browser. Het alternatief was
+  main:has(.uc-sticky) ~ footer, maar dat hangt aan :has() terwijl de markup
+  gewoon op de verkeerde plek stond - htmlv had de balk ook vóór de footer.
+  Gecontroleerd dat geen enkele CSS-regel de balk BINNEN main verwacht
+  (0 treffers op main/page-scope gecombineerd met een sticky-class), en de
+  balken zijn position:fixed dus verplaatsen verandert de weergave niet.
+  GEMETEN NA DE FIX op 414px (ruimte tussen de onderste footerregel en de
+  bovenkant van de balk): toepassingen 130px padding -> 74px lucht,
+  soktype 115px -> 74px, case 65px -> 83px, offerte 60px -> 11px. Overal
+  0 horizontale scroll. Desktop onaangeroerd: balk display:none en
+  footer-padding 0 (de clearance-regels staan in de <=520-band).
+  LET OP: die 11px op het offerte-/sampleformulier is krap. De waarde 60px is
+  nooit eerder in de praktijk getoetst - de regel matchte immers nooit - dus
+  als de contactbalk ooit hoger wordt, is dat de eerste die weer botst.
+  Bewust niet opgehoogd: het is een ontwerpwaarde en er is geen overlap.
+  VALKUIL DIE HIER TOESLOEG - REGELEINDEN ZIJN PER BESTAND VERSCHILLEND.
+  page.php en assets/js/offerte.js zijn CRLF, maar
+  single-sokkies_soktype.php en single-sokkies_case.php zijn LF. Een patch met
+  een \r\n-anker faalde daardoor op die twee. Tel de bytes met PHP
+  (substr_count op "\r" en "\n"); `grep -c $'\r$'` in Git Bash geeft hier een
+  ONJUIST antwoord (meldde 778/778 CRLF op een bestand met 0 CR-bytes), en
+  `cat -A` is wel betrouwbaar. Het patchscript leest het regeleinde nu uit het
+  bestand zelf.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

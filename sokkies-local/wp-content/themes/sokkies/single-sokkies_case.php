@@ -232,8 +232,10 @@ if ( $story ) {
       </div>
     </section>
 
-<div class="conf-sticky"><a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a></div>
-
 </main>
 
+<?php /* Balk staat BUITEN <main> zodat hij een broer van <footer> is: de
+   clearance-regel .conf-sticky ~ footer (responsive.css) matcht anders niet,
+   waardoor de onderste footerregel achter de balk valt. 2026-10-01. */ ?>
+<div class="conf-sticky"><a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a></div>
 <?php get_footer(); ?>

@@ -765,6 +765,11 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
     <?php endif; ?>
     </div>
 
+</main>
+
+<?php /* Balk staat BUITEN <main> zodat hij een broer van <footer> is: de
+   clearance-regel .pdp-sticky ~ footer (responsive.css) matcht anders niet,
+   waardoor de onderste footerregel achter de balk valt. 2026-10-01. */ ?>
     <div class="pdp-sticky">
       <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
       <div class="pdp-sticky-row">
@@ -772,7 +777,4 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
         <a href="<?php echo esc_url( home_url( '/sample-request/' ) ); ?>" class="cta-light">Sample aanvraag</a>
       </div>
     </div>
-
-</main>
-
 <?php get_footer(); ?>
