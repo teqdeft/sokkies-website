@@ -4198,6 +4198,211 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   (8 optiekeuzes, 10 soktypes, beide voorwaarden 4 varianten) en de kaarten
   op /offerte/ reageren nog precies zo op Yoga & pilates.
 
+  MINIMALE AFNAME 30 -> 50, UIT ÉÉN INSTELLING (2026-10-01, ticket via Lennart:
+  Rick ziet "vanaf 30 paar" op elke collectiekaart en vraagt waar hij dat kan
+  wijzigen).
+  HET VELD BESTOND AL: Website-instellingen > Cijfers & reviews > "Minimale
+  afname (paar)". Het stond lokaal zelfs al op 50. Het probleem zat ergens
+  anders: lang niet alles LAS dat veld, en wat het wel las had als TERUGVAL in
+  de code de 30 staan. En die terugval is niet theoretisch — de optiewaarde
+  staat in de database en die deployt niet mee, dus op elke omgeving waar
+  niemand de opties-pagina ooit heeft opgeslagen draaide de site nog op 30.
+  NIEUW: sokkies_minimale_afname() in functions.php is nu de enige bron
+  (terugval 50). Alle acht aanroepen van sokkies_optie('minimale_afname','30')
+  lopen erlangs, plus de plekken waar het getal HARDGECODEERD stond: de
+  versus-tabel op de productpagina, de standaardrij van ws_compare, het
+  standaardpunt van ws_gets en de processtap "bestel direct vanaf 30 paar".
+  HET GETAL STAAT OOK MIDDEN IN REDACTIONELE TEKST en dat is de kern van
+  waarom het uiteen liep: een pluspunt onder de hero, een rij in de
+  vergelijkingstabel, FAQ-antwoorden. Die staan in de database en kunnen geen
+  PHP bevatten. Daarom een teken: {minimum} in een tekstveld wordt het getal.
+  Toegepast op de drie gedeelde chokepoints (sokkies_tekst_regels,
+  sokkies_rijke_tekst en sokkies_kop) plus de pluspunten- en tabellijsten
+  (hero, coll_hero, ws_compare, compare, ws_gets). Tekst zonder het teken
+  verandert niet, dus bestaande inhoud is veilig; het staat in de
+  veldinstructie zodat de redacteur het weet.
+  DE FORMULIEREN IN CODE, NIET IN DE FORMULIERBOUWER: het minimum van een
+  getalveld is een instelling van Gravity Forms en dus database.
+  sokkies_min_afname_in_formulier() zet rangeMin, een te lage standaardwaarde
+  en de hint "Minimaal X paar." op het of-aantal-veld van beide formulieren.
+  DRIE HAKEN, net als bij het adresblok: zonder gform_pre_validation
+  controleert de SERVER nog op het oude minimum en glipt een aanvraag van 30
+  paar er gewoon doorheen. Geverifieerd met de echte validatie van GF:
+  30 en 49 geweigerd, 50 en 500 toegestaan, op formulier 28 én 29.
+  De foutmelding hoefde niet mee — die komt van GF met het minimum erin
+  ("Vul een aantal in van minimaal %s.", vertaalkaart in functions.php).
+  CALCULATOR: de slider begon op de eerste staffelregel en staat nu op
+  max(instelling, eerste staffelregel). De staffel is bewust een ONDERGRENS:
+  zou de slider daaronder kunnen, dan is er voor dat aantal geen prijs en
+  rekent de calculator met een staffel die niet geldt. Geldt voor de
+  sectie-calculator én de eigen calculator op de productpagina.
+  TIEN CMS-VELDEN OMGEZET naar {minimum} (home-pluspunt, 2x Waarom Sokkies,
+  Toepassingen, Configurator, 4x Landing, 1 FAQ-antwoord). BEWUST NIET
+  AANGERAAKT: de twee teksten over een minimum PER MAATGROEP (FAQ "Kan ik
+  meerdere maten combineren" en de blogintro "Welke sokkenmaten zijn er") —
+  dat is een andere afspraak dan het bestelminimum en 50 is daar een
+  aanname. Navragen bij Rick. LET OP: die tien zijn DATABASE en deployen
+  dus niet mee.
+  VERTALINGEN: de Nederlandse bron wijzigen maakt er een nieuwe string van,
+  dus TranslatePress had ze machinaal vertaald. Twee waren fout en zijn
+  gecorrigeerd: het Frans van "Vanaf 50 paar, lage minimale afname" stond op
+  "À partir de 50 paquets, prix minimum très bas" (paquets = pakjes, en het
+  beloofde een lage minimumPRIJS) en het Duits van "Minimale afname van 50
+  paar" was leeg, waardoor er Nederlands op de Duitse pagina stond. In alle
+  vier de talen nagemeten op /waarom-sokkies/. De oude 30-rijen blijven als
+  wezen in de woordenboeken staan; ze worden nergens meer getoond.
+  VALKUIL, NIEUW EN GOED OM TE ONTHOUDEN: een CLI-script dat wp-load.php
+  inlaadt terwijl TranslatePress actief is, laat zijn eigen ECHO-uitvoer als
+  vertaalbare string in de woordenboeken belanden. Mijn validatietest stond
+  zo als "haken:\n gform_pre_render : ja..." in trp_dictionary_en_gb én
+  trp_original_strings. Opgeruimd. Schrijf diagnostiek in zo'n script dus
+  naar een bestand, of ruim achteraf op.
+  GEMETEN, door de instelling tijdelijk op 75 te zetten en alles opnieuw te
+  lezen: topbalk, collectiekaarten, de calculator (slider, schaal én
+  getalveld) op home/collectie/productpagina, het minimum van beide
+  formulieren, de sample-hint, het PDP-pluspunt, de ws-compare-rij en het
+  ws-gets-punt volgden allemaal mee; daarna terug op 50 en opnieuw
+  nagemeten. Op 390 gemeten in de browser: scrollWidth 375 = clientWidth,
+  dus geen horizontale scroll (de headless screenshot op 390 lijkt rechts
+  afgekapt — dat is het bekende artefact). 11 routes 200 en een lege
+  debug.log; /nl/configurator/ geeft 404 omdat die pagina op CONCEPT staat,
+  wat al langer zo is en hier los van staat.
+
+  FAQ PER SOKTYPE: RICK KIEST ZELF WELKE VRAGEN OP EEN PRODUCTPAGINA STAAN
+  (2026-10-01, klantvraag via Lennart: "ik heb FAQ's per soktype geschreven,
+  kan ik kiezen welke op elke soktype-pagina komen?").
+  HET ANTWOORD WAS JA, EN HET MEESTE STOND ER AL: Rick had in de FAQ-CPT
+  namelijk al eigen categorieen aangemaakt — Skisokken, Kerstsokken,
+  Yoga/Pilates sokken, Sportsokken, Bamboe sokken, Werksokken, Baby sokken,
+  Wielersokken, Antislip sokken, Reguliere sokken en Zorgsokken, met precies
+  6 vragen per stuk. Dat sluit 1-op-1 aan op de 11 gepubliceerde soktypes.
+  PAD VOOR RICK: Soktypes > [type] > tabblad Productpagina > "Veelgestelde
+  vragen". Kiezen, slepen voor de volgorde, bovenste staat open. Het
+  categoriefilter links in de kiezer toont snel de vragen van dat type.
+  GEKOZEN VOOR DE KANT VAN HET SOKTYPE en niet voor een soktype-veld op de
+  FAQ: de sectie-layout 'faq' doet het al zo ("Zelf kiezen" met een
+  relationship), dus dit is hetzelfde begrip op een tweede plek in plaats van
+  een nieuw mechanisme. Bijkomend voordeel: de VOLGORDE is zo van Rick, en
+  die krijg je er bij een veld op de FAQ-kant niet gratis bij.
+  WAT HET BLOK EERDER DEED: "de 8 nieuwste vragen" uit de hele FAQ. Dat was
+  op elk van de 11 typen dus dezelfde lijst, en sinds Rick zijn type-vragen
+  heeft toegevoegd waren dat toevallig de zorgsokken-vragen — ook op de
+  pagina van bijvoorbeeld bamboesokken.
+  LEEG = GEEN BLOK, met opzet (staat zo in het ticket). Zonder die regel komt
+  er een willekeurige greep uit de FAQ onder een productpagina te staan, en
+  dat is precies wat we weghalen.
+  VANGNET IN DE TEMPLATE: een gekoppelde vraag die later in de prullenbak
+  belandt of op concept wordt gezet, blijft als ID in het veld staan. Die
+  wordt eruit gefilterd, anders verschijnt er een lege regel in de accordeon.
+  Getest met een concept-vraag ertussen: 3 gekoppeld, 2 getoond.
+  GESEED: alle 11 typen zijn gevuld met de 6 vragen uit hun eigen categorie,
+  op vololgorde van aanmaken (die loopt netjes van "Wat zijn X?" naar de
+  praktische vragen). Dat is Rick zijn eigen indeling, dus het is een
+  startpunt dat hij kan omgooien — maar zonder die stap zou de deploy op alle
+  11 productpagina's het vragenblok laten verdwijnen, want code deployt en
+  inhoud niet. LET OP: die koppelingen zijn DATABASE en moeten dus op dev/live
+  nog gelegd worden, of meekomen met de volgende WP Migrate DB-sync.
+  GEMETEN: skisokken/zorgsokken/kerstsokken/reguliere-sokken tonen elk hun
+  eigen 6 vragen in de ingestelde volgorde met de bovenste open; omgekeerde
+  volgorde volgt mee; leegmaken laat de hele sectie verdwijnen; daarna
+  teruggezet en opnieuw nagemeten. Op 390 gemeten in de browser: scrollWidth
+  375 = clientWidth, 6 vragen, eerste open. 7 routes 200 (en /en/ via zijn
+  eigen 301 naar de vertaalde slug), lege debug.log.
+  TERZIJDE, NIET DOOR DEZE WIJZIGING ONTSTAAN: van Rick zijn 66 type-vragen
+  is er 65 in het Engels vertaald, 8 in het Duits en 0 in het Frans. Op /de/
+  en /fr/ staan die vragen dus in het Nederlands op de productpagina. Dat was
+  met de oude "8 nieuwste" net zo. Eén foute vertaling meteen gecorrigeerd:
+  het Duitse woordenboek had "skisokken" op "Skischuhe" staan (= skischoenen);
+  nu "Skisocken".
+  MEETVALKUIL die ik bijna als bug had gerapporteerd: de Duitse kop las via
+  textContent als "Fragen zuskisokken bedrukken." — alsof er een spatie
+  ontbrak. In de RUWE HTML staat in alle drie de talen gewoon
+  "Fragen zu<br>skisokken bedrukken."; textContent gooit de <br> weg. Lees bij
+  twijfel over spaties de HTML, niet de textContent.
+
+  DE ALGEMENE FAQ-PAGINA TOONT GEEN SOKTYPE-VRAGEN MEER (2026-10-01,
+  klantvraag via Lennart, R3-10: "de FAQ-pagina laat nu ook alle
+  soktype-vragen zien; die hoort algemeen te blijven").
+  OPGELOST MET HETZELFDE VELD ALS R3-9, zoals het ticket vroeg: er is GEEN
+  tweede vinkje "algemeen ja/nee" bijgekomen. Koppelt Rick een vraag aan een
+  soktype (Soktypes > [type] > Productpagina > Veelgestelde vragen), dan staat
+  hij op die productpagina en verdwijnt hij van /veelgestelde-vragen/. Eén
+  plek om te beslissen waar een vraag staat, en twee velden kunnen dus ook
+  niet uit de pas gaan lopen.
+  NIEUW: sokkies_faq_soktype_ids() in functions.php geeft de vraag-ID's die
+  aan een soktype hangen. Eén query over alle soktypes samen (get_field() zou
+  er elf doen) en per request onthouden, want de FAQ-pagina vraagt het per
+  categorie opnieuw. ALLEEN GEPUBLICEERDE SOKTYPES TELLEN MEE: zet iemand een
+  type op concept, dan is die productpagina weg en zouden die vragen nergens
+  meer staan; nu vallen ze terug op de algemene pagina.
+  GEVOLG DAT MOOI UITKOMT: een categorie die daardoor leeg raakt verdwijnt
+  vanzelf, inclusief zijn chip en zijn blok in de dropdown — de bestaande
+  guard sloeg lege groepen al over. De elf soktype-categorieen zijn dus in
+  één keer van de pagina af zonder dat er een lijst met uitzonderingen in de
+  code staat.
+  OOK DE TERUGVAL "8 NIEUWSTE" in de twee algemene FAQ-blokken (section-faq
+  en section-faq_geel) sluit de gekoppelde vragen nu uit. Die terugval pakte
+  letterlijk de nieuwste vragen, en dat zijn sinds Rick zijn werk precies de
+  soktype-vragen. Vandaag gebruikt geen enkele pagina die terugval (alle acht
+  algemene FAQ-blokken hebben een eigen selectie of categorie — nagemeten),
+  dus dit is vooruitwerken, geen zichtbare wijziging. Een eigen selectie of
+  een gekozen categorie blijft ongemoeid: kiest Rick bewust een soktype-vraag
+  voor een algemeen blok, dan is dat zijn beslissing.
+  GEMETEN: de FAQ-pagina ging van 100 naar 34 vragen en van 20 naar 9
+  groepen, met 0 soktype-specifieke vragen; 100 gecategoriseerde vragen min
+  66 gekoppelde = 34, dus dat telt sluitend op. De vier gecontroleerde
+  productpagina's tonen onveranderd hun eigen 6. Op 390 gemeten: scrollWidth
+  375 = clientWidth, 9 groepen, dropdown met 9 opties. 8 routes 200, lege
+  debug.log.
+  DATAFOUT ONDERWEG GEVONDEN EN HERSTELD, en hier staat hij omdat de oorzaak
+  NIET is achterhaald: soktype #78 (Reguliere sokken) bleek niet de 6 vragen
+  uit zijn categorie te bevatten maar exact de EERSTE ZEVEN FAQ-ITEMS OP
+  TITEL-ALFABET (1545, 1560, 1534, 519, 1561, 1549, 1555) — dat is de
+  standaardlijst die de ACF-relationship-kiezer links toont, niet iets wat de
+  seed geschreven kan hebben (die sorteert op ID en de categoriematcher kiest
+  aantoonbaar de goede categorie). De andere tien typen waren wel goed.
+  Gevolg was dat zes algemene vragen ten onrechte van de FAQ-pagina
+  verdwenen (29 in plaats van 34). Hersteld en alle elf typen daarna
+  gecontroleerd tegen hun categorie: 11x OK. Wie dit nog eens ziet: de lokale
+  database wordt door een ander ook bewerkt en via WP Migrate DB gesynct (zie
+  MULTI-MACHINE), dus een scherm dat ergens open stond en is opgeslagen is de
+  meest waarschijnlijke verklaring.
+  MEETLES, kostte bijna een verkeerd rapport: ik telde eerst 34 en later 29
+  vragen op dezelfde pagina en wilde dat als "verschil tussen NL en DE"
+  afdoen. Het was de datafout hierboven, tussen twee metingen in ontstaan.
+  Reken een telling altijd na tegen de database (100 - 66 = 34) in plaats van
+  twee paginametingen met elkaar te vergelijken.
+  TWEEDE MEETLES: "maat" komt NIET voor in "maten" (m-a-a-t vs m-a-t-e-n).
+  Een zoektocht naar overgebleven maatvragen gaf daardoor eerst nul treffers
+  en bijna de conclusie "de FAQ-pagina beantwoordt geen maten meer". Hij doet
+  dat gewoon (#1539 en #1530).
+  TERZIJDE: er staan bijna-dubbele vragen in de FAQ — "Welke maten zijn
+  beschikbaar?" (algemeen, #1539) naast "Welke maten zijn er beschikbaar?"
+  (Reguliere sokken, #1968), en hetzelfde patroon voor prijs, minimale afname
+  en levertijd. Dat is nu juist handig (algemeen op de FAQ-pagina, de
+  type-variant op de productpagina), maar het is wel inhoud om langs Rick te
+  leggen.
+
+  SCHAKELAAR PER FAQ-CATEGORIE (2026-10-01, verzoek Kulwant met een
+  schermafbeelding van het categoriescherm: "add a option to show faq category
+  in general page or not"). Aanvulling op R3-10 hierboven: dat verbergt vragen
+  die aan een soktype hangen, dit verbergt een HELE CATEGORIE.
+  PAD: Veelgestelde vragen > Categorieen > [categorie] > "Tonen op de
+  FAQ-pagina". Uit = de categorie staat niet meer op /veelgestelde-vragen/,
+  inclusief zijn chip en zijn regel in de mobiele dropdown. De vragen zelf
+  blijven bestaan en blijven staan waar ze gekozen zijn.
+  EERSTE ACF-VELD OP EEN TAXONOMIE in dit thema (group_sokkies_faq_cat,
+  location param 'taxonomy'); gecontroleerd dat hij alleen op dit
+  categoriescherm verschijnt en niet op de andere taxonomieen.
+  NIETS OPGESLAGEN = TONEN, en dat is de valkuil die hier telt: een
+  ACF-standaardwaarde wordt pas weggeschreven als iemand het scherm één keer
+  opslaat (staat al langer in dit document). Zou een lege waarde als "nee"
+  gelden, dan was de FAQ-pagina na deze wijziging in één klap leeg op elke
+  omgeving. sokkies_faq_cat_op_faq_pagina() geeft daarom true bij null of ''.
+  GEMETEN: standaard 34 vragen / 9 groepen / 9 chips; Duurzaamheid uitgezet ->
+  30 vragen / 8 groepen / 8 chips en de chip weg; weer aan -> terug naar 34/9/9.
+  6 routes 200, lege debug.log.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

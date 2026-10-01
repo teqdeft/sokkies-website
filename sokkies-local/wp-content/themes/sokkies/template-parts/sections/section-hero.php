@@ -76,7 +76,7 @@ $assets = get_template_directory_uri() . '/assets/media/';
             <?php if ( $usps ) : ?>
             <div class="usps">
               <?php foreach ( $usps as $usp ) : ?>
-              <span><?php echo esc_html( $usp['tekst'] ); ?></span>
+              <span><?php echo esc_html( sokkies_minimum_in_tekst( $usp['tekst'] ) ); ?></span>
               <?php endforeach; ?>
             </div>
             <?php endif; ?>

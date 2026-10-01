@@ -65,7 +65,7 @@
     
                         <div class="mega-usps">
                           <h4></h4>
-                            <!-- <span>Vanaf <//?php echo esc_html( sokkies_optie( 'minimale_afname', '30' ) ); ?> paar</span>
+                            <!-- <span>Vanaf <//?php echo esc_html( sokkies_minimale_afname() ); ?> paar</span>
                             <//?php
                             $mega_usps = function_exists( 'get_field' ) ? get_field( 'mega_usps', 'option' ) : null;
                             if ( ! $mega_usps ) { $mega_usps = array( array( 'tekst' => 'Gratis ontwerp binnen 24u' ), array( 'tekst' => 'Gratis verzending' ) ); }

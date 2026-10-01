@@ -16,7 +16,7 @@
 
 // <br> na [bedrukken]: het ontwerp breekt de kop na dat woord, niet na
 // "vanaf" (sokkies_kop laat <br> door).
-$titel    = get_sub_field( 'titel' ) ?: 'Sokken [bedrukken]<br>vanaf ' . sokkies_optie( 'minimale_afname', '30' ) . ' paar';
+$titel    = get_sub_field( 'titel' ) ?: 'Sokken [bedrukken]<br>vanaf ' . sokkies_minimale_afname() . ' paar';
 $subtekst = get_sub_field( 'subtekst' );
 if ( '' === trim( (string) $subtekst ) ) {
 	$subtekst = 'Jouw logo dwars door de sok geweven, niet bedrukt. Gratis digitaal ontwerp binnen 24 uur, geen verplichtingen.';

@@ -14,13 +14,23 @@ $kruimel       = get_sub_field( 'kruimelpad' ) ?: $titel;
 
 $termen = get_terms( array( 'taxonomy' => 'sokkies_faq_cat', 'hide_empty' => true, 'orderby' => 'id', 'order' => 'ASC' ) );
 if ( is_wp_error( $termen ) || ! $termen ) { return; }
+/* De vragen die aan een soktype zijn gekoppeld horen op die productpagina
+   en niet hier — zie sokkies_faq_soktype_ids(). Raakt een categorie daardoor
+   leeg (de elf soktype-categorieen), dan verdwijnt de hele groep inclusief
+   zijn chip: lege groepen worden hieronder al overgeslagen. */
+$soktype_vragen = sokkies_faq_soktype_ids();
 $groepen = array();
 foreach ( $termen as $term ) {
+	/* Per categorie uit te zetten op het categoriescherm zelf. */
+	if ( ! sokkies_faq_cat_op_faq_pagina( $term ) ) {
+		continue;
+	}
 	$vragen = get_posts( array(
 		'post_type'      => 'sokkies_faq',
 		'posts_per_page' => -1,
 		'fields'         => 'ids',
 		'tax_query'      => array( array( 'taxonomy' => 'sokkies_faq_cat', 'terms' => $term->term_id ) ),
+		'post__not_in'   => $soktype_vragen,
 	) );
 	if ( $vragen ) { $groepen[] = array( 'term' => $term, 'vragen' => $vragen ); }
 }

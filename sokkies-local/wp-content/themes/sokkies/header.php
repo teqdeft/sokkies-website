@@ -9,7 +9,7 @@
 <?php wp_body_open(); ?>
 <div class="topbar">
         <ul>
-        <li><span>Vanaf <?php echo esc_html( sokkies_optie( 'minimale_afname', '30' ) ); ?> paar</span></li>
+        <li><span>Vanaf <?php echo esc_html( sokkies_minimale_afname() ); ?> paar</span></li>
         <li>Eigen productie</li>
         <li>Gratis ontwerp binnen 24u</li>
         <li>Gratis verzending</li>

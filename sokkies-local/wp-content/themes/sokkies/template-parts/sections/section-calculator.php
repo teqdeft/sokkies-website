@@ -19,7 +19,12 @@ if ( ! $matrix ) {
 $sleutels    = array_keys( $matrix );
 $eerste      = $sleutels[0];
 $klassen     = array( 'standaard' => '', 'beige' => ' calculator-bg', 'roze' => ' calculator-pink' );
-$staffel_min = $matrix[ $eerste ]['rows'][0][0];
+/* Waar de slider begint: de minimale afname uit Website-instellingen.
+   De eerste staffelregel is daarbij een ONDERGRENS en geen keuze — zou de
+   slider onder de laagste staffel kunnen, dan is er voor dat aantal geen
+   prijs en rekent de calculator met een staffel die niet geldt. Staan ze
+   allebei op 50 (de huidige situatie), dan verandert er niets. */
+$staffel_min = max( (int) sokkies_minimale_afname(), (int) $matrix[ $eerste ]['rows'][0][0] );
 ?>
 <section class="calculator<?php echo esc_attr( $klassen[ $stijl ] ?? '' ); ?>">
   <?php if ( 'beige' === $stijl ) : ?>

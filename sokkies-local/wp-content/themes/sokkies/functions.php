@@ -286,6 +286,24 @@ function sokkies_optie( $naam, $standaard = '' ) {
 	return ( null === $waarde || '' === $waarde ) ? $standaard : $waarde;
 }
 
+/**
+ * De minimale afname in paren — ÉÉN bron voor het hele project.
+ *
+ * Het getal staat in Website-instellingen > Cijfers & reviews > "Minimale
+ * afname (paar)" en wordt gebruikt op élke plek waar het op de site komt: de
+ * topbalk, de kaarten op de collectiepagina, de pluspunten-blokken, de
+ * prijscalculator (waar de slider begint) en het minimum van het offerte- en
+ * het sampleformulier. Eén keer wijzigen in het CMS is dus genoeg.
+ *
+ * DE TERUGVAL IS 50 EN DAT IS GEEN DETAIL: de optiewaarde staat in de
+ * DATABASE en die deployt niet mee. Op een omgeving waar niemand de
+ * opties-pagina ooit heeft opgeslagen draait de site dus op dit getal. Stond
+ * hier 30, dan bleef daar de oude afname staan terwijl het CMS 50 zei.
+ */
+function sokkies_minimale_afname() {
+	$aantal = (int) sokkies_optie( 'minimale_afname', 50 );
+	return $aantal > 0 ? $aantal : 50;
+}
 function sokkies_tel_href() {
 	return 'tel:' . preg_replace( '/[^0-9+]/', '', (string) sokkies_optie( 'telefoon_internationaal', '+31413410411' ) );
 }
@@ -314,8 +332,28 @@ function sokkies_wa_href() {
  * Typt iemand <br> EN drukt hij op enter, dan staan er twee regeleindes; die
  * worden samengetrokken zodat de tekst niet dubbel gespatieerd raakt.
  */
-function sokkies_tekst_regels( $tekst ) {
+/**
+ * {minimum} in een tekstveld wordt de minimale afname.
+ *
+ * Nodig omdat het getal niet alleen in de chrome staat maar ook MIDDEN IN
+ * redactionele tekst: de pluspunten onder de hero ("Vanaf 50 paar"), een rij
+ * in de vergelijkingstabel, FAQ-antwoorden. Die teksten staan in de database
+ * en kunnen dus geen PHP bevatten; zonder zo'n teken blijft daar een los
+ * getal achter dat bij de volgende wijziging stil verkeerd komt te staan —
+ * precies hoe "vanaf 30 paar" op de site bleef staan nadat het 50 werd.
+ *
+ * Tekst zonder het teken verandert niet, dus bestaande inhoud is veilig.
+ */
+function sokkies_minimum_in_tekst( $tekst ) {
 	$tekst = (string) $tekst;
+	if ( false === strpos( $tekst, '{' ) ) {
+		return $tekst;
+	}
+	return preg_replace( '/\{\s*minimum\s*\}/i', (string) sokkies_minimale_afname(), $tekst );
+}
+
+function sokkies_tekst_regels( $tekst ) {
+	$tekst = sokkies_minimum_in_tekst( $tekst );
 	$tekst = preg_replace( '#<\s*br\s*/?\s*>#i', "\n", $tekst );
 	$tekst = preg_replace( '/[ \t]+$/m', '', $tekst );
 	$tekst = preg_replace( '/\R{2,}/', "\n", $tekst );
@@ -344,7 +382,7 @@ function sokkies_adres( $standaard = '' ) {
  * geneutraliseerd.
  */
 function sokkies_kop( $tekst, $klasse = 'text-yellow' ) {
-	$veilig = esc_html( (string) $tekst );
+	$veilig = esc_html( sokkies_minimum_in_tekst( $tekst ) );
 	$veilig = str_ireplace( array( '&lt;br&gt;', '&lt;br /&gt;', '&lt;br/&gt;' ), '<br>', $veilig );
 	// Markeren kan op twee manieren: [woord] of <span>woord</span>
 	// (de htmlv-notatie); beide krijgen de meegegeven kleur-class.
@@ -1059,7 +1097,7 @@ add_action( 'admin_enqueue_scripts', function ( $hook ) {
  * het accordeon-JS (teamfeedback 2026-08-20).
  */
 function sokkies_rijke_tekst( $html ) {
-	$html = (string) $html;
+	$html = sokkies_minimum_in_tekst( $html );
 	// wp_kses verwijdert <script> en <style> wel, maar LAAT DE INHOUD STAAN:
 	// een geplakt style-blok of een shortcode die inline JS uitspuugt komt dan
 	// als zichtbare bodytekst op de pagina (een [gravityform] dumpt zo zijn hele
@@ -1118,6 +1156,80 @@ function sokkies_blog_tekst( $html ) {
 		"td" => array( "colspan" => true, "rowspan" => true ),
 	);
 	return wp_kses( $html, $toegestaan );
+}
+
+/**
+ * Mag deze FAQ-categorie op de algemene FAQ-pagina staan?
+ *
+ * De schakelaar staat op de categorie zelf: Veelgestelde vragen > Categorieen >
+ * [categorie] > "Tonen op de FAQ-pagina". Daarmee kan Rick een hele categorie
+ * van /veelgestelde-vragen/ halen zonder de vragen zelf aan te raken; ze
+ * blijven gewoon staan waar ze gekozen zijn.
+ *
+ * NIETS OPGESLAGEN = TONEN, en dat is hier geen detail: een ACF-standaardwaarde
+ * wordt pas weggeschreven als iemand het scherm één keer opslaat. Zou een lege
+ * waarde als "nee" gelden, dan was de FAQ-pagina na deze wijziging in één klap
+ * leeg geweest — op elke omgeving, tot iemand alle categorieen had opengeklikt.
+ */
+function sokkies_faq_cat_op_faq_pagina( $term ) {
+	if ( ! function_exists( 'get_field' ) ) {
+		return true;
+	}
+	$waarde = get_field( 'toon_op_faq_pagina', $term );
+	if ( null === $waarde || '' === $waarde ) {
+		return true;
+	}
+	return (bool) $waarde;
+}
+
+/**
+ * De FAQ-vragen die aan een soktype hangen.
+ *
+ * ÉÉN VELD BEPAALT ALLES: koppelt Rick een vraag aan een soktype
+ * (Soktypes > [type] > Productpagina > Veelgestelde vragen), dan staat hij op
+ * die productpagina en verdwijnt hij van de algemene FAQ-pagina. Er is dus
+ * geen tweede vinkje "algemeen ja/nee" dat uit de pas kan lopen met de eerste.
+ *
+ * ALLEEN GEPUBLICEERDE SOKTYPES TELLEN MEE, en dat is met opzet: zet iemand
+ * een soktype op concept, dan is die productpagina weg en zouden die vragen
+ * nergens meer staan. Nu vallen ze terug op de algemene FAQ-pagina.
+ *
+ * Rechtstreeks op postmeta omdat get_field() per soktype een eigen query doet;
+ * dit is één query voor alle typen samen, en de uitkomst wordt per request
+ * onthouden (de FAQ-pagina vraagt het per categorie opnieuw).
+ */
+function sokkies_faq_soktype_ids() {
+	static $ids = null;
+	if ( null !== $ids ) {
+		return $ids;
+	}
+	global $wpdb;
+	$ids   = array();
+	$rijen = $wpdb->get_col( $wpdb->prepare(
+		"SELECT pm.meta_value
+		   FROM {$wpdb->postmeta} pm
+		   INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+		  WHERE pm.meta_key = %s
+		    AND p.post_type = %s
+		    AND p.post_status = %s",
+		'faq_vragen',
+		'sokkies_soktype',
+		'publish'
+	) );
+	foreach ( $rijen as $rij ) {
+		$lijst = maybe_unserialize( $rij );
+		if ( ! is_array( $lijst ) ) {
+			continue;
+		}
+		foreach ( $lijst as $id ) {
+			$id = (int) $id;
+			if ( $id ) {
+				$ids[ $id ] = true;
+			}
+		}
+	}
+	$ids = array_keys( $ids );
+	return $ids;
 }
 
 function sokkies_faq_antwoord( $vraag_id ) {

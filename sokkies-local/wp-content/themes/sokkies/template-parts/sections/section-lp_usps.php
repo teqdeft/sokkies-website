@@ -24,7 +24,7 @@ if ( $rijen ) {
 	} ) );
 }
 
-$minimum = sokkies_optie( 'minimale_afname', '30' );
+$minimum = sokkies_minimale_afname();
 $standaard = array(
 	array( 'titel' => 'Ontwerp binnen 24 uur',   'tekst' => 'Je ziet een digitaal proefontwerp voor je beslist.' ),
 	array( 'titel' => 'Vanaf ' . $minimum . ' paar',  'tekst' => 'Lage minimale afname met een scherpe staffelprijs.' ),

@@ -16,7 +16,7 @@ if ( 'categorie' === $bron && $categorie ) {
 	) );
 }
 if ( ! $vraag_ids ) {
-	$vraag_ids = get_posts( array( 'post_type' => 'sokkies_faq', 'posts_per_page' => 8, 'fields' => 'ids' ) );
+	$vraag_ids = get_posts( array( 'post_type' => 'sokkies_faq', 'posts_per_page' => 8, 'fields' => 'ids', 'post__not_in' => sokkies_faq_soktype_ids() ) );
 }
 ?>
 <section class="pt-faq">

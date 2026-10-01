@@ -9,7 +9,7 @@ if ( ! $type_ids ) {
 	$type_ids = get_posts( array( 'post_type' => 'sokkies_soktype', 'posts_per_page' => -1, 'fields' => 'ids' ) );
 }
 $badges = array( 'bestseller' => array( '', 'Bestseller' ), 'nieuw' => array( ' nieuw', 'Nieuw' ) );
-$min_afname = sokkies_optie( 'minimale_afname', '30' );
+$min_afname = sokkies_minimale_afname();
 ?>
 <section class="types-section">
   <div class="container">

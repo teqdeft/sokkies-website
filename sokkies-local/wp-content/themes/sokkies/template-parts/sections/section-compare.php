@@ -44,7 +44,7 @@ if ( ! $rijen ) { $rijen = $std_rijen; }
               <tbody>
                 <?php foreach ( $rijen as $rij ) : ?>
                 <tr>
-                  <th><?php echo esc_html( $rij['label'] ); ?></th>
+                  <th><?php echo esc_html( sokkies_minimum_in_tekst( $rij['label'] ) ); ?></th>
                   <?php foreach ( $kolommen as $i => $kolom ) :
                     $waarde = $rij['waarden'][ $i ]['tekst'] ?? '';
                   ?>

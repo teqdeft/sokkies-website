@@ -7,7 +7,7 @@
 $titel = get_sub_field( 'titel' ) ?: 'Hoe verhoudt Sokkies zich?';
 $eigen = get_sub_field( 'rijen' );
 $standaard = array(
-	array( 'label' => 'Vanaf 30 paar', 'wij' => '', 'rest' => 'X' ),
+	array( 'label' => 'Vanaf ' . sokkies_minimale_afname() . ' paar', 'wij' => '', 'rest' => 'X' ),
 	array( 'label' => 'Gratis verzending', 'wij' => '', 'rest' => 'X' ),
 	array( 'label' => 'Eigen productie', 'wij' => '', 'rest' => 'X' ),
 	array( 'label' => 'Gratis ontwerp binnen 24 uur', 'wij' => '', 'rest' => 'Soms' ),
@@ -37,7 +37,7 @@ $rijen = $eigen ?: $standaard;
         <tbody>
           <?php foreach ( $rijen as $rij ) : ?>
           <tr>
-            <th scope="row"><?php echo esc_html( $rij['label'] ); ?></th>
+            <th scope="row"><?php echo esc_html( sokkies_minimum_in_tekst( $rij['label'] ) ); ?></th>
             <td class="ws-cmp-sokkies"><?php if ( '' === trim( (string) $rij['wij'] ) ) : ?><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img" aria-label="Ja"><circle cx="15" cy="15" r="15" fill="#1dd665"/><g transform="translate(9 11)"><path d="M110.16,670.539l3.6,3.6,8-8" transform="translate(-110.16 -666.138)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.5"/></g></svg><?php else : echo esc_html( $rij['wij'] ); endif; ?></td>
             <td><?php $rest_w = trim( (string) $rij['rest'] ); if ( '' === $rest_w || 'X' === strtoupper( $rest_w ) ) : // leeg óf X = rode X (teamfeedback: leeg veld hoort het standaard-kruis te tonen) ?><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img" aria-label="Nee"><circle cx="15" cy="15" r="15" fill="#fa4b46"/><g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.5"><line x1="10.5" y1="10.5" x2="19.5" y2="19.5"/><line x1="19.5" y1="10.5" x2="10.5" y2="19.5"/></g></svg><?php else : echo esc_html( $rest_w ); endif; ?></td>
           </tr>

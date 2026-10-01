@@ -90,7 +90,7 @@ $render_kolom = function ( $fotos, $standaard ) use ( $assets ) {
                 <?php if ( $usps ) : ?>
                 <ul>
                   <?php foreach ( $usps as $usp ) : ?>
-                  <li><?php echo esc_html( $usp['tekst'] ); ?></li>
+                  <li><?php echo esc_html( sokkies_minimum_in_tekst( $usp['tekst'] ) ); ?></li>
                   <?php endforeach; ?>
                 </ul>
                 <?php endif; ?>

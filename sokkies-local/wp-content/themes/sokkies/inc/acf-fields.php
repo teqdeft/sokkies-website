@@ -1940,7 +1940,7 @@ add_action( 'acf/init', function () {
 						'acfe_flexible_category'  => array( 'Paginakoppen' ),
 						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/lp_hero.png',
 						'sub_fields' => array(
-							array( 'key' => 'field_lph_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Tekst tussen [haken] wordt geel. Leeg = "Sokken [bedrukken] vanaf 30 paar" (het aantal komt uit Website-instellingen).' ),
+							array( 'key' => 'field_lph_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text', 'instructions' => 'Tekst tussen [haken] wordt geel. Leeg = "Sokken [bedrukken] vanaf 50 paar" (het aantal komt uit Website-instellingen).' ),
 							array( 'key' => 'field_lph_subtekst', 'label' => 'Tekst onder de titel', 'name' => 'subtekst', 'type' => 'textarea', 'rows' => 3, 'new_lines' => '', 'instructions' => 'Leeg = de standaardzin van het ontwerp.' ),
 							array( 'key' => 'field_lph_knop', 'label' => 'Knop', 'name' => 'knop', 'type' => 'link', 'instructions' => 'Leeg = de standaardknop naar de offertepagina.' ),
 							array( 'key' => 'field_lph_rating', 'label' => 'Reviewregel tonen', 'name' => 'rating', 'type' => 'true_false', 'ui' => 1, 'default_value' => 1, 'instructions' => 'De score en het aantal reviews komen uit Website-instellingen.' ),
@@ -2386,8 +2386,8 @@ add_action( 'acf/init', function () {
 				'label'         => 'Minimale afname (paar)',
 				'name'          => 'minimale_afname',
 				'type'          => 'number',
-				'instructions'  => 'Toont als "Vanaf 30 paar" in de topbalk en het menu.',
-				'default_value' => 30,
+				'instructions'  => 'Het aantal dat overal op de site staat: de topbalk, het uitklapmenu, de kaarten op de collectiepagina, de pluspunten-blokken, waar de slider van de prijscalculator begint en het minimum van het offerte- en sampleformulier. Eén keer hier wijzigen is genoeg. Staat het getal midden in een tekst (een pluspunt, een rij in de vergelijkingstabel, een FAQ-antwoord)? Typ daar {minimum} in plaats van het getal, dan volgt die tekst dit veld ook.',
+				'default_value' => 50,
 			),
 			array( 'key' => 'field_si_tab_promo', 'label' => 'Promokaart', 'type' => 'tab' ),
 			array( 'key' => 'field_si_promo_actief', 'label' => 'Promokaart tonen', 'name' => 'promo_actief', 'type' => 'true_false', 'ui' => 1, 'default_value' => 1, 'instructions' => 'De zwevende kaart linksonder. Per pagina uit te zetten bij de pagina-instellingen.' ),
@@ -2897,6 +2897,33 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 		),
 	) );
 
+	// —— FAQ-categorie: wel of niet op de algemene FAQ-pagina ——
+	acf_add_local_field_group( array(
+		'key'    => 'group_sokkies_faq_cat',
+		'title'  => 'Weergave',
+		'fields' => array(
+			array(
+				'key'           => 'field_faqcat_op_faq_pagina',
+				'label'         => 'Tonen op de FAQ-pagina',
+				'name'          => 'toon_op_faq_pagina',
+				'type'          => 'true_false',
+				'ui'            => 1,
+				'default_value' => 1,
+				'instructions'  => 'Staat dit uit, dan komt deze hele categorie niet op /veelgestelde-vragen/ te staan — ook het knopje erboven verdwijnt. De vragen zelf blijven gewoon bestaan en blijven zichtbaar op de pagina\'s waar ze gekozen zijn (bijvoorbeeld een productpagina). Staat dit aan, dan verschijnen alleen de vragen die NIET aan een soktype gekoppeld zijn.',
+			),
+		),
+		'location' => array(
+			array(
+				array(
+					'param'    => 'taxonomy',
+					'operator' => '==',
+					'value'    => 'sokkies_faq_cat',
+				),
+			),
+		),
+	) );
+
+
 	// —— Merklogo: in welke talen verschijnt dit logo ——
 	acf_add_local_field_group( array(
 		'key'    => 'group_sokkies_logo',
@@ -3260,6 +3287,16 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 					array( 'key' => 'field_soktype_spec_titel', 'label' => 'Titel', 'name' => 'titel', 'type' => 'text' ),
 					array( 'key' => 'field_soktype_spec_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'all', 'instructions' => 'Selecteer woorden en gebruik de linkknop om ze te linken. Een tabel plak je vanuit Word/Excel/Google Docs, of je zet hem via het tabblad Tekst in HTML; de opmaak komt uit de stylesheet.' ),
 				),
+			),
+			array(
+				'key'           => 'field_soktype_faq_vragen',
+				'label'         => 'Veelgestelde vragen',
+				'name'          => 'faq_vragen',
+				'type'          => 'relationship',
+				'post_type'     => array( 'sokkies_faq' ),
+				'filters'       => array( 'search', 'taxonomy' ),
+				'return_format' => 'id',
+				'instructions'  => 'Kies de vragen die bij dit soktype horen en sleep ze in de volgorde waarin ze op de productpagina moeten staan; de bovenste staat standaard open. Filter links op categorie om snel de vragen van dit type te vinden. LEEG = het vragenblok staat NIET op deze pagina. Nieuwe vragen maak je aan onder "Veelgestelde vragen" in het menu links.',
 			),
 		),
 		'location' => array(

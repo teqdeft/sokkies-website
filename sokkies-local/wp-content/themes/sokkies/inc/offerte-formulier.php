@@ -811,6 +811,61 @@ add_filter( 'gform_pre_render', 'sokkies_offerte_adresblok_weg' );
 add_filter( 'gform_pre_validation', 'sokkies_offerte_adresblok_weg' );
 add_filter( 'gform_pre_submission_filter', 'sokkies_offerte_adresblok_weg' );
 
+/**
+ * Het veld "Aantal paar" volgt de minimale afname uit Website-instellingen.
+ *
+ * WAAROM IN CODE EN NIET IN DE FORMULIERBOUWER: het minimum van een getalveld
+ * is een instelling van Gravity Forms en staat dus in de DATABASE — die
+ * deployt niet mee. Zou het daar blijven staan, dan moest iemand het op dev en
+ * op live nog een keer aanpassen, en liep het getal alsnog uiteen met de rest
+ * van de site. Nu is er één knop in het CMS.
+ *
+ * DRIE HAKEN, dezelfde reden als bij het adresblok hierboven: zonder
+ * gform_pre_validation controleert de SERVER nog op het oude minimum uit de
+ * database, en dan komt een aanvraag onder het minimum er gewoon doorheen.
+ *
+ * De foutmelding hoeft niet mee: die komt van Gravity Forms zelf met het
+ * minimum erin ("Vul een aantal in van minimaal %s.", zie de vertaalkaart in
+ * functions.php), dus die volgt automatisch.
+ */
+function sokkies_min_afname_in_formulier( $form ) {
+	if ( is_admin() || ! is_array( $form ) || empty( $form['fields'] ) ) {
+		return $form;
+	}
+	if ( ! sokkies_form_eigen_opmaak( $form['id'] ) ) {
+		return $form;
+	}
+	$minimum = sokkies_minimale_afname();
+
+	foreach ( $form['fields'] as $veld ) {
+		/* Herkenning op de cssClass en niet op het label: het label is
+		   redactionele tekst die de klant mag hernoemen. */
+		if ( false === strpos( ' ' . (string) ( $veld->cssClass ?? '' ) . ' ', ' of-aantal ' ) ) {
+			continue;
+		}
+		$veld->rangeMin = $minimum;
+
+		/* Een standaardwaarde ONDER het minimum zou het formulier openen in een
+		   staat die meteen wordt afgekeurd. Een hogere eigen keuze (bijv. 100)
+		   blijft staan. */
+		if ( '' !== (string) $veld->defaultValue && (int) $veld->defaultValue < $minimum ) {
+			$veld->defaultValue = $minimum;
+		}
+
+		/* Alleen de standaardzin meeschrijven. Heeft de klant er een eigen
+		   toelichting van gemaakt, dan blijft die met rust. */
+		if ( preg_match( '/^\s*minimaal\s+\d+\s+paar\.?\s*$/i', (string) $veld->description ) ) {
+			$veld->description = 'Minimaal ' . $minimum . ' paar.';
+		}
+	}
+	return $form;
+}
+add_filter( 'gform_pre_render', 'sokkies_min_afname_in_formulier' );
+add_filter( 'gform_pre_validation', 'sokkies_min_afname_in_formulier' );
+add_filter( 'gform_pre_submission_filter', 'sokkies_min_afname_in_formulier' );
+
+
+
 add_filter( 'gform_field_content', function ( $content, $field ) {
 	if ( ! is_object( $field ) || ! sokkies_form_eigen_opmaak( $field->formId ) ) {
 		return $content;

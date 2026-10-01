@@ -195,7 +195,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
         ?>
         <div class="pdp-usps-main">
           <ul>
-            <li>Vanaf <?php echo esc_html( sokkies_optie( 'minimale_afname', '30' ) ); ?> paar</li>
+            <li>Vanaf <?php echo esc_html( sokkies_minimale_afname() ); ?> paar</li>
             <li>Eigen productie</li>
             <li>Gratis ontwerp binnen 24u</li>
             <li>Gratis verzending</li>
@@ -328,7 +328,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
               </tr>
             </thead>
             <tbody>
-              <tr><th>Vanaf 30 paar</th><td class="is-us"><span class="tick tick-yes"></span></td><td><span class="tick tick-no"></span></td></tr>
+              <tr><th>Vanaf <?php echo (int) sokkies_minimale_afname(); ?> paar</th><td class="is-us"><span class="tick tick-yes"></span></td><td><span class="tick tick-no"></span></td></tr>
               <tr><th>Gratis verzending</th><td class="is-us"><span class="tick tick-yes"></span></td><td><span class="tick tick-no"></span></td></tr>
               <tr><th>Eigen productie</th><td class="is-us"><span class="tick tick-yes"></span></td><td><span class="tick tick-no"></span></td></tr>
               <tr><th>Gratis ontwerp binnen 24 uur</th><td class="is-us"><span class="tick tick-yes"></span></td><td>Soms</td></tr>
@@ -597,7 +597,22 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
     </section>
 
     <!-- FAQ -->
-    <?php $vraag_ids = get_posts( array( 'post_type' => 'sokkies_faq', 'posts_per_page' => 8, 'fields' => 'ids' ) ); if ( $vraag_ids ) : ?>
+    <?php
+    /* De vragen komen uit het soktype zelf: Soktypes > [type] > Productpagina >
+       Veelgestelde vragen. De volgorde van het veld is de volgorde op de pagina
+       en de bovenste staat open. NIETS GEKOZEN = GEEN BLOK; dat is met opzet, zo
+       staat er geen willekeurige greep uit de FAQ onder een productpagina.
+       (Dit stond eerder op "de 8 nieuwste vragen", wat per type hetzelfde en dus
+       zelden passend was.) */
+    $vraag_ids = get_field( 'faq_vragen' );
+    $vraag_ids = is_array( $vraag_ids ) ? array_map( 'intval', $vraag_ids ) : array();
+    /* Een vraag die inmiddels in de prullenbak ligt of op concept staat blijft
+       als ID in het veld achter. Die er hier uit, anders verschijnt er een lege
+       regel in de accordeon. */
+    $vraag_ids = array_values( array_filter( $vraag_ids, function ( $id ) {
+        return 'publish' === get_post_status( $id );
+    } ) );
+    if ( $vraag_ids ) : ?>
     <section class="faq">
       <div class="container">
         <div class="faq-grid">
@@ -665,8 +680,11 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
        die staat al naast de foto's. De JS is daarop aangepast en slaat een
        ontbrekende tabel nu over. */
     $calc_sleutel = isset( $matrix[ $sleutel ] ) ? $sleutel : ( $matrix ? array_key_first( $matrix ) : '' );
-    /* Ondergrens = de eerste staffelregel, net als in de gewone calculator. */
-    $staffel_min = ( $calc_sleutel && ! empty( $matrix[ $calc_sleutel ]["rows"][0][0] ) ) ? $matrix[ $calc_sleutel ]["rows"][0][0] : 50;
+    /* Zelfde regel als in de sectie-calculator: de minimale afname stuurt waar
+       de slider begint, met de laagste staffelregel als ondergrens zodat er voor
+       elk aantal ook echt een prijs bestaat. */
+    $staffel_eerste = ( $calc_sleutel && ! empty( $matrix[ $calc_sleutel ]["rows"][0][0] ) ) ? (int) $matrix[ $calc_sleutel ]["rows"][0][0] : 0;
+    $staffel_min    = max( (int) sokkies_minimale_afname(), $staffel_eerste );
     if ( $matrix ) : ?>
     <div class="pdp-calc" hidden>
       <div class="pdp-calc-overlay" data-calc-close></div>

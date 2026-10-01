@@ -35,7 +35,7 @@ $standaard_stappen = array(
 $conf_stappen = array(
 	array( 'titel' => 'Kies je type sok', 'tekst' => 'Reguliere, sport, bamboe, kerst — kies de basis die past.' ),
 	array( 'titel' => 'Upload je logo of ontwerp', 'tekst' => 'PNG, JPG, PDF of vectorbestand. Wij regelen de rest.' ),
-	array( 'titel' => 'Vraag offerte aan of bestel direct', 'tekst' => 'Klaar met ontwerpen? Vraag een offerte aan voor advies en staffelprijs, of bestel direct vanaf 30 paar.' ),
+	array( 'titel' => 'Vraag offerte aan of bestel direct', 'tekst' => 'Klaar met ontwerpen? Vraag een offerte aan voor advies en staffelprijs, of bestel direct vanaf ' . sokkies_minimale_afname() . ' paar.' ),
 );
 if ( ! $rijen ) {
 	$rijen = ( $is_conf || $is_land ) ? $conf_stappen : $standaard_stappen;
