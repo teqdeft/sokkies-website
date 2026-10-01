@@ -741,6 +741,16 @@ add_filter( 'gform_pre_render', function ( $form ) {
 } );
 
 /**
+ * Is dit het landveld? (los van de rest van het adresblok)
+ *
+ * Herkenning op de cssClass en niet op het label: het label is redactionele
+ * tekst die de klant mag hernoemen.
+ */
+function sokkies_offerte_landveld( $veld ) {
+	return false !== strpos( ' ' . trim( preg_replace( '/\s+/', ' ', (string) $veld->cssClass ) ) . ' ', ' of-land ' );
+}
+
+/**
  * HET ADRESBLOK STAAT NIET MEER OP HET OFFERTEFORMULIER (stap 3).
  *
  * Een offerteaanvraag heeft geen bezorgadres nodig, dus postcode,
@@ -799,12 +809,41 @@ function sokkies_offerte_adresblok_weg( $form ) {
 	if ( ! $offerte || (int) $form['id'] !== (int) $offerte ) {
 		return $form;
 	}
+	/* Het LANDVELD blijft staan (verzoek 2026-10-01): een offerte heeft geen
+	   bezorgadres nodig, maar het land bepaalt wel de levering en de btw. Het
+	   staat in de DOM boven Bedrijfsnaam omdat het bij het adresblok hoort;
+	   hier verhuist het naar achter Telefoon, zodat het onderaan "Jouw
+	   gegevens" staat. In code en niet in de formulierbouwer, want de
+	   veldvolgorde is database en die deployt niet mee. */
+	$land = null;
 	foreach ( $form['fields'] as $i => $veld ) {
-		if ( sokkies_offerte_adresveld( $veld ) ) {
-			unset( $form['fields'][ $i ] );
+		if ( ! sokkies_offerte_adresveld( $veld ) ) {
+			continue;
 		}
+		if ( sokkies_offerte_landveld( $veld ) ) {
+			$land = $veld;
+		}
+		unset( $form['fields'][ $i ] );
 	}
 	$form['fields'] = array_values( $form['fields'] );
+
+	if ( $land ) {
+		/* Eigen class voor de breedte: .of-land is op het sampleformulier de
+		   rest van de postcoderij (flex:1 1 175px) en zou hier dus de hele
+		   regel vullen. Hier is het een halve kolom, als elk ander veld. */
+		$land->cssClass = trim( $land->cssClass . ' of-land-solo' );
+		$na = null;
+		foreach ( $form['fields'] as $i => $veld ) {
+			if ( false !== strpos( ' ' . trim( (string) $veld->cssClass ) . ' ', ' of-telefoon ' ) ) {
+				$na = $i;
+			}
+		}
+		if ( null === $na ) {
+			$form['fields'][] = $land;
+		} else {
+			array_splice( $form['fields'], $na + 1, 0, array( $land ) );
+		}
+	}
 	return $form;
 }
 add_filter( 'gform_pre_render', 'sokkies_offerte_adresblok_weg' );

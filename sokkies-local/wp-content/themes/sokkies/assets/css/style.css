@@ -10220,6 +10220,16 @@ main.contact{
   .quote-card .gform_fields > .of-toevoeging ~ .gfield{ order:2; }
   .quote-card .gform_fields > .of-toevoeging ~ .of-land{ order:1; }
 
+  /* OFFERTEFORMULIER: daar is Land het enige dat van het adresblok over is
+     (zie sokkies_offerte_adresblok_weg) en staat het onderaan Jouw gegevens.
+     Het hoort zich daar als een gewoon veld te gedragen, dus een halve kolom
+     net als Bedrijfsnaam en E-mail; de regel hierboven zou het de hele breedte
+     geven omdat er geen postcoderij meer naast staat. De class komt uit PHP,
+     niet uit :has(), zodat het ook klopt in browsers zonder :has(). */
+  .quote-card .gform_fields > .of-land-solo,
+  .quote-card .gform_fields > .of-land-solo.is-zichtbaar,
+  .quote-card .gform_fields > .of-land-solo.gfield_error{ flex:0 0 calc(50% - 10px); }
+
   .quote-card .of-kop h3{ margin:0 0 6px; }
 
   /* HARDE RIJOVERGANG. flex-wrap breekt pas als een regel vol is, en zodra de

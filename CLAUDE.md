@@ -4403,6 +4403,39 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   30 vragen / 8 groepen / 8 chips en de chip weg; weer aan -> terug naar 34/9/9.
   6 routes 200, lege debug.log.
 
+  LANDVELD TERUG OP HET OFFERTEFORMULIER (2026-10-01, verzoek Kulwant met een
+  schermafbeelding van stap 3: "add a country field in this").
+  GEEN NIEUW VELD AANGEMAAKT: het landveld (id 42, cssClass of-land) stond al in
+  formulier 28 en werd alleen weggefilterd, want op 2026-09-28 is het hele
+  adresblok van de offerte gehaald ("a quote request doesn't need a delivery
+  address"). sokkies_offerte_adresblok_weg() haalt nu alles weg BEHALVE het land.
+  Scheelt een tweede veld met een eigen landenlijst, en de inzending houdt
+  dezelfde veld-id als op het sampleformulier.
+  DE GEDEELDE LIJST IS MET RUST GELATEN: sokkies_offerte_adresveld() wordt ook
+  door sokkies_sample_adres_altijd() gebruikt, maar daar juist om die velden
+  ZICHTBAAR te maken. Had ik of-land daar geschrapt, dan was Land op het
+  sampleformulier onzichtbaar geworden. Daarom een aparte check
+  sokkies_offerte_landveld() in de weghaal-functie zelf.
+  VERPLAATST IN CODE: in de DOM staat het veld boven Bedrijfsnaam (het hoort bij
+  het adresblok), en de veldvolgorde is database en deployt niet mee. De functie
+  zet het daarom achter Telefoon, zodat het onderaan "Jouw gegevens" staat.
+  EIGEN BREEDTE-CLASS of-land-solo: .of-land is op het sampleformulier "de rest
+  van de postcoderij" (flex:1 1 175px) en zou hier de hele regel vullen omdat er
+  geen postcoderij meer naast staat. De class komt uit PHP en niet uit een
+  :has()-selector, zodat het ook klopt in browsers zonder :has().
+  GEMETEN op 1440: bedrijf/contact 408px naast elkaar, e-mail/telefoon idem,
+  Land 408px op een eigen regel links eronder, 0 h-scroll; op 375 alles 335px
+  onder elkaar (de banden onder 768 zetten .of-land al op 100%, dus daar hoefde
+  niets bij). Sampleformulier nagemeten: volledige adresblok nog aanwezig en
+  of-land-solo komt daar niet voor. 4 routes 200, lege debug.log.
+  WAT DE KLANT MOET WETEN: de keuzelijst is de STANDAARDLIJST VAN GRAVITY FORMS
+  met 250 landen in het ENGELS ("Austria", "Germany") op een Nederlandse pagina,
+  met "Kies een land" erboven. Dat is bestaand gedrag en niet van deze
+  wijziging: het sampleformulier toont exact dezelfde lijst (nagemeten). Wie dat
+  wil inkorten of vertalen: de keuzes staan in Gravity Forms op het veld zelf,
+  en sokkies_adres_landen() in het thema kent al de 14 landen die de
+  adresopzoeking ondersteunt. Het veld is VERPLICHT (zoals op het sample).
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
