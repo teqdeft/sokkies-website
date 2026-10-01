@@ -4469,6 +4469,50 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   LET OP, DE RECHTERKANT VAN HET PANEEL BLIJFT GROTENDEELS LEEG. Dat is het
   ontbrekende USP-blok en niet de knop; de drie regels weer aanzetten in
   deel-mega.php vult die kolom zoals het ontwerp bedoelde. Voorgelegd.
+
+  VERKEERDE TAAL IN HET URL-VELD VAN DE BEHEERDERSMAIL (2026-10-01, melding
+  Kulwant met een schermafbeelding van een offertemail: ingevuld op /en/, maar
+  de regel URL toont http://sokkies.studioubique.com/fr/offerte/).
+  DE MAILTAAL KLOPTE WEL, en dat was de aanwijzing: de labels in diezelfde mail
+  stonden in het Engels ("What would you like printed?", "Number of pairs"), en
+  die komen uit sokkies_form_taal() op basis van source_url. source_url was dus
+  gewoon /en/. Alleen het aparte TRACKINGVELD "URL" (veld 37 op formulier 28,
+  veld 40 op 29) stond op Frans.
+  OORZAAK: offerte.js bewaart de ingevulde velden in sessionStorage zodat een
+  verversing de aanvraag niet wist. eigenVeld() liet ELK veld door waarvan de
+  naam met input_ begint - dus ook de 19 VERBORGEN trackingvelden. En de
+  opslagsleutel is 'sokkies-formulier-<formulierID>', zonder taal. Alle vier de
+  talen delen dus dezelfde sleutel. Wie in hetzelfde tabblad eerst /fr/offerte/
+  opende en daarna naar /en/offerte/ ging, kreeg bij het terugzetten het oude
+  Franse adres over het verse URL-veld geschreven. Vandaar "soms": alleen als er
+  eerder een andere taal in hetzelfde tabblad open stond.
+  GEREPRODUCEERD, niet beredeneerd: stale /fr/-waarde in sessionStorage gezet,
+  /en/offerte/ geladen, en input_37 ging van .../en/offerte/ naar .../fr/offerte/.
+  HET WAS BREDER DAN DE URL. Alle 19 verborgen velden gingen zo mee: Channel,
+  Source/Medium/Term/Content/Campaign, GA4 ID, GA4 First Visit, de
+  Aanvraag-via-vlaggen en User journey tracking. Die worden per paginaweergave
+  gezet (URL server-side bij het renderen, de rest via de cookie/JS van de
+  campaign-tracker-plugin), dus een teruggezette kopie uit een eerder bezoek
+  vervuilt ook de CAMPAGNE-ATTRIBUTIE. Getest: een opgeslagen 'oude-campagne'
+  landde weer in veld 33.
+  FIX: verborgen velden worden niet meer bewaard (type hidden eruit in
+  eigenVeld) EN niet meer teruggezet (zelfde controle in zetVeldenTerug). Die
+  tweede is geen dubbelop maar een vangnet: in een tabblad dat al openstond zit
+  de oude opslag nog, en die bevat de trackingvelden wel.
+  WAT ONVERANDERD BLIJFT: de velden die de bezoeker zelf invult komen gewoon
+  terug na een verversing (nagemeten: aantal 250 en bedrijfsnaam blijven), en de
+  proefkeuze op het sampleformulier is een radio - geen hidden - dus die logica
+  is niet geraakt.
+  GEMETEN na de fix, op beide formulieren: URL-veld blijft /en/, campagneveld
+  blijft leeg (dus vers), eigen invoer wordt wel hersteld, en in de opslag staat
+  alleen nog input_2.
+  UITGESLOTEN ALS OORZAAK: paginacache. Er draait geen enkele cacheplugin
+  (lijst actieve plugins nagelopen) en server-side rendert het veld per taal
+  correct - nagemeten met curl op nl/en/de/fr, alle vier hun eigen adres.
+  LET OP BIJ HET NALEZEN: offerte.js is volledig CRLF (885 regels). Patchen met
+  een anker dat \n bevat mislukt stil; dit is met PHP en expliciete \r\n gedaan
+  en daarna nageteld (885/885 CRLF behouden).
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

@@ -538,6 +538,15 @@
   function eigenVeld(el) {
     if (!el.name || el.disabled) { return false; }
     if (el.type === 'file' || el.type === 'submit' || el.type === 'button') { return false; }
+    // VERBORGEN VELDEN NOOIT BEWAREN OF TERUGZETTEN (2026-10-01). De 19
+    // trackingvelden (URL, Pagina URL, Channel, Source/Medium/Campaign,
+    // GA4 ID, ...) worden per paginaweergave server-side gevuld of door het
+    // trackingscript gezet. Ze stonden hier mee in de opslag, en omdat de
+    // sleutel alleen het FORMULIERNUMMER bevat deelt elke taal dezelfde
+    // sleutel: wie eerst /fr/offerte/ opende en daarna /en/offerte/ kreeg
+    // het Franse adres teruggeschreven in het URL-veld, en dus in de
+    // beheerdersmail. Hetzelfde gold voor de campagnegegevens.
+    if (el.type === 'hidden') { return false; }
     // GF's eigen verborgen administratie niet meenemen.
     return el.name.indexOf('input_') === 0;
   }
@@ -600,6 +609,9 @@
       var els = f.querySelectorAll('[name="' + naam.replace(/(["\\])/g, '\\$1') + '"]');
       Array.prototype.forEach.call(els, function (el) {
         if (isProefKeuze(el)) { return; }
+        // Vangnet voor opslag van vóór de fix hierboven: daar zitten de
+        // trackingvelden nog in, en die mogen de verse waarde niet overschrijven.
+        if (el.type === 'hidden') { return; }
         if (el.type === 'checkbox' || el.type === 'radio') {
           el.checked = Array.isArray(waarde) && waarde.indexOf(el.value) !== -1;
         } else {
