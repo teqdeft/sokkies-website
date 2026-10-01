@@ -494,6 +494,28 @@ body{
   .mega-usps button{
     margin-top: 6px;
   }
+
+  /* Knop "Bekijk collectie" lijnt uit met de kolomkoppen (2026-10-01,
+     melding Kulwant: "staat er niet goed bij"). De USP-regels in
+     deel-mega.php staan uitgecommentarieerd en de h4 is leeg, dus deze
+     derde kolom bevat alleen nog deze knop; met justify-content:center
+     zweefde die halverwege een verder lege kolom. Nu staat hij bovenaan,
+     op dezelfde hoogte als "Bestsellers" en "Meer types".
+     GESCOPED OP :not(.sub-open) en NIET op de basisregel hierboven: in het
+     lade-/mobielmenu is exact dezelfde .cta-light de zwevende pill
+     onderaan het scherm (responsive.css zet daar display:block + fixed).
+     Een wijziging op de kale .mega-usps zou die banden dus meenemen.
+     Komen de USP-regels ooit terug, dan schuiven ze gewoon boven de knop
+     en blijft deze uitlijning kloppen. */
+  .navbar:not(.sub-open) .mega-usps{
+    justify-content:flex-start;
+  }
+  .navbar:not(.sub-open) .mega-usps h4:empty{
+    display:none;
+  }
+  .navbar:not(.sub-open) .mega-usps .cta-light{
+    margin-top:0;
+  }
   
   .actions{
     display:flex;

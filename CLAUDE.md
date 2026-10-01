@@ -4436,6 +4436,39 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   en sokkies_adres_landen() in het thema kent al de 14 landen die de
   adresopzoeking ondersteunt. Het veld is VERPLICHT (zoals op het sample).
 
+
+  KNOP "BEKIJK COLLECTIE" ZWEEFDE IN HET UITKLAPMENU (2026-10-01, melding
+  Kulwant met een schermafbeelding waarop de knop rood omkaderd rechts in het
+  lege vlak staat: "staat er niet goed bij").
+  NIET DE KNOP MAAR DE KOLOM was het probleem. De mega is een raster van drie
+  kolommen (auto / 28% / auto); de derde is .mega-usps. In deel-mega.php staan
+  de USP-regels UITGECOMMENTARIEERD en is de <h4> leeg, dus die kolom bevat
+  alleen nog de knop - en .mega-usps staat op justify-content:center, waardoor
+  hij halverwege een verder lege kolom bleef hangen. Gemeten op 1600: kolom
+  liep van y 156 tot 392, knop stond op 267.
+  FIX: justify-content:flex-start + de lege h4 op display:none, zodat de knop
+  bovenaan staat, op dezelfde hoogte als de koppen "Bestsellers" en "Meer
+  types". Gemeten koptop vs knoptop: 1920 160/160, 1600 148/148, 1280 145/145.
+  De paneelhoogte verandert NIET (296 voor en na), dus geen layoutverschuiving.
+  GESCOPED OP .navbar:not(.sub-open) EN BEWUST NIET OP DE KALE .mega-usps:
+  in het lade-/mobielmenu is exact diezelfde .cta-light de ZWEVENDE PILL
+  onderaan het scherm (.navbar.sub-open .mega-usps krijgt display:block +
+  position:fixed, in zes banden). Die banden zetten zelf GEEN justify-content,
+  dus een wijziging op de basisregel zou daar wel degelijk doorwerken.
+  Nagemeten op 390 met het submenu open: display block, position fixed,
+  justify-content nog steeds center (de nieuwe regel slaat daar dus niet aan),
+  de -21px marge op de pill intact, 0 horizontale scroll.
+  BOTTOM-RIGHT GEPROBEERD EN VERWORPEN: met grid-column 1/-1 landt de knop
+  linksonder in plaats van rechts, want .mega heeft justify-items:start en
+  krimpt het item tot zijn inhoud - flex-end doet dan niets. Bovendien werd
+  het paneel ~45px hoger, precies waar de onderrand een radius van 55px heeft.
+  Wil iemand hem toch onderaan: dan is justify-self:stretch nodig.
+  KOMEN DE USP-REGELS TERUG, dan schuiven die gewoon boven de knop en blijft
+  de uitlijning kloppen - de fix gaat over de uitlijning, niet over het aantal
+  items in de kolom.
+  LET OP, DE RECHTERKANT VAN HET PANEEL BLIJFT GROTENDEELS LEEG. Dat is het
+  ontbrekende USP-blok en niet de knop; de drie regels weer aanzetten in
+  deel-mega.php vult die kolom zoals het ontwerp bedoelde. Voorgelegd.
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
