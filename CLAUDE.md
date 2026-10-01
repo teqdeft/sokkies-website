@@ -4086,6 +4086,35 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   browserpaneel op browsertaal naar /en/, ook na een directe navigatie naar
   /de/. Wat wel werkt is de taalwisselaar aanklikken:
   document.querySelector('a.trp-language-item[href*="/de/"]').click().
+  OOK IN DE MINI-FOOTER (2026-10-01, vervolgverzoek Kulwant "yes add it to mini
+  footer too"). De mini-footer van contact, offerte, sample-request en de drie
+  bedankpagina's had zijn eigen, hardgecodeerde slotregel met alleen Algemene
+  voorwaarden en Cookieverklaring — dus daar stond het Impressum ook in het
+  Duits niet.
+  ÉÉN BRON IN PLAATS VAN TWEE LIJSTJES: de linkopbouw is uit
+  sokkies_footer_slotregel() getrokken naar sokkies_footer_legal_links(), die
+  nu allebei de footers voedt (inclusief de taalvoorwaarde en de terugval op de
+  twee ontwerplinks). Wie er in Website-instellingen een link bij zet, ziet hem
+  meteen op beide plekken; uit elkaar lopen kan niet meer.
+  WAT DE MINI-FOOTER EIGEN HOUDT: zijn eigen scheidingsteken (· in plaats van
+  •) en géén KVK/BTW — die horen alleen in de volle footer. Het copyright komt
+  nu ook uit de optie in plaats van hardgecodeerd; de standaardwaarde is exact
+  de oude tekst, dus er verandert niets zolang niemand hem wijzigt.
+  BYTE-IDENTIEK VOOR DE BESTAANDE TALEN, en dat is bewust nagemeten: de
+  scheiding is precies zoals hij hier stond (een gewone spatie na het
+  copyright, daarna per link "&nbsp;·&nbsp; "). /nl/contact/ vóór en ná de
+  wijziging geven dezelfde md5 van .mini-footer-right (1a398f8f...).
+  GEMETEN: alle vier de mini-footerpagina's in nl/en/fr tellen 2 juridische
+  links, in de 3 — en de link wijst naar /de/impressum/. De volle footer houdt
+  2 links op nl en 3 op de. Op 1440 past de Duitse regel op één regel (623px
+  breed, geen overlap met het contactblok, 0 horizontale scroll); op 390 is de
+  linkerkolom zoals altijd verborgen en wikkelt de regel over 3 regels binnen
+  de 350px. Lege debug.log.
+  WAT NIET DOOR DEZE WIJZIGING KOMT: op 992px valt het rechterblok onder het
+  contactblok. Nagemeten met de OUDE code op dezelfde breedte: daar gebeurde
+  dat ook al (525px naast een linkerblok dat tot 573 loopt in een container van
+  937). Het Duits is gewoon te lang voor die band; de extra link maakt het niet
+  erger dan het was.
 
   "ALLEEN BIJ DEZE SOKTYPES" TOONDE ELK TYPE TWEE KEER (2026-09-30, vraag
   Rick: komt dat door hernoemde pagina's of staan de andere talen erin?).

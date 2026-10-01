@@ -19,7 +19,21 @@
           </a>
         </div>
         <div class="mini-footer-right">
-          © 2026 Sokkies &nbsp;·&nbsp; <a href="<?php echo esc_url( home_url( '/juridisch/' ) ); ?>">Algemene voorwaarden</a>&nbsp;·&nbsp; <a href="<?php echo esc_url( home_url( '/cookieverklaring/' ) ); ?>">Cookieverklaring</a>
+          <?php
+          /* Dezelfde juridische links als de volledige footer, inclusief de
+             taalvoorwaarde per link — zo staat het Impressum ook hier alleen
+             in het Duits en kunnen de twee footers niet uit elkaar lopen.
+             Het scheidingsteken is wel dat van dit ontwerp (· i.p.v. •) en
+             KVK/BTW horen hier niet: die staan alleen in de volle footer. */
+          $sokkies_legal = sokkies_footer_legal_links();
+          /* De scheiding is EXACT zoals hij hier stond: een gewone spatie na
+             het copyright en daarna per link "&nbsp;·&nbsp; ". Zo rendert de
+             regel met de twee bestaande links byte-identiek aan ervoor. */
+          echo esc_html( sokkies_optie( 'footer_copyright', '© 2026 Sokkies' ) ) . ' ';
+          foreach ( $sokkies_legal as $sokkies_link ) {
+              echo '&nbsp;·&nbsp; ' . $sokkies_link; // phpcs:ignore WordPress.Security.EscapeOutput -- los ge-escaped in de helper
+          }
+          ?>
         </div>
       </div>
     </footer>

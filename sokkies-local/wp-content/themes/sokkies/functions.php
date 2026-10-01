@@ -684,6 +684,55 @@ function sokkies_reviews_url() {
 }
 
 /**
+ * De juridische links van de footer, als kant-en-klare <a>'s.
+ *
+ * ÉÉN BRON VOOR TWEE FOOTERS: de volledige footer zet ze in zijn slotregel
+ * (met KVK en BTW erachter), de mini-footer van de funnel- en contactpagina's
+ * toont dezelfde links achter het copyright. Door ze hier op te halen kunnen
+ * die twee niet uit elkaar lopen — wie een link toevoegt in
+ * Website-instellingen > Footer-inhoud ziet hem meteen op allebei.
+ *
+ * De taalvoorwaarde per rij werkt hetzelfde als in het footermenu: geen taal
+ * aangevinkt = overal, anders alleen in de aangevinkte talen. Zo staat het
+ * Impressum (Duitse wettelijke plicht) alleen in de Duitse footer, terwijl de
+ * pagina zelf in elke taal bereikbaar blijft.
+ *
+ * Leeg = de twee links uit het ontwerp, net als overal in dit thema.
+ */
+function sokkies_footer_legal_links() {
+	$links   = array();
+	$taal_nu = sokkies_huidige_taal();
+	$rijen   = sokkies_optie( 'footer_legal', array() );
+
+	if ( is_array( $rijen ) ) {
+		foreach ( $rijen as $rij ) {
+			$talen = isset( $rij['talen'] ) ? (array) $rij['talen'] : array();
+			if ( $talen && ! in_array( $taal_nu, $talen, true ) ) {
+				continue;
+			}
+			$link  = isset( $rij['link'] ) ? $rij['link'] : null;
+			$url   = is_array( $link ) ? ( isset( $link['url'] ) ? $link['url'] : '' ) : (string) $link;
+			$label = isset( $rij['label'] ) && '' !== trim( (string) $rij['label'] )
+				? $rij['label']
+				: ( is_array( $link ) && ! empty( $link['title'] ) ? $link['title'] : '' );
+			if ( '' === $url || '' === $label ) {
+				continue;
+			}
+			$links[] = '<a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>';
+		}
+	}
+
+	if ( ! $links ) {
+		$links = array(
+			'<a href="' . esc_url( home_url( '/juridisch/' ) ) . '">Algemene voorwaarden</a>',
+			'<a href="' . esc_url( home_url( '/cookieverklaring/' ) ) . '">Cookieverklaring</a>',
+		);
+	}
+
+	return $links;
+}
+
+/**
  * De slotregel van de footer: copyright, juridische links, KVK en BTW.
  *
  * DE DRIE SPANS ZIJN GEEN OPMAAK-TOEVAL. Op mobiel worden ze blokken en gaan
@@ -701,37 +750,8 @@ function sokkies_footer_slotregel() {
 	$kvk       = sokkies_optie( 'footer_kvk', '89538226' );
 	$btw       = sokkies_optie( 'footer_btw', 'NL865014218B01' );
 
-	// Juridische links: uit de instellingen of de twee uit het ontwerp.
-	$links    = array();
-	$taal_nu  = sokkies_huidige_taal();
-	$rijen    = sokkies_optie( 'footer_legal', array() );
-	if ( is_array( $rijen ) ) {
-		foreach ( $rijen as $rij ) {
-			/* Zelfde regel als in het footermenu: geen taal aangevinkt =
-			   overal, anders alleen in de aangevinkte talen. Zo staat het
-			   Impressum (Duitse wettelijke plicht) alleen in de Duitse
-			   slotregel, terwijl de pagina zelf overal bereikbaar blijft. */
-			$talen = isset( $rij['talen'] ) ? (array) $rij['talen'] : array();
-			if ( $talen && ! in_array( $taal_nu, $talen, true ) ) {
-				continue;
-			}
-			$link  = isset( $rij['link'] ) ? $rij['link'] : null;
-			$url   = is_array( $link ) ? ( isset( $link['url'] ) ? $link['url'] : '' ) : (string) $link;
-			$label = isset( $rij['label'] ) && '' !== trim( (string) $rij['label'] )
-				? $rij['label']
-				: ( is_array( $link ) && ! empty( $link['title'] ) ? $link['title'] : '' );
-			if ( '' === $url || '' === $label ) {
-				continue;
-			}
-			$links[] = '<a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>';
-		}
-	}
-	if ( ! $links ) {
-		$links = array(
-			'<a href="' . esc_url( home_url( '/juridisch/' ) ) . '">Algemene voorwaarden</a>',
-			'<a href="' . esc_url( home_url( '/cookieverklaring/' ) ) . '">Cookieverklaring</a>',
-		);
-	}
+	// Juridische links: gedeeld met de mini-footer, inclusief taalvoorwaarde.
+	$links = sokkies_footer_legal_links();
 
 	$punt = ' &nbsp;•&nbsp; ';
 
