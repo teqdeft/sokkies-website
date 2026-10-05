@@ -4632,6 +4632,81 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   TranslatePress en dan het bestaande pad gebruiken - de functie
   machine_translate_missing_slugs() doet precies dit werk zodra er quota is.
 
+
+  DUBBELE CATEGORIECHIPS OP HET BLOGOVERZICHT (2026-10-05, melding Kulwant met
+  een schermafbeelding van /en/blogs/ waarop "Style & trends" twee keer staat).
+  DRIE PAREN, NIET EEN. De bron-site heeft van drie categorieen zowel een
+  Engels- als een Nederlandstalige variant (stond al als bekende importkwestie
+  in dit document). Op /en/ vertaalt TranslatePress de Nederlandse naar exact
+  dezelfde woorden als de Engelse, dus dan pas valt de dubbeling op:
+    38 Style & trends (11 posts)  ->  40 Stijl & trends
+    43 Background     (0 posts)   ->  42 Achtergrond
+    44 Ideas          (0 posts)   ->  41 Ideeen
+  SAMENGEVOEGD NAAR DE NEDERLANDSE TERM, want Nederlands is de brontaal; TP
+  maakt er per taal zelf de juiste naam van. Dat is ook waarom de Engelstalige
+  termen weg moesten en niet andersom.
+  GEEN URL-RISICO: de taxonomie staat op 'public' => false, dus de slug is
+  alleen de data-value van het JS-filter en nergens een adres. Nagemeten na de
+  merge: 12/12/1 kaarten, exact gelijk aan de termtellingen, en 0 keer de oude
+  slug style-trends op de pagina.
+  43 EN 44 HINGEN ALLEEN AAN WEGGEGOOIDE POSTS (restanten van de Engelse
+  import) - mijn verwijdergarde stopte daarop. Daarom samengevoegd in plaats
+  van verwijderd: wordt zo'n post ooit teruggezet, dan houdt hij zijn
+  categorie en kan de dubbele chip niet terugkomen.
+  REGRESSIE DIE IK ZELF VEROORZAAKTE EN HERSTELDE: de Engelstalige term HAD
+  een Franse vertaling ("Style et tendances"), de Nederlandse niet. Zonder
+  ingrijpen zou Frans na de merge Nederlands tonen. Duits was nog erger: alle
+  vijf de categoriestrings stonden daar op status 0. Met de hand ingevuld als
+  status 2 (handmatig nagekeken), zodat machinevertaling ze nooit overschrijft:
+    de  Alles->Alle, Tips & Advies->Tipps & Ratgeber,
+        Stijl & trends->Stil & Trends, Ideeen->Ideen
+    fr  Stijl & trends->Style et tendances, Ideeen->Idees
+  Frans hergebruikt exact de tekst die de oude term al had, dus daar verandert
+  voor de bezoeker niets. DE DUITSE WOORDKEUS IS VAN MIJ, niet van de klant -
+  "Tipps & Ratgeber" vooral; laat Rick dat nalopen.
+  LET OP: Achtergrond heeft 0 GEPUBLICEERDE posts (beide zijn concept), dus die
+  chip verschijnt niet en heeft nog geen Duitse of Franse vertaling.
+
+  VERTAALACHTERSTAND VAN DE HELE SITE WEGGEWERKT (2026-10-05, melding Kulwant:
+  "translation not working for DE for some content, check whole site").
+  HET WAS GEEN BUG MAAR EEN LEEG TEGOED. Audit vooraf:
+    de  1425 van 3313 onvertaald (43%)
+    fr  1443 van 3305 onvertaald (44%)
+    en   910 van 4284 onvertaald (21%)
+  De engine stond op 'mtapi' (TranslatePress AI) met trp_mtapi_cached_quota op
+  '0'. Alles wat nog niet vertaald was toen het tegoed opraakte bleef dus
+  Nederlands - inclusief blogtitels, FAQ-antwoorden, PDP-teksten en de
+  privacyverklaring.
+  SCHIJNALARM DAT JE NIET MOET GELOVEN: lookup_site() op de mtapi geeft voor
+  deze localhost-installatie 404 "Site not found". Daaruit volgt NIET dat
+  vertalen hier onmogelijk is - is_correct_api_key() geeft false terwijl
+  translate_array() gewoon werkt. Test dus met een echte proefvertaling en
+  niet met de sleutelcontrole.
+  TEGOED BIJGEVULD DOOR KULWANT, daarna in een keer bijgewerkt: 3301 strings,
+  0 mislukt (de 1268, fr 1280, en 753). Kosten 306.152 woorden van het miljoen;
+  693.823 over. Eindstand overal 157 onvertaald, en dat zijn PER TAAL DEZELFDE
+  157: e-mailadressen, URL's en uploadpaden. Die slaat het script bewust over,
+  net als TranslatePress zelf doet - inhoudelijk is de dekking dus volledig.
+  NIET VIA PAGINABEZOEKEN MAAR RECHTSTREEKS OP DE WOORDENBOEKTABELLEN
+  (translated + status 1, dezelfde constanten als TRP_Query gebruikt:
+  0=NOT_TRANSLATED, 1=MACHINE_TRANSLATED, 2=HUMAN_REVIEWED). Via de voorkant
+  vertalen vereist dat elke string ook echt op een bezochte pagina staat; dat
+  dekt nooit alles. De vijf handmatige vertalingen hierboven zijn geverifieerd
+  intact gebleven, want status 2 wordt overgeslagen.
+  BACK-UP VOORAF: dict-backup.sql in de scratchpad (10.902 UPDATE-regels, alle
+  drie de woordenboeken). Terugdraaien kan dus.
+  TWEE DINGEN OM VOOR TE LEGGEN. (1) DUITS MENGT U EN JE: op alleen al de
+  homepage 54x formeel (Sie/Ihre) tegen 9x informeel (Deine Wunsche, Berechne
+  deinen Preis, Der letzte Schliff fur dein Geschenk). Het Nederlandse
+  "je/jouw" is in het Duits dubbelzinnig en de engine koos per string. Voor een
+  B2B-merk hoort dat overal hetzelfde te zijn - keuze van de klant, daarna is
+  het een gerichte vervangronde. (2) DE PRIVACYVERKLARING EN DE ALGEMENE
+  VOORWAARDEN ZIJN NU MACHINEVERTAALD in Duits en Frans. Dat hoort een mens na
+  te lezen, of de niet-Nederlandse bezoeker moet naar de Nederlandse versie.
+  Het Impressum is ongemoeid: dat was al met de hand geschreven.
+  ALLES HIERBOVEN IS DATABASE (termen, koppelingen en woordenboeken) en deployt
+  dus NIET mee - het bereikt dev alleen via de WP Migrate DB-sync.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
