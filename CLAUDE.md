@@ -4557,6 +4557,81 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   `cat -A` is wel betrouwbaar. Het patchscript leest het regeleinde nu uit het
   bestand zelf.
 
+  URL-VERTALING ONTBRAK VOOR FRANS EN DUITS (2026-10-05, melding Kulwant met
+  een schermafbeelding van /fr/contact/bedankt-offerte/ - een Nederlandse slug
+  op een Franse pagina - en de opdracht alle pagina's na te lopen).
+  TRANSLATEPRESS WAS NIET STUK, ER ONTBRAK DATA. Waar een vertaalde slug
+  bestond werkte het gewoon: /fr/methode/, /fr/a-propos/,
+  /fr/collection/bonnets-de-noel/ en /fr/contact/merci-de-votre-contact/.
+  Gemeten via de hreflang-alternates die TP zelf uitstuurt - dat is de
+  betrouwbare bron. LET OP: get_permalink() in de PHP-CLI geeft NIET de
+  vertaalde URL (geen taalcontext), dus daar kun je dit niet mee controleren.
+  DE CIJFERS, van 76 originele slugs: en_GB 75 vertaald, de_DE 26, fr_FR 24.
+  Omgerekend naar gepubliceerde pagina's (73): Engels miste er 1, Duits 48 en
+  Frans 50 - verdeeld over 20 pagina's, 14 cases, 11 blogs en 5 soktypes.
+  WAAROM HET SCHEEF LIEP: een slug wordt alleen vertaald als TP voor die
+  pagina ECHT een vertaalverzoek doet in die taal; de slug lift dan mee met de
+  stringbatch (save_machine_translated_slug, class-slug-manager.php:638) of via
+  de vertaaleditor (class-editor-api-post-slug.php:79). Een pagina waarvan alle
+  strings al in het woordenboek staan doet geen verzoek meer, dus de slug komt
+  er nooit bij. Nagemeten: /fr/duurzaamheid/ laden gaf 200 en 0 nieuwe
+  slugrijen. Engels is bijna compleet omdat de site door de
+  browsertaal-herkenning voortdurend op /en/ bezocht wordt.
+  DE INSTELLINGEN WAREN AL GOED en zijn NIET aangepast: machine-translation ja,
+  automatically-translate-slug ja, SEO Pack aan, licentie geldig, vier talen
+  gepubliceerd. De filter trp_machine_translate_slug geeft daardoor true.
+  ECHTE BLOKKADE - DE VERTAALBUNDEL IS OP. Een rechtstreeks verzoek aan
+  mtapi.translatepress.com gaf HTTP 200 met
+  {"message":"Slim Application Error", ... "Insufficient quota."} en de
+  transient trp_mtapi_cached_quota staat op '0'. is_correct_api_key() geeft
+  daarom false en translate() een lege array. Dat verklaart het hele patroon:
+  Engels is gedaan toen er nog tegoed was, Frans en Duits bleven liggen.
+  machine_translation_limit (1.000.000) is de LOKALE teller en staat los van
+  het tegoed bij TranslatePress - die lokale teller meldt netjes
+  quota_exceeded() = false terwijl de server het verzoek weigert. Kijk dus
+  naar het serverantwoord, niet naar de instelling.
+  DAAROM MET DE HAND GESCHREVEN, niet machinaal: 52 Franse en 50 Duitse slugs
+  via TRP_Slug_Query::insert_slugs() met status machine_translated en het type
+  uit trp_slug_originals. Alleen ontbrekende rijen; het script slaat bestaande
+  over en is dus herhaalbaar. Beide talen staan nu op 76/76 (Engels nog 75 -
+  'home' ontbreekt daar).
+  MERKNAMEN BEWUST ONVERTAALD: veloretti, yakult, lotus, jysk, easyflex,
+  kaleido, mismatched, ben-jerrys, dhl-parcel, mcdonalds-belgium,
+  forfarmers-reudink, vodafoneziggo, de-halm, werthers-original-x-ava-may en
+  emirates-great-britain-sailgp-team. Het generieke deel van een naam gaat wel
+  mee: porsche-centrum-amsterdam wordt porsche-centre-amsterdam (fr) en
+  porsche-zentrum-amsterdam (de).
+  DE TWEE EERDER GEMELDE VERTAALFOUTEN ZIJN HIERIN MEEGENOMEN: kaartjes wordt
+  nu cartes (fr) en karten (de), en niet meer het eerdere Billets/Tickets
+  (toegangsbewijzen). Die fout zat in de woordenlijst, deze slugs zijn nieuw.
+  GEVERIFIEERD: 12 nieuwe URL's in beide talen geven 200
+  (/fr/contact/merci-pour-votre-devis/, /fr/durabilite/, /fr/mentions-legales/,
+  /de/nachhaltigkeit/, /de/optionen/karten/ ...), en de OUDE Nederlandse
+  adressen blijven werken - WordPress stuurt ze met een 301 door naar de
+  vertaalde versie (/fr/duurzaamheid/ -> /fr/durabilite/). Gedeelde of
+  geindexeerde links breken dus niet.
+  NIET AANGERAAKT, WEL GEMELD - bestaande rijen met een twijfelachtige
+  vertaling. Ze veranderen een URL die al in omloop kan zijn, dus dat is een
+  besluit van de klant:
+    skisokken      de = skischuhe        (= skischoenen, moet skisocken zijn;
+                                          dezelfde fout is eerder al in het
+                                          Duitse woordenboek gecorrigeerd)
+    kerstsokken    fr = bonnets-de-noel  (= kerstmutsen, moet
+                                          chaussettes-de-noel zijn)
+    waarom-sokkies de = warum-socken     (merknaam Sokkies valt weg)
+                   fr = pourquoi-des-chaussettes  (idem)
+    offerte        fr = offerte          ("offerte" is in het Frans een
+                                          bijvoeglijk naamwoord; devis is het
+                                          woord voor een offerte)
+    sample-request fr = demande-de-echantillon  (elisie: demande-d-echantillon)
+  LET OP - DIT IS DATABASE EN DEPLOYT NIET MEE. De slugs staan in
+  wp_trp_slug_translations; ze bereiken dev/live alleen via de WP Migrate
+  DB-sync. Back-up van beide slugtabellen vóór de wijziging staat in de
+  scratchpad (slug-backup.sql), dus terugdraaien kan.
+  WIL IEMAND HET ALSNOG MACHINAAL LATEN DOEN: tegoed bijvullen bij
+  TranslatePress en dan het bestaande pad gebruiken - de functie
+  machine_translate_missing_slugs() doet precies dit werk zodra er quota is.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
