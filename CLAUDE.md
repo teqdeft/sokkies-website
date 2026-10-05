@@ -4707,6 +4707,52 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   ALLES HIERBOVEN IS DATABASE (termen, koppelingen en woordenboeken) en deployt
   dus NIET mee - het bereikt dev alleen via de WP Migrate DB-sync.
 
+  META DESCRIPTIONS VOOR DE HELE SITE (2026-10-05, verzoek Kulwant: "add meta
+  description for all pages in cms").
+  HET VELD BESTOND AL: Yoast SEO is actief, dus elke pagina heeft onderin het
+  bewerkscherm het Yoast-blok met Meta-omschrijving. Er hoefde dus niets
+  gebouwd te worden - wat ontbrak was de INHOUD.
+  WAAROM DAT HIER ERGER IS DAN NORMAAL: Yoast valt bij een leeg veld terug op
+  de samenvatting of de post_content, en die is op deze site ALTIJD leeg (de
+  pagina's worden uit de ACF-secties opgebouwd, niet uit de editor). Gevolg:
+  een pagina zonder ingevuld veld kreeg helemaal GEEN <meta name="description">
+  mee - niet een slechte, maar geen. Nagemeten op de voorkant voor de
+  wijziging: 43 gepubliceerde items zonder tag.
+    page             9 van 34   ->  33 van 34
+    sokkies_case     0 van 16   ->  16 van 16
+    sokkies_blog    10 van 12   ->  12 van 12
+    sokkies_soktype 11 van 11   ->  11 van 11 (stond al goed)
+  42 OMSCHRIJVINGEN GESCHREVEN UIT DE EIGEN COPY van elke pagina (de subtekst
+  van de paginakop, de kaart-ondertitel van een case, de intro van een blog) -
+  dus geen verzonnen claims. Allemaal tussen 70 en 158 tekens, zodat Google ze
+  niet afkapt. Meta-sleutel: _yoast_wpseo_metadesc.
+  BEWUST OVERGESLAGEN: pagina 1603 "Flexibele pagina". Dat is een
+  demo/sjabloonpagina met opvultekst; een omschrijving helpt die juist
+  indexeren en dat is precies niet de bedoeling.
+  VERTALEN GAAT VANZELF, MAAR PAS NA EEN PAGINABEZOEK: nieuwe Nederlandse
+  tekst is nieuwe onvertaalde tekst. Daarom alle 73 pagina's in nl/en/de/fr
+  aangelopen (292 verzoeken); TranslatePress registreert en vertaalt de
+  omschrijving dan tijdens het renderen. Een controleronde daarna vond 0
+  openstaande rijen. Kosten van deze hele ronde inclusief vertalen: ongeveer
+  15.000 woorden van het tegoed.
+  EEN ECHTE VERTAALFOUT GEVONDEN EN GECORRIGEERD: het Duits maakte van
+  "offerte" PREISEMPFEHLUNG (adviesprijs). Dat is niet alleen fout, het botst
+  ook met de site zelf, die elders al Angebot gebruikt - de Duitse slug is
+  /de/angebot/. Twee rijen hersteld naar "Fordern Sie ein unverbindliches
+  Angebot fuer Ihre bedruckten Socken an" en op status 2 gezet, zodat een
+  volgende machineronde het niet terugdraait. LES: machinevertaling kent je
+  eigen vakjargon niet; loop de kernbegrippen per taal na.
+  TWEE DINGEN OM VOOR TE LEGGEN. (1) De drie bedankpagina's hebben nu wel een
+  omschrijving, maar horen eigenlijk op NOINDEX - een bedankpagina hoort niet
+  in Google. Dat is een zichtbaarheidskeuze, dus niet ongevraagd gedaan; het
+  is drie vinkjes in Yoast. (2) Zes cases hebben hun BRONTEKST in het Engels
+  ("De Halm was looking for socks...", "ForFarmers is an international
+  company..."). Nederlands is de brontaal, dus die tonen Engels op de
+  Nederlandse site.
+  DATABASE, DUS GEEN DEPLOY: de omschrijvingen staan in postmeta en de
+  vertalingen in de woordenboektabellen. Ze bereiken dev alleen via de
+  WP Migrate DB-sync.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
