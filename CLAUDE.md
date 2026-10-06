@@ -4753,6 +4753,36 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   vertalingen in de woordenboektabellen. Ze bereiken dev alleen via de
   WP Migrate DB-sync.
 
+  DE LOKALE SERVER VALT ELKE KEER UIT - OORZAAK GEVONDEN (2026-10-06, na de
+  vierde keer "start local server" in twee dagen).
+  NIET MYSTERIEUS, WEL HARDNEKKIG. Apache en MariaDB draaien hier NIET als
+  Windows-service - nagemeten: Get-Service op Apache*/mysql*/maria* geeft niets.
+  Ze worden dus per keer als los proces gestart, en in de procesboom hebben ze
+  allebei dezelfde ouder:
+    mysqld.exe   PID 4788    parent 17156
+    httpd.exe    PID 1956    parent 17156
+  PID 17156 is de PowerShell waarin de start-opdracht liep, en die is na afloop
+  van die ene opdracht al weg. Windows ruimt de kinderen mee op. Elke start is
+  dus gebonden aan een shell die seconden leeft; dat haalt per definitie de
+  volgende opdracht niet. De eerder genoteerde "oorzaak niet achterhaald" is
+  hiermee afgesloten.
+  DE STRUCTURELE OPLOSSING IS EENMALIG EN VRAAGT BEHEERDERSRECHTEN, die deze
+  sessie niet heeft (IsInRole(Administrator) = False, nagemeten). Dus zelf doen,
+  via het XAMPP-bedieningspaneel (vinkje "Service" bij Apache en MySQL) of in
+  een PowerShell als beheerder:
+    C:\xampp\apache\bin\httpd.exe -k install
+    C:\xampp\mysql\bin\mysqld.exe --install mysql --defaults-file=C:\xampp\mysql\bin\my.ini
+  Daarna starten met Start-Service Apache2.4 / Start-Service mysql, en blijven
+  ze ook na een herstart staan.
+  TOT DAN, het commando dat hier werkt (los gestart, dus tijdelijk):
+    Start-Process C:\xampp\mysql\bin\mysqld.exe -ArgumentList
+      "--defaults-file=C:\xampp\mysql\bin\my.ini","--standalone" -WindowStyle Hidden
+    Start-Process C:\xampp\apache\bin\httpd.exe -WindowStyle Hidden
+  LET OP BIJ HET CONTROLEREN: MariaDB heeft na het starten een paar seconden
+  nodig. Een directe controle gaf "The operation has timed out" terwijl beide
+  processen al draaiden; een tel later gaf dezelfde URL gewoon 200. Een enkele
+  mislukte controle is hier dus geen bewijs dat de start faalde - poll even.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
