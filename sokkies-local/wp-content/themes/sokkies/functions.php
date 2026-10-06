@@ -2325,3 +2325,37 @@ function sokkies_merknaam_niet_vertalen( $woorden ) {
 	return $woorden;
 }
 add_filter( 'trp_exclude_words_from_automatic_translation', 'sokkies_merknaam_niet_vertalen' );
+
+/**
+ * Een gedownload bestand niet door de vertaalmolen halen.
+ *
+ * Gravity Forms serveert een geuploade bijlage via index.php:
+ * ?gf-download=...&form-id=..&field-id=..&entry-id=..&hash=.. Dat loopt dus
+ * door de hele WordPress-bootstrap, inclusief de uitvoerbuffer van
+ * TranslatePress. Die buffer parseert de respons als HTML en schrijft hem
+ * daarna opnieuw weg - op een PNG is dat fataal.
+ *
+ * GEMETEN op een echte upload (3.png, 372.875 bytes): na translate_page()
+ * bleven er 4.955 bytes over, veranderde de PNG-signatuur van
+ * 89504e470d0a1a0a in 89504e470d0a0a0d en stonden er 12 keer &amp; in de
+ * binary. Precies wat de browser liet zien: "cannot be displayed because it
+ * contains errors". Een plaatje met XMP-metadata bevat <x:xmpmeta> en
+ * <rdf:...>-tags, dus voor een HTML-parser ziet zo'n bestand er uit als een
+ * document.
+ *
+ * trp_stop_translating_page is de haak die TranslatePress daar zelf voor
+ * heeft (class-translation-render.php, begin van translate_page).
+ *
+ * LET OP: dit dekt alleen de downloadlink van Gravity Forms. Elke andere
+ * route die binaire data via index.php uitstuurt loopt hetzelfde risico;
+ * die moet hier dan ook bij.
+ */
+function sokkies_download_niet_vertalen( $stoppen ) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- we kijken alleen of de parameter bestaat.
+	if ( isset( $_GET['gf-download'] ) ) {
+		return true;
+	}
+
+	return $stoppen;
+}
+add_filter( 'trp_stop_translating_page', 'sokkies_download_niet_vertalen' );

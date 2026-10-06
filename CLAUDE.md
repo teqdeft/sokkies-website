@@ -4978,6 +4978,37 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   DATABASE en bereiken dev alleen via de WP Migrate DB-sync. Terugdraai-SQL
   per onderdeel staat in de scratchpad (slug-*, mon-*, pr-*, lijst-*, merk-*,
   desc-*, d2-*, d3-*, woord-backup.sql).
+
+  GEUPLOAD BESTAND KWAM KAPOT UIT DE MAIL (2026-10-06, melding Kulwant met de
+  beheerdersmail van een offerte en de browser erbij: "The image ... cannot be
+  displayed because it contains errors").
+  Gravity Forms serveert een bijlage via index.php:
+  ?gf-download=...&form-id=..&field-id=..&entry-id=..&hash=..  Dat verzoek gaat
+  dus door de hele WordPress-bootstrap heen, inclusief de UITVOERBUFFER van
+  TranslatePress. Die parseert de respons als HTML en schrijft hem opnieuw weg.
+  Op een PNG is dat fataal.
+  GEMETEN, lokaal op een echte upload (3.png):
+    bytes        372.875  ->  4.955
+    signatuur    89504e470d0a1a0a  ->  89504e470d0a0a0d
+    en 12x &amp; midden in de binaire data
+  Die kapotte signatuur is exact wat de dev-server teruggaf, dus het is
+  dezelfde oorzaak en geen toeval.
+  WAAROM EEN PLAATJE VOOR HTML WORDT AANGEZIEN: een PNG met XMP-metadata bevat
+  <x:xmpmeta> en <rdf:...>-tags. TP kijkt alleen of er tags in de respons
+  staan (is_html in class-translation-render.php), niet naar de Content-Type.
+  FIX in functions.php: sokkies_download_niet_vertalen() op de haak
+  trp_stop_translating_page, die TranslatePress daar zelf voor heeft (eerste
+  regel van translate_page). Bij een gf-download-verzoek blijft de uitvoer
+  onaangeraakt.
+  GEVERIFIEERD door translate_page() rechtstreeks aan te roepen: zonder de
+  parameter wordt de PNG nog steeds verminkt (4.955 bytes), met de parameter
+  komt hij er byte-identiek uit (372.875, signatuur goed, 0x &amp;). Pagina's
+  vertalen gewoon door - nl/en/de/fr titels ongewijzigd, 0 PHP-fouten.
+  LET OP: dit dekt alleen de downloadlink van Gravity Forms. Elke andere route
+  die binaire data via index.php uitstuurt loopt hetzelfde risico. Een
+  algemene regel op Content-Type is bewust NIET genomen: dan zou TP ook geen
+  feeds of andere niet-HTML-uitvoer meer vertalen, en dat is een grotere
+  ingreep dan deze melding rechtvaardigt.
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
