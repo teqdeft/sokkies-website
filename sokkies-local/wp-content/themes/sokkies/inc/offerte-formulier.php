@@ -1235,6 +1235,10 @@ add_filter( 'acf/load_field/key=field_si_extra_naam', function ( $veld ) {
 	$veld['multiple']      = 0;
 	$veld['ajax']          = 0;
 	$veld['return_format'] = 'value';
+	/* En deze twee voor ACF EXTENDED, dat ze zonder isset() uitleest
+	   (field-select.php 196/201) - zelfde soort melding, andere plugin. */
+	$veld['search_placeholder'] = '';
+	$veld['allow_custom']       = 0;
 	return $veld;
 } );
 

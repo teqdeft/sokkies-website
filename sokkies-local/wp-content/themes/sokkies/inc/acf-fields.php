@@ -2798,6 +2798,11 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 						'multiple'     => 1,
 						'ui'           => 1,
 						'allow_null'   => 1,
+						/* ACF Extended leest deze twee ZONDER isset() uit
+						   (field-select.php 196/201), dus zonder ze logt elke
+						   keer dat dit scherm rendert een Undefined array key. */
+						'search_placeholder' => '',
+						'allow_custom'       => 0,
 						'instructions' => 'Leeg = de optie staat er altijd. Kies je een of meer soktypes, dan verschijnt de kaart alleen als de bezoeker in stap 1 zo&#039;n sok kiest — en verdwijnt hij weer als hij iets anders kiest.',
 					),
 				),

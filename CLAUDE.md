@@ -3341,6 +3341,50 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   daarna, en een oude inzending leest daarna een andere optie dan er destijds
   is gekozen. Via de beheerschermen van Gravity Forms gebeurt dat niet.
 
+  LABEL IN HET FORMULIER HERNOEMD - NIETS GEBROKEN, EN DE ECHTE HIAAT GEVONDEN
+  (2026-10-06, melding Kulwant met een schermafbeelding van Website-instellingen
+  > Aanvullende opties: "antislip label changed in form, make functionality work
+  with this now"). De keuze heet in Gravity Forms nu "Antislip op maat".
+  DE HERNOEMING HEEFT NIETS GEBROKEN, en dat is precies de opzet van 2026-09-28:
+  de code vergelijkt nergens met een vastgelegd label. Het CMS-veld "Optie" is
+  een keuzelijst die uit Gravity Forms wordt gevuld, de rij bewaart de WAARDE en
+  het veld zelf wordt op cssClass (of-extras) gevonden. Hernoemt iemand een
+  keuze, dan staat de nieuwe naam gewoon in de lijst; alleen de BESTAANDE rij
+  wijst nog naar de oude waarde en moet een keer opnieuw gekozen worden - dat was
+  hier al gedaan, dus rij 6 stond goed.
+  WAT WEL MIS WAS: "Frills" had GEEN soktypes staan en was dus onvoorwaardelijk,
+  terwijl R2-4.4 beide opties aan Antislip + Yoga & pilates bindt. Alleen
+  "Antislip op maat" was ingevuld. Rij 7 nu ook op die twee soktypes gezet.
+  GEMETEN met de echte servervalidatie op ingezonden waarden:
+    soktype Sport           antislip=verwijderd  frills=verwijderd  labels=BLIJFT
+    soktype Antislip        antislip=BLIJFT      frills=BLIJFT      labels=BLIJFT
+    soktype Yoga & pilates  antislip=BLIJFT      frills=BLIJFT      labels=BLIJFT
+    soktype Kerst           antislip=verwijderd  frills=verwijderd  labels=BLIJFT
+  En in de browser op /nl/offerte/, stap voor stap: verse pagina beide kaarten
+  verborgen, Antislip aanvinken maakt ze zichtbaar, Antislip weer uit verbergt ze
+  EN vinkt ze uit (Labels blijft staan), Yoga & pilates maakt ze opnieuw
+  zichtbaar. De HTML draagt nu 2 kaarten met data-alleen-bij en nog steeds exact
+  1 grijs vlak (dat van "Geen extra's").
+  LES BIJ HET TESTEN: zoek de kaart niet op de ZICHTBARE tekst. Op /en/ vertaalt
+  TranslatePress het label, dus zoeken op "Antislip op maat" vindt daar niets;
+  input.value blijft in elke taal Nederlands. Zelfde regel als bij de "Geen
+  extra's"-fix van 2026-09-22.
+  BIJNA EEN VALSE MELDING: bij het uitvinken leek "Geen extra's" niet terug te
+  komen. In Gravity Forms staat "Labels" standaard aangevinkt, dus er WAS nog een
+  extra geselecteerd en hoort de terugval niet te vuren. Eerst de echte
+  aangevinkte stand lezen, dan pas concluderen.
+  ADMINMELDINGEN GEDEMPT (zelfde ronde): ACF EXTENDED leest search_placeholder en
+  allow_custom ZONDER isset() uit (field-select.php 196/201), dus elke keer dat
+  Website-instellingen rendeerde logde het twee Undefined array key-meldingen per
+  selectveld. Beide keys staan nu expliciet in field_si_extra_types
+  (inc/acf-fields.php) en in de load_field-filter op field_si_extra_naam
+  (inc/offerte-formulier.php). Het waren ALLEEN adminmeldingen: een front-endload
+  van /nl/offerte/ logde er nul, voor en na.
+  LET OP - DE SOKTYPES VAN FRILLS ZIJN DATABASE en deployen niet mee. De twee
+  PHP-bestanden reizen met de push; de rij op Website-instellingen > Aanvullende
+  opties moet op dev/live nog gevuld worden (of meekomen met de WP Migrate
+  DB-sync). Zonder die stap is "Frills" daar nog onvoorwaardelijk zichtbaar.
+
 
   HINT "MAX. 2 SELECTEERBAAR" PAS BIJ EEN GEWEIGERDE DERDE KLIK (2026-09-28,
   R2-5 met een schermafbeelding van /nl/sample-request/: de regel staat er
