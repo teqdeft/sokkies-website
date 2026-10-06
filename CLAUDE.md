@@ -5009,6 +5009,42 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   algemene regel op Content-Type is bewust NIET genomen: dan zou TP ook geen
   feeds of andere niet-HTML-uitvoer meer vertalen, en dat is een grotere
   ingreep dan deze melding rechtvaardigt.
+
+  URL IN DE BEHEERDERSMAIL HAD HET TAALVOORVOEGSEL MET DE NEDERLANDSE SLUG
+  (2026-10-06, melding Kulwant met een schermafbeelding van de mail: de regel
+  URL wees naar /en/aanvraag-voor-een-monster/).
+  HET TRACKINGVELD DEED NIETS FOUT: het staat in Gravity Forms op {embed_url},
+  en die merge tag bouwt de URL uit $_SERVER['REQUEST_URI']
+  (forms_model.php, get_current_page_url). TranslatePress heeft die op dat
+  moment al herschreven naar het NEDERLANDSE pad, anders vindt WordPress de
+  pagina niet. Het veld legde dus keurig vast wat er in REQUEST_URI stond.
+  GEMETEN, op dev en lokaal, op allebei de formulieren en in alle talen:
+    bezoeker op /en/sample-request/           -> /en/aanvraag-voor-een-monster/
+    bezoeker op /de/anforderung-fur-ein-...   -> /de/aanvraag-voor-een-monster/
+    bezoeker op /fr/demande-pour-un-...       -> /fr/aanvraag-voor-een-monster/
+    bezoeker op /en/quote/                    -> /en/offerte/
+  Alleen de Nederlandse pagina's klopten, want daar is de slug het origineel.
+  FIX in inc/offerte-formulier.php: sokkies_form_url_veld() op gform_pre_render
+  zet de defaultValue van het veld op de echte URL. Die komt uit
+  cur_page_url( true ) van TranslatePress (dezelfde URL MET vertaalde slugs),
+  met get_permalink() op het opgevraagde object als terugval en REQUEST_URI als
+  laatste redmiddel.
+  HET VELD WORDT HERKEND AAN defaultValue === '{embed_url}' en niet aan het
+  label: een label is redactionele tekst, de merge tag is de afspraak. Zo
+  werken beide formulieren zonder veld-id's in de code.
+  GEVERIFIEERD met een echte inzending (uitgaande mail geblokkeerd met een
+  tijdelijke mu-plugin, inzending en mu-plugin daarna verwijderd): alle 8
+  combinaties van formulier x taal renderen nu hun eigen canonieke URL, de
+  opgeslagen inzending bevat /en/sample-request/ en de beheerdersmail toont
+  diezelfde URL.
+  LET OP, NOG NIET GELIJKGETROKKEN: de EIGEN kolom source_url van Gravity Forms
+  bevat nog wel het oude patroon (/en/aanvraag-voor-een-monster/). Die wordt
+  door GF zelf bij het opslaan gevuld, uit dezelfde REQUEST_URI. Hij is alleen
+  intern zichtbaar (inzendingenscherm) en sokkies_form_taal() leest hem om de
+  mailtaal te bepalen - dat blijft goed werken, want het taalvoorvoegsel staat
+  er gewoon in. BEWUST NIET AANGEPAST: source_url bijstellen raakt precies die
+  taaldetectie, en dat risico weegt niet op tegen een regel die de klant niet
+  ziet. Wie het alsnog wil: overnemen uit het URL-veld bij gform_entry_pre_save.
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

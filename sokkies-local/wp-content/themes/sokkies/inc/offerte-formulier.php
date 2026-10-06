@@ -1838,3 +1838,69 @@ add_filter( 'gform_next_button', function ( $knop, $form ) {
 
 	return $overslaan . $knop;
 }, 10, 2 );
+
+/**
+ * Het URL-trackingveld de ECHTE pagina-URL geven.
+ *
+ * Dat veld staat in Gravity Forms op {embed_url}, en die merge tag bouwt de
+ * URL uit $_SERVER['REQUEST_URI'] (forms_model.php, get_current_page_url).
+ * TranslatePress heeft die op dat moment al herschreven naar het NEDERLANDSE
+ * pad, want anders vindt WordPress de pagina niet. Gevolg: in de
+ * beheerdersmail stond het taalvoorvoegsel met de Nederlandse slug erachter.
+ * Gemeten op dev en lokaal, op allebei de formulieren:
+ *   bezoeker op /en/sample-request/  ->  /en/aanvraag-voor-een-monster/
+ *   bezoeker op /de/anforderung-...  ->  /de/aanvraag-voor-een-monster/
+ *   bezoeker op /en/quote/           ->  /en/offerte/
+ * Gemeld door Kulwant met een schermafbeelding van de mail.
+ *
+ * cur_page_url( true ) van TranslatePress geeft de URL MET vertaalde slugs;
+ * dat is precies wat hier nodig is. get_permalink() op het opgevraagde
+ * object is de terugval, en daarna pas REQUEST_URI.
+ *
+ * HET VELD WORDT HERKEND AAN ZIJN defaultValue en niet aan het label: een
+ * label is redactionele tekst die kan veranderen, {embed_url} is de afspraak.
+ */
+function sokkies_form_pagina_url() {
+	if ( class_exists( 'TRP_Translate_Press' ) ) {
+		$trp = TRP_Translate_Press::get_trp_instance();
+		$omzetter = $trp ? $trp->get_component( 'url_converter' ) : null;
+
+		if ( $omzetter && method_exists( $omzetter, 'cur_page_url' ) ) {
+			$url = $omzetter->cur_page_url( true );
+			if ( ! empty( $url ) ) {
+				return $url;
+			}
+		}
+	}
+
+	$id = get_queried_object_id();
+	if ( $id ) {
+		$url = get_permalink( $id );
+		if ( ! empty( $url ) ) {
+			return $url;
+		}
+	}
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- direct door esc_url_raw.
+	return isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( home_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) : home_url();
+}
+
+function sokkies_form_url_veld( $form ) {
+	if ( ! sokkies_form_eigen_opmaak( $form ) ) {
+		return $form;
+	}
+
+	$url = sokkies_form_pagina_url();
+	if ( empty( $url ) ) {
+		return $form;
+	}
+
+	foreach ( $form['fields'] as $veld ) {
+		if ( isset( $veld->defaultValue ) && '{embed_url}' === trim( (string) $veld->defaultValue ) ) {
+			$veld->defaultValue = $url;
+		}
+	}
+
+	return $form;
+}
+add_filter( 'gform_pre_render', 'sokkies_form_url_veld' );
