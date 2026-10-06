@@ -4859,6 +4859,125 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   een productnaam te vallen - dat is inhoud die erlangs schuift, niet een
   overlap. Meet bij volledige scroll, niet halverwege.
 
+
+  EERSTE KEUZE VAN EEN KEUZEVELD BLEEF OVERAL NEDERLANDS (2026-10-06, melding
+  Kulwant met een schermafbeelding van /offerte/ stap 1 waarop "Regulier" rood
+  omcirkeld staat: "translation not working on this").
+  HET LAG AAN ONZE EIGEN CODE, niet aan TranslatePress. inc/formulier-talen.php
+  vertaalt de VELDLABELS uit onze eigen kaart (sokkies_form_labels) en zet er
+  daarna data-no-translation op, zodat TP die vertaalde tekst niet nog een keer
+  als bronstring oppakt - de reden staat al in het blok erboven ("Province"
+  werd anders "County"). Maar bij een KEUZEVELD staat het veldlabel in een
+  <legend> en niet in een <label>. Het eerste <label>-blok dat de regex vindt
+  is dus de EERSTE KEUZE. Daar valt niets te vervangen, en toch kreeg dat label
+  de markering - waarmee we TP opdroegen juist die ene kaart met rust te laten.
+  Vandaar "Regulier" naast "Sports", "Bamboo", "Christmas".
+  HET WAS NOOIT HET WOORD: het is altijd de eerste keuze van zo'n veld,
+  ongeacht welke dat is. Het woordenboek had de vertaling gewoon staan -
+  nagemeten via de query-component van TP zelf: Regular / Regulaer / Normal.
+  FIX: alleen markeren als er ook echt iets vertaald is. Een vlag erbij, de
+  rest van het filter ongemoeid.
+  GEVERIFIEERD dat de dubbelvertaling NIET terugkomt (daar is het attribuut
+  immers voor): de veldlabels komen nog steeds uit onze kaart en precies een
+  keer - Firmenname / Postleitzahl / Hausnummer, en Province / Provinz /
+  Province zonder "County". Offerte en sample in nl/en/de/fr 200, 0 PHP-fouten.
+  VIER FOUTE WOORDEN DIE DAARBIJ BOVENKWAMEN (woordenboek, dus database):
+    de 'Werk'             stond op 'Werk'                 -> 'Arbeit'
+    de 'Zorg'             stond op 'Sorge' (bezorgdheid)  -> 'Pflege'
+    fr 'Zorg'             stond op 'Zorg'                 -> 'Soin'
+    de 'Reguliere sokken' stond op 'Regulierende Socken'  -> 'Regulaere Socken'
+    fr 'Zorgsokken'       stond op 'Chaussettes de zorg'  -> 'Chaussettes de soin'
+  De bewoording is niet verzonnen: het sampleformulier gebruikte al
+  Arbeitssocken en Pflegesocken, dus dat is aangehouden.
+  LET OP: 'Werk' en 'Zorg' zijn LOSSE woorden in het woordenboek. Hun vertaling
+  geldt overal waar die string op zichzelf staat, niet alleen op deze kaartjes.
+
+  MERKNAAM WERD VERTAALD (2026-10-06, feedbacklijst via Rick/Lennart, 109
+  rijen). De lijst noemde 20 meta titles waarin "Sokkies" als gewoon woord was
+  vertaald ("Contact - Socken", "Sample requests - Socks"). GEMETEN voordat er
+  iets gebeurde: het waren er 251 - 103 en_GB, 67 de_DE, 81 fr_FR - van
+  paginatitels tot lopende tekst ("Team Socks") en zelfs "Sokki-Handschuhe"
+  (= handschoenen).
+  TWEE SPOREN, en dat onderscheid is het belangrijkste van deze ronde:
+  (1) DE OORZAAK, IN CODE EN DUS MEEDEPLOYEND: functions.php haakt nu op
+      trp_exclude_words_from_automatic_translation en zet 'Sokkies' op die
+      lijst. TranslatePress vervangt zulke woorden door een plaatshouder
+      voordat de zin naar de vertaalmachine gaat en zet ze daarna onvertaald
+      terug (class-machine-translator.php r580 en r616). Zo kan de merknaam
+      bij een volgende ronde niet meer sneuvelen. BEWUST NIET via het
+      TP-instellingenscherm: dat schrijft naar de database en die deployt hier
+      niet mee.
+  (2) DE BESTAANDE SCHADE, IN DE DATABASE: 220 titels hersteld met een
+      deterministische regel - eindigt het NEDERLANDSE origineel op een
+      scheidingsteken plus Sokkies, dan wordt in de vertaling alles na het
+      laatste scheidingsteken 'Sokkies'. Plus de kale merkstring zelf, die de
+      sitenaam overal voedt (stond op Socks/Socken/Chaussettes). Alles op
+      status 2, zodat een vertaalronde het niet terugdraait.
+  BEWUST NIET AUTOMATISCH: 27 strings waar het merk MIDDEN in de zin staat.
+  Daar is "socks"/"Socken"/"chaussettes" vaak ook gewoon het product
+  ("Sokkies socks are made from...", "nike sportsokken vs sokkies sportsokken"),
+  dus een vervangregel zou echte woorden slopen. Die moeten per string.
+  LES: meet de omvang voordat je een lijst afwerkt. Rijen 1-98 van de
+  feedbacklijst waren na deze ene pass al klaar; alleen 99-109 was nog werk.
+
+  WRONG-WORD-VONDSTEN NAAST HET MERK (2026-10-06, zelfde ronde). Bij het
+  controleren bleken er vertalingen te staan die het verkeerde PRODUCT noemen.
+  Dat is schadelijker dan een merknaam die raar oogt:
+    de  'Skischuhe bedrucken...'      = skischoenen, op de skisokken-pagina
+    de  'Sokki-Handschuhe | Handschuhe bedrucken...' = handschoenen, home-titel
+    de  'Partys: Socken und der Kunde' = feestjes, in de algemene voorwaarden
+    fr  'Un chausson de sport'         = pantoffel, in de JYSK-case
+    fr  'chaussettes a motifs'         = gedessineerd, in de Frills-titel
+  De meta descriptions uit rij 99-109 zijn wel hersteld (Frills in vier talen,
+  Antirutsch-Socken, Unterschiedliche Socken, dépareillées, 'at Sokkies',
+  'care design', 'Sanquin Blood Banks') plus drie taalfouten in diezelfde
+  zinnen (Auffaelliger, une meme histoire, Fordern Sie ... an). De vijf
+  hierboven staan nog open: ze stonden niet op de lijst en vragen een besluit.
+
+  EEN SLUG ZIT OP DRIE PLEKKEN - DE VALKUIL VAN DEZE DAG (2026-10-06, drie
+  rondes slugcorrecties van Kulwant).
+  WIE EEN SLUG WIJZIGT MOET ALLE DRIE BIJWERKEN, anders lijkt het te werken en
+  breekt het ergens anders:
+    1. post_name van de post zelf
+    2. {prefix}trp_slug_originals.original - TP matcht de URL-SEGMENTEN hierop
+       op STRING; in die tabel staat geen post-id
+    3. {prefix}trp_slug_translations.translated, per taal
+  Op /opties/antislip-op-maat/ kostte dat drie pogingen: eerst de vertaalrij
+  (de URL ging daarna 301 naar het fotobestand), toen de post_name (404 op een
+  nieuwe slug), en pas het bijwerken van het ORIGINEEL loste het op.
+  WAT DE NAAM BEZET HIELD was telkens iets onverwachts:
+    - antislip-op-maat : een AFBEELDING op diezelfde pagina
+      (custom-anti-slip.png, bijlage #1920) hield 'custom-anti-slip' bezet.
+      Hernoemd naar custom-anti-slip-image; het bestandspad
+      (_wp_attached_file) verandert daar niet van, alleen de bijlagepagina.
+    - sample-request en privacy : een WEES in trp_slug_originals - de vorige
+      Nederlandse slug van diezelfde pagina, die TP zelf als "(inactive)"
+      toont. Bij sample-request stond de ENGELSE vertaling daarvan bovendien
+      op de Nederlandse tekst ('aanvraag-voor-een-monster'), precies de naam
+      die de pagina wilde. Wees plus vertalingen verwijderd.
+  OUDE URL'S KRIJGEN GEEN 301: wp_old_slug_redirect vuurt niet onder de
+  routering van TranslatePress - geprobeerd en gemeten op
+  /nl/aanvraag-voor-een-monster-2/, daarna de meta weer weggehaald omdat hij
+  niets deed. Reken er dus op dat een gewijzigde slug de oude URL dood maakt.
+  BEWUST GEEN oude-slug-redirect op een naam die nu in een ANDERE taal in
+  gebruik is (sample-request is nu de Engelse slug) - dan kaapt die redirect
+  juist de pagina die je net goed hebt gezet. Precies zo brak
+  /en/options/custom-anti-slip/ eerder op de dag.
+  OOK GEDAAN in dezelfde rondes (allemaal database): case Trouwsokken, case
+  De Halm (en: the-straw -> de-halm), optie Mismatched (en/de/fr), optie
+  Frills (nl: frills -> ruches), privacy (en/fr zonder -2).
+  LET OP, EEN OPEN TEGENSTRIJDIGHEID: de lijst vroeg de Nederlandse slug
+  'frills' te vervangen door 'ruches' (Engels woord in een NL-url), maar vroeg
+  twee rijen later de omschrijving "Ruchesokken" te vervangen door "Frills
+  sokken". De pagina heet nu dus /nl/opties/ruches/ en noemt het product
+  "Frills". Voorgelegd, niet zelf beslist.
+
+  WAT HIERVAN MEEDEPLOYT: alleen functions.php (merknaam-uitsluiting) en
+  inc/formulier-talen.php (de eerste-keuze-fix). De slugs, de 223 herstelde
+  vertalingen, de meta descriptions en de soktype-woorden zitten in de
+  DATABASE en bereiken dev alleen via de WP Migrate DB-sync. Terugdraai-SQL
+  per onderdeel staat in de scratchpad (slug-*, mon-*, pr-*, lijst-*, merk-*,
+  desc-*, d2-*, d3-*, woord-backup.sql).
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam

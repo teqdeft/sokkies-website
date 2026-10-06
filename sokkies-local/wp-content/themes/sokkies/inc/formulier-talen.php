@@ -573,9 +573,11 @@ add_filter(
 		return preg_replace_callback(
 			'#<label\b[^>]*>.*?</label>#s',
 			function ( $blok ) use ( $labels, $schoon ) {
+				$vervangen = false;
+
 				$uit = preg_replace_callback(
 					'/>([^<]+)</',
-					function ( $tekst ) use ( $labels, $schoon ) {
+					function ( $tekst ) use ( $labels, $schoon, &$vervangen ) {
 						$ruw = html_entity_decode( $tekst[1], ENT_QUOTES, 'UTF-8' );
 						if ( trim( $ruw ) !== $schoon ) {
 							return $tekst[0];
@@ -586,10 +588,24 @@ add_filter(
 						   scheidt; die viel er met een kale trim vanaf. */
 						preg_match( '/^(\s*).*?(\s*)$/s', $ruw, $rand );
 
+						$vervangen = true;
+
 						return '>' . $rand[1] . esc_html( $labels[ $schoon ] ) . $rand[2] . '<';
 					},
 					$blok[0]
 				);
+
+				/* ALLEEN markeren als er hier ook echt iets vertaald is.
+				   Bij een keuzeveld staat het veldlabel in een <legend> en niet in
+				   een <label>, dus het eerste <label>-blok dat deze regex vindt is
+				   de EERSTE KEUZE. Daar valt niets te vervangen, maar een eerdere
+				   versie plakte er toch data-no-translation op. Gevolg: juist die
+				   ene keuze bleef in elke taal Nederlands staan -- "Regulier"
+				   naast "Sports", "Bamboo", "Christmas". Gemeld door Kulwant op
+				   het offerteformulier. */
+				if ( ! $vervangen ) {
+					return $blok[0];
+				}
 
 				return preg_replace( '/<label\b/', '<label data-no-translation', $uit, 1 );
 			},

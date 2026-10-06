@@ -2296,3 +2296,32 @@ function sokkies_pagina_foto( $post_id ) {
 
 	return 0;
 }
+
+/**
+ * De merknaam nooit laten vertalen.
+ *
+ * TranslatePress stuurt hele zinnen naar de vertaalmachine, en die behandelde
+ * "Sokkies" als een gewoon woord: op de Duitse site werd het "Socken", op de
+ * Franse "Chaussettes" en op de Engelse "Socks" of zelfs "Sockies". Dat raakte
+ * 251 strings, van paginatitels ("Contact - Socken") tot lopende tekst
+ * ("Team Socks") en zelfs "Sokki-Handschuhe" (= handschoenen) in het Duits.
+ *
+ * Dit filter is de oplossing aan de BRON: TranslatePress vervangt elk woord uit
+ * deze lijst door een tijdelijke plaatshouder vóór het de zin naar de machine
+ * stuurt en zet het er daarna onvertaald weer in
+ * (class-machine-translator.php, rond regel 580 en 616). Zo kan de merknaam
+ * niet meer sneuvelen bij een volgende vertaalronde.
+ *
+ * BEWUST IN CODE EN NIET IN HET TP-INSTELLINGENSCHERM: dat scherm schrijft naar
+ * de database, en de database deployt hier niet mee. Zo reist de afspraak met
+ * de push mee en geldt hij op elke omgeving.
+ *
+ * LET OP: dit werkt alleen vooruit. De strings die al verkeerd in de
+ * woordenboeken staan zijn apart hersteld.
+ */
+function sokkies_merknaam_niet_vertalen( $woorden ) {
+	$woorden[] = 'Sokkies';
+
+	return $woorden;
+}
+add_filter( 'trp_exclude_words_from_automatic_translation', 'sokkies_merknaam_niet_vertalen' );
