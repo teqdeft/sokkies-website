@@ -12912,6 +12912,14 @@
   .navbar.menu-open .menu{
     top:0;
     height: auto;
+    /* De sheet mag met de inhoud meegroeien (korte menulijst hoort geen
+       volle witte pagina te zijn), maar NOOIT verder dan het scherm: met
+       height:auto alleen werd het uitklapmenu 1048px op een scherm van 812
+       en was de onderkant onbereikbaar. De overflow-y:auto uit de
+       basisregel kan pas scrollen als er een grens is. dvh vangt de
+       adresbalk van mobiele browsers op; vh blijft de terugval. */
+    max-height:100vh;
+    max-height:100dvh;
     border-radius: 0 0 20px 20px;
   }
 

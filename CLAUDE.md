@@ -4783,6 +4783,38 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   processen al draaiden; een tel later gaf dezelfde URL gewoon 200. Een enkele
   mislukte controle is hier dus geen bewijs dat de start faalde - poll even.
 
+  MOBIELE UITKLAPMENU SCROLLDE NIET (2026-10-06, melding Kulwant).
+  WAT ER MIS WAS: tik je op mobiel in het menu op Sokkencollectie, dan opent het
+  subpaneel met bestsellers en soktypes - maar de onderkant was onbereikbaar.
+  Gemeten op 375x812: de sheet had hoogte 1048px op een scherm van 812, en
+  scrollHeight was GELIJK aan clientHeight. Er viel dus niets te scrollen; het
+  vak was simpelweg groter dan het scherm en de rest viel eraf.
+  OORZAAK - EEN LATERE REGEL IN DE ≤520-BAND. De sheet krijgt eerst netjes
+  height:calc(100vh - 30px), maar verderop in dezelfde band staat:
+    .navbar.menu-open .menu{ top:0; height: auto; border-radius:0 0 20px 20px; }
+  Die height:auto laat het vak met de inhoud meegroeien. Voor het GEWONE menu is
+  dat precies goed (een korte lijst hoort geen volle witte pagina te zijn), maar
+  in het subpaneel is de inhoud veel hoger dan het scherm. De overflow-y:auto uit
+  de basisregel stond er al en deed niets: overflow kan pas scrollen als er een
+  grens is, en met height:auto is die er niet.
+  FIX: max-height:100vh erbij (met max-height:100dvh eronder voor de adresbalk
+  van mobiele browsers; vh blijft de terugval). height:auto blijft staan, dus het
+  korte menu gedraagt zich precies zoals voorheen - nagemeten 581px, geen
+  scrollbalk - en alleen het subpaneel wordt begrensd en gaat scrollen.
+  GEMETEN, voor -> na op 375x812: hoogte 1048 -> 812, scrollHeight 1048,
+  scrollbaar nee -> ja, en scrollTop bereikt echt 236 (dus niet alleen de maten
+  kloppen, er wordt ook werkelijk gescrold). Op 375x667 idem met 381px scroll.
+  ALLEEN DE ≤520-BAND WAS STUK. De band 521-767 heeft op dezelfde plek
+  height:100vh staan en was dus altijd al begrensd - nagemeten op 640x760:
+  760 zichtbaar, 996 inhoud, scrollt. Desktop is per constructie niet geraakt
+  (de regel staat in @media max-width:520px); op 1024 meet de drawer nog steeds
+  max-height 628 = calc(100vh - 140px), onveranderd.
+  GECONTROLEERD OP OVERLAP: bij volledig doorscrollen staat de knop "Bekijk
+  collectie" 61px onder het laatste soktype, dus er valt niets achter weg. LET
+  OP bij het nakijken: op een screenshot MIDDEN in de scroll lijkt de knop over
+  een productnaam te vallen - dat is inhoud die erlangs schuift, niet een
+  overlap. Meet bij volledige scroll, niet halverwege.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
