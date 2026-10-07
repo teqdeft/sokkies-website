@@ -194,9 +194,13 @@ add_filter( 'gform_field_validation', function ( $resultaat, $waarde, $form, $ve
 
 /**
  * De landen waarvoor we het adres automatisch invullen, met hun landcode
- * volgens ISO 3166-1 alfa-2. De sleutel is de naam zoals Gravity Forms hem
- * opslaat (Engels — de WAARDE van de optie, niet de vertaalde tekst op het
- * scherm).
+ * volgens ISO 3166-1 alfa-2.
+ *
+ * LET OP: de SLEUTEL is de Engelse landnaam uit de oude ingebouwde lijst van
+ * Gravity Forms. Het formulier verstuurt sinds de omzetting naar landcodes de
+ * CODE, dus voor een vergelijking met een ingestuurde waarde gebruik je
+ * sokkies_land_code() en niet deze sleutels. Waar het hier om gaat is de reeks
+ * WAARDEN: dat zijn de landen die we automatisch invullen.
  *
  * Dit is BEWUST dezelfde lijst als toen Postcode.eu de opzoeking deed, ook al
  * kan Google er meer aan. Zo verandert er voor geen enkel land iets aan wat de
@@ -248,14 +252,14 @@ function sokkies_postcode_eu_gereed() {
  */
 function sokkies_land_uit_postcode( $postcode ) {
 	if ( preg_match( '/^[1-9][0-9]{3}[A-Z]{2}$/', $postcode ) ) {
-		return 'Netherlands';
+		return 'NL';
 	}
 	/* Britse postcode: 1-2 letters, een cijfer, eventueel nog een letter of
 	   cijfer, en dan het 'inward code'-deel van een cijfer plus twee letters.
 	   Dekt SW1A2AA, EC2R8AH, M11AD, CB21TN en W1A1AA. Botst niet met de
 	   Nederlandse vorm, want die begint met een cijfer. */
 	if ( preg_match( '/^[A-Z]{1,2}[0-9][A-Z0-9]?[0-9][A-Z]{2}$/', $postcode ) ) {
-		return 'United Kingdom';
+		return 'GB';
 	}
 
 	return '';
@@ -299,6 +303,11 @@ function sokkies_offerte_adres_provider( $postcode, $huisnummer, $land = '', $la
 
 	$landen = sokkies_adres_landen();
 
+	/* De landkeuze komt binnen als landcode (NL, BE, ...). Een oudere inzending
+	   of een pagina die nog in de cache zat stuurt de Engelse naam; die wordt
+	   hier alsnog een code, zodat beide schrijfwijzen blijven werken. */
+	$land = sokkies_land_code( $land );
+
 	/* Geen land gekozen? Dan gaan we uit van Nederland zolang de postcode
 	   Nederlands oogt (4 cijfers + 2 letters). Zo blijft het formulier voor
 	   de grootste groep bezoekers werken zonder dat ze eerst een land hoeven
@@ -323,14 +332,14 @@ function sokkies_offerte_adres_provider( $postcode, $huisnummer, $land = '', $la
 		$land = $gok;
 	}
 
-	if ( ! isset( $landen[ $land ] ) ) {
+	if ( '' === $land || ! in_array( $land, $landen, true ) ) {
 		return new WP_Error(
 			'buiten_dekking',
 			'Voor dit land vullen we het adres niet automatisch in. Vul de velden hieronder zelf in.'
 		);
 	}
 
-	if ( 'Netherlands' === $land ) {
+	if ( 'NL' === $land ) {
 		if ( ! preg_match( '/^[1-9][0-9]{3}[A-Z]{2}$/', $postcode ) ) {
 			/* Stond Nederland er nog van een VORIGE opzoeking (we vullen het
 			   land zelf in zodra we een adres vinden), dan is dit geen fout van
@@ -356,7 +365,7 @@ function sokkies_offerte_adres_provider( $postcode, $huisnummer, $land = '', $la
 		);
 	}
 
-	return sokkies_google_adres( $landen[ $land ], $land, $postcode, $huisnummer, $straat );
+	return sokkies_google_adres( $land, $land, $postcode, $huisnummer, $straat );
 }
 
 /** Een aanroep naar Postcode.eu. Geeft de body als array, of WP_Error. */
@@ -415,7 +424,7 @@ function sokkies_adres_postcode_eu( $postcode, $huisnummer ) {
 		'straat'    => (string) $data['street'],
 		'plaats'    => (string) ( $data['city'] ?? '' ),
 		'provincie' => (string) ( $data['province'] ?? '' ),
-		'land'      => 'Netherlands',
+		'land'      => 'NL',
 	);
 }
 
@@ -632,7 +641,7 @@ function sokkies_adres_pdok( $postcode, $huisnummer ) {
 		'straat'    => (string) ( $doc['straatnaam'] ?? '' ),
 		'plaats'    => (string) ( $doc['woonplaatsnaam'] ?? '' ),
 		'provincie' => (string) ( $doc['provincienaam'] ?? '' ),
-		'land'      => 'Netherlands',
+		'land'      => 'NL',
 	);
 }
 
@@ -1904,3 +1913,125 @@ function sokkies_form_url_veld( $form ) {
 	return $form;
 }
 add_filter( 'gform_pre_render', 'sokkies_form_url_veld' );
+
+/**
+ * Een landwaarde omzetten naar de landcode (ISO 3166-1 alfa-2).
+ *
+ * Slikt zowel de code zelf ("NL") als de Engelse naam ("Netherlands"). Dat
+ * tweede is nodig zolang er inzendingen van voor deze wijziging rondgaan: die
+ * hebben de Engelse naam als waarde. Onbekend = lege string.
+ */
+function sokkies_land_code( $waarde ) {
+	$waarde = trim( (string) $waarde );
+	if ( '' === $waarde ) {
+		return '';
+	}
+
+	$alle = sokkies_landen_namen( 'en' );
+	$code = strtoupper( $waarde );
+	if ( isset( $alle[ $code ] ) ) {
+		return $code;
+	}
+
+	$op_naam = array_flip( $alle );
+	return isset( $op_naam[ $waarde ] ) ? $op_naam[ $waarde ] : '';
+}
+
+/**
+ * Sorteersleutel zonder accenten.
+ *
+ * Anders belandt "Österreich" achter Zimbabwe en "Égypte" achter Zambia: PHP
+ * sorteert op bytes, en een letter met accent staat daarin na de z.
+ */
+function sokkies_land_sorteersleutel( $naam ) {
+	static $kaart = array(
+		'á'=>'a','à'=>'a','â'=>'a','ä'=>'a','ã'=>'a','å'=>'a','ā'=>'a',
+		'é'=>'e','è'=>'e','ê'=>'e','ë'=>'e','ē'=>'e',
+		'í'=>'i','ì'=>'i','î'=>'i','ï'=>'i','ī'=>'i',
+		'ó'=>'o','ò'=>'o','ô'=>'o','ö'=>'o','õ'=>'o','ø'=>'o','ō'=>'o',
+		'ú'=>'u','ù'=>'u','û'=>'u','ü'=>'u','ū'=>'u',
+		'ç'=>'c','č'=>'c','ć'=>'c','ñ'=>'n','ń'=>'n','š'=>'s','ś'=>'s',
+		'ž'=>'z','ź'=>'z','ż'=>'z','ý'=>'y','ÿ'=>'y','đ'=>'d','ł'=>'l','ğ'=>'g',
+		'æ'=>'ae','œ'=>'oe','ß'=>'ss','’'=>'', '\''=>'', '-'=>' ',
+	);
+
+	return strtr( mb_strtolower( $naam, 'UTF-8' ), $kaart );
+}
+
+/**
+ * De keuzes voor het landveld, in de taal van de pagina.
+ *
+ * WAT DE BEZOEKER ZIET is de landnaam in zijn eigen taal; WAT HET FORMULIER
+ * VERSTUURT is de landcode. Die code is in elke taal dezelfde, zodat het
+ * vervolgsysteem één waarde krijgt ongeacht de taal waarin de aanvraag binnenkwam.
+ *
+ * Nederland, Belgie en Duitsland staan bovenaan omdat daar het leeuwendeel van
+ * de aanvragen vandaan komt; de rest volgt alfabetisch IN DIE TAAL, dus
+ * Oostenrijk onder de O op /nl/ en Autriche onder de A op /fr/.
+ */
+function sokkies_landveld_keuzes( $taal = null ) {
+	$taal  = $taal ? $taal : sokkies_huidige_taal();
+	$namen = sokkies_landen_namen( $taal );
+	if ( ! $namen ) {
+		return array();
+	}
+
+	$boven = array( 'NL', 'BE', 'DE' );
+	$rest  = array_diff_key( $namen, array_flip( $boven ) );
+
+	uasort(
+		$rest,
+		function ( $a, $b ) {
+			return strcmp( sokkies_land_sorteersleutel( $a ), sokkies_land_sorteersleutel( $b ) );
+		}
+	);
+
+	$keuzes = array();
+	foreach ( $boven as $code ) {
+		if ( isset( $namen[ $code ] ) ) {
+			$keuzes[] = array( 'text' => $namen[ $code ], 'value' => $code );
+		}
+	}
+	foreach ( $rest as $code => $naam ) {
+		$keuzes[] = array( 'text' => $naam, 'value' => $code );
+	}
+
+	return $keuzes;
+}
+
+/**
+ * Het landveld vullen met onze eigen lijst.
+ *
+ * De ingebouwde lijst van Gravity Forms is Engels en wordt door TranslatePress
+ * maar half vertaald (op /fr/ bleven 77 van de 249 namen Engels, op /nl/ alle
+ * 249). Daarom zetten we de keuzes zelf, uit een lijst die uit de CLDR-gegevens
+ * is gegenereerd - zie inc/landen.php.
+ *
+ * Drie haken, net als bij de rest van het adresblok: zonder pre_validation
+ * keurt de SERVER de ingestuurde code af omdat hij niet in de opgeslagen keuzes
+ * staat, en zonder pre_submission_filter belandt de waarde niet in de inzending.
+ *
+ * NIET in de beheeromgeving: daar hoort de formulierbouwer te tonen wat er
+ * echt in het formulier staat.
+ */
+function sokkies_landveld_vullen( $form ) {
+	if ( is_admin() || ! sokkies_form_eigen_opmaak( $form ) ) {
+		return $form;
+	}
+
+	$keuzes = sokkies_landveld_keuzes();
+	if ( ! $keuzes ) {
+		return $form;
+	}
+
+	foreach ( $form['fields'] as $veld ) {
+		if ( sokkies_offerte_landveld( $veld ) ) {
+			$veld->choices = $keuzes;
+		}
+	}
+
+	return $form;
+}
+add_filter( 'gform_pre_render', 'sokkies_landveld_vullen' );
+add_filter( 'gform_pre_validation', 'sokkies_landveld_vullen' );
+add_filter( 'gform_pre_submission_filter', 'sokkies_landveld_vullen' );

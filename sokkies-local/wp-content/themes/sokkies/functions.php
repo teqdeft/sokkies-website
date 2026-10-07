@@ -261,6 +261,10 @@ require_once get_template_directory() . '/inc/cpt.php';
 // ACF-veldgroepen (PHP-registratie — zie inc/acf-fields.php)
 require_once get_template_directory() . '/inc/acf-fields.php';
 
+// Landnamen per taal met de ISO-landcode als sleutel. Moet VOOR het
+// offerteformulier geladen zijn: dat gebruikt de lijst voor het landveld.
+require_once get_template_directory() . '/inc/landen.php';
+
 // Logica van het offerteformulier (max. 2 soktypes, 'Geen extra's'-uitsluiting,
 // en de adresopzoeking). Apart bestand omdat het meer is dan een paar regels.
 require_once get_template_directory() . '/inc/offerte-formulier.php';
