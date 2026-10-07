@@ -185,6 +185,19 @@ function sokkies_form_keuzes( $taal ) {
 			'Antislipsokken'               => 'Non-slip socks',
 			'Kids & baby sokken'           => 'Kids & baby socks',
 			'Zorgsokken'                   => 'Care socks',
+
+			// Korte namen: sinds R4-6 gebruiken BEIDE formulieren deze.
+			// De lange namen blijven staan voor inzendingen van vóór die wijziging.
+			'Regulier'                     => 'Regular',
+			'Sport'                        => 'Sports',
+			'Bamboe'                       => 'Bamboo',
+			'Yoga & pilates'               => 'Yoga & pilates',
+			'Werk'                         => 'Work',
+			'Kerst'                        => 'Christmas',
+			'Wieler'                       => 'Cycling',
+			'Antislip'                     => 'Non-slip',
+			'Baby sokken'                  => 'Baby socks',
+			'Zorg'                         => 'Care',
 			'Labels'                       => 'Labels',
 			'Geschenkdoosjes'              => 'Gift boxes',
 			'Kaartjes'                     => 'Cards',
@@ -204,6 +217,19 @@ function sokkies_form_keuzes( $taal ) {
 			'Antislipsokken'               => 'Rutschfeste Socken',
 			'Kids & baby sokken'           => 'Kinder- und Babysocken',
 			'Zorgsokken'                   => 'Pflegesocken',
+
+			// Korte namen: sinds R4-6 gebruiken BEIDE formulieren deze.
+			// De lange namen blijven staan voor inzendingen van vóór die wijziging.
+			'Regulier'                     => 'Regulär',
+			'Sport'                        => 'Sport',
+			'Bamboe'                       => 'Bambus',
+			'Yoga & pilates'               => 'Yoga & Pilates',
+			'Werk'                         => 'Arbeit',
+			'Kerst'                        => 'Weihnachten',
+			'Wieler'                       => 'Radfahren',
+			'Antislip'                     => 'Rutschfest',
+			'Baby sokken'                  => 'Baby-Socken',
+			'Zorg'                         => 'Pflege',
 			'Labels'                       => 'Etiketten',
 			'Geschenkdoosjes'              => 'Geschenkboxen',
 			'Kaartjes'                     => 'Kärtchen',
@@ -223,6 +249,19 @@ function sokkies_form_keuzes( $taal ) {
 			'Antislipsokken'               => 'Chaussettes antidérapantes',
 			'Kids & baby sokken'           => 'Chaussettes enfants et bébés',
 			'Zorgsokken'                   => 'Chaussettes de soin',
+
+			// Korte namen: sinds R4-6 gebruiken BEIDE formulieren deze.
+			// De lange namen blijven staan voor inzendingen van vóór die wijziging.
+			'Regulier'                     => 'Classique',
+			'Sport'                        => 'Sport',
+			'Bamboe'                       => 'Bambou',
+			'Yoga & pilates'               => 'Yoga et pilates',
+			'Werk'                         => 'Travail',
+			'Kerst'                        => 'Noël',
+			'Wieler'                       => 'Cyclisme',
+			'Antislip'                     => 'Antidérapant',
+			'Baby sokken'                  => 'Chaussettes pour bébé',
+			'Zorg'                         => 'Soin',
 			'Labels'                       => 'Étiquettes',
 			'Geschenkdoosjes'              => 'Coffrets cadeaux',
 			'Kaartjes'                     => 'Cartes',
@@ -268,18 +307,39 @@ add_filter(
 			return $waarde;
 		}
 
+		$teksten = array();
 		foreach ( $veld->choices as $keuze ) {
 			$tekst = html_entity_decode( (string) rgar( $keuze, 'text' ), ENT_QUOTES, 'UTF-8' );
-			if ( '' === $tekst || ! isset( $keuzes[ $tekst ] ) ) {
-				continue;
+			if ( '' !== $tekst && isset( $keuzes[ $tekst ] ) ) {
+				$teksten[] = $tekst;
 			}
-			// Zowel de rauwe als de gecodeerde schrijfwijze: welke van de twee
-			// in de mail belandt verschilt per omgeving.
-			$waarde = str_replace(
-				array( esc_html( $tekst ), $tekst ),
-				esc_html( $keuzes[ $tekst ] ),
-				$waarde
-			);
+		}
+		// Langste keuzetekst eerst, zodat een korte naam niet het begin van een
+		// langere opeet ("Antislip" binnen "Antislip op maat").
+		usort(
+			$teksten,
+			function ( $a, $b ) {
+				return mb_strlen( $b ) - mb_strlen( $a );
+			}
+		);
+
+		foreach ( $teksten as $tekst ) {
+			$vervanging = esc_html( $keuzes[ $tekst ] );
+			// Zowel de rauwe als de gecodeerde schrijfwijze: welke van de twee in
+			// de mail belandt verschilt per omgeving. De randvoorwaarden houden
+			// "Sport" weg uit "Sportsokken" van een inzending van vóór R4-6.
+			foreach ( array( esc_html( $tekst ), $tekst ) as $zoek ) {
+				$uit = preg_replace_callback(
+					'/(?<![\p{L}\p{N}])' . preg_quote( $zoek, '/' ) . '(?![\p{L}\p{N}])/u',
+					function () use ( $vervanging ) {
+						return $vervanging;
+					},
+					$waarde
+				);
+				if ( null !== $uit ) {
+					$waarde = $uit;
+				}
+			}
 		}
 
 		return $waarde;
