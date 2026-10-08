@@ -112,7 +112,7 @@ $staffel_min = max( (int) sokkies_minimale_afname(), (int) $matrix[ $eerste ]['r
             <div id="staffelRows"></div>
             <div class="staffel-row staffel-bottom-row">
               <span>10.000 paar</span>
-              <a href="#" class="staffel-request">Prijs op aanvraag</a>
+              <a href="<?php echo esc_url( get_permalink( get_page_by_path('offerte') ) ); ?>" class="staffel-request">Prijs op aanvraag</a>
             </div>
           </div>
         </div>
