@@ -2261,3 +2261,108 @@ function sokkies_landveld_vullen( $form ) {
 add_filter( 'gform_pre_render', 'sokkies_landveld_vullen' );
 add_filter( 'gform_pre_validation', 'sokkies_landveld_vullen' );
 add_filter( 'gform_pre_submission_filter', 'sokkies_landveld_vullen' );
+
+/**
+ * EEN LANDCODE IS GEEN LAND OM NAAR TE KIJKEN.
+ *
+ * De landenlijst wordt bij het renderen vervangen door ISO-codes als waarde en
+ * landnamen in de taal van het formulier als label (sokkies_landveld_vullen).
+ * De inzending bewaart dus "NL", en dat is precies de bedoeling: het is één
+ * vaste waarde voor Pipedrive, ongeacht de taal waarin iemand het formulier
+ * invulde.
+ *
+ * Maar het BEHEER kijkt naar de keuzes zoals ze in de formulierbouwer staan, en
+ * daar staan nog de oude keuzes met de landnaam als waarde. Gravity Forms vindt
+ * bij "NL" dus geen label en toont de kale code - in het inzendingenscherm én in
+ * de notificatiemail. Wie de aanvraag moet afhandelen leest daardoor "NL" in
+ * plaats van "Nederland" (melding met schermafbeelding).
+ *
+ * De twee filters hieronder zetten de code om naar de landnaam op de plekken
+ * waar een MENS meekijkt. De opgeslagen waarde blijft onaangeroerd, dus wat er
+ * naar Pipedrive gaat verandert niet.
+ *
+ * WAAROM DE CODE ERACHTER BLIJFT STAAN ("Nederland (NL)"): dat is exact wat er
+ * is ingezonden, en het is de waarde waarop het vervolgsysteem matcht. Zonder
+ * die code zou het beheerscherm iets anders tonen dan wat er is doorgegeven, en
+ * dat is bij navragen precies het soort verschil waar je op stukloopt.
+ *
+ * ALLEEN ONZE EIGEN FORMULIEREN, en alleen op het veld met cssClass of-land.
+ */
+function sokkies_land_leesbaar( $waarde, $veld ) {
+	if ( ! is_object( $veld ) || ! sokkies_offerte_landveld( $veld ) ) {
+		return $waarde;
+	}
+	$code = strtoupper( trim( (string) $waarde ) );
+	if ( ! preg_match( '/^[A-Z]{2}$/', $code ) ) {
+		return $waarde; // leeg, of al een naam
+	}
+	if ( ! function_exists( 'sokkies_landen_namen' ) ) {
+		return $waarde;
+	}
+	$namen = sokkies_landen_namen( 'nl' );
+
+	return isset( $namen[ $code ] ) ? $namen[ $code ] . ' (' . $code . ')' : $waarde;
+}
+
+/* Het inzendingenscherm en de inzendingenlijst in het beheer. */
+add_filter( 'gform_entry_field_value', function ( $waarde, $veld, $entry, $form ) {
+	if ( ! sokkies_form_eigen_opmaak( $form ) ) {
+		return $waarde;
+	}
+	return sokkies_land_leesbaar( $waarde, $veld );
+}, 10, 4 );
+
+/* En {all_fields} in de notificatiemail. */
+add_filter( 'gform_merge_tag_filter', function ( $waarde, $merge_tag, $opties, $veld, $ruwe_waarde, $format ) {
+	if ( 0 !== strpos( (string) $merge_tag, 'all_fields' ) || ! is_object( $veld ) ) {
+		return $waarde;
+	}
+	if ( ! sokkies_form_eigen_opmaak( (int) rgobj( $veld, 'formId' ) ) ) {
+		return $waarde;
+	}
+	if ( ! sokkies_offerte_landveld( $veld ) ) {
+		return $waarde;
+	}
+	/* $waarde is hier de opgemaakte celinhoud; de kale code staat in
+	   $ruwe_waarde. Alleen vervangen als de code er daadwerkelijk in staat. */
+	$leesbaar = sokkies_land_leesbaar( $ruwe_waarde, $veld );
+	if ( $leesbaar === $ruwe_waarde ) {
+		return $waarde;
+	}
+	return str_replace( (string) $ruwe_waarde, $leesbaar, (string) $waarde );
+}, 10, 6 );
+
+/**
+ * HET VELD "PAGINA URL" VULLEN MET DE PAGINA WAAR HET FORMULIER STOND.
+ *
+ * In de inzending staan twee URL-velden. "URL" wordt gevuld door de
+ * campagne-tracker en bevat de LANDINGSPAGINA met alle utm-parameters - dus de
+ * pagina waar de bezoeker binnenkwam, niet waar hij het formulier invulde.
+ * Daardoor staat er bij een sample-aanvraag bijvoorbeeld /options/, en lijkt
+ * het alsof het formulier daar stond (melding met schermafbeelding).
+ *
+ * "Pagina URL" was daar duidelijk voor bedoeld maar werd door niemand gevuld:
+ * op alle bestaande inzendingen is het leeg. Dat gebeurt nu serverzijdig, bij
+ * het verzenden, zodat geen enkel script het nog kan overschrijven.
+ *
+ * DE TWEE VELDEN BLIJVEN DUS NAAST ELKAAR BESTAAN en beantwoorden elk hun eigen
+ * vraag: waar kwam deze bezoeker binnen, en waar heeft hij het formulier
+ * ingevuld. Aan "URL" is bewust niets veranderd - daar hangt de
+ * campagne-attributie aan.
+ */
+add_filter( 'gform_pre_submission_filter', function ( $form ) {
+	if ( is_admin() || ! sokkies_form_eigen_opmaak( $form ) ) {
+		return $form;
+	}
+	foreach ( $form['fields'] as $veld ) {
+		if ( 'hidden' !== $veld->type || 'Pagina URL' !== trim( (string) $veld->label ) ) {
+			continue;
+		}
+		if ( '' !== trim( (string) rgpost( 'input_' . $veld->id ) ) ) {
+			continue; // iemand heeft hem al gevuld; die laten we staan
+		}
+		$_POST[ 'input_' . $veld->id ] = sokkies_form_pagina_url();
+	}
+
+	return $form;
+}, 20 );
