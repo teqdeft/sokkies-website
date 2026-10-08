@@ -171,6 +171,76 @@ function sokkies_be_tijdelijke_redirect() {
 }
 add_action( 'template_redirect', 'sokkies_be_tijdelijke_redirect' );
 
+/**
+ * De automatische taaldetectie van TranslatePress uitzetten.
+ *
+ * De add-on "Automatic Language Detection" laadt op ELKE pagina het bestand
+ * trp-language-cookie.js. Dat script kijkt naar de trp_language-cookie, en is
+ * die er niet dan naar de browsertaal, en doet vervolgens een
+ * window.location.replace() naar die taal. Dat geeft twee problemen:
+ *
+ * 1. De kale root stuurt serverzijdig netjes naar /en/, maar daar nam het
+ *    script het over en bracht de bezoeker naar ZIJN browsertaal. Vandaar de
+ *    melding dat www.sokkies.com in het Duits opende: de server deed het goed,
+ *    de JavaScript erna niet.
+ * 2. Typte iemand bewust /nl/, /de/ of /fr/, dan werd hij alsnog naar de taal
+ *    van zijn cookie of browser gestuurd. Een expliciete keuze in de adresbalk
+ *    hield dus geen stand - precies wat niet de bedoeling is.
+ *
+ * De filter hieronder zit in de add-on zelf en voorkomt dat het script wordt
+ * ingeladen. Serverzijdig verandert er niets: de root gaat nog steeds naar
+ * Engels (zie sokkies_root_taal hieronder) en een taal in de URL wordt gewoon
+ * gerespecteerd.
+ *
+ * WAAROM IN CODE EN NIET IN DE INSTELLINGEN: de ALD-instellingen staan in de
+ * DATABASE en die deployt niet mee, dus het had op elke omgeving opnieuw
+ * gemoeten. Bovendien kent de keuzelijst voor de detectiemethode geen "uit" -
+ * uitzetten betekent de hele add-on deactiveren, en dat is ook database.
+ *
+ * VEILIG: de trp_language-cookie wordt nergens serverzijdig gelezen (gecheckt
+ * in zowel translatepress-multilingual als -business), het thema gebruikt hem
+ * niet, en de taalwisselaar in de header bestaat uit gewone <a href>-links naar
+ * de taal-URL's. Handmatig van taal wisselen werkt dus onveranderd. De popup
+ * van de add-on stond al uit (popup_option: no_popup), dus er verdwijnt niets
+ * zichtbaars.
+ */
+add_filter( 'trp_ald_enqueue_redirecting_script', '__return_false' );
+
+/**
+ * Een URL zonder taal (de kale root) is Engels.
+ *
+ * TranslatePress leidt de taal voor een URL zonder voorvoegsel niet af uit de
+ * ingestelde standaardtaal maar uit publish-languages[0]
+ * (class-language-switcher.php, determine_needed_language). De standaardtaal is
+ * hier nl_NL, maar Engels staat toevallig vooraan in die lijst - en daarom komt
+ * de root vandaag op /en/ uit. Sleept iemand de talen in de TP-instellingen in
+ * een andere volgorde, dan verhuist de root stilletjes mee naar het Nederlands.
+ *
+ * Deze filter legt vast wat de bedoeling is: geen taal in de URL betekent
+ * Engels. Dat is vandaag hetzelfde resultaat, dus er verandert niets aan de
+ * site; het is nu alleen een keuze in plaats van een bijproduct van een
+ * sorteervolgorde, en hij reist mee met een deploy.
+ *
+ * ALLEEN BIJ EEN URL ZONDER TAAL: staat er wel een taal in ($taal_uit_url is
+ * dan gevuld), dan geven we die onaangeroerd terug. Zonder die controle zou
+ * /nl/, /de/ en /fr/ naar het Engels worden omgebogen.
+ */
+function sokkies_root_taal( $taal, $taal_uit_url, $instellingen ) {
+	if ( null !== $taal_uit_url ) {
+		return $taal;
+	}
+
+	/* Mocht Engels ooit niet meer gepubliceerd zijn, dan laten we TP zijn eigen
+	   keuze houden - anders zou de root naar een taal wijzen die niet bestaat. */
+	$gepubliceerd = isset( $instellingen['publish-languages'] ) ? (array) $instellingen['publish-languages'] : array();
+	if ( ! in_array( 'en_GB', $gepubliceerd, true ) ) {
+		return $taal;
+	}
+
+	return 'en_GB';
+}
+add_filter( 'trp_needed_language', 'sokkies_root_taal', 10, 3 );
+
 function sokkies_rewrite_versie() {
 	if ( get_option( 'sokkies_rewrite_versie' ) === SOKKIES_REWRITE_VERSIE ) {
 		return;
