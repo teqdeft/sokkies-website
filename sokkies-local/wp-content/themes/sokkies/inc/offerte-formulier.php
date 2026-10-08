@@ -1046,8 +1046,19 @@ add_filter( 'gform_field_content', function ( $content, $field ) {
  * (vanaf vier letters, korter matcht te veel). Het woord "sokken" telt niet
  * mee, want dat staat in bijna elke titel.
  *
- * BIJ TWIJFEL GEEN FOTO: passen er twee soktypes even goed, dan wint er geen.
- * Liever het lege vak uit het ontwerp dan de foto van een ander soktype.
+ * PASSEN ER TWEE SOKTYPES, DAN WINT DE MEEST SPECIFIEKE. Het type waarvan de
+ * naam helemaal op gaat in de treffer gaat voor op een type met losse woorden
+ * eromheen. "Kerst" koos daardoor niet meer tussen "Kerstsokken" en
+ * "Kerstsokken - actie 2026": de eerste gebruikt al zijn woorden, de tweede
+ * houdt "actie" en "2026" over, dus de gewone Kerstsokken wint. Zonder die
+ * regel bleef de kaart leeg zodra iemand een actie- of variantsoktype aanmaakt,
+ * en dat gebeurt elk jaar opnieuw.
+ *
+ * BLIJFT HET GELIJKSPEL, DAN NOG EEN LAATSTE CONTROLE: wijzen alle overgebleven
+ * kandidaten naar DEZELFDE afbeelding, dan valt er niets te kiezen en gebruiken
+ * we die. Pas als er echt twee verschillende foto's even goed passen blijft het
+ * vak leeg - liever het lege vak uit het ontwerp dan de foto van een ander
+ * soktype.
  */
 function sokkies_soktype_woorden( $tekst ) {
 	$t   = html_entity_decode( (string) $tekst, ENT_QUOTES, 'UTF-8' );
@@ -1103,9 +1114,12 @@ function sokkies_kaartfoto_kies( $keuzetekst, $lijst ) {
 	if ( ! $zoek || ! $lijst ) {
 		return '';
 	}
-	$beste  = 0;
-	$url    = '';
-	$gelijk = 0;
+
+	/* Per kandidaat tellen we hoeveel gezochte woorden raak zijn, en hoeveel
+	   woorden van de kandidaat daarna ONGEBRUIKT blijven. Dat tweede getal is
+	   de maat voor specificiteit: "Kerstsokken" houdt niets over, "Kerstsokken
+	   - actie 2026" houdt er twee over. */
+	$kandidaten = array();
 	foreach ( $lijst as $type ) {
 		$score = 0;
 		foreach ( $zoek as $woord ) {
@@ -1118,15 +1132,40 @@ function sokkies_kaartfoto_kies( $keuzetekst, $lijst ) {
 				}
 			}
 		}
-		if ( $score > $beste ) {
-			$beste  = $score;
-			$url    = $type['url'];
-			$gelijk = 1;
-		} elseif ( $score > 0 && $score === $beste ) {
-			$gelijk++;
+		if ( $score > 0 ) {
+			$kandidaten[] = array(
+				'score'      => $score,
+				'ongebruikt' => max( 0, count( $type['woorden'] ) - $score ),
+				'url'        => $type['url'],
+			);
 		}
 	}
-	return ( $beste > 0 && 1 === $gelijk ) ? $url : '';
+
+	if ( ! $kandidaten ) {
+		return '';
+	}
+
+	/* Beste = de meeste treffers; bij gelijke treffers de minste overgebleven
+	   woorden. */
+	$beste = $kandidaten[0];
+	foreach ( $kandidaten as $k ) {
+		if ( $k['score'] > $beste['score']
+			|| ( $k['score'] === $beste['score'] && $k['ongebruikt'] < $beste['ongebruikt'] ) ) {
+			$beste = $k;
+		}
+	}
+
+	/* Deelt iets anders exact die uitkomst, dan is de keuze niet eenduidig -
+	   tenzij het om dezelfde afbeelding gaat, want dan maakt het niet uit. */
+	foreach ( $kandidaten as $k ) {
+		if ( $k['score'] === $beste['score']
+			&& $k['ongebruikt'] === $beste['ongebruikt']
+			&& $k['url'] !== $beste['url'] ) {
+			return '';
+		}
+	}
+
+	return $beste['url'];
 }
 
 function sokkies_soktype_kaartfoto( $keuzetekst ) {
