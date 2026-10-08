@@ -1168,10 +1168,197 @@ function sokkies_kaartfoto_kies( $keuzetekst, $lijst ) {
 	return $beste['url'];
 }
 
-function sokkies_soktype_kaartfoto( $keuzetekst ) {
+/**
+ * DE VASTE KOPPELING TUSSEN EEN FORMULIERKEUZE EN EEN SOKTYPE.
+ *
+ * Het uitzoeken op naam hieronder werkt, maar het blijft raden: het hangt aan
+ * de WOORDEN in de keuze en in de soktypetitel. Hernoemt iemand een keuze, of
+ * komt er een variant bij zoals "Kerstsokken - actie 2026", dan valt de foto
+ * stil weg en is aan niets te zien waarom. Dat is twee keer gebeurd.
+ *
+ * Daarom kan het soktype nu zelf zeggen bij welke keuze het hoort:
+ * Soktypes > [type] > "Keuze in de formulieren". Staat dat ingevuld, dan is er
+ * niets meer te raden.
+ *
+ * DE KOPPELING GAAT OP DE WAARDE VAN DE KEUZE, niet op het zichtbare label.
+ * Die waarde is wat er wordt verzonden en in Pipedrive belandt, en ligt dus
+ * bewust vast; het label mag vrij veranderen. Hernoemen van "Baby sokken" naar
+ * "Baby" breekt de koppeling daarmee niet. Het is ook dezelfde waarde op beide
+ * formulieren, dus één keuze volstaat voor allebei.
+ */
+function sokkies_soktype_bij_keuze( $keuzewaarde ) {
+	static $kaart = null;
+
+	if ( null === $kaart ) {
+		$kaart = array();
+		if ( function_exists( 'get_field' ) ) {
+			$types = get_posts( array(
+				'post_type'      => 'sokkies_soktype',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'no_found_rows'  => true,
+			) );
+			foreach ( $types as $type ) {
+				$keuze = sokkies_offerte_keuzetekst( get_field( 'formulier_keuze', $type->ID ) );
+				if ( '' === trim( (string) $keuze ) ) {
+					continue;
+				}
+				/* Eerst ingevuld wint; zo levert een dubbele koppeling geen
+				   wisselend resultaat op per paginalading. */
+				if ( ! isset( $kaart[ $keuze ] ) ) {
+					$kaart[ $keuze ] = (int) $type->ID;
+				}
+			}
+		}
+	}
+
+	$zoek = sokkies_offerte_keuzetekst( $keuzewaarde );
+
+	return isset( $kaart[ $zoek ] ) ? $kaart[ $zoek ] : 0;
+}
+
+/**
+ * De foto voor een soktypekaart: eerst de vaste koppeling, anders op naam.
+ *
+ * $keuzewaarde is de waarde van de keuze uit Gravity Forms. Wordt die niet
+ * meegegeven, dan valt alles terug op het oude gedrag - zo blijft een
+ * bestaande aanroep werken.
+ */
+function sokkies_soktype_kaartfoto( $keuzetekst, $keuzewaarde = '' ) {
+	$id = $keuzewaarde ? sokkies_soktype_bij_keuze( $keuzewaarde ) : 0;
+	if ( $id ) {
+		$url = get_the_post_thumbnail_url( $id, 'medium_large' );
+		if ( ! $url ) {
+			$url = get_the_post_thumbnail_url( $id, 'full' );
+		}
+		if ( $url ) {
+			return $url;
+		}
+		/* Gekoppeld maar zonder uitgelichte afbeelding: dan is het antwoord
+		   "dit type heeft geen foto" en niet "pak die van een ander type". */
+		return '';
+	}
+
 	return sokkies_kaartfoto_kies( $keuzetekst, sokkies_soktype_kaartfotos() );
 }
 
+/**
+ * De keuzelijst voor het veld "Keuze in de formulieren" op het soktype.
+ *
+ * Komt rechtstreeks uit Gravity Forms, zodat de redacteur niets kan mistypen
+ * en er vanzelf een regel bij komt als er een soktype aan het formulier wordt
+ * toegevoegd. De SLEUTEL is de waarde van de keuze (die ligt vast, zie
+ * sokkies_soktype_bij_keuze), het LABEL is de zichtbare tekst.
+ *
+ * Ontdubbelen gaat op de waarde en niet op de tekst: beide formulieren hebben
+ * dezelfde waarden maar soms een ander label ("Baby sokken" tegenover "Baby").
+ * Op de waarde vallen ze dus exact samen, zonder woordvergelijking.
+ */
+function sokkies_soktype_keuze_opties() {
+	static $cache = null;
+	if ( null !== $cache ) {
+		return $cache;
+	}
+	$cache = array();
+	if ( ! class_exists( 'GFAPI' ) ) {
+		return $cache;
+	}
+	foreach ( array( 'sokkies_offerte_form_id', 'sokkies_sample_form_id' ) as $bron ) {
+		if ( ! function_exists( $bron ) || ! $bron() ) {
+			continue;
+		}
+		$form = GFAPI::get_form( $bron() );
+		if ( ! $form || empty( $form['fields'] ) ) {
+			continue;
+		}
+		foreach ( $form['fields'] as $veld ) {
+			$css = ' ' . preg_replace( '/\s+/', ' ', trim( (string) $veld->cssClass ) ) . ' ';
+			if ( false === strpos( $css, ' of-soktypes ' ) || empty( $veld->choices ) ) {
+				continue;
+			}
+			foreach ( (array) $veld->choices as $keuze ) {
+				$waarde = sokkies_offerte_keuzetekst( isset( $keuze['value'] ) ? $keuze['value'] : '' );
+				$tekst  = sokkies_offerte_keuzetekst( isset( $keuze['text'] ) ? $keuze['text'] : '' );
+				if ( '' === $waarde ) {
+					continue;
+				}
+				/* Het eerste formulier bepaalt het label; staat er in het
+				   tweede een andere schrijfwijze, dan noemen we die erbij
+				   zodat de redacteur beide herkent. */
+				if ( ! isset( $cache[ $waarde ] ) ) {
+					$cache[ $waarde ] = '' !== $tekst ? $tekst : $waarde;
+				} elseif ( '' !== $tekst && $cache[ $waarde ] !== $tekst && false === strpos( $cache[ $waarde ], $tekst ) ) {
+					$cache[ $waarde ] .= ' / ' . $tekst;
+				}
+			}
+		}
+	}
+	return $cache;
+}
+
+add_filter( 'acf/load_field/key=field_soktype_formulier_keuze', function ( $veld ) {
+	$opties = sokkies_soktype_keuze_opties();
+	if ( $opties ) {
+		$veld['choices'] = $opties;
+	} else {
+		/* Zonder Gravity Forms is een lege keuzelijst onbruikbaar; dan maar
+		   een gewoon tekstveld, net als bij de aanvullende opties. */
+		$veld['type']         = 'text';
+		$veld['instructions'] = 'Gravity Forms is niet beschikbaar, dus de keuzelijst kan niet worden geladen. Vul hier de waarde van de keuze met de hand in.';
+	}
+	return $veld;
+} );
+
+/**
+ * In de lijst met soktypes laten zien waar de formulierkaart zijn foto vandaan
+ * haalt.
+ *
+ * Dit is er omdat de fout anders onzichtbaar is: een kaart die leeg blijft valt
+ * pas op als een klant het meldt. Nu staat in Soktypes meteen per rij of de
+ * koppeling vastligt, of hij op naam is geraden, of dat er niets uitkomt.
+ */
+add_filter( 'manage_sokkies_soktype_posts_columns', function ( $kolommen ) {
+	$kolommen['sokkies_formulierkaart'] = 'Formulierkaart';
+	return $kolommen;
+} );
+
+add_action( 'manage_sokkies_soktype_posts_custom_column', function ( $kolom, $post_id ) {
+	if ( 'sokkies_formulierkaart' !== $kolom ) {
+		return;
+	}
+
+	$heeft_foto = (bool) get_post_thumbnail_id( $post_id );
+	$keuze      = function_exists( 'get_field' ) ? sokkies_offerte_keuzetekst( get_field( 'formulier_keuze', $post_id ) ) : '';
+
+	if ( '' !== trim( (string) $keuze ) ) {
+		$opties = sokkies_soktype_keuze_opties();
+		$label  = isset( $opties[ $keuze ] ) ? $opties[ $keuze ] : $keuze;
+		if ( ! isset( $opties[ $keuze ] ) ) {
+			echo '<span style="color:#b32d2e">Gekoppeld aan "' . esc_html( $keuze ) . '", maar die keuze staat niet meer in de formulieren</span>';
+			return;
+		}
+		if ( ! $heeft_foto ) {
+			echo '<span style="color:#b32d2e">' . esc_html( $label ) . ' — maar dit type heeft geen uitgelichte afbeelding</span>';
+			return;
+		}
+		echo esc_html( $label );
+		return;
+	}
+
+	/* Geen vaste koppeling: laten zien wat het raden oplevert. */
+	$raak = array();
+	foreach ( sokkies_soktype_keuze_opties() as $waarde => $label ) {
+		$url = sokkies_kaartfoto_kies( $label, sokkies_soktype_kaartfotos() );
+		if ( $url && $url === get_the_post_thumbnail_url( $post_id, 'medium_large' ) ) {
+			$raak[] = $label;
+		}
+	}
+	if ( $raak ) {
+		echo '<span style="color:#996800">Op naam geraden: ' . esc_html( implode( ', ', $raak ) ) . '</span>';
+	} else {
+		echo '<span style="color:#b32d2e">Geen koppeling — op de formulierkaart blijft het vak leeg</span>';
+	}
+}, 10, 2 );
 /**
  * DE VIER AANVULLENDE OPTIES ZIJN OOK IN HET CMS TE ZETTEN.
  *
@@ -1584,7 +1771,7 @@ add_filter( 'gform_field_choice_markup_pre_render', function ( $markup, $choice,
 	$tekst = sokkies_offerte_keuzetekst( isset( $choice['text'] ) ? $choice['text'] : '' );
 
 	if ( 'pick' === $soort ) {
-		$url = sokkies_soktype_kaartfoto( $tekst );
+		$url = sokkies_soktype_kaartfoto( $tekst, isset( $choice['value'] ) ? $choice['value'] : '' );
 	} else {
 		$url = sokkies_extra_kaartfoto( $tekst );
 	}
