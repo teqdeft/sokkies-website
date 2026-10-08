@@ -232,3 +232,84 @@ function sokkies_sample_adres_altijd( $form ) {
 add_filter( 'gform_pre_render', 'sokkies_sample_adres_altijd' );
 add_filter( 'gform_pre_validation', 'sokkies_sample_adres_altijd' );
 add_filter( 'gform_pre_submission_filter', 'sokkies_sample_adres_altijd' );
+
+/**
+ * EEN SAMPLE ZONDER BEZORGADRES MAG ER NOOIT DOOR.
+ *
+ * Dit is een tweede slot. In normaal gebruik gaat het nooit dicht.
+ *
+ * WAT HET NIET IS: dit is niet de oplossing voor de melding van 8 oktober.
+ * Daar was de inzending zelf compleet - postcode, huisnummer en land stonden
+ * gewoon in de inzending - en liet alleen de notificatiemail ze weg. Dat kwam
+ * doordat de formulierdefinitie het adresblok nog aan de proefontwerp-keuze
+ * koppelde, en {all_fields} velden overslaat die volgens die logica verborgen
+ * zijn. Die logica is van de adresvelden af gehaald; daarmee is die melding
+ * verholpen.
+ *
+ * WAAROM DEZE CONTROLE ER DAN TOCH STAAT: bij het uitzoeken bleek dat
+ * dezelfde koppeling een tweede, ernstiger gezicht had. Draaide
+ * sokkies_sample_adres_altijd() een keer niet, dan beschouwde Gravity Forms
+ * postcode, huisnummer en land als verborgen en sloeg het de verplicht-controle
+ * over EN gooide het de ingevulde waarden weg. De bezoeker zag een normaal
+ * formulier en een nette bevestiging, en bij Sokkies kwam een onverzendbare
+ * aanvraag binnen. Dat is nagespeeld en het werkte precies zo.
+ *
+ * Zo stil mag dat niet kunnen. Deze controle kijkt daarom rechtstreeks naar wat
+ * de browser heeft GEPOST - daar heeft voorwaardelijke logica geen invloed op -
+ * en weigert de inzending als postcode, huisnummer of land ontbreekt.
+ *
+ * WAT DAT BETEKENT ALS HET OOIT MISGAAT: de bezoeker ziet dan een melding bij
+ * velden die hij niet kan invullen en komt er niet doorheen. Vervelend, maar de
+ * betere van de twee: iemand die vastloopt meldt zich, een halve aanvraag in de
+ * mailbox merkt niemand tot de doos niet weg kan.
+ */
+function sokkies_sample_adres_verplicht( $validation_result ) {
+	$form = rgar( $validation_result, 'form' );
+	if ( is_admin() || ! is_array( $form ) || empty( $form['fields'] ) ) {
+		return $validation_result;
+	}
+	if ( ! sokkies_is_sample( $form ) ) {
+		return $validation_result;
+	}
+
+	/* Alleen de drie velden die een pakket echt op de mat krijgen. Straat en
+	   plaats staan er bewust niet bij: die vult de adresopzoeking in, en
+	   buiten Nederland typt de bezoeker ze zelf - daar is geen harde eis op. */
+	$nodig = array( 'of-postcode', 'of-huisnummer', 'of-land' );
+
+	foreach ( $form['fields'] as $veld ) {
+		$css  = ' ' . trim( preg_replace( '/\s+/', ' ', (string) $veld->cssClass ) ) . ' ';
+		$raak = false;
+		foreach ( $nodig as $klasse ) {
+			if ( false !== strpos( $css, ' ' . $klasse . ' ' ) ) {
+				$raak = true;
+				break;
+			}
+		}
+		if ( ! $raak ) {
+			continue;
+		}
+
+		$waarde = rgpost( 'input_' . $veld->id );
+		if ( is_array( $waarde ) ) {
+			$waarde = implode( '', $waarde );
+		}
+		if ( '' !== trim( (string) $waarde ) ) {
+			continue;
+		}
+
+		$veld->failed_validation = true;
+		if ( '' === trim( (string) $veld->validation_message ) ) {
+			/* Zelfde tekst als Gravity Forms zelf gebruikt, zodat hij door de
+			   Nederlandse vertaalkaart loopt en TranslatePress hem daarna in de
+			   taal van de bezoeker zet. */
+			$veld->validation_message = __( 'This field is required.', 'gravityforms' );
+		}
+		$validation_result['is_valid'] = false;
+	}
+
+	$validation_result['form'] = $form;
+
+	return $validation_result;
+}
+add_filter( 'gform_validate', 'sokkies_sample_adres_verplicht', 20 );
