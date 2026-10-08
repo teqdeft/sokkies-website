@@ -112,6 +112,65 @@ add_action( 'template_redirect', 'sokkies_cases_oude_url' );
  */
 add_filter( 'do_redirect_guess_404_permalink', '__return_false' );
 
+/* ==========================================================================
+   TIJDELIJK — /be stuurt door naar de Nederlandse site
+   --------------------------------------------------------------------------
+   WEGHALEN: verwijder dit hele blok, van de regel "TIJDELIJK" hierboven tot
+   en met de add_action() onderaan, inclusief de functie
+   sokkies_be_tijdelijke_redirect(). Er hangt verder niets aan vast: geen
+   andere functie roept hem aan en er staat geen instelling in de database.
+   Daarna geeft /be weer een gewone 404.
+
+   WAAROM DIT ER STAAT: bezoekers typen /be in de verwachting een Belgische
+   versie te vinden. Die bestaat niet. Tot er een besluit is over welke taal
+   Belgie hoort te krijgen (Nederlands voor Vlaanderen, Frans voor Wallonie,
+   of een keuzescherm) gaan ze naar de Nederlandse site.
+
+   BEWUST EEN 302 EN GEEN 301: een 301 wordt door browsers en zoekmachines
+   onthouden. Dan blijft /be doorsturen ook nadat dit blok weg is, en dat is
+   bij de bezoeker niet meer recht te zetten. Een 302 vervalt vanzelf.
+
+   Draait op template_redirect, dus alleen op de voorkant en pas nadat
+   WordPress heeft bepaald dat er niets op deze URL staat (is_404). Komt er
+   ooit een echte pagina met de slug "be", dan wint die vanzelf en doet dit
+   blok niets meer.
+   ========================================================================== */
+function sokkies_be_tijdelijke_redirect() {
+	if ( is_admin() || ! is_404() ) {
+		return;
+	}
+
+	$pad = isset( $_SERVER['REQUEST_URI'] ) ? wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ), PHP_URL_PATH ) : '';
+	if ( ! $pad ) {
+		return;
+	}
+
+	/* De site staat in een submap; die hoort niet bij het pad dat we toetsen. */
+	$basis = (string) wp_parse_url( get_option( 'home' ), PHP_URL_PATH );
+	if ( '' !== $basis && 0 === strpos( $pad, $basis ) ) {
+		$pad = substr( $pad, strlen( $basis ) );
+	}
+
+	$delen = array_values( array_filter( explode( '/', strtolower( trim( $pad, '/' ) ) ) ) );
+
+	/* TranslatePress zet er een taalvoorvoegsel voor (/be wordt /en/be), dus
+	   dat eerst eraf halen - anders herkennen we het pad alleen zonder taal. */
+	if ( $delen && in_array( $delen[0], array( 'nl', 'en', 'de', 'fr' ), true ) ) {
+		array_shift( $delen );
+	}
+
+	if ( array( 'be' ) !== $delen ) {
+		return;
+	}
+
+	/* get_option('home') en niet home_url(): die laatste loopt door
+	   TranslatePress en geeft de HUIDIGE taal terug, dus op /en/be zouden we
+	   naar de Engelse homepage sturen in plaats van de Nederlandse. */
+	wp_safe_redirect( untrailingslashit( get_option( 'home' ) ) . '/nl/', 302 );
+	exit;
+}
+add_action( 'template_redirect', 'sokkies_be_tijdelijke_redirect' );
+
 function sokkies_rewrite_versie() {
 	if ( get_option( 'sokkies_rewrite_versie' ) === SOKKIES_REWRITE_VERSIE ) {
 		return;
