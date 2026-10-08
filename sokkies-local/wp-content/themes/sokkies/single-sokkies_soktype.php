@@ -169,13 +169,18 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                <?php foreach ( $staffel as $i => $regel ) : ?>
                <div class="staffel-row"><span class="staffel-qty"><?php echo esc_html( number_format( $regel[0], 0, ',', '.' ) . ( $i === $laatste ? '+' : '' ) ); ?> paar<?php if ( 250 === (int) $regel[0] ) : ?> <span class="staffel-badge staffel-badge--dark">Meest gekozen</span><?php endif; ?></span><span class="staffel-price">&euro;<?php echo esc_html( number_format( $regel[1], 2, ',', '.' ) ); ?></span></div>
                <?php endforeach; ?>
-               <div class="staffel-row staffel-bottom-row"><span class="staffel-qty">10.000 paar</span><a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="staffel-request">Prijs op aanvraag</a></div>
+               <div class="staffel-row staffel-bottom-row"><span class="staffel-qty">10.000 paar</span><a href="<?php echo esc_url( get_permalink( get_page_by_path('offerte') ) ); ?>" class="staffel-request">Prijs op aanvraag</a></div>
              </div>
              <?php endif; ?>
 
              <div class="prod-actions">
-               <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
-               <a href="<?php echo esc_url( home_url( '/sample-request/' ) ); ?>" class="cta-light">Vraag een sample aan</a>
+               <a href="<?php echo esc_url( get_permalink( get_page_by_path('offerte') ) ); ?>" class="cta">
+                  <?php echo esc_html( sokkies_cta_label() ); ?>
+                </a>
+
+                <a href="<?php echo esc_url( get_permalink( get_page_by_path('aanvraag-voor-een-monster') ) ); ?>" class="cta-light">
+                  Vraag een sample aan
+                </a>
              </div>
            </div>
           </div>
@@ -759,7 +764,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
           <p>Indicatieve prijs excl. btw en verzending</p>
         </div>
 
-        <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
+        <a href="<?php echo esc_url( get_permalink( get_page_by_path('offerte') ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
       </div>
     </div>
     <?php endif; ?>
@@ -771,10 +776,10 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
    clearance-regel .pdp-sticky ~ footer (responsive.css) matcht anders niet,
    waardoor de onderste footerregel achter de balk valt. 2026-10-01. */ ?>
     <div class="pdp-sticky">
-      <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
+      <a href="<?php echo esc_url( get_permalink( get_page_by_path('offerte') ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
       <div class="pdp-sticky-row">
         <button type="button" class="cta-dark" data-calc-open>Bereken je prijs</button>
-        <a href="<?php echo esc_url( home_url( '/sample-request/' ) ); ?>" class="cta-light">Sample aanvraag</a>
+        <a href="<?php echo esc_url( get_permalink( get_page_by_path('aanvraag-voor-een-monster') ) ); ?>" class="cta-light">Sample aanvraag</a>
       </div>
     </div>
 <?php get_footer(); ?>
