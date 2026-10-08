@@ -88,6 +88,30 @@ function sokkies_cases_oude_url() {
 }
 add_action( 'template_redirect', 'sokkies_cases_oude_url' );
 
+/**
+ * WordPress niet laten RADEN welke pagina bij een onbekende URL hoort.
+ *
+ * redirect_guess_404_permalink() zoekt bij een 404 een bericht waarvan de slug
+ * BEGINT met het opgevraagde pad, en stuurt daar met een 301 naartoe. Op deze
+ * site levert dat onzin op, want korte paden raken altijd wel iets:
+ *
+ *   /be   en /bed  ->  /contact/bedankt-contact/   (de bedankpagina!)
+ *   /col            ->  /collectie/
+ *   /off            ->  /offerte/
+ *   /juri           ->  /juridisch/
+ *
+ * Een bezoeker die /be intypt - bijvoorbeeld op zoek naar een Belgische
+ * versie - belandde zo op een bedankpagina voor een formulier dat hij nooit
+ * heeft ingevuld. Dat is voor de bezoeker verwarrend en het levert zoekmachines
+ * 301's op naar pagina's die niets met de URL te maken hebben.
+ *
+ * Nu geeft zo'n URL een gewone 404. LET OP, dat is de keerzijde: een echte
+ * typefout wordt ook niet meer stilzwijgend rechtgezet. Dat is hier de betere
+ * ruil, want het raden kiest simpelweg het eerste bericht dat toevallig zo
+ * begint en dat is zelden wat de bezoeker bedoelde.
+ */
+add_filter( 'do_redirect_guess_404_permalink', '__return_false' );
+
 function sokkies_rewrite_versie() {
 	if ( get_option( 'sokkies_rewrite_versie' ) === SOKKIES_REWRITE_VERSIE ) {
 		return;
