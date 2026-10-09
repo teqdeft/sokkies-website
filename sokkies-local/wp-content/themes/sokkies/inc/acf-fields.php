@@ -2023,6 +2023,7 @@ add_action( 'acf/init', function () {
 							array( 'key' => 'field_fpk_intro', 'label' => 'Intro', 'name' => 'intro', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual', 'instructions' => 'Een korte inleiding over de volle breedte, onder de kop.' ),
 							array( 'key' => 'field_fpk_kolom_1', 'label' => 'Linkerkolom', 'name' => 'kolom_1', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual' ),
 							array( 'key' => 'field_fpk_kolom_2', 'label' => 'Rechterkolom', 'name' => 'kolom_2', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual', 'instructions' => 'Op smalle schermen komt deze kolom onder de linker.' ),
+							array( 'key' => 'field_fpk_knop', 'label' => 'Knop (optioneel)', 'name' => 'knop', 'type' => 'link', 'instructions' => 'Laat leeg als het blok alleen tekst is. Ingevuld verschijnt er een gele knop onder de tekst - handig als het blok met een oproep eindigt, zoals "Neem contact op".' ),
 						),
 					),
 

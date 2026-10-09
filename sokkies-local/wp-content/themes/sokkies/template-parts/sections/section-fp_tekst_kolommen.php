@@ -20,13 +20,14 @@ $kop     = trim( (string) get_sub_field( 'kop' ) );
 $intro   = (string) get_sub_field( 'intro' );
 $kolom_1 = (string) get_sub_field( 'kolom_1' );
 $kolom_2 = (string) get_sub_field( 'kolom_2' );
+$knop    = get_sub_field( 'knop' );
 
 $gevuld    = function ( $html ) { return '' !== trim( wp_strip_all_tags( (string) $html ) ); };
 $heeft_1   = $gevuld( $kolom_1 );
 $heeft_2   = $gevuld( $kolom_2 );
 $heeft_int = $gevuld( $intro );
 
-if ( '' === $kop && ! $heeft_int && ! $heeft_1 && ! $heeft_2 ) {
+if ( '' === $kop && ! $heeft_int && ! $heeft_1 && ! $heeft_2 && empty( $knop['url'] ) ) {
 	return;
 }
 ?>
@@ -44,6 +45,11 @@ if ( '' === $kop && ! $heeft_int && ! $heeft_1 && ! $heeft_2 ) {
         <?php if ( $heeft_1 ) : ?><div class="fp-kolom"><?php echo sokkies_rijke_tekst( $kolom_1 ); ?></div><?php endif; ?>
         <?php if ( $heeft_2 ) : ?><div class="fp-kolom"><?php echo sokkies_rijke_tekst( $kolom_2 ); ?></div><?php endif; ?>
       </div>
+      <?php endif; ?>
+      <?php if ( ! empty( $knop['url'] ) ) : ?>
+      <?php /* Dezelfde gele knop als elders op de site, zodat een blok dat
+               met een oproep eindigt er niet uitziet als een losse link. */ ?>
+      <a class="cta" href="<?php echo esc_url( $knop['url'] ); ?>"<?php echo ! empty( $knop['target'] ) ? ' target="' . esc_attr( $knop['target'] ) . '"' : ''; ?> data-aos="fade-up" data-aos-delay="150"><?php echo esc_html( ! empty( $knop['title'] ) ? $knop['title'] : 'Neem contact op' ); ?></a>
       <?php endif; ?>
     </div>
   </div>
