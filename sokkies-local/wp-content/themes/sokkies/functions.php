@@ -849,11 +849,21 @@ function sokkies_taal_keuzes() {
 		return $namen;
 	}
 
-	$uit = array();
+	/* Op de SLUG en niet op de taalcode, anders vallen nl_NL en nl_BE samen
+	   en is Belgie niet apart te kiezen. */
+	$slugs = isset( $instellingen['url-slugs'] ) ? (array) $instellingen['url-slugs'] : array();
+	$uit   = array();
 	foreach ( $gepubliceerd as $code ) {
-		$deel = explode( '_', $code );
-		$taal = strtolower( $deel[0] );
-		$uit[ $taal ] = isset( $namen[ $taal ] ) ? $namen[ $taal ] : strtoupper( $taal );
+		$deel  = explode( '_', $code );
+		$taal  = strtolower( $deel[0] );
+		$sleutel = isset( $slugs[ $code ] ) ? strtolower( $slugs[ $code ] ) : $taal;
+		$naam  = isset( $namen[ $taal ] ) ? $namen[ $taal ] : strtoupper( $taal );
+		/* Een regiovariant krijgt het land erbij, zodat "Nederlands" en
+		   "Nederlands (Belgie)" uit elkaar te houden zijn in het beheer. */
+		if ( isset( $deel[1] ) && $sleutel !== $taal ) {
+			$naam .= ' (' . strtoupper( $deel[1] ) . ')';
+		}
+		$uit[ $sleutel ] = $naam;
 	}
 
 	return $uit;
@@ -887,7 +897,7 @@ function sokkies_logos_voor_taal( $logo_ids ) {
 			continue;
 		}
 
-		if ( in_array( $taal, $talen, true ) ) {
+		if ( sokkies_taal_past( $talen ) ) {
 			$uit[] = $logo_id;
 		}
 	}
@@ -933,7 +943,7 @@ function sokkies_footer_legal_links() {
 	if ( is_array( $rijen ) ) {
 		foreach ( $rijen as $rij ) {
 			$talen = isset( $rij['talen'] ) ? (array) $rij['talen'] : array();
-			if ( $talen && ! in_array( $taal_nu, $talen, true ) ) {
+			if ( ! sokkies_taal_past( $talen ) ) {
 				continue;
 			}
 			$link  = isset( $rij['link'] ) ? $rij['link'] : null;
@@ -1673,7 +1683,7 @@ function sokkies_footermenu() {
 		   DE PAGINA ZELF BLIJFT BEREIKBAAR in elke taal - dit verbergt alleen
 		   de link, niet de URL. */
 		$talen = isset( $rij['talen'] ) ? (array) $rij['talen'] : array();
-		if ( $talen && ! in_array( $taal_nu, $talen, true ) ) {
+		if ( ! sokkies_taal_past( $talen ) ) {
 			continue;
 		}
 		$kolom = ( isset( $rij['kolom'] ) && '2' === (string) $rij['kolom'] ) ? 2 : 1;
@@ -2355,7 +2365,9 @@ function sokkies_talen() {
 
 		$talen[] = array(
 			'code'     => $code,
-			'waarde'   => $taal,
+			/* De SLUG en niet de taalcode: met nl_NL en nl_BE allebei op 'nl'
+			   streepte custom.js (markSelected) ze allebei aan als huidige taal. */
+			'waarde'   => isset( $instellingen['url-slugs'][ $code ] ) ? strtolower( $instellingen['url-slugs'][ $code ] ) : $taal,
 			'vlag'     => $vlag,
 			'hreflang' => str_replace( '_', '-', $code ),
 			'url'      => $urls->get_url_for_language( $code ),
@@ -2377,6 +2389,71 @@ function sokkies_huidige_taal() {
 	}
 	$deel = explode( '_', $TRP_LANGUAGE );
 	return strtolower( $deel[0] );
+}
+
+/**
+ * DE TAAL ALS UNIEKE SLEUTEL, DUS MET REGIO.
+ *
+ * sokkies_huidige_taal() hierboven geeft de TAAL ('nl'), en dat is precies wat
+ * je wilt voor dingen die taalkundig zijn: het decimaalteken, de veldlabels van
+ * de formulieren, de landnamen. Vlaanderen schrijft Nederlands, dus daar hoort
+ * Belgie gewoon 'nl' te zijn.
+ *
+ * Maar voor RICHTEN is dat te grof. Sinds nl_BE erbij staat (verzoek R4-4,
+ * "Belgisch Nederlands als eigen taal, geen kopie van NL") viel Belgie samen
+ * met Nederland: een footerlink of een merklogo kon niet op alleen Belgie
+ * worden gezet, en in de taalkiezer kregen NL en BE allebei data-value "nl" -
+ * waardoor custom.js ze allebei als de huidige taal aanstreepte.
+ *
+ * Deze functie geeft daarom de SLUG uit TranslatePress, die per taal uniek is:
+ * nl, en, de, fr, nl_be. Zonder TranslatePress blijft het 'nl'.
+ */
+function sokkies_huidige_locale() {
+	global $TRP_LANGUAGE;
+	if ( ! $TRP_LANGUAGE ) {
+		return 'nl';
+	}
+
+	$instellingen = get_option( 'trp_settings', array() );
+	if ( ! empty( $instellingen['url-slugs'][ $TRP_LANGUAGE ] ) ) {
+		return strtolower( $instellingen['url-slugs'][ $TRP_LANGUAGE ] );
+	}
+
+	return strtolower( str_replace( '-', '_', $TRP_LANGUAGE ) );
+}
+
+/**
+ * Hoort de huidige taal bij de aangevinkte talen?
+ *
+ * Niets aangevinkt betekent overal tonen; dat is de bestaande afspraak en die
+ * verandert niet.
+ *
+ * EEN BREDE KEUZE DEKT DE REGIOVARIANT. Staat er 'nl' aangevinkt, dan geldt
+ * dat ook voor Belgie - anders zou elke bestaande footerlink en elk merklogo
+ * dat op Nederlands staat op de Belgische site verdwijnen op het moment dat
+ * nl_BE wordt aangezet. Wie iets ALLEEN in Belgie wil, vinkt 'nl_be' aan; dat
+ * matcht dan niet op Nederland.
+ */
+function sokkies_taal_past( $gekozen ) {
+	if ( ! is_array( $gekozen ) || ! $gekozen ) {
+		return true;
+	}
+
+	$locale = sokkies_huidige_locale();
+	$taal   = sokkies_huidige_taal();
+
+	foreach ( $gekozen as $keuze ) {
+		$keuze = strtolower( (string) $keuze );
+		if ( $keuze === $locale ) {
+			return true;
+		}
+		/* De brede keuze ('nl') dekt de regiovariant ('nl_be'), niet andersom. */
+		if ( $keuze === $taal && 0 === strpos( $locale, $taal ) ) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 /**

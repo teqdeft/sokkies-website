@@ -128,7 +128,7 @@
 
           </nav>
           <?php $sokkies_talen = function_exists( 'sokkies_talen' ) ? sokkies_talen() : array(); ?>
-          <div class="lang" data-value="<?php echo esc_attr( sokkies_huidige_taal() ); ?>">
+          <div class="lang" data-value="<?php echo esc_attr( sokkies_huidige_locale() ); ?>">
             <button type="button" class="globe lang-trigger" aria-label="Taal" aria-haspopup="listbox" aria-expanded="false">
               <svg xmlns="http://www.w3.org/2000/svg" width="21.5" height="21.5" viewBox="0 0 21.5 21.5">
                   <g id="globe-1_curved" transform="translate(0.75 0.75)">
