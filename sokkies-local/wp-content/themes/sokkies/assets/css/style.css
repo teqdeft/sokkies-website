@@ -5215,7 +5215,7 @@ font-weight: 600;
     border:1px solid var(--dark);
     background:#fff;
     border-radius:30px;
-    padding:11px 22px;
+    padding:11px 18px;
     font-size:calc(var(--body-sm-font-size) + 2px);
     color:var(--text);
     cursor:pointer;
@@ -8162,10 +8162,10 @@ font-weight: 600;
   }
   .over-ons .cta-final-feet,
   .duurzaamheid .cta-final-feet{
-    top:-500px;
-    left:auto;
-    right:0px;
-    width: auto;
+    top: -410px;
+    left: auto;
+    right: 0px;
+    width: 320px;
     height: auto;
   }
 
