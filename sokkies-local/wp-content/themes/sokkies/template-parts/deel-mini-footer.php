@@ -8,7 +8,8 @@
       <div class="container">
         <div class="mini-footer-left">
           <p><strong>Contact:</strong></p>
-          <div class="mini-footer-info"><p>Telefoon <a href="<?php echo esc_attr( sokkies_tel_href() ); ?>">+31 (0)413 410 411</a> &nbsp;<a href="mailto:<?php echo esc_attr( sokkies_optie( 'email', 'info@sokkies.nl' ) ); ?>">info@sokkies.nl</a></p> </div>
+          <div class="mini-footer-info"><p><?php if ( sokkies_telefoon_tonen() ) : ?>Telefoon <a href="<?php echo esc_attr( sokkies_tel_href() ); ?>"><?php echo esc_html( sokkies_optie( 'telefoon_weergave', '+31 (0)413 410 411' ) ); ?></a> &nbsp;<?php endif; ?><a href="mailto:<?php echo esc_attr( sokkies_optie( 'email', 'info@sokkies.nl' ) ); ?>"><?php echo esc_html( sokkies_optie( 'email', 'info@sokkies.nl' ) ); ?></a></p> </div>
+          <?php if ( sokkies_whatsapp_tonen() ) : ?>
           <a href="<?php echo esc_url( sokkies_wa_href() ); ?>" target="_blank" rel="noopener" class="mini-footer-wa">
             <svg xmlns="http://www.w3.org/2000/svg" width="17.914" height="18" viewBox="0 0 17.914 18">
               <g id="whatsapp" transform="translate(-0.057 0)">
@@ -17,6 +18,7 @@
             </svg>
           WhatsApp
           </a>
+          <?php endif; ?>
         </div>
         <div class="mini-footer-right">
           <?php

@@ -72,6 +72,7 @@ if ( $promo_aan ) {
               <h5>Contact</h5>
               <div class="footer-contact-row">
                 <ul>
+                  <?php if ( sokkies_telefoon_tonen() ) : ?>
                   <li>
                     <span class="footer-ci">
                       <svg xmlns="http://www.w3.org/2000/svg" width="13.75" height="22" viewBox="0 0 13.75 22">
@@ -85,6 +86,8 @@ if ( $promo_aan ) {
                       </span>
                     <a href="<?php echo esc_attr( sokkies_tel_href() ); ?>"><?php echo esc_html( sokkies_optie( 'telefoon_weergave', '+31 (0)413 410 411' ) ); ?></a>
                   </li>
+                  <?php endif; ?>
+                  <?php if ( sokkies_whatsapp_tonen() ) : ?>
                   <li>
                     <span class="footer-ci"><svg xmlns="http://www.w3.org/2000/svg" width="21.896" height="22" viewBox="0 0 21.896 22">
                         <g id="whatsapp" transform="translate(-0.057 0)">
@@ -94,6 +97,7 @@ if ( $promo_aan ) {
                       </span>
                     <a href="<?php echo esc_attr( sokkies_wa_href() ); ?>" target="_blank" rel="noopener">WhatsApp</a>
                   </li>
+                  <?php endif; ?>
                   <li>
                     <span class="footer-ci"><svg xmlns="http://www.w3.org/2000/svg" width="21.5" height="16.885" viewBox="0 0 21.5 16.885">
                       <g id="mail-outline" transform="translate(-1.65 -4.05)">

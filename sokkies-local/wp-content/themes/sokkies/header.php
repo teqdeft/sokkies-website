@@ -47,7 +47,9 @@
             <?php /* Landingsheader (ontwerp Kulwant): telefoonnummer en de gele
                      knop, verder niets — geen menu, zoeken of account. */ ?>
             <div class="nav-landing">
+              <?php if ( sokkies_telefoon_tonen() ) : ?>
               <a class="nav-bel" href="<?php echo esc_attr( sokkies_tel_href() ); ?>">Bel <?php echo esc_html( sokkies_optie( 'telefoon_weergave', '0413 410 411' ) ); ?></a>
+              <?php endif; ?>
               <?php $sokkies_cta = sokkies_header_cta(); ?>
               <?php if ( $sokkies_cta ) : ?>
               <a class="cta" href="<?php echo esc_url( $sokkies_cta['url'] ); ?>"<?php echo $sokkies_cta['target'] ? ' target="' . esc_attr( $sokkies_cta['target'] ) . '"' : ''; ?>><?php echo esc_html( $sokkies_cta['label'] ); ?></a>

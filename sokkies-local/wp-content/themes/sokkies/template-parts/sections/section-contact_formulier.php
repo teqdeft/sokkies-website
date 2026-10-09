@@ -33,8 +33,12 @@
 
           <aside class="ct-direct">
             <h3>Direct contact</h3>
+            <?php if ( sokkies_telefoon_tonen() ) : ?>
             <p>Telefoon: <a href="<?php echo esc_attr( sokkies_tel_href() ); ?>"><strong><?php echo esc_html( sokkies_optie( 'telefoon_weergave', '+31 (0)413 410 411' ) ); ?></strong></a></p>
+            <?php endif; ?>
+            <?php if ( sokkies_whatsapp_tonen() ) : ?>
             <p>WhatsApp: <a href="<?php echo esc_url( sokkies_wa_href() ); ?>"><strong><?php echo esc_html( sokkies_optie( 'telefoon_weergave', '+31 (0)413 410 411' ) ); ?></strong></a></p>
+            <?php endif; ?>
             <p><a href="mailto:<?php echo esc_attr( sokkies_optie( 'email', 'info@sokkies.nl' ) ); ?>"><?php echo esc_html( sokkies_optie( 'email', 'info@sokkies.nl' ) ); ?></a></p>
             <p>Adres:<br><strong>De Morgenstond 45, Heeswijk Dinther</strong></p>
             <p><strong>Werkdagen 8.30 tot 17.00 uur</strong><br><span class="ct-direct-note">Berichten buiten kantooruren beantwoorden we de eerstvolgende werkdag.</span></p>

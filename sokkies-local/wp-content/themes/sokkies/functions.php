@@ -492,6 +492,42 @@ function sokkies_minimale_afname() {
 	$aantal = (int) sokkies_optie( 'minimale_afname', 50 );
 	return $aantal > 0 ? $aantal : 50;
 }
+/**
+ * MAG HET TELEFOONNUMMER OP DEZE PAGINA STAAN?
+ *
+ * Op de Duitse en Franse site niet (verzoek klant): er bellen Duitse en Franse
+ * klanten die geen Nederlands spreken, en Sokkies spreekt geen Frans. Die
+ * gesprekken kosten meer dan ze opleveren. Op het Nederlands, Engels en
+ * Belgisch Nederlands blijft het nummer gewoon staan.
+ *
+ * DE TAAL EN NIET DE LOCALE: nl_BE hoort hier bij het Nederlands, dus Belgie
+ * houdt het nummer. Zou dat ooit anders moeten, dan is sokkies_huidige_locale()
+ * de functie om op te vergelijken.
+ *
+ * Dit verbergt alleen de WEERGAVE. Het nummer blijft in Website-instellingen
+ * staan en de mails en de offertes gebruiken het gewoon.
+ */
+function sokkies_telefoon_tonen() {
+	$zonder = apply_filters( 'sokkies_talen_zonder_telefoon', array( 'de', 'fr' ) );
+
+	return ! in_array( sokkies_huidige_taal(), (array) $zonder, true );
+}
+
+/**
+ * MAG WHATSAPP GETOOND WORDEN?
+ *
+ * Nee, overal uit (verzoek klant): de aanvragen die via dat kanaal binnenkomen
+ * zijn van matige kwaliteit en kosten meer tijd dan ze opbrengen.
+ *
+ * BEWUST EEN SCHAKELAAR EN GEEN SLOOPWERK. De knoppen, iconen en opmaak staan
+ * er nog; ze worden alleen niet meer uitgevoerd. Wil de klant het ooit terug,
+ * dan is dat deze ene functie op true zetten in plaats van zeven sjablonen
+ * opnieuw opbouwen. Het nummer zelf blijft ook gewoon in Website-instellingen
+ * staan.
+ */
+function sokkies_whatsapp_tonen() {
+	return (bool) apply_filters( 'sokkies_whatsapp_tonen', false );
+}
 function sokkies_tel_href() {
 	return 'tel:' . preg_replace( '/[^0-9+]/', '', (string) sokkies_optie( 'telefoon_internationaal', '+31413410411' ) );
 }

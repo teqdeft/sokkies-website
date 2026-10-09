@@ -40,7 +40,21 @@ $tel_weergave = sokkies_optie( 'telefoon_weergave', '+31 (0)413 410 411' );
       <?php if ( $contact ) : ?>
       <div class="cta-final-row">
         <a href="<?php echo esc_url( $knop_url ); ?>" class="cta"><?php echo esc_html( $knop_label ); ?></a>
-        <p>Of bel <a href="<?php echo esc_attr( sokkies_tel_href() ); ?>"><?php echo esc_html( $tel_weergave ); ?></a><span class="cta-contact-sep">&bull;</span>WhatsApp <a href="<?php echo esc_url( sokkies_wa_href() ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $tel_weergave ); ?></a></p>
+        <?php
+        /* Telefoon staat op de Duitse en Franse site uit en WhatsApp overal;
+           blijft er niets over, dan vervalt de hele regel in plaats van een
+           losse "Of bel" of een zwevend bolletje. */
+        $contactregel = array();
+        if ( sokkies_telefoon_tonen() ) {
+        	$contactregel[] = 'Of bel <a href="' . esc_attr( sokkies_tel_href() ) . '">' . esc_html( $tel_weergave ) . '</a>';
+        }
+        if ( sokkies_whatsapp_tonen() ) {
+        	$contactregel[] = 'WhatsApp <a href="' . esc_url( sokkies_wa_href() ) . '" target="_blank" rel="noopener">' . esc_html( $tel_weergave ) . '</a>';
+        }
+        if ( $contactregel ) {
+        	echo '<p>' . implode( '<span class="cta-contact-sep">&bull;</span>', $contactregel ) . '</p>';
+        }
+        ?>
       </div>
       <?php elseif ( ! empty( $knop_2['url'] ) ) : ?>
       <div class="cta-final-actions">
