@@ -30,15 +30,20 @@
             <ul>
               <li>Een fysieke sample in jouw gekozen type</li>
               <li>Gevoel van stof, pasvorm en afwerking</li>
-              <li>Gratis verzonden binnen BeNeLux</li>
+              <li>Gratis verzending binnen BeNeLux</li>
             </ul>
             <div class="quote-aside-divider"></div>
             <h4>Liever direct contact?</h4>
-            <ul>
-              <li>Telefoon: <a href="<?php echo esc_attr( sokkies_tel_href() ); ?>">+31 (0)413 410 411</a></li>
-              <li>WhatsApp: <a href="<?php echo esc_url( sokkies_wa_href() ); ?>" target="_blank" rel="noopener">+31 (0)413 410 411</a></li>
-              <li><a href="mailto:<?php echo esc_attr( sokkies_optie( 'email', 'info@sokkies.nl' ) ); ?>">info@sokkies.nl</a></li>
-            </ul>
+            <?php
+            /* Dezelfde knoppen als op de offertepagina en de configurator
+               (verzoek: het samplekaartje gelijktrekken met de offerte) —
+               één bron in deel-contactknoppen.php. Stond hier als opsomming
+               met het telefoonnummer TWEE KEER uitgeschreven; alleen de
+               links kwamen uit Website-instellingen, de zichtbare tekst was
+               hardgecodeerd. Wie daar het nummer wijzigde, zag de link
+               verspringen maar de tekst niet. */
+            get_template_part( 'template-parts/deel', 'contactknoppen' );
+            ?>
           </aside>
         </div>
       </div>
