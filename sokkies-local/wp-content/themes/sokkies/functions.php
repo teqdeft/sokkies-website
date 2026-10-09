@@ -2479,7 +2479,88 @@ function sokkies_pagina_foto( $post_id ) {
 function sokkies_merknaam_niet_vertalen( $woorden ) {
 	$woorden[] = 'Sokkies';
 
+	/* EN GEEN ENKEL BEDRAG. De vertaalmachine ziet "€7,99" als taal en maakte
+	   er op de Engelse site "£7.99" van - en bij "€6,99" zelfs "£6.03", dus
+	   inclusief een OMREKENING naar ponden. Sokkies rekent in euro's; een prijs
+	   is geen tekst die vertaald mag worden.
+
+	   De bedragen komen uit de staffels en uit "Vanaf … per paar", zodat de
+	   lijst meegroeit als de prijzen wijzigen. Met deze uitsluiting vervangt
+	   TranslatePress ze door een plaatshouder vóór het naar de machine gaat en
+	   zet ze daarna onveranderd terug - de zin eromheen wordt dus gewoon
+	   vertaald, alleen het bedrag blijft staan. */
+	foreach ( sokkies_prijs_bedragen() as $bedrag ) {
+		$woorden[] = $bedrag;
+	}
+
 	return $woorden;
+}
+
+/**
+ * Alle bedragen die de site zelf publiceert, als tekst zoals ze in de pagina
+ * staan. Wordt gebruikt om ze buiten de machinevertaling te houden.
+ */
+function sokkies_prijs_bedragen() {
+	static $cache = null;
+	if ( null !== $cache ) {
+		return $cache;
+	}
+
+	$getallen = array();
+
+	if ( function_exists( 'sokkies_staffel_matrix' ) ) {
+		foreach ( sokkies_staffel_matrix() as $staffel ) {
+			foreach ( (array) ( $staffel['rows'] ?? array() ) as $rij ) {
+				if ( isset( $rij[1] ) ) {
+					$getallen[] = (float) str_replace( ',', '.', (string) $rij[1] );
+				}
+			}
+		}
+	}
+
+	/* De "Vanaf …"-prijs die op de kaarten en in het uitklapmenu staat. */
+	$types = get_posts( array(
+		'post_type'      => 'sokkies_soktype',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'no_found_rows'  => true,
+		'fields'         => 'ids',
+	) );
+	foreach ( $types as $id ) {
+		$ruw = function_exists( 'get_field' ) ? (string) get_field( 'prijs_vanaf', $id ) : '';
+		if ( preg_match( '/([0-9]+)[.,]([0-9]{2})/', $ruw, $m ) ) {
+			$getallen[] = (float) ( $m[1] . '.' . $m[2] );
+		}
+	}
+
+	$cache = array();
+	foreach ( array_unique( $getallen ) as $getal ) {
+		/* Beide schrijfwijzen, want de komma- en de puntvariant komen allebei
+		   in de pagina voor (Nederlands tegenover Engels). */
+		$cache[] = '€' . number_format( $getal, 2, ',', '.' );
+		$cache[] = '€' . number_format( $getal, 2, '.', ',' );
+	}
+
+	return $cache;
+}
+
+/**
+ * Een bedrag schrijven zoals het in de taal van de bezoeker hoort.
+ *
+ * Nederlands, Duits en Frans gebruiken de komma als decimaalteken, Engels de
+ * punt. Dat deed TranslatePress tot nu toe per ongeluk goed: het vertaalde
+ * "€7,99" naar "€7.99". Nu de bedragen buiten de vertaling blijven (zie
+ * hierboven) moet de opmaak hier gebeuren, anders staat er "€7,99" op de
+ * Engelse site.
+ *
+ * Het euroteken blijft vooraan, ook in het Frans. Dat wijkt af van de Franse
+ * gewoonte (7,99 €) maar is wel wat er nu op de site staat; dat veranderen is
+ * een ontwerpkeuze en geen onderdeel van deze reparatie.
+ */
+function sokkies_bedrag( $getal ) {
+	$taal = function_exists( 'sokkies_huidige_taal' ) ? sokkies_huidige_taal() : 'nl';
+
+	return '€' . number_format( (float) $getal, 2, ( 'en' === $taal ? '.' : ',' ), ( 'en' === $taal ? ',' : '.' ) );
 }
 add_filter( 'trp_exclude_words_from_automatic_translation', 'sokkies_merknaam_niet_vertalen' );
 

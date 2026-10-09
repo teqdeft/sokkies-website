@@ -167,7 +167,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                  <span>Per paar</span>
                </div>
                <?php foreach ( $staffel as $i => $regel ) : ?>
-               <div class="staffel-row"><span class="staffel-qty"><?php echo esc_html( number_format( $regel[0], 0, ',', '.' ) . ( $i === $laatste ? '+' : '' ) ); ?> paar<?php if ( 250 === (int) $regel[0] ) : ?> <span class="staffel-badge staffel-badge--dark">Meest gekozen</span><?php endif; ?></span><span class="staffel-price">&euro;<?php echo esc_html( number_format( $regel[1], 2, ',', '.' ) ); ?></span></div>
+               <div class="staffel-row"><span class="staffel-qty"><?php echo esc_html( number_format( $regel[0], 0, ',', '.' ) . ( $i === $laatste ? '+' : '' ) ); ?> paar<?php if ( 250 === (int) $regel[0] ) : ?> <span class="staffel-badge staffel-badge--dark">Meest gekozen</span><?php endif; ?></span><span class="staffel-price" data-no-translation><?php echo esc_html( sokkies_bedrag( $regel[1] ) ); ?></span></div>
                <?php endforeach; ?>
                <div class="staffel-row staffel-bottom-row"><span class="staffel-qty">10.000 paar</span><a href="<?php echo esc_url( get_permalink( get_page_by_path('offerte') ) ); ?>" class="staffel-request">Prijs op aanvraag</a></div>
              </div>
