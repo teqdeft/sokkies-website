@@ -79,6 +79,55 @@ function sokkies_form_taal( $entry = null ) {
  * (Channel, GA4 ID, Attribute 1 …) blijven bewust technisch: die zijn voor het
  * systeem dat de gegevens ophaalt, niet om te lezen.
  */
+/**
+ * Placeholders per taal.
+ *
+ * WAAROM DIT HIER STAAT EN NIET AAN TRANSLATEPRESS WORDT OVERGELATEN: de
+ * placeholders stonden in het woordenboek en werden daar door de
+ * machinevertaling gevuld. Die staat inmiddels UIT, dus een placeholder die
+ * iemand in Gravity Forms wijzigt is vanaf dat moment een nieuwe bronstring
+ * zonder vertaling - en blijft op de Engelse, Duitse en Franse pagina gewoon
+ * Nederlands. Precies dat gebeurde met "Is er iets dat we nog moeten weten?"
+ * op het sampleformulier (melding met schermafbeelding van /fr/).
+ *
+ * Nu volgen de placeholders dezelfde weg als de veldlabels hierboven: één
+ * kaart in dit bestand, die met de code meereist. Wie de Nederlandse tekst in
+ * Gravity Forms aanpast, past hier de drie vertalingen aan.
+ *
+ * WAT ER BEWUST NIET IN STAAT: de voorbeeldwaarden. "A. B. Jansen",
+ * "voorbeeld@domeinnaam.nl", "1234 AB", "12" en "0123 456 789" zijn
+ * voorbeelden, geen zinnen. Ze vertalen is een inhoudelijke keuze - een Franse
+ * bezoeker een Nederlands postcodeformaat of een Nederlandse voorbeeldnaam
+ * tonen is misschien niet wenselijk, maar dat is aan de klant en niet aan een
+ * vertaalkaart.
+ */
+function sokkies_form_placeholders( $taal ) {
+	$kaart = array(
+		'en' => array(
+			'Optioneel'                              => 'Optional',
+			'Bijv. 100'                              => 'E.g. 100',
+			'Is er iets dat we nog moeten weten?'    => 'Is there anything else we should know?',
+			'Vertel kort waar we je mee kunnen helpen.' => 'Tell us briefly how we can help you.',
+			'Vertel kort wat je zoekt: aantallen, kleuren, deadline — en hoe jij jouw perfecte sokken voor je ziet.' => 'Tell us briefly what you are looking for: quantities, colours, deadline — and how you picture your perfect socks.',
+		),
+		'de' => array(
+			'Optioneel'                              => 'Optional',
+			'Bijv. 100'                              => 'z. B. 100',
+			'Is er iets dat we nog moeten weten?'    => 'Gibt es noch etwas, das wir wissen sollten?',
+			'Vertel kort waar we je mee kunnen helpen.' => 'Sagen Sie uns kurz, wobei wir Ihnen helfen können.',
+			'Vertel kort wat je zoekt: aantallen, kleuren, deadline — en hoe jij jouw perfecte sokken voor je ziet.' => 'Sagen Sie uns kurz, was Sie suchen: Stückzahl, Farben, Termin — und wie Sie sich Ihre perfekten Socken vorstellen.',
+		),
+		'fr' => array(
+			'Optioneel'                              => 'Facultatif',
+			'Bijv. 100'                              => 'Ex. 100',
+			'Is er iets dat we nog moeten weten?'    => 'Y a-t-il autre chose que nous devrions savoir ?',
+			'Vertel kort waar we je mee kunnen helpen.' => 'Dites-nous brièvement comment nous pouvons vous aider.',
+			'Vertel kort wat je zoekt: aantallen, kleuren, deadline — en hoe jij jouw perfecte sokken voor je ziet.' => 'Dites-nous brièvement ce que vous cherchez : quantités, couleurs, délai — et comment vous imaginez vos chaussettes idéales.',
+		),
+	);
+
+	return isset( $kaart[ $taal ] ) ? $kaart[ $taal ] : array();
+}
 function sokkies_form_labels( $taal ) {
 	$kaart = array(
 		'en' => array(
@@ -613,6 +662,28 @@ add_filter(
 			return $content;
 		}
 
+		/* Eerst de placeholder. Die zit in een ATTRIBUUT en niet in een
+		   tekstknoop, dus hij heeft zijn eigen vervanging - en hij staat los
+		   van het label: een veld kan het een hebben zonder het ander. */
+		$plaats = sokkies_form_placeholders( $taal );
+		$ph     = html_entity_decode( (string) $veld->placeholder, ENT_QUOTES, 'UTF-8' );
+		if ( '' !== trim( $ph ) && isset( $plaats[ $ph ] ) ) {
+			$content = preg_replace_callback(
+				'/\splaceholder=(["\'])(.*?)\1/s',
+				function ( $treffer ) use ( $ph, $plaats ) {
+					if ( html_entity_decode( $treffer[2], ENT_QUOTES, 'UTF-8' ) !== $ph ) {
+						return $treffer[0];
+					}
+
+					/* data-no-translation erbij, om dezelfde reden als bij de
+					   labels: anders ziet TranslatePress onze vertaling als
+					   bronstring en vertaalt hij hem nog een keer. */
+					return ' placeholder="' . esc_attr( $plaats[ $ph ] ) . '" data-no-translation';
+				},
+				$content,
+				1
+			);
+		}
 		$labels = sokkies_form_labels( $taal );
 		$schoon = html_entity_decode( (string) $veld->label, ENT_QUOTES, 'UTF-8' );
 		if ( ! isset( $labels[ $schoon ] ) ) {
