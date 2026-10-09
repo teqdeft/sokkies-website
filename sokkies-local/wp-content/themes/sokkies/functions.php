@@ -122,9 +122,22 @@ add_filter( 'do_redirect_guess_404_permalink', '__return_false' );
    Daarna geeft /be weer een gewone 404.
 
    WAAROM DIT ER STAAT: bezoekers typen /be in de verwachting een Belgische
-   versie te vinden. Die bestaat niet. Tot er een besluit is over welke taal
-   Belgie hoort te krijgen (Nederlands voor Vlaanderen, Frans voor Wallonie,
-   of een keuzescherm) gaan ze naar de Nederlandse site.
+   versie te vinden. Sinds nl_BE in TranslatePress staat bestaat die ook, maar
+   op /nl_be/ - en dat typt niemand. Deze omleiding brengt ze daarheen.
+
+   EERDER GING /be NAAR /nl/, omdat er toen nog geen Belgische versie was.
+   Dat is nu achterhaald.
+
+   LET OP, DIT GAAT UIT VAN VLAANDEREN. Belgie is tweetalig; een Waalse
+   bezoeker komt zo op een Nederlandstalige pagina. Dat was met /nl/ ook al
+   zo, dus het wordt er niet slechter op, maar het blijft een aanname. Wie
+   het netter wil: een keuzescherm op /be/, of de taaldetectie het laten
+   bepalen.
+
+   BETER DAN DEZE OMLEIDING zou zijn om de slug van nl_BE in TranslatePress
+   van "nl_be" naar "be" te zetten. Dan is /be/ gewoon de echte URL van de
+   Belgische site, kan dit hele blok weg, en staat er geen liggend streepje
+   in een adres waar bezoekers er geen verwachten.
 
    BEWUST EEN 302 EN GEEN 301: een 301 wordt door browsers en zoekmachines
    onthouden. Dan blijft /be doorsturen ook nadat dit blok weg is, en dat is
@@ -155,7 +168,14 @@ function sokkies_be_tijdelijke_redirect() {
 
 	/* TranslatePress zet er een taalvoorvoegsel voor (/be wordt /en/be), dus
 	   dat eerst eraf halen - anders herkennen we het pad alleen zonder taal. */
-	if ( $delen && in_array( $delen[0], array( 'nl', 'en', 'de', 'fr' ), true ) ) {
+	/* De taalvoorvoegsels komen uit TranslatePress, zodat een nieuwe taal
+	   (zoals nl_BE) hier niet vergeten kan worden. */
+	$voorvoegsels = array( 'nl', 'en', 'de', 'fr' );
+	$tp           = get_option( 'trp_settings' );
+	if ( ! empty( $tp['url-slugs'] ) ) {
+		$voorvoegsels = array_map( 'strtolower', array_values( (array) $tp['url-slugs'] ) );
+	}
+	if ( $delen && in_array( $delen[0], $voorvoegsels, true ) ) {
 		array_shift( $delen );
 	}
 
@@ -163,10 +183,21 @@ function sokkies_be_tijdelijke_redirect() {
 		return;
 	}
 
+	/* De slug komt uit TranslatePress en staat hier niet hardgecodeerd:
+	   wijzigt iemand hem van "nl_be" naar "be", dan volgt deze omleiding
+	   vanzelf (en wordt hij overbodig, zie hierboven). Bestaat nl_BE niet
+	   meer, dan vallen we terug op de Nederlandse site zoals voorheen. */
+	$slug        = 'nl';
+	$instellingen = get_option( 'trp_settings' );
+	if ( ! empty( $instellingen['url-slugs']['nl_BE'] ) && ! empty( $instellingen['publish-languages'] )
+		&& in_array( 'nl_BE', (array) $instellingen['publish-languages'], true ) ) {
+		$slug = $instellingen['url-slugs']['nl_BE'];
+	}
+
 	/* get_option('home') en niet home_url(): die laatste loopt door
 	   TranslatePress en geeft de HUIDIGE taal terug, dus op /en/be zouden we
-	   naar de Engelse homepage sturen in plaats van de Nederlandse. */
-	wp_safe_redirect( untrailingslashit( get_option( 'home' ) ) . '/nl/', 302 );
+	   naar de Engelse homepage sturen. */
+	wp_safe_redirect( untrailingslashit( get_option( 'home' ) ) . '/' . $slug . '/', 302 );
 	exit;
 }
 add_action( 'template_redirect', 'sokkies_be_tijdelijke_redirect' );
