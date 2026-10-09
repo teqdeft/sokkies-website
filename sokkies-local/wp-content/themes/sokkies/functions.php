@@ -1692,7 +1692,7 @@ function sokkies_footermenu() {
 				array( 'label' => 'Veelgestelde vragen',    'url' => home_url( '/veelgestelde-vragen/' ),  'target' => '' ),
 				array( 'label' => 'Projecten',              'url' => '#',                                  'target' => '' ),
 				array( 'label' => 'Blogs',                  'url' => home_url( '/blogs/' ),                'target' => '' ),
-				array( 'label' => 'Sokkies geeft terug',    'url' => '#',                                  'target' => '' ),
+				array( 'label' => 'Sokkies geeft terug',    'url' => home_url( '/sokkies-geeft-terug/' ), 'target' => '' ),
 			),
 		);
 	}
