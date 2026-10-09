@@ -11570,6 +11570,18 @@ body.pdp-calc-open{
     grid-template-columns:repeat(2, minmax(0,1fr));
     gap:0 60px;
   }
+  /* Gecentreerde variant: voor een kort blok dat op een oproep uitloopt
+     ("Jouw goede doel?"). De intro heeft een max-width van 600px en staat
+     normaal links; die moet hier mee naar het midden, anders staat de tekst
+     uit het lood onder een gecentreerde kop. De knop is inline-block, dus
+     die volgt de text-align vanzelf. */
+  .fp-kolommen-midden .fp-kolommen-inner{
+    text-align:center;
+  }
+  .fp-kolommen-midden .fp-kolommen-intro{
+    margin-left:auto;
+    margin-right:auto;
+  }
   .fp-kolom ul, .fp-kolom ol{
     font-size:var(--body-font-size);
     line-height:26px;
@@ -11933,6 +11945,11 @@ body.pdp-calc-open{
     background: transparent;
     margin-top: 3%;
   }
+  .sokkies-geeft-terug .cta-final {
+      background: var(--white);
+      padding-top: 80px;
+  }
+
   @media (max-width:520px){
     .zr-form{ flex-direction:column; }
     .zr-form input[type="search"]{ width:100%; }

@@ -2024,6 +2024,7 @@ add_action( 'acf/init', function () {
 							array( 'key' => 'field_fpk_kolom_1', 'label' => 'Linkerkolom', 'name' => 'kolom_1', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual' ),
 							array( 'key' => 'field_fpk_kolom_2', 'label' => 'Rechterkolom', 'name' => 'kolom_2', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'visual', 'instructions' => 'Op smalle schermen komt deze kolom onder de linker.' ),
 							array( 'key' => 'field_fpk_knop', 'label' => 'Knop (optioneel)', 'name' => 'knop', 'type' => 'link', 'instructions' => 'Laat leeg als het blok alleen tekst is. Ingevuld verschijnt er een gele knop onder de tekst - handig als het blok met een oproep eindigt, zoals "Neem contact op".' ),
+							array( 'key' => 'field_fpk_uitlijning', 'label' => 'Uitlijning', 'name' => 'uitlijning', 'type' => 'button_group', 'choices' => array( 'links' => 'Links', 'midden' => 'Gecentreerd' ), 'default_value' => 'links', 'instructions' => 'Gecentreerd past bij een kort blok met een oproep; links bij lopende tekst in twee kolommen.' ),
 						),
 					),
 

@@ -21,6 +21,7 @@ $intro   = (string) get_sub_field( 'intro' );
 $kolom_1 = (string) get_sub_field( 'kolom_1' );
 $kolom_2 = (string) get_sub_field( 'kolom_2' );
 $knop    = get_sub_field( 'knop' );
+$uitlijning = get_sub_field( 'uitlijning' );
 
 $gevuld    = function ( $html ) { return '' !== trim( wp_strip_all_tags( (string) $html ) ); };
 $heeft_1   = $gevuld( $kolom_1 );
@@ -31,7 +32,7 @@ if ( '' === $kop && ! $heeft_int && ! $heeft_1 && ! $heeft_2 && empty( $knop['ur
 	return;
 }
 ?>
-<section class="fp-kolommen">
+<section class="fp-kolommen<?php echo 'midden' === $uitlijning ? ' fp-kolommen-midden' : ''; ?>">
   <div class="container">
     <div class="fp-kolommen-inner">
       <?php if ( '' !== $kop ) : ?>
