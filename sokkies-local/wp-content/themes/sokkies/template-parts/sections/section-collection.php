@@ -19,7 +19,6 @@ if ( ! $type_ids ) {
 }
 // Het ontwerp is een rij van 4 — hard aftoppen, ook bij oude selecties.
 $type_ids = array_slice( $type_ids, 0, 4 );
-$badges = array( 'bestseller' => array( '', 'Bestseller' ), 'nieuw' => array( ' nieuw', 'Nieuw' ) );
 ?>
 <?php if ( 'patroon' === $stijl ) : ?>
 <section class="conf-types">
@@ -34,14 +33,11 @@ $badges = array( 'bestseller' => array( '', 'Bestseller' ), 'nieuw' => array( ' 
         $link  = get_field( 'pagina_link', $type_id );
         $href  = ! empty( $link['url'] ) ? $link['url'] : get_permalink( $type_id );
         $prijs = get_field( 'prijs_vanaf', $type_id );
-        $badge = get_field( 'badge', $type_id );
         $foto  = get_the_post_thumbnail_url( $type_id, 'large' );
       ?>
       <a href="<?php echo esc_url( $href ); ?>" class="collection-card" data-aos="fade-up" data-aos-delay="<?php echo (int) sokkies_aos_stap( $i ); ?>">
         <div class="collection-img">
-          <?php if ( $badge && isset( $badges[ $badge ] ) ) : ?>
-          <span class="collection-badge<?php echo esc_attr( $badges[ $badge ][0] ); ?>"><?php echo esc_html( $badges[ $badge ][1] ); ?></span>
-          <?php endif; ?>
+          <?php echo sokkies_badges_html( $type_id ); // phpcs:ignore WordPress.Security.EscapeOutput -- escapet zelf ?>
           <?php if ( $foto ) : ?>
           <img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( get_the_title( $type_id ) ); ?>">
           <?php endif; ?>

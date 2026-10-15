@@ -4,7 +4,7 @@
  * Vragen komen uit de CPT sokkies_faq (titel = vraag, ACF 'antwoord' =
  * antwoord); het accordeon-gedrag zit al in custom.js.
  */
-$titel       = get_sub_field( 'titel' ) ?: 'Veelgestelde vragen<br>over sokken bedrukken.';
+$titel       = get_sub_field( 'titel' ) ?: 'Veelgestelde vragen <br>over sokken bedrukken.';
 $intro       = get_sub_field( 'intro' );
 $vraag_ids   = get_sub_field( 'vragen' );
 $eerste_open = get_sub_field( 'eerste_open' );

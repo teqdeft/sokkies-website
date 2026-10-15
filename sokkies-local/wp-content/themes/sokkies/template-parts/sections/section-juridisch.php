@@ -108,7 +108,7 @@ $heeft_intro = '' !== trim( wp_strip_all_tags( $intro ) );
                  huidige site: het script vult zichzelf aan met de actuele
                  cookielijst. Zonder verbinding blijft het vak gewoon leeg. */ ?>
         <div class="jr-cookiebot">
-          <script id="CookieDeclaration" src="https://consent.cookiebot.com/<?php echo esc_attr( $cookiebot ); ?>/cd.js" type="text/javascript" async></script>
+          <script id="CookieDeclaration" src="https://consent.cookiebot.com/<?php echo esc_attr( $cookiebot ); ?>/cd.js" data-culture="<?php echo esc_attr( strtoupper( substr( get_locale(), 0, 2 ) ) ); ?>" type="text/javascript" async></script>
         </div>
         <script>
         /* Zolang dit domein nog niet in de Cookiebot Manager staat, stuurt

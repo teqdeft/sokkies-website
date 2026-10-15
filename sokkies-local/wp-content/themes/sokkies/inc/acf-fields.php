@@ -2187,7 +2187,7 @@ add_action( 'acf/init', function () {
 								'name'         => 'titel',
 								'type'         => 'text',
 								'instructions' => 'Regelafbraak mag met <br>; een geel deel zet je tussen [ ] óf in <span>…</span>. Leeg = standaardtekst.',
-								'placeholder'  => 'Klaar om jouw eigen<br>sokken te ontwerpen?',
+								'placeholder'  => 'Klaar om jouw eigen <br>sokken te ontwerpen?',
 							),
 							array(
 								'key'         => 'field_cta_subtekst',
@@ -2772,6 +2772,51 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 			   staan ze hier bij de website-instellingen.
 			   Leeg laten mag: dan valt de kaart terug op het beeld uit het
 			   thema, zoals het nu ook staat. ───────────────────────────────── */
+			/* ── Productbadges ────────────────────────────────────────────────
+			   Rick vroeg of Sokkies zelf badges kan toevoegen. De lijst stond
+			   hardgecodeerd in twee sectietemplates (alleen Bestseller en Nieuw);
+			   nu staat hij hier. Leeg laten mag: dan blijven precies die twee
+			   bestaan, dus de site verandert pas als iemand hier iets invult. ── */
+			array( 'key' => 'field_si_tab_badges', 'label' => 'Productbadges', 'type' => 'tab' ),
+			array(
+				'key'          => 'field_si_badges',
+				'label'        => 'Badges',
+				'name'         => 'badges',
+				'type'         => 'repeater',
+				'layout'       => 'table',
+				'button_label' => 'Badge toevoegen',
+				'instructions' => 'De badges die je per soktype kunt kiezen (Soktypes &rsaquo; een soktype &rsaquo; "Badge op de kaart"). Leeg = alleen Bestseller en Nieuw, zoals nu. LET OP: hernoem je een badge, dan moet je hem op de soktypes opnieuw kiezen — de koppeling loopt via de tekst.',
+				'sub_fields'   => array(
+					array(
+						'key'          => 'field_si_badge_label',
+						'label'        => 'Tekst op de badge',
+						'name'         => 'label',
+						'type'         => 'text',
+						'instructions' => 'Komt in hoofdletters op de kaart te staan. Kort houden — er is weinig ruimte.',
+					),
+					array(
+						'key'     => 'field_si_badge_kleur',
+						'label'   => 'Kleur',
+						'name'    => 'kleur',
+						'type'    => 'select',
+						'choices' => array(
+							'beige'  => 'Beige (standaard)',
+							'rood'   => 'Rood (opvallend)',
+							'geel'   => 'Geel',
+							'groen'  => 'Groen',
+							'cyaan'  => 'Lichtblauw',
+							'roze'   => 'Roze',
+							'donker' => 'Donker',
+						),
+						'default_value' => 'beige',
+						'allow_null'    => 0,
+						'multiple'      => 0,
+						'ui'            => 0,
+						'ajax'          => 0,
+						'return_format' => 'value',
+					),
+				),
+			),
 			array( 'key' => 'field_si_tab_extras', 'label' => 'Aanvullende opties', 'type' => 'tab' ),
 			array(
 				'key'          => 'field_si_extras',
@@ -3037,6 +3082,13 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 			array( 'key' => 'field_pps_design_knop', 'label' => 'Knop', 'name' => 'pdp_design_knop', 'type' => 'link', 'instructions' => 'Leeg = "Zelf ontwerpen" naar de configuratorpagina.' ),
 			array( 'key' => 'field_pps_tab_usecases', 'label' => 'Toepassingen', 'type' => 'tab' ),
 			array(
+				'key'          => 'field_pps_usecases_titel',
+				'label'        => 'Titel',
+				'name'         => 'pdp_usecases_titel',
+				'type'         => 'text',
+				'instructions' => 'Leeg = "Voor welke bedrijven&lt;br&gt; werken {soktype}?". Gebruik {soktype} voor de naam van het soktype (de korte naam als die is ingevuld), dan klopt de kop op elke productpagina. &lt;br&gt; mag, voor een regelafbreking.',
+			),
+			array(
 				'key'          => 'field_pps_usecases',
 				'label'        => 'Toepassings-kaarten (precies 6)',
 				'name'         => 'pdp_usecases',
@@ -3267,12 +3319,41 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				'label'         => 'Badge op de kaart',
 				'name'          => 'badge',
 				'type'          => 'select',
-				'choices'       => array(
-					'bestseller' => 'Bestseller',
-					'nieuw'      => 'Nieuw',
-				),
+				/* De keuzes komen uit Website-instellingen > Productbadges; zie
+				   sokkies_badges(). Meerdere badges mogen: ze komen naast elkaar
+				   linksboven op de kaart. */
+				'choices'       => array(),
+				'multiple'      => 1,
 				'allow_null'    => 1,
+				/* ui = keuzelijst met zoekveld en verwijderkruisjes; zonder dit
+				   moet je met ctrl klikken om er twee te kiezen. */
+				'ui'            => 1,
+				'ajax'          => 0,
+				'return_format' => 'value',
+				'search_placeholder' => '',
+				'allow_custom'  => 0,
 				'placeholder'   => 'Geen badge',
+				'instructions'  => 'Meerdere mogen. Nieuwe badges maak je aan onder Website-instellingen &rsaquo; Productbadges.',
+			),
+			array(
+				'key'          => 'field_soktype_promotie',
+				'label'        => 'Actie of promotie',
+				'name'         => 'promotie_type',
+				'type'         => 'select',
+				/* Eén keuze is voorlopig genoeg: wel of geen actie. Komt er later
+				   behoefte aan soorten, dan kunnen die er hier bij;
+				   sokkies_soktype_actie_ids() kijkt alleen of er iets gekozen is. */
+				'choices'      => array(
+					'actie' => 'Actieproduct',
+				),
+				'allow_null'   => 1,
+				'ui'           => 0,
+				'ajax'         => 0,
+				'return_format' => 'value',
+				'search_placeholder' => '',
+				'allow_custom' => 0,
+				'placeholder'  => 'Geen — hoort bij het vaste assortiment',
+				'instructions' => 'Laat dit leeg voor een gewoon soktype. Kies je hier een actie, dan verdwijnt dit soktype uit de automatische "Bekijk ook deze"-slider op de andere productpagina\'s. Het blijft gewoon in de collectie staan en blijft via zijn eigen pagina bereikbaar; een handmatig gekozen lijst blijft ook ongemoeid.',
 			),
 			array(
 				'key'          => 'field_soktype_beschrijving',

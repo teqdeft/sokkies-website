@@ -3,7 +3,7 @@
  * Sectie: One Tree Planted-blok (.pt-otp) — 1:1 uit partners.html (incl. de
  * vaste benen/doodle-exports en Kulwants shape-CSS).
  */
-$titel = get_sub_field( 'titel' ) ?: 'Officiële partner van<br>One Tree Planted';
+$titel = get_sub_field( 'titel' ) ?: 'Officiële partner van <br>One Tree Planted';
 $tekst = get_sub_field( 'tekst' ) ?: 'Voor elke order planten we bomen. Samen met One Tree Planted maken we van bedrukte sokken iets dat ook teruggeeft.';
 $klein = get_sub_field( 'foto_klein' );
 $groot = get_sub_field( 'foto_groot' );

@@ -1257,6 +1257,22 @@ font-weight: 600;
     display:block;
     transition: 0.2s ease-in-out;
   }
+  /* Meerdere badges naast elkaar. De wrapper neemt de absolute plek over;
+     de badge zelf gaat mee in de rij. Bij één badge rendert dit exact
+     hetzelfde als voorheen. */
+  .collection-badges{
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    max-width: calc(100% - 24px);
+    z-index: 1;
+  }
+  .collection-badges .collection-badge{
+    position: static;
+  }
   .collection-badge{
     position: absolute;
     top: 12px;
@@ -1273,6 +1289,31 @@ font-weight: 600;
   }
   .collection-badge.nieuw{
     background:var(--coral);
+    color:var(--white);
+  }
+  /* Extra badgekleuren uit de huisstijl; Sokkies kiest ze zelf onder
+     Website-instellingen > Productbadges. De tekstkleur is op CONTRAST
+     bepaald en niet op het oog: op deze vlakken leest de donkere
+     huiskleur 8,5 tot 13,5 keer beter dan wit, dus alleen het donkere
+     vlak krijgt witte tekst. */
+  .collection-badge.badge-geel{
+    background:var(--yellow);
+    color:var(--text);
+  }
+  .collection-badge.badge-groen{
+    background:var(--green);
+    color:var(--text);
+  }
+  .collection-badge.badge-cyaan{
+    background:var(--light-cyan);
+    color:var(--text);
+  }
+  .collection-badge.badge-roze{
+    background:var(--pink);
+    color:var(--text);
+  }
+  .collection-badge.badge-donker{
+    background:var(--text);
     color:var(--white);
   }
   .collection-card-foot{
@@ -1865,6 +1906,9 @@ font-weight: 600;
     width:100%;
     height:90%;
     z-index:-1;
+  }
+  .gift.pdp-gift:after{
+     background:var(--blue);
   }
   .gift .container {
     z-index: 1;
@@ -6930,6 +6974,7 @@ font-weight: 600;
        deel van de vorm zichtbaar blijft, en alleen de breedte rekt mee. */
     background: url(../media/bg_sock_yellow_2.png) no-repeat;
     background-size: max(100%, 1920px) 1505px;
+    height: 100%;
   }
   
   .cases.cases-pdp .case-section-outer h2, .cases.cases-pdp .case-text, .cases.cases-pdp .case-link{

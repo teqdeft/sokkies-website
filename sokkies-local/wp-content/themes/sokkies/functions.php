@@ -568,12 +568,128 @@ function sokkies_wa_href() {
  *
  * Tekst zonder het teken verandert niet, dus bestaande inhoud is veilig.
  */
-function sokkies_minimum_in_tekst( $tekst ) {
+/**
+ * De laagste prijs per paar, uit de staffeltabel.
+ *
+ * Zodat een prijs in lopende tekst niet apart onderhouden hoeft te worden.
+ * Op de homepage stond jarenlang "vanaf €1,49" in de SEO-titel terwijl de
+ * laagste staffelprijs €2,99 is; zulke losse getallen verouderen stil.
+ *
+ * ALTIJD de Nederlandse schrijfwijze (€2,99), ook op /en/. Dat lijkt gek,
+ * maar de plaatshouder staat in LOPENDE TEKST die TranslatePress vertaalt,
+ * en TP herkent een vertaling op de exacte bronzin. Zou het bedrag per taal
+ * anders geschreven worden (€2.99 op Engels), dan is de bronzin per taal
+ * anders en moet elke taal een eigen woordenboekregel krijgen — die bij de
+ * eerstvolgende prijswijziging allemaal vervallen. Met één vaste schrijfwijze
+ * is er één bronzin; de vertaler schrijft in zijn eigen vertaling €2.99.
+ *
+ * @return string Lege string als er geen staffel is.
+ */
+function sokkies_laagste_prijs() {
+	static $prijs = null;
+	if ( null !== $prijs ) {
+		return $prijs;
+	}
+	$prijs   = '';
+	$laagste = null;
+	if ( function_exists( 'sokkies_staffel_matrix' ) ) {
+		foreach ( sokkies_staffel_matrix() as $staffel ) {
+			foreach ( (array) ( $staffel['rows'] ?? array() ) as $rij ) {
+				$p = (float) str_replace( ',', '.', (string) ( $rij[1] ?? '' ) );
+				if ( $p > 0 && ( null === $laagste || $p < $laagste ) ) {
+					$laagste = $p;
+				}
+			}
+		}
+	}
+	if ( null !== $laagste ) {
+		$prijs = '€' . number_format( $laagste, 2, ',', '.' );
+	}
+	return $prijs;
+}
+
+/**
+ * De plaatshouders in een tekst vervangen.
+ *
+ * {minimum} = de minimale afname, {prijs} = de laagste prijs per paar.
+ * Beide komen uit de instellingen/staffeltabel, zodat een getal in lopende
+ * tekst niet los van de bron kan gaan lopen.
+ *
+ * @param string $tekst
+ * @return string
+ */
+function sokkies_tekst_tokens( $tekst ) {
 	$tekst = (string) $tekst;
 	if ( false === strpos( $tekst, '{' ) ) {
 		return $tekst;
 	}
-	return preg_replace( '/\{\s*minimum\s*\}/i', (string) sokkies_minimale_afname(), $tekst );
+	$tekst = preg_replace( '/\{\s*minimum\s*\}/i', (string) sokkies_minimale_afname(), $tekst );
+	$tekst = preg_replace( '/\{\s*prijs\s*\}/i', sokkies_laagste_prijs(), $tekst );
+	return $tekst;
+}
+
+/**
+ * Oude naam; alle bestaande aanroepen krijgen {prijs} er zo gratis bij.
+ */
+function sokkies_minimum_in_tekst( $tekst ) {
+	return sokkies_tekst_tokens( $tekst );
+}
+
+/**
+ * {soktypes} in een tekst vervangen door de actuele lijst soktypes.
+ *
+ * Rick vroeg (feedback #48) om bij "Welke soorten sokken kan ik bestellen?"
+ * over te nemen wat op de aanbodpagina staat, "zodat dit automatisch
+ * meeloopt met toekomstige aanpassingen aan het assortiment". Een lijst
+ * overtypen zou dat juist NIET doen: die veroudert zodra er een soktype bij
+ * komt of afvalt. Vandaar een plaatshouder, net als {minimum}.
+ *
+ * Zelfde volgorde en zelfde bron als de collectiepagina, en dezelfde
+ * linkkeuze als de kaarten (het veld "Kaart verwijst naar" wint, anders de
+ * eigen productpagina), zodat de FAQ en de aanbodpagina niet uit elkaar
+ * kunnen lopen. Soktypes met de vlag "Actie of promotie" blijven eruit:
+ * een aflopende campagne hoort niet in het antwoord op een vraag over het
+ * vaste assortiment.
+ *
+ * Geen enkel soktype gepubliceerd? Dan verdwijnt de plaatshouder zonder een
+ * lege <ul> achter te laten.
+ *
+ * @param string $tekst
+ * @return string
+ */
+function sokkies_soktypes_in_tekst( $tekst ) {
+	$tekst = (string) $tekst;
+	if ( false === stripos( $tekst, '{soktypes' ) ) {
+		return $tekst;
+	}
+
+	$ids = get_posts( array(
+		'post_type'      => 'sokkies_soktype',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'no_found_rows'  => true,
+		/* Actieproducten horen hier niet thuis: dit is de vraag naar het vaste
+		   assortiment, en een campagne die afloopt zou de FAQ onjuist maken.
+		   Zelfde bron als de "Bekijk ook deze"-slider. */
+		'post__not_in'   => sokkies_soktype_actie_ids(),
+		'fields'         => 'ids',
+	) );
+
+	$items = array();
+	foreach ( $ids as $id ) {
+		$link = function_exists( 'get_field' ) ? get_field( 'pagina_link', $id ) : null;
+		$href = ! empty( $link['url'] ) ? $link['url'] : get_permalink( $id );
+		$items[] = '<li><a href="' . esc_url( $href ) . '">' . esc_html( html_entity_decode( get_the_title( $id ), ENT_QUOTES, 'UTF-8' ) ) . '</a></li>';
+	}
+
+	$lijst = $items ? '<ul>' . implode( '', $items ) . '</ul>' : '';
+
+	/* De editor zet een plaatshouder op een eigen regel automatisch in een
+	   <p>. Een <ul> binnen een <p> is ongeldig: de browser sluit de alinea
+	   er zelf voor en laat een lege <p> achter. Dus eerst die wikkel eraf. */
+	$tekst = preg_replace( '#<p>\s*(\{\s*soktypes\s*\})\s*</p>#i', '$1', $tekst );
+
+	return preg_replace( '/\{\s*soktypes\s*\}/i', $lijst, $tekst );
 }
 
 function sokkies_tekst_regels( $tekst ) {
@@ -711,6 +827,60 @@ function sokkies_taalbijlage( $kaart, $basis, $taal = null ) {
  * Engelse maandnaam te zien. De sitetaal omzetten zou de héle beheeromgeving
  * en alle plugin-teksten meenemen — te grof voor dit ene zinnetje.
  */
+/**
+ * "Bevestigd op <datum>" in de taal van de pagina.
+ *
+ * De datum is per inzending anders, dus TranslatePress kan deze regel niet
+ * vertalen: een woordenboek werkt op hele zinnen en er is geen zin die twee
+ * keer voorkomt. Tot nu toe stond er een VASTE voorbeelddatum, die TP wél
+ * vertaald had — vandaar dat de Engelse pagina keurig "Confirmed on 18 May
+ * 2026" toonde terwijl dat voor elke bezoeker onjuist was.
+ *
+ * Nu de datum echt is, hoort ook de aanhef uit code te komen; de maandnamen
+ * doen dat al in sokkies_datum_nl().
+ *
+ * @param string $datum Al opgemaakte datum.
+ * @return string Lege string als er geen datum is.
+ */
+function sokkies_bevestigd_op( $datum ) {
+	$datum = trim( (string) $datum );
+	if ( '' === $datum ) {
+		return '';
+	}
+	$aanhef = array(
+		'nl' => 'Bevestigd op',
+		'en' => 'Confirmed on',
+		'de' => 'Bestätigt am',
+		'fr' => 'Confirmé le',
+	);
+	/* De taal van de PAGINA waar de bezoeker nu op staat, niet die van de
+	   inzending: de bedankpagina wordt per taal apart getoond. */
+	$taal = function_exists( 'sokkies_huidige_taal' ) ? sokkies_huidige_taal() : 'nl';
+	return ( isset( $aanhef[ $taal ] ) ? $aanhef[ $taal ] : $aanhef['nl'] ) . ' ' . $datum;
+}
+/**
+ * HET REFERENTIENUMMER VAN EEN AANVRAAG, MET EEN LABEL IN DE PAGINATAAL.
+ *
+ * Het nummer zelf is per aanvraag uniek, dus TranslatePress kan deze regel
+ * nooit vertalen: elke inzending zou een nieuwe bronstring opleveren. Daarom
+ * bouwen we het label hier op en markeren we de regel in het sjabloon met
+ * data-no-translation.
+ */
+function sokkies_referentie( $tijd, $id ) {
+	$id = absint( $id );
+	if ( ! $id ) {
+		return "";
+	}
+	$label = array(
+		"nl" => "Referentie",
+		"en" => "Reference",
+		"de" => "Referenz",
+		"fr" => "Référence",
+	);
+	$taal = function_exists( "sokkies_huidige_taal" ) ? sokkies_huidige_taal() : "nl";
+	$woord = isset( $label[ $taal ] ) ? $label[ $taal ] : $label["nl"];
+	return $woord . " #SK-" . wp_date( "Y-md", (int) $tijd ) . "-" . $id;
+}
 function sokkies_datum_nl( $tijd, $met_tijd = true ) {
 	$tijd = (int) $tijd;
 	if ( ! $tijd ) {
@@ -731,9 +901,11 @@ function sokkies_datum_nl( $tijd, $met_tijd = true ) {
 	$dag   = (int) wp_date( 'j', $tijd );
 	$maand = $maanden[ (int) wp_date( 'n', $tijd ) ];
 	$jaar  = wp_date( 'Y', $tijd );
+	/* Duits zet een punt achter het dagnummer: "14. Oktober 2026". */
+	$dagdeel = ( 'de' === $taal ) ? $dag . '.' : (string) $dag;
 	return $met_tijd
-		? sprintf( '%d %s %s, %s', $dag, $maand, $jaar, wp_date( 'H:i', $tijd ) )
-		: sprintf( '%d %s %s', $dag, $maand, $jaar );
+		? sprintf( '%s %s %s, %s', $dagdeel, $maand, $jaar, wp_date( 'H:i', $tijd ) )
+		: sprintf( '%s %s %s', $dagdeel, $maand, $jaar );
 }
 
 /**
@@ -1332,6 +1504,7 @@ add_action( 'admin_enqueue_scripts', function ( $hook ) {
  */
 function sokkies_rijke_tekst( $html ) {
 	$html = sokkies_minimum_in_tekst( $html );
+	$html = sokkies_soktypes_in_tekst( $html );
 	// wp_kses verwijdert <script> en <style> wel, maar LAAT DE INHOUD STAAN:
 	// een geplakt style-blok of een shortcode die inline JS uitspuugt komt dan
 	// als zichtbare bodytekst op de pagina (een [gravityform] dumpt zo zijn hele
@@ -1924,7 +2097,7 @@ function sokkies_gf_nl_meldingen() {
 
 		// Uploadveld. De teksten volgen htmlv/offerte.html: 'Sleep uw bestanden
 		// hierheen, of klik om te uploaden.' met daaronder de toegestane types.
-		'Drop files here or'      => 'Sleep uw bestanden hierheen, of',
+		'Drop files here or'      => 'Sleep je bestanden hierheen, of',
 		'Select files'            => 'klik',
 		'Accepted file types: %s'  => '%s',
 		'Accepted file types: %s.' => '%s',
@@ -2741,3 +2914,255 @@ function sokkies_download_niet_vertalen( $stoppen ) {
 	return $stoppen;
 }
 add_filter( 'trp_stop_translating_page', 'sokkies_download_niet_vertalen' );
+
+/**
+ * Soktypes die als actie- of promotieproduct zijn gemarkeerd.
+ *
+ * Rick vroeg (feedback #38) om actieproducten — de kerstactie bijvoorbeeld —
+ * uit de "Bekijk ook deze"-slider op de productpagina's te houden. Zo'n
+ * product hoort bij een campagne en niet bij het vaste assortiment, dus het
+ * is verwarrend als het als suggestie onder een gewone sok opduikt.
+ *
+ * VERVANGT een hardgecodeerde lijst met post-ID's. Dat werkte, maar vraagt
+ * een codewijziging bij elke volgende actie; dit veld kan de klant zelf
+ * zetten. Het veld 'promotie_type' op het soktype stuurt het: LEEG = gewoon
+ * soktype, dus zolang niemand iets kiest verandert er niets aan de site.
+ *
+ * BEWUST ALLEEN DE SUGGESTIESLIDER. De collectiepagina, het uitklapmenu en
+ * de kaartenrijen blijven het actieproduct gewoon tonen — het moet immers
+ * verkocht worden, en het heeft zijn eigen pagina. En een lijst die de
+ * redacteur zélf heeft samengesteld wordt nooit gefilterd.
+ *
+ * @return int[] Post-ID's, of een lege array.
+ */
+function sokkies_soktype_actie_ids() {
+	static $ids = null;
+	if ( null !== $ids ) {
+		return $ids;
+	}
+
+	$ids = array();
+	if ( ! function_exists( 'get_field' ) ) {
+		return $ids;
+	}
+
+	$types = get_posts( array(
+		'post_type'      => 'sokkies_soktype',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'no_found_rows'  => true,
+		'fields'         => 'ids',
+	) );
+	foreach ( $types as $id ) {
+		if ( trim( (string) get_field( 'promotie_type', $id ) ) !== '' ) {
+			$ids[] = (int) $id;
+		}
+	}
+
+	return $ids;
+}
+
+/**
+ * Kleurkeuze -> CSS-class op de badge.
+ *
+ * 'beige' is de basisopmaak en heeft dus geen eigen class. 'rood' gebruikt de
+ * bestaande .nieuw-regel; die naam is historisch (het was de vaste badge
+ * "Nieuw"), maar hernoemen zou de opmaak veranderen van een badge die al live
+ * staat, dus die blijft zoals hij is.
+ *
+ * De tekstkleur per vlak is op CONTRAST gekozen en niet op het oog: op geel,
+ * groen, lichtblauw en roze leest de donkere huiskleur aantoonbaar beter dan
+ * wit (ratio 8,5 tot 13,5 tegen 1,3 tot 2,1). Alleen "donker" krijgt witte
+ * tekst (17,6).
+ *
+ * @param string $kleur Waarde uit het ACF-veld.
+ * @return string Lege string = de standaardopmaak.
+ */
+function sokkies_badge_klasse( $kleur ) {
+	$map = array(
+		'beige'  => '',
+		'rood'   => 'nieuw',
+		'geel'   => 'badge-geel',
+		'groen'  => 'badge-groen',
+		'cyaan'  => 'badge-cyaan',
+		'roze'   => 'badge-roze',
+		'donker' => 'badge-donker',
+	);
+	return isset( $map[ $kleur ] ) ? $map[ $kleur ] : '';
+}
+
+/**
+ * De badges die op een soktypekaart kunnen staan.
+ *
+ * Stond hardgecodeerd in twee sectietemplates (alleen Bestseller en Nieuw).
+ * Rick vroeg of Sokkies er zelf bij kan zetten, dus de lijst komt nu uit
+ * Website-instellingen > Productbadges.
+ *
+ * LEEG = DE OUDE TWEE. Een lege optie betekent hier "er is nog niets
+ * ingevuld", niet "geen badges" — de opties-pagina staat in de database en
+ * die reist niet mee met een deploy, dus zonder deze terugval zouden de
+ * badges van Sportsokken, Reguliere sokken en Skisokken op live verdwijnen
+ * zodra de code er staat.
+ *
+ * De SLEUTEL is sanitize_title() van de tekst, zodat de bestaande waarden
+ * ('bestseller' en 'nieuw') blijven kloppen zonder migratie. Keerzijde: wie
+ * een badge hernoemt, moet hem op de soktypes opnieuw kiezen.
+ *
+ * @return array<string,array{label:string,klasse:string}>
+ */
+function sokkies_badges() {
+	static $lijst = null;
+	if ( null !== $lijst ) {
+		return $lijst;
+	}
+
+	$lijst = array();
+	$rijen = function_exists( 'get_field' ) ? get_field( 'badges', 'option' ) : null;
+	if ( is_array( $rijen ) ) {
+		foreach ( $rijen as $rij ) {
+			$label = trim( (string) ( $rij['label'] ?? '' ) );
+			if ( '' === $label ) {
+				continue;
+			}
+			$lijst[ sanitize_title( $label ) ] = array(
+				'label'  => $label,
+				'klasse' => sokkies_badge_klasse( $rij['kleur'] ?? 'beige' ),
+			);
+		}
+	}
+
+	if ( ! $lijst ) {
+		$lijst = array(
+			'bestseller' => array( 'label' => 'Bestseller', 'klasse' => '' ),
+			'nieuw'      => array( 'label' => 'Nieuw', 'klasse' => 'nieuw' ),
+		);
+	}
+
+	return $lijst;
+}
+
+/**
+ * De keuzelijst van het badge-veld vullen met de badges hierboven.
+ */
+function sokkies_badge_keuzes( $veld ) {
+	$veld['choices'] = array();
+	foreach ( sokkies_badges() as $sleutel => $badge ) {
+		$veld['choices'][ $sleutel ] = $badge['label'];
+	}
+	return $veld;
+}
+add_filter( 'acf/load_field/key=field_soktype_badge', 'sokkies_badge_keuzes' );
+
+/**
+ * De badges van één soktype als kant-en-klare HTML.
+ *
+ * Eén plek, want de kaart wordt door twee secties gerenderd (de kaartenrij
+ * en het collectie-grid) en die liepen anders uit elkaar.
+ *
+ * Een opgeslagen badge die niet meer in de lijst staat (verwijderd of
+ * hernoemd) wordt overgeslagen in plaats van half gerenderd.
+ *
+ * @param int $type_id Post-ID van het soktype.
+ * @return string Lege string als er niets te tonen is.
+ */
+function sokkies_badges_html( $type_id ) {
+	$gekozen = function_exists( 'get_field' ) ? get_field( 'badge', $type_id ) : '';
+	/* Vóór deze wijziging was het één waarde; (array) houdt die leesbaar. */
+	$gekozen = array_filter( array_map( 'strval', (array) $gekozen ), 'strlen' );
+	if ( ! $gekozen ) {
+		return '';
+	}
+
+	$lijst = sokkies_badges();
+	$html  = '';
+	foreach ( $gekozen as $sleutel ) {
+		if ( ! isset( $lijst[ $sleutel ] ) ) {
+			continue;
+		}
+		$html .= '<span class="collection-badge' . ( $lijst[ $sleutel ]['klasse'] ? ' ' . esc_attr( $lijst[ $sleutel ]['klasse'] ) : '' ) . '">'
+			. esc_html( $lijst[ $sleutel ]['label'] ) . '</span>';
+	}
+
+	return $html ? '<span class="collection-badges">' . $html . '</span>' : '';
+}
+
+/**
+ * De taaldetectie-pop-up van TranslatePress in de taal van de pagina.
+ *
+ * De drie teksten van die pop-up ("We've detected you might be speaking a
+ * different language …") staan NIET als vertaalbare string in de pagina maar
+ * als OPTIE in de database (trp_ald_settings), eenmalig gevuld met de Engelse
+ * standaard. Daardoor bereikt geen enkele vertaling ze en staat de pop-up in
+ * alle vier de talen in het Engels — een bevinding uit de taalscreening van
+ * 13 oktober.
+ *
+ * Vandaar een filter op de optie zelf in plaats van op gettext: alleen zo
+ * krijgt elke taal zijn eigen tekst. In code en niet in het instellingenscherm
+ * van TranslatePress, want dat scherm schrijft naar de database en die reist
+ * niet mee met een deploy; nu klopt het op elke omgeving.
+ *
+ * Een omgeving waar de pop-up uitstaat (popup_option = no_popup) verandert
+ * hier niets van: de teksten zijn dan gewoon niet zichtbaar.
+ *
+ * DE spreekt met Sie en FR met vous, conform de afspraak uit diezelfde
+ * screening om per taal één aanspreekvorm aan te houden.
+ */
+function sokkies_ald_teksten( $waarde ) {
+	if ( ! is_array( $waarde ) || ! function_exists( 'sokkies_huidige_taal' ) ) {
+		return $waarde;
+	}
+
+	$teksten = array(
+		'nl' => array(
+			'popup_textarea'              => 'We zien dat je mogelijk een andere taal spreekt. Wil je overschakelen naar:',
+			'popup_textarea_button'       => 'Taal wijzigen',
+			'popup_textarea_close_button' => 'Sluiten en taal niet wijzigen',
+		),
+		'de' => array(
+			'popup_textarea'              => 'Wir haben festgestellt, dass Sie möglicherweise eine andere Sprache sprechen. Möchten Sie wechseln zu:',
+			'popup_textarea_button'       => 'Sprache wechseln',
+			'popup_textarea_close_button' => 'Schließen und Sprache nicht wechseln',
+		),
+		'fr' => array(
+			'popup_textarea'              => 'Nous avons détecté que vous parlez peut-être une autre langue. Souhaitez-vous passer à :',
+			'popup_textarea_button'       => 'Changer de langue',
+			'popup_textarea_close_button' => 'Fermer sans changer de langue',
+		),
+	);
+
+	$taal = sokkies_huidige_taal();
+	/* Engels houdt de tekst van TranslatePress zelf. */
+	if ( isset( $teksten[ $taal ] ) ) {
+		$waarde = array_merge( $waarde, $teksten[ $taal ] );
+	}
+
+	return $waarde;
+}
+add_filter( 'option_trp_ald_settings', 'sokkies_ald_teksten' );
+
+/**
+ * Taalnamen in de taalkiezer in de taal zelf.
+ *
+ * TranslatePress stond op 'english_name', waardoor elke bezoeker "Dutch /
+ * English / German / French / Dutch (Belgium)" zag — ook de Nederlandse en
+ * Duitse. Een taalkiezer hoort elke taal in zijn eigen naam te tonen: wie
+ * Duits zoekt, zoekt "Deutsch".
+ *
+ * De instelling staat in de database (trp_settings) en deployt dus niet mee.
+ * Het filter op die optie werkt hier níét: TranslatePress leest zijn
+ * instellingen via een eigen, gecachete settings-component. Wel bruikbaar is
+ * de haak trp_language_name, die de plugin daar zelf voor biedt
+ * (class-languages.php:236) — die bepaalt per taalcode welke naam getoond
+ * wordt, ongeacht de instelling.
+ */
+function sokkies_taalnamen_in_eigen_taal( $naam, $code ) {
+	$namen = array(
+		'nl_NL' => 'Nederlands',
+		'nl_BE' => 'Nederlands (België)',
+		'en_GB' => 'English',
+		'de_DE' => 'Deutsch',
+		'fr_FR' => 'Français',
+	);
+	return isset( $namen[ $code ] ) ? $namen[ $code ] : $naam;
+}
+add_filter( 'trp_language_name', 'sokkies_taalnamen_in_eigen_taal', 10, 2 );

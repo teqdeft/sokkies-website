@@ -5,7 +5,7 @@
  * (.cta-final-actions), contactregel (.cta-final-row met gegevens uit
  * Website-instellingen). Witte/beige sectiebasis volgt de page-scope class.
  */
-$titel      = get_sub_field( 'titel' ) ?: "Klaar om jouw eigen<br>sokken te ontwerpen?";
+$titel      = get_sub_field( 'titel' ) ?: "Klaar om jouw eigen <br>sokken te ontwerpen?";
 $subtekst   = get_sub_field( 'subtekst' ) ?: 'Binnen 24 uur digitaal ontwerp in je inbox';
 $knop       = get_sub_field( 'knop' );
 $knop_label = sokkies_cta_tekst( $knop['title'] ?? '', $knop['url'] ?? '' );

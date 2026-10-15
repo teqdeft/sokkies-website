@@ -26,7 +26,7 @@ return array (
         array (
           'titel' => 'Wie gebruikt je gegevens?',
           'tekst' => '<p>Sokkies B.V., is verantwoordelijk voor de website https://nl.sokkies.com/ en daarmee de verantwoordelijke organisatie voor het gebruik van je persoonsgegevens zoals beschreven in deze privacyverklaring. De volledige gegevens zijn: </p>
-<p>Bedrijfsnaam: Sokkies BV<br />Adres: Bijlshoek 6B, 5473HK, Heeswijk-Dinther<br />KVK: 89538226</p>
+<p>Bedrijfsnaam: Sokkies BV <br />Adres: Bijlshoek 6B, 5473HK, Heeswijk-Dinther <br />KVK: 89538226</p>
 ',
         ),
         2 => 

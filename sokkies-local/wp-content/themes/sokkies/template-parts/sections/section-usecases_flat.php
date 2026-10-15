@@ -3,11 +3,11 @@
  * Sectie: Toepassingen-kaarten (.usecases.usecases-flat) — 1:1 uit
  * toepassingen.html (vlakke 6-kaartenrij, geen masonry).
  */
-$titel = get_sub_field( 'titel' ) ?: 'Voor welke bedrijven<br>werken reguliere sokken?';
+$titel = get_sub_field( 'titel' ) ?: 'Voor welke bedrijven <br>werken reguliere sokken?';
 $rijen = get_sub_field( 'kaarten' );
 $assets = get_template_directory_uri() . '/assets/media/';
 $standaard = array(
-	array( 'bestand' => 'corporate-gifts.png', 'titel' => 'Corporate gifts', 'tekst' => 'Kort gebruik-scenario in één zin.' ),
+	array( 'bestand' => 'corporate-gifts.png', 'titel' => 'Relatiegeschenken', 'tekst' => 'Kort gebruik-scenario in één zin.' ),
 	array( 'bestand' => 'personeelsgeschenken.png', 'titel' => 'Personeelsgeschenken', 'tekst' => 'Kort gebruik-scenario in één zin.' ),
 	array( 'bestand' => 'evenementen.png', 'titel' => 'Evenementen', 'tekst' => 'Kort gebruik-scenario in één zin.' ),
 	array( 'bestand' => 'relatiegeschenken.png', 'titel' => 'Relatiegeschenken', 'tekst' => 'Kort gebruik-scenario in één zin.' ),

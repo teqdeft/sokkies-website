@@ -65,13 +65,20 @@
     
                         <div class="mega-usps">
                           <h4></h4>
-                            <!-- <span>Vanaf <//?php echo esc_html( sokkies_minimale_afname() ); ?> paar</span>
-                            <//?php
+                            <?php /* De pluspunten in het uitklapmenu staan UIT.
+                               Stonden in een HTML-commentaar met onklaar gemaakte PHP-tags; de
+                               hele boel werd dan nog steeds naar de browser gestuurd. Met
+                               if ( false ) blijft de code staan en komt er niets uit.
+                               WEER AANZETTEN: deze regel en de endif eronder weghalen. */ ?>
+                            <?php if ( false ) : ?>
+                            <span>Vanaf <?php echo esc_html( sokkies_minimale_afname() ); ?> paar</span>
+                            <?php
                             $mega_usps = function_exists( 'get_field' ) ? get_field( 'mega_usps', 'option' ) : null;
                             if ( ! $mega_usps ) { $mega_usps = array( array( 'tekst' => 'Gratis ontwerp binnen 24u' ), array( 'tekst' => 'Gratis verzending' ) ); }
                             foreach ( $mega_usps as $usp ) : ?>
-                            <span><//?php echo esc_html( $usp['tekst'] ); ?></span>
-                            <//?php endforeach; ?//> -->
+                            <span><?php echo esc_html( $usp['tekst'] ); ?></span>
+                            <?php endforeach; ?>
+                            <?php endif; /* einde uitgeschakelde pluspunten */ ?>
                             <a class="cta-light" href="<?php echo esc_url( home_url( '/collectie/' ) ); ?>">Bekijk collectie</a>
                         </div>
                         </div>

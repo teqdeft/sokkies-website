@@ -30,13 +30,13 @@ if ( $ref_id && class_exists( 'GFAPI' ) ) {
 	$inzending = GFAPI::get_entry( $ref_id );
 	if ( $inzending && ! is_wp_error( $inzending ) ) {
 		$tijd      = strtotime( rgar( $inzending, 'date_created' ) . ' UTC' );
-		$ref_tekst = 'Referentie #SK-' . wp_date( 'Y-md', $tijd ) . '-' . $ref_id;
+		$ref_tekst = sokkies_referentie( $tijd, $ref_id );
 		$ref_datum = sokkies_datum_nl( $tijd );
 	}
 }
 
 $titel        = get_sub_field( 'titel' ) ?: '[Bedankt] voor je aanvraag!';
-$intro        = get_sub_field( 'intro' ) ?: 'Je hoort binnen 24 uur (op werkdagen) van ons met een persoonlijk<br>antwoord en een eerste digitaal ontwerp.';
+$intro        = get_sub_field( 'intro' ) ?: 'Je hoort binnen 24 uur (op werkdagen) van ons met een persoonlijk <br>antwoord en een eerste digitaal ontwerp.';
 $ref_tonen    = ( null === get_sub_field( 'ref_tonen' ) ) ? true : (bool) get_sub_field( 'ref_tonen' );
 $stappentitel = get_sub_field( 'stappen_titel' ) ?: 'Wat gebeurt er nu?';
 $wachttitel   = get_sub_field( 'wacht_titel' ) ?: 'Terwijl je wacht';
@@ -48,19 +48,27 @@ $volgtekst    = get_sub_field( 'volg_tekst' ) ?: 'Nieuwe ontwerpen, achter-de-sc
 $stappen = get_sub_field( 'stappen' );
 if ( ! $stappen ) {
 	$stappen = array(
-		array( 'titel' => 'Aanvraag ontvangen', 'tekst' => $ref_datum ? 'Bevestigd op ' . $ref_datum : 'Bevestigd op 18 mei 2026, 14:32' ),
+		/* Geen referentie in de URL = geen datum. Er stond hier een vaste
+		   datum uit het ontwerp (18 mei 2026, 14:32); die kwam na elke echte
+		   aanvraag als bevestiging op het scherm en was dus altijd onjuist. */
+		array( 'titel' => 'Aanvraag ontvangen', 'tekst' => sokkies_bevestigd_op( $ref_datum ) ),
 		array( 'titel' => 'Voel de kwaliteit', 'tekst' => 'Check de stof, de pasvorm en de afwerking in het echt.' ),
 		array( 'titel' => 'Klaar voor je eigen ontwerp?', 'tekst' => 'Vraag een offerte aan of start direct de configurator.' ),
 	);
 } elseif ( $ref_datum && empty( $stappen[0]['tekst'] ) ) {
-	$stappen[0]['tekst'] = 'Bevestigd op ' . $ref_datum;
+	$stappen[0]['tekst'] = sokkies_bevestigd_op( $ref_datum );
 }
+
+/* De datumregel is per aanvraag uniek. Die laten we niet door
+   TranslatePress registreren (zie sokkies_referentie); de taal komt
+   al uit sokkies_bevestigd_op() en sokkies_datum_nl(). */
+$datum_tekst = sokkies_bevestigd_op( $ref_datum );
 
 $kaarten = get_sub_field( 'kaarten' );
 if ( ! $kaarten ) {
 	$kaarten = array(
 		array( 'tag' => 'Brochure', 'titel' => 'Download onze brochure 2026', 'tekst' => 'Onze volledige collectie + voorbeelden in één PDF.', 'bestand' => 'Voeten-in-de-lucht.png', 'pad' => '/downloads/' ),
-		array( 'tag' => 'Case', 'titel' => 'Lees hoe een logistieke partner hun sokken liet bedrukken', 'tekst' => 'Probleem, aanpak en resultaten.', 'bestand' => 'Sokkies_FleurBoerdonk_2.png', 'pad' => '/reviews-en-cases-detail/' ),
+		array( 'tag' => 'Case', 'titel' => 'Lees hoe een logistieke partner hun sokken liet bedrukken', 'tekst' => 'Probleem, aanpak en resultaten.', 'bestand' => 'Sokkies_FleurBoerdonk_2.png', 'pad' => '/reviews-en-cases/' ),
 		array( 'tag' => 'Inspiratie', 'titel' => 'Bekijk onze inspiration gallery', 'tekst' => 'Honderden ontwerpen van bestaande klanten.', 'bestand' => 'timeline-img6.png', 'pad' => '/reviews-en-cases/' ),
 	);
 }
@@ -79,7 +87,7 @@ $pijl = '<svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" vi
           <h1><?php echo sokkies_kop( $titel ); ?></h1>
           <p><?php echo sokkies_kop( $intro ); ?></p>
           <?php if ( $ref_tonen && $ref_tekst ) : ?>
-          <span class="thanks-ref"><?php echo esc_html( $ref_tekst ); ?></span>
+          <span class="thanks-ref" data-no-translation><?php echo esc_html( $ref_tekst ); ?></span>
           <?php endif; ?>
         </div>
       </div>
@@ -100,7 +108,7 @@ $pijl = '<svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" vi
             </span>
             <h3><?php echo esc_html( rgar( $stap, 'titel' ) ); ?></h3>
             <?php if ( '' !== trim( (string) rgar( $stap, 'tekst' ) ) ) : ?>
-            <p><?php echo sokkies_kop( $stap['tekst'] ); ?></p>
+            <p<?php echo ( '' !== $datum_tekst && $datum_tekst === rgar( $stap, 'tekst' ) ) ? ' data-no-translation' : ''; ?>><?php echo sokkies_kop( $stap['tekst'] ); ?></p>
             <?php endif; ?>
           </div>
           <?php endforeach; ?>
@@ -129,7 +137,7 @@ $pijl = '<svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" vi
                 <span class="wait-tag"><?php echo esc_html( $kaart['tag'] ); ?></span>
                 <?php endif; ?>
                 <h3><?php echo esc_html( rgar( $kaart, 'titel' ) ); ?></h3>
-                <p><?php echo esc_html( rgar( $kaart, 'tekst' ) ); ?></p>
+                <p><?php echo esc_html( sokkies_tekst_tokens( rgar( $kaart, 'tekst' ) ) ); ?></p>
                 <span class="wait-link">
                   <?php echo $pijl; // phpcs:ignore WordPress.Security.EscapeOutput -- vaste SVG hierboven ?>
                   Bekijk
@@ -189,7 +197,7 @@ $pijl = '<svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" vi
               <div class="newsletter-row">
                 <label class="newsletter-check">
                   <input type="checkbox" name="optin">
-                  <span>Ja, ik wil 1x per maand<br>inspiratie ontvangen</span>
+                  <span>Ja, ik wil 1x per maand <br>inspiratie ontvangen</span>
                 </label>
                 <button type="submit" class="cta-dark ">Aanmelden</button>
               </div>

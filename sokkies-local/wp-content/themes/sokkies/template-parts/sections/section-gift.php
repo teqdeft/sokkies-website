@@ -20,8 +20,10 @@ $standaard = array(
 	array( 'bestand' => 'gift3.png', 'titel' => 'Kaartjes', 'punten' => array( 'Persoonlijk bericht', 'Tot 4 designs', 'Eigen lettertype' ) ),
 	array( 'bestand' => 'gift4.png', 'titel' => 'Inpak &amp; verzending', 'punten' => array( 'Verzending per adres', 'Geadresseerd', 'Tracking link' ) ),
 );
+
+$extra_class = ! empty( $args['class'] ) ? ' ' . esc_attr( $args['class'] ) : '';
 ?>
-<section class="gift">
+<section class="gift<?php echo $extra_class; ?>">
   <div class="container">
     <h2 data-aos="fade-up"><?php echo sokkies_kop( $titel ); ?></h2>
     <div class="gift-grid">

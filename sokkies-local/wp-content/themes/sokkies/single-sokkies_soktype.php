@@ -36,11 +36,11 @@ $std_chips = array(
 	array( 'icoon' => 'Geen-addertjes.svg', 'label' => 'Geen addertjes' ),
 );
 $std_specs = array(
-	array( 'titel' => 'Materiaalsamenstelling', 'tekst' => '80% katoen, 17% polyamide, 3% elastaan. Ademend, duurzaam en comfortabel voor dagelijks gebruik.' ),
+	array( 'titel' => 'Materiaalsamenstelling', 'tekst' => '80% katoen, 15% polyamide, 5% elastaan. Ademend, duurzaam en comfortabel voor dagelijks gebruik.' ),
 	array( 'titel' => 'Maten', 'tekst' => 'Volledig bedrukbaar van teen tot boord, inclusief zool en hiel. Alles in jouw huisstijl.' ),
-	array( 'titel' => 'Productieproces', 'tekst' => 'Geweven in Portugal en Italië in onze eigen productielijn. Van ontwerp tot levering in ongeveer vier weken.' ),
-	array( 'titel' => 'Kleurkeuze', 'tekst' => 'Tot zes kleuren per ontwerp, exact op je Pantone-huisstijlkleuren afgestemd.' ),
-	array( 'titel' => 'Printopties', 'tekst' => 'Geweven of sublimatiedruk — afhankelijk van het detailniveau van je ontwerp.' ),
+	array( 'titel' => 'Productieproces', 'tekst' => 'Gemaakt via onze eigen productielijn. Van akkoord tot levering in ongeveer vier weken.' ),
+	array( 'titel' => 'Kleurkeuze', 'tekst' => 'Tot zeven kleuren per ontwerp, exact op je Pantone-huisstijlkleuren afgestemd.' ),
+	array( 'titel' => 'Printopties', 'tekst' => 'Geweven of geborduurd — afhankelijk van het detailniveau van je ontwerp.' ),
 	array( 'titel' => 'Wasinstructies', 'tekst' => 'Wasbaar op 30°C. Niet bleken, niet in de droger. Kleurvast na tientallen wasbeurten.' ),
 );
 $std_weave = array(
@@ -51,7 +51,7 @@ hun recht.' ) ) ),
 $std_usecases = array(
 	array( 'foto' => 'usecase-small1.png', 'titel' => 'Promotionele giveaways', 'tekst' => 'Kort gebruik-scenario in één zin en optie voor een 2e regel.' ),
 	array( 'foto' => 'usecase-large1.png', 'titel' => 'Sportclubs & teams', 'tekst' => 'Kort gebruik-scenario in één zin en optie voor een 2e regel.' ),
-	array( 'foto' => 'usecase-small2.png', 'titel' => 'Corporate gifts', 'tekst' => 'Kort gebruik-scenario in één zin en optie voor een 2e regel.' ),
+	array( 'foto' => 'usecase-small2.png', 'titel' => 'Relatiegeschenken', 'tekst' => 'Kort gebruik-scenario in één zin en optie voor een 2e regel.' ),
 	array( 'foto' => 'usecase-large2.png', 'titel' => 'Personeelsgeschenken', 'tekst' => 'Kort gebruik-scenario in één zin en optie voor een 2e regel.' ),
 	array( 'foto' => 'sportclubs-teams.png', 'titel' => 'Evenementen', 'tekst' => 'Kort gebruik-scenario in één zin en optie voor een 2e regel.' ),
 	array( 'foto' => 'evenementen.png', 'titel' => 'Relatiegeschenken', 'tekst' => 'Kort gebruik-scenario in één zin en optie voor een 2e regel.' ),
@@ -63,6 +63,12 @@ $opt_weave    = get_field( 'pdp_weave_kaarten', 'option' ) ?: null;
 $weave_titel  = get_field( 'pdp_weave_titel', 'option' ) ?: 'Geweven vs. sublimatiedruk';
 $opt_uc       = get_field( 'pdp_usecases', 'option' ) ?: null;
 $design_titel = get_field( 'pdp_design_titel', 'option' ) ?: 'Ontwerp je sokken nu zelf';
+/* {soktype} in de kop wordt de naam van dit type — de korte naam als die is
+   ingevuld, anders de titel, net als bij het staffellabel. Leeg = de kop
+   zoals hij was. */
+$uc_naam      = mb_strtolower( get_field( 'korte_naam' ) ?: get_the_title() );
+$uc_titel     = get_field( 'pdp_usecases_titel', 'option' ) ?: 'Voor welke bedrijven<br> werken {soktype}?';
+$uc_titel     = str_replace( '{soktype}', $uc_naam, $uc_titel );
 $design_foto  = get_field( 'pdp_design_foto', 'option' );
 $design_knop  = get_field( 'pdp_design_knop', 'option' );
 $sleutel = sanitize_title( html_entity_decode( get_the_title(), ENT_QUOTES, 'UTF-8' ) );
@@ -160,7 +166,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
              </div>
 
              <?php if ( $staffel ) : $laatste = count( $staffel ) - 1; ?>
-             <span class="prod-price-title">Staffelprijzen<span class="prod-price-btw"> (ex. BTW)</span><span class="prod-price-type">reguliere sokken</span></span>
+             <span class="prod-price-title">Staffelprijzen<span class="prod-price-btw"> (ex. btw)</span><span class="prod-price-type"><?php echo esc_html( mb_strtolower( get_field( 'korte_naam' ) ?: get_the_title() ) ); ?></span></span>
              <div class="staffel-table prod-staffel">
                <div class="staffel-row staffel-head-row">
                  <span>Aantal</span>
@@ -273,6 +279,21 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
       </div>
     </section>
 
+   <?php
+   // Geschenk-opties: hetzelfde blok als op de homepage
+   $home_id = (int) get_option( 'page_on_front' );
+   if ( $home_id && have_rows( 'secties', $home_id ) ) {
+       while ( have_rows( 'secties', $home_id ) ) {
+           the_row();
+           if ( 'gift' === get_row_layout() ) {
+               get_template_part( 'template-parts/sections/section', 'gift', array( 'class' => 'pdp-gift' ) );
+               break;
+           }
+       }
+       reset_rows();
+   }
+   ?>
+	
 <section class="weave">
       <div class="weave-inner">
         <div class="container">
@@ -352,7 +373,11 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
 
     <!-- Bekijk ook deze -->
     <?php
-    $andere_types = get_posts( array( 'post_type' => 'sokkies_soktype', 'posts_per_page' => 8, 'post__not_in' => array( $type_id ), 'fields' => 'ids' ) );
+    /* Actieproducten blijven hier weg. Stond als vaste lijst met post-ID's
+       in de code; komt nu uit het veld "Actie of promotie" op het soktype,
+       zodat een volgende actie geen codewijziging meer vraagt. */
+    $uitsluiten   = sokkies_soktype_actie_ids();
+    $andere_types = get_posts( array( 'post_type' => 'sokkies_soktype', 'posts_per_page' => -1, 'post__not_in' => array_merge( array( $type_id ), $uitsluiten ), 'fields' => 'ids' ) );
     if ( $andere_types ) : ?>
     <section class="cards-suggestion">
       <div class="container">
@@ -410,7 +435,15 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
     </section>
     <?php endif; ?>
 
-    <section class="design-now">
+<?php /* De 3D-configurator (Expivi) staat UIT.
+   Stond eerder in een HTML-commentaar met onklaar gemaakte PHP-tags
+   (<//?php). Dat werkte, maar de hele sectie — markup, PHP en de
+   commentaren — werd nog steeds naar de browser gestuurd, waar
+   crawlers en linkcheckers er kapotte links in zagen. Met if ( false )
+   blijft de code hier staan maar komt er niets meer uit.
+   WEER AANZETTEN: deze regel en de bijbehorende endif weghalen. */ ?>
+<?php if ( false ) : ?>
+<section class="design-now">
       <img class="design-duddle-sock" src="<?php echo esc_url( $assets ); ?>pdp-duddle-configurator.png" alt="" aria-hidden="true">
       <div class="design-bg-union" aria-hidden="true"></div>
       <div class="container">
@@ -442,13 +475,14 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
         </div>
       </div>
     </section>
+<?php endif; /* einde uitgeschakelde Expivi-sectie */ ?>
 
 <section class="usecases">
       <div class="container">
         <div class="usecases-masonry">
           <div class="usecases-outer-left">
             <div class="usecases-head">
-              <h2 data-aos="fade-up">Voor welke bedrijven<br>werken reguliere sokken?</h2>
+              <h2 data-aos="fade-up"><?php echo sokkies_kop( $uc_titel ); ?></h2>
             </div>
   
             <div class="usecases-cards-inner">
@@ -456,7 +490,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
               <div class="usecase-img usecase-img-md"><?php $rij = ( $opt_uc ?: $std_usecases )[0] ?? null; $foto = $rij ? ( is_array( $rij['foto'] ?? null ) ? $rij['foto']['url'] : $assets . $rij['foto'] ) : ''; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt=""><?php endif; ?></div>
               <div class="usecase-body">
                 <h5><?php echo esc_html( $rij['titel'] ?? '' ); ?></h5><?php if ( ! empty( $rij['tekst'] ) ) : ?><p><?php echo esc_html( $rij['tekst'] ); ?></p><?php endif; ?>
-                <span class="usecase-link">
+                <!-- <span class="usecase-link">
                   <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
                     <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">
                       <path id="Path_3670" data-name="Path 3670" d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
@@ -464,14 +498,14 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                     </g>
                   </svg>
                   Bekijk meer
-                </span>
+                </span> -->
               </div>
             </div>
             <div class="usecase-card">
               <div class="usecase-img usecase-img-lg"><?php $rij = ( $opt_uc ?: $std_usecases )[1] ?? null; $foto = $rij ? ( is_array( $rij['foto'] ?? null ) ? $rij['foto']['url'] : $assets . $rij['foto'] ) : ''; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt=""><?php endif; ?></div>
               <div class="usecase-body">
                 <h5><?php echo esc_html( $rij['titel'] ?? '' ); ?></h5><?php if ( ! empty( $rij['tekst'] ) ) : ?><p><?php echo esc_html( $rij['tekst'] ); ?></p><?php endif; ?>
-                <span class="usecase-link">
+                <!-- <span class="usecase-link">
                   <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
                     <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">
                       <path id="Path_3670" data-name="Path 3670" d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
@@ -479,7 +513,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                     </g>
                   </svg>
                   Bekijk meer
-                </span>
+                </span> -->
               </div>
             </div>
             </div>
@@ -491,7 +525,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
               <div class="usecase-img usecase-img-md"><?php $rij = ( $opt_uc ?: $std_usecases )[2] ?? null; $foto = $rij ? ( is_array( $rij['foto'] ?? null ) ? $rij['foto']['url'] : $assets . $rij['foto'] ) : ''; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt=""><?php endif; ?></div>
               <div class="usecase-body">
                 <h5><?php echo esc_html( $rij['titel'] ?? '' ); ?></h5><?php if ( ! empty( $rij['tekst'] ) ) : ?><p><?php echo esc_html( $rij['tekst'] ); ?></p><?php endif; ?>
-                <span class="usecase-link">
+                <!-- <span class="usecase-link">
                   <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
                     <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">
                       <path id="Path_3670" data-name="Path 3670" d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
@@ -499,14 +533,14 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                     </g>
                   </svg>
                   Bekijk meer
-                </span>
+                </span> -->
               </div>
             </div>
             <div class="usecase-card">
               <div class="usecase-img usecase-img-lg"><?php $rij = ( $opt_uc ?: $std_usecases )[3] ?? null; $foto = $rij ? ( is_array( $rij['foto'] ?? null ) ? $rij['foto']['url'] : $assets . $rij['foto'] ) : ''; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt=""><?php endif; ?></div>
               <div class="usecase-body">
                 <h5><?php echo esc_html( $rij['titel'] ?? '' ); ?></h5><?php if ( ! empty( $rij['tekst'] ) ) : ?><p><?php echo esc_html( $rij['tekst'] ); ?></p><?php endif; ?>
-                <span class="usecase-link">
+                <!-- <span class="usecase-link">
                   <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
                     <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">
                       <path id="Path_3670" data-name="Path 3670" d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
@@ -514,7 +548,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                     </g>
                   </svg>
                   Bekijk meer
-                </span>
+                </span> -->
               </div>
             </div>
             </div>
@@ -524,7 +558,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
               <div class="usecase-img usecase-img-md"><?php $rij = ( $opt_uc ?: $std_usecases )[4] ?? null; $foto = $rij ? ( is_array( $rij['foto'] ?? null ) ? $rij['foto']['url'] : $assets . $rij['foto'] ) : ''; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt=""><?php endif; ?></div>
               <div class="usecase-body">
                 <h5><?php echo esc_html( $rij['titel'] ?? '' ); ?></h5><?php if ( ! empty( $rij['tekst'] ) ) : ?><p><?php echo esc_html( $rij['tekst'] ); ?></p><?php endif; ?>
-                <span class="usecase-link">
+                <!-- <span class="usecase-link">
                   <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
                     <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">
                       <path id="Path_3670" data-name="Path 3670" d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
@@ -532,14 +566,14 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                     </g>
                   </svg>
                   Bekijk meer
-                </span>
+                </span> -->
               </div>
             </div>
             <div class="usecase-card">
               <div class="usecase-img usecase-img-lg"><?php $rij = ( $opt_uc ?: $std_usecases )[5] ?? null; $foto = $rij ? ( is_array( $rij['foto'] ?? null ) ? $rij['foto']['url'] : $assets . $rij['foto'] ) : ''; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt=""><?php endif; ?></div>
               <div class="usecase-body">
                 <h5><?php echo esc_html( $rij['titel'] ?? '' ); ?></h5><?php if ( ! empty( $rij['tekst'] ) ) : ?><p><?php echo esc_html( $rij['tekst'] ); ?></p><?php endif; ?>
-                <span class="usecase-link">
+                <!-- <span class="usecase-link">
                   <svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" viewBox="0 0 12.199 9.39">
                     <g id="arrow_2" data-name="arrow 2" transform="translate(0.5 0.683)">
                       <path id="Path_3670" data-name="Path 3670" d="M1289.087,543v4h11" transform="translate(-1289.087 -542.997)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
@@ -547,7 +581,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                     </g>
                   </svg>
                   Bekijk meer
-                </span>
+                </span>-->
               </div>
             </div>
             </div>
@@ -585,10 +619,13 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
         </div>
         <div class="brand-intro-inner">
           <h2>Sokken bedrukken voor elk bedrijf</h2>
-          <p>Custom sokken zijn een opvallend en blijvend relatiegeschenk. Bij Sokkies werk je vanaf 50 paar, krijg je binnen 24 uur een digitaal proefontwerp, en produceren we in Portugal en Italië. Bij Sokkies hebben we onze eigen productie: van ontwerp tot levering beheren we het proces zelf. Zo garanderen we kwaliteit en snelle doorlooptijden.</p>
+          <p>Custom sokken zijn een opvallend en blijvend relatiegeschenk. Bij Sokkies werk je vanaf 50 paar en krijg je binnen 24 uur een digitaal proefontwerp. Bij Sokkies hebben we onze eigen productie: van ontwerp tot levering beheren we het proces zelf. Zo garanderen we kwaliteit en snelle doorlooptijden.</p>
           <h6>Bekend van reguliere sokken, sportsokken en bamboesokken — en duurzaam dankzij onze One Tree Planted samenwerking.</h6>
           <p>Voor sportclubs, bedrijven en sponsoren werkt het hetzelfde. Vanaf 50 paar in jouw eigen ontwerp, kleur en formaat. Met of zonder geschenkdoosje. Wat ooit een gimmick was, is inmiddels een serieuze marketingtool.</p>
-          <a href="#" class="brand-intro-link">
+          <?php /* Stond op "#" en ging dus nergens heen; het merkverhaal-blok
+             elders op de site linkt naar Over ons, dus dat is hier ook de
+             bestemming. */ ?>
+          <a href="<?php echo esc_url( home_url( '/over-ons/' ) ); ?>" class="brand-intro-link">
             Lees meer
             <svg xmlns="http://www.w3.org/2000/svg" width="9.39" height="12.199" viewBox="0 0 9.39 12.199">
               <g id="Group_491" data-name="Group 491" transform="translate(-653.793 -7826)">
@@ -622,7 +659,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
       <div class="container">
         <div class="faq-grid">
           <div class="faq-left">
-            <h2>Vragen over<br><?php echo esc_html( mb_strtolower( get_the_title() ) ); ?> bedrukken.</h2>
+            <h2>Vragen over <br><?php echo esc_html( mb_strtolower( get_the_title() ) ); ?> bedrukken.</h2>
             <p>De meeste vragen staan hier of op de <a href="<?php echo esc_url( home_url( '/veelgestelde-vragen/' ) ); ?>">FAQ-pagina</a>. Mist er nog iets, laat het weten. Duidelijkheid is schaars, dus we doen ons best.</p>
             <p>Staat je vraag er niet tussen? Neem <a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">contact</a> op, dan kijken we mee.</p>
           </div>
@@ -658,7 +695,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
       <img class="cta-final-feet" src="<?php echo esc_url( $assets ); ?>socks-transparent.png" alt="" aria-hidden="true">
       <div class="cta-final-panel">
         <div class="container">
-          <h2 data-aos="fade-up">Klaar om jouw eigen<br>sokken te ontwerpen?</h2>
+          <h2 data-aos="fade-up">Klaar om jouw eigen <br>sokken te ontwerpen?</h2>
           <p>Binnen 24 uur digitaal ontwerp in je inbox</p>
           <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="cta"><?php echo esc_html( sokkies_cta_label() ); ?></a>
         </div>
@@ -735,7 +772,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
           </button>
 
           <div class="calc-type">
-            <label class="calc-label" id="sockTypeLabel">Type sok / pre-set</label>
+            <label class="calc-label" id="sockTypeLabel">Type sok</label>
             <div class="dropdown" id="sockType" data-value="<?php echo esc_attr( $calc_sleutel ); ?>">
               <button type="button" class="dropdown-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="sockTypeLabel">
                 <span class="dropdown-value"><?php echo esc_html( ucfirst( $matrix[ $calc_sleutel ]['label'] ) ); ?></span>

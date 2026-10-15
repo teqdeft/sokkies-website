@@ -8,7 +8,6 @@ $type_ids = get_sub_field( 'soktypes' );
 if ( ! $type_ids ) {
 	$type_ids = get_posts( array( 'post_type' => 'sokkies_soktype', 'posts_per_page' => -1, 'fields' => 'ids' ) );
 }
-$badges = array( 'bestseller' => array( '', 'Bestseller' ), 'nieuw' => array( ' nieuw', 'Nieuw' ) );
 $min_afname = sokkies_minimale_afname();
 ?>
 <section class="types-section">
@@ -25,12 +24,11 @@ $min_afname = sokkies_minimale_afname();
         $link         = get_field( 'pagina_link', $type_id );
         $href         = ! empty( $link['url'] ) ? $link['url'] : get_permalink( $type_id );
         $prijs        = get_field( 'prijs_vanaf', $type_id );
-        $badge        = get_field( 'badge', $type_id );
         $beschrijving = get_field( 'korte_beschrijving', $type_id ) ?: 'Korte beschrijving van dit sok type in één zin.';
         $foto         = get_the_post_thumbnail_url( $type_id, 'large' );
       ?>
       <a href="<?php echo esc_url( $href ); ?>" class="type-card">
-        <div class="type-card-img"><?php if ( $badge && isset( $badges[ $badge ] ) ) : ?><span class="collection-badge<?php echo esc_attr( $badges[ $badge ][0] ); ?>"><?php echo esc_html( $badges[ $badge ][1] ); ?></span><?php endif; ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( get_the_title( $type_id ) ); ?>"><?php endif; ?></div>
+        <div class="type-card-img"><?php echo sokkies_badges_html( $type_id ); // phpcs:ignore WordPress.Security.EscapeOutput -- escapet zelf ?><?php if ( $foto ) : ?><img src="<?php echo esc_url( $foto ); ?>" alt="<?php echo esc_attr( get_the_title( $type_id ) ); ?>"><?php endif; ?></div>
         <div class="type-card-content">
             <h3><?php echo esc_html( get_the_title( $type_id ) ); ?></h3>
             <p><?php echo esc_html( $beschrijving ); ?></p>

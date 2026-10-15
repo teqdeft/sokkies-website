@@ -9,7 +9,9 @@ $knop       = get_sub_field( 'knop' );
 $knop_url   = ! empty( $knop['url'] ) ? $knop['url'] : home_url( '/collectie/' );
 $knop_label = ! empty( $knop['title'] ) ? $knop['title'] : 'Bekijk alle sokken';
 if ( ! $type_ids ) {
-	$type_ids = get_posts( array( 'post_type' => 'sokkies_soktype', 'posts_per_page' => 8, 'fields' => 'ids' ) );
+	/* Alleen de automatische terugval filtert actieproducten weg; een zelf
+	   gekozen lijst hierboven blijft ongemoeid. */
+	$type_ids = get_posts( array( 'post_type' => 'sokkies_soktype', 'posts_per_page' => 8, 'post__not_in' => sokkies_soktype_actie_ids(), 'fields' => 'ids' ) );
 }
 ?>
 <section class="cards-suggestion">

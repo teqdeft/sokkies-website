@@ -57,7 +57,7 @@
           <div class="application-step">
             <span class="application-num">1.</span>
             <h3>We sturen je sample op</h3>
-            <p>Binnen [X] werkdagen valt je sample op de mat. Placeholder tot Rick het bevestigt.</p>
+            <p>Binnen 2 werkdagen valt je sample op de mat.</p>
           </div>
           <div class="application-step">
             <span class="application-num">2.</span>

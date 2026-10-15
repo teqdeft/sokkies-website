@@ -2,7 +2,7 @@
 /**
  * Sectie: Waarom-blok (.usecase-why) — 1:1 uit toepassingen.html.
  */
-$titel = get_sub_field( 'titel' ) ?: 'Waarom sokken werken<br>als relatiegeschenk';
+$titel = get_sub_field( 'titel' ) ?: 'Waarom sokken werken <br>als relatiegeschenk';
 $intro = get_sub_field( 'intro' ) ?: 'Een mok staat in de kast, een pen raakt kwijt. Sokken draag je. Ze zijn dagelijks zichtbaar, persoonlijk te maken en hebben een hoge gewaardeerde waarde per euro. Daarom werken ze voor relatiegeschenken beter dan de meeste klassiekers.';
 $rijen = get_sub_field( 'punten' );
 $standaard = array(

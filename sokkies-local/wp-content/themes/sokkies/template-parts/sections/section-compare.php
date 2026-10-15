@@ -3,12 +3,12 @@
  * Sectie: Vergelijkingstabel soktypes (.compare) — 1:1 uit collectie.html.
  * Kolom 1/3/5 uitgelicht (positioneel); lege celwaarde = groen vinkje.
  */
-$titel    = get_sub_field( 'titel' ) ?: 'Welk type sok past<br>bij jouw bedrijf?';
+$titel    = get_sub_field( 'titel' ) ?: 'Welk type sok past <br>bij jouw bedrijf?';
 $kolommen = get_sub_field( 'kolommen' );
 $rijen    = get_sub_field( 'rijen' );
 $assets   = get_template_directory_uri() . '/assets/media/';
 $std_kolommen = array(
-	array( 'naam' => 'Regular', 'badge' => 'Meest gekozen' ),
+	array( 'naam' => 'Regulier', 'badge' => 'Meest gekozen' ),
 	array( 'naam' => 'Sport', 'badge' => '' ),
 	array( 'naam' => 'Anti slip', 'badge' => '' ),
 	array( 'naam' => 'Bamboe', 'badge' => '' ),
@@ -19,7 +19,7 @@ $std_rijen = array(
 	array( 'label' => 'Onderhoud', 'waarden' => array( array( 'tekst' => 'Premium allround' ), array( 'tekst' => 'Populair & functioneel' ), array( 'tekst' => 'Grip & veiligheid' ), array( 'tekst' => 'Zacht & vochtregulerend' ), array( 'tekst' => 'Extra stevig' ) ) ),
 	array( 'label' => 'Detailniveau design', 'waarden' => array( array( 'tekst' => 'Zeer hoog' ), array( 'tekst' => 'Hoog' ), array( 'tekst' => 'Hoog' ), array( 'tekst' => 'Zeer hoog' ), array( 'tekst' => 'Hoog' ) ) ),
 	array( 'label' => 'Hoeveelheid kleuren', 'waarden' => array( array( 'tekst' => '7' ), array( 'tekst' => '5' ), array( 'tekst' => '5' ), array( 'tekst' => '7' ), array( 'tekst' => '7' ) ) ),
-	array( 'label' => 'Duurzaamheid', 'waarden' => array( array( 'tekst' => 'Organisch katoen' ), array( 'tekst' => 'Organisch katoen' ), array( 'tekst' => 'Organisch katoen' ), array( 'tekst' => 'Organisch Bamboe' ), array( 'tekst' => 'Organisch katoen' ) ) ),
+	array( 'label' => 'Duurzaamheid', 'waarden' => array( array( 'tekst' => 'Organisch katoen' ), array( 'tekst' => 'Organisch katoen' ), array( 'tekst' => 'Organisch katoen' ), array( 'tekst' => 'Organisch bamboe' ), array( 'tekst' => 'Organisch katoen' ) ) ),
 	array( 'label' => 'Zachtheid', 'waarden' => array( array( 'tekst' => 'Hoog' ), array( 'tekst' => 'Hoog' ), array( 'tekst' => 'Hoog' ), array( 'tekst' => 'Zeer hoog' ), array( 'tekst' => 'Hoog' ) ) ),
 	array( 'label' => 'Badstof zool', 'waarden' => array( array( 'tekst' => 'X' ), array( 'tekst' => '' ), array( 'tekst' => '' ), array( 'tekst' => 'X' ), array( 'tekst' => 'X' ) ) ),
 );
