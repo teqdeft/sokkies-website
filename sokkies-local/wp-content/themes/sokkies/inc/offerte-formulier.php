@@ -80,16 +80,32 @@ function sokkies_form_eigen_opmaak( $form_of_id ) {
 /**
  * Hoeveel soorten sokken mag de bezoeker aanvinken?
  *
- * Het OFFERTEformulier staat er ÉÉN toe (verzoek Kulwant 2026-09-17), het
- * SAMPLEformulier er twee — daar gaan ook twee paar de deur uit. Beide
- * formulieren delen dezelfde kaarten, dezelfde validatie en hetzelfde
- * script, dus het getal hangt aan het FORMULIER en niet aan de code
- * eromheen. Onbekend formulier = twee, de oude waarde.
+ * ÉÉN, op beide formulieren.
+ *
+ * Het offerteformulier stond er al op één (verzoek Kulwant 2026-09-17);
+ * het sampleformulier volgde op 2026-10-19. Reden: bezoekers vroegen
+ * samples aan van sokken die ver uit elkaar liggen (Wieler naast Yoga &
+ * pilates) en bestelden die daarna toch niet.
+ *
+ * Het getal blijft per FORMULIER opvraagbaar, zodat er maar één plek is
+ * waar dit verandert als er ooit weer onderscheid komt. Het staat hier en
+ * niet in Gravity Forms, want de formulierinstellingen zitten in de
+ * database en die reist niet mee met een deploy.
  */
 function sokkies_max_soktypes( $form_of_id ) {
-	$id = is_array( $form_of_id ) ? (int) rgar( $form_of_id, 'id' ) : (int) $form_of_id;
+	return 1;
+}
 
-	return ( $id && $id === sokkies_offerte_form_id() ) ? 1 : 2;
+/**
+ * Draagt dit veld deze cssClass?
+ *
+ * Met spaties eromheen, zodat 'of-straat of-auto' wel op 'of-auto' matcht
+ * maar 'of-aantal' niet op 'of-aan'.
+ */
+function sokkies_offerte_is_veld( $veld, $klasse ) {
+	$cls = ' ' . trim( (string) ( $veld->cssClass ?? '' ) ) . ' ';
+
+	return false !== strpos( $cls, ' ' . $klasse . ' ' );
 }
 
 /** Zoekt een veld op label; geeft het GF_Field of null. */
@@ -144,14 +160,18 @@ function sokkies_offerte_aangevinkt( $veld ) {
  * vertaalkaart in functions.php): kort, Nederlands, "je"-vorm.
  */
 add_filter( 'gform_field_validation', function ( $resultaat, $waarde, $form, $veld ) {
-	// Geldt voor beide eigen formulieren: het sampleformulier heeft dezelfde
-	// soktypekaarten met dezelfde regel van maximaal twee.
+	// Geldt voor beide eigen formulieren: ze delen de soktypekaarten en
+	// sinds 2026-10-19 ook hetzelfde maximum van één.
 	if ( ! sokkies_form_eigen_opmaak( $form ) ) {
 		return $resultaat;
 	}
 
-	// 1. Aantal soorten sokken — één op de offerte, twee op de sample.
-	if ( 'Wat wil je laten bedrukken?' === $veld->label ) {
+	/* 1. Aantal soorten sokken. Herkenning op de cssClass: het label is
+	   redactionele tekst. Dit matchte op "Wat wil je laten bedrukken?",
+	   maar op het sampleformulier heet het veld "Van welke sokken wil je
+	   een sample?" — daar werd de regel dus NOOIT afgedwongen en was het
+	   maximum met de JS uit te schakelen. */
+	if ( sokkies_offerte_is_veld( $veld, 'of-soktypes' ) ) {
 		$gekozen = sokkies_offerte_aangevinkt( $veld );
 		$max     = sokkies_max_soktypes( $form );
 		if ( count( $gekozen ) > $max ) {
@@ -911,6 +931,47 @@ function sokkies_min_afname_in_formulier( $form ) {
 add_filter( 'gform_pre_render', 'sokkies_min_afname_in_formulier' );
 add_filter( 'gform_pre_validation', 'sokkies_min_afname_in_formulier' );
 add_filter( 'gform_pre_submission_filter', 'sokkies_min_afname_in_formulier' );
+
+/**
+ * De regel onder "Wat wil je laten bedrukken?" laten kloppen met het maximum.
+ *
+ * Die zin is een veldinstelling in Gravity Forms en dus DATABASE: hij reist
+ * niet mee met een deploy en loopt daardoor uit de pas met de code. Dat was
+ * ook zo: het offerteformulier staat al sinds september op één soort, maar
+ * de hint zei nog "Kies één of twee soorten sokken."
+ *
+ * Alleen de STANDAARDzinnen worden overschreven. Heeft de klant er een eigen
+ * toelichting van gemaakt, dan blijft die staan — zelfde afspraak als bij de
+ * minimale afname hierboven.
+ */
+function sokkies_soktype_hint_in_formulier( $form ) {
+	if ( is_admin() || ! is_array( $form ) || empty( $form['fields'] ) ) {
+		return $form;
+	}
+	if ( ! sokkies_form_eigen_opmaak( $form['id'] ) ) {
+		return $form;
+	}
+	$max = sokkies_max_soktypes( $form );
+
+	foreach ( $form['fields'] as $veld ) {
+		if ( ! sokkies_offerte_is_veld( $veld, 'of-soktypes' ) ) {
+			continue;
+		}
+		$huidig = trim( (string) $veld->description );
+
+		/* De zinnen die wij door de jaren heen zelf hebben gezet. */
+		$standaard = '/^(max\.?\s*\d+\s*selecteerbaar|kies\s+(één|een|1)(\s+of\s+(twee|2))?\s+soort(en)?\s+sok(ken)?)\.?$/iu';
+		if ( '' !== $huidig && ! preg_match( $standaard, $huidig ) ) {
+			continue;
+		}
+		$veld->description = 1 === $max
+			? 'Kies één soort sok.'
+			: 'Max. ' . $max . ' selecteerbaar';
+	}
+
+	return $form;
+}
+add_filter( 'gform_pre_render', 'sokkies_soktype_hint_in_formulier' );
 
 
 
@@ -2330,6 +2391,57 @@ add_filter( 'gform_merge_tag_filter', function ( $waarde, $merge_tag, $opties, $
 		return $waarde;
 	}
 	return str_replace( (string) $ruwe_waarde, $leesbaar, (string) $waarde );
+}, 10, 6 );
+
+/**
+ * EEN AANGEVINKTE KEUZE DIE NIET MEER PRECIES OP EEN OPTIE LIJKT, TOCH TONEN.
+ *
+ * Melding Rick (2026-10-19): in de samplemail bleef "Van welke sokken wil je
+ * een sample?" leeg terwijl de bezoeker "Yoga & pilates" had aangevinkt.
+ *
+ * Gravity Forms zoekt bij het opmaken van een keuzeveld de aangevinkte waarde
+ * op in de keuzelijst (GFFormsModel::choice_value_match, forms_model.php:5003)
+ * en vergelijkt daar met == , zonder entiteiten of hoofdletters te
+ * normaliseren. Wijkt de opgeslagen waarde ook maar één teken af van de
+ * optie, dan levert de merge tag een LEGE string op — de inzending bevat de
+ * waarde dus wel, alleen de mail laat hem weg.
+ *
+ * Nagespeeld en bevestigd met de echte notificatie:
+ *   keuze 'Yoga & pilates'     + inzending 'Yoga &amp; pilates' -> leeg
+ *   keuze 'Yoga & Pilates'     + inzending 'Yoga & pilates'     -> leeg
+ *   in alle andere combinaties gewoon goed
+ * Alleen opties met een & (of een later hernoemde optie) lopen dit risico,
+ * en dat is precies de enige optie waar het misging.
+ *
+ * Dit vangt het af bij het opmaken in plaats van in de database: de
+ * formulierinstellingen reizen niet mee met een deploy, en bestaande
+ * inzendingen zijn niet meer te wijzigen. Raakt alleen het geval waarin GF
+ * niets oplevert terwijl er wel iets is aangevinkt; in elke andere situatie
+ * blijft de opmaak van GF ongemoeid.
+ */
+add_filter( 'gform_merge_tag_filter', function ( $waarde, $merge_tag, $opties, $veld, $ruwe_waarde, $format ) {
+	/* {all_fields} levert hele tabelrijen op; daar niet aan rekenen. */
+	if ( 0 === strpos( (string) $merge_tag, 'all_fields' ) ) {
+		return $waarde;
+	}
+	if ( '' !== trim( (string) $waarde ) || ! is_object( $veld ) || empty( $veld->choices ) ) {
+		return $waarde;
+	}
+	if ( ! sokkies_form_eigen_opmaak( (int) rgobj( $veld, 'formId' ) ) ) {
+		return $waarde;
+	}
+	$gekozen = array();
+	foreach ( (array) $ruwe_waarde as $v ) {
+		$v = sokkies_offerte_keuzetekst( $v );
+		if ( '' !== $v ) {
+			$gekozen[] = $v;
+		}
+	}
+	if ( ! $gekozen ) {
+		return $waarde; // echt niets aangevinkt
+	}
+
+	return implode( ', ', $gekozen );
 }, 10, 6 );
 
 /**
