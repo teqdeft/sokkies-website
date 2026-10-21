@@ -3170,3 +3170,73 @@ function sokkies_taalnamen_in_eigen_taal( $naam, $code ) {
 	return isset( $namen[ $code ] ) ? $namen[ $code ] : $naam;
 }
 add_filter( 'trp_language_name', 'sokkies_taalnamen_in_eigen_taal', 10, 2 );
+
+/**
+ * EEN ADRES ZONDER TAAL HOORT NAAR HET NEDERLANDS, NIET NAAR HET ENGELS.
+ *
+ * Melding (2026-10-21): nl.sokkies.com kwam uit op sokkies.com/en/. Dat gold
+ * voor elk adres zonder taalvoorvoegsel, ook sokkies.com zelf, en het lag NIET
+ * aan browserherkenning - met Accept-Language nl, de en fr kwam je steeds op
+ * /en/. Voor een Nederlandstalig bedrijf is dat ongelukkig: de waarde van het
+ * oude Nederlandse domein komt zo op de Engelse pagina's terecht.
+ *
+ * DE OORZAAK ZIT IN TRANSLATEPRESS. Staat 'add-subdirectory-to-default-language'
+ * aan, dan pakt de plugin voor een adres zonder taal niet de INGESTELDE
+ * standaardtaal maar de EERSTE taal uit de publicatielijst
+ * (class-language-switcher-v2.php:158-172). Die lijst begint hier met en_GB,
+ * terwijl de standaardtaal nl_NL is.
+ *
+ * WAAROM NIET HET VOOR DE HAND LIGGENDE FILTER: de plugin biedt
+ * 'trp_needed_language' precies hiervoor, maar die keuze valt op
+ * plugins_loaded prioriteit 3 - ruim voordat een thema geladen is. Een filter
+ * uit functions.php komt daar nooit aan te pas (geprobeerd en gemeten: het
+ * adres bleef /en/). Daarom haken we aan bij de doorverwijzing zelf, die pas
+ * op template_redirect gebeurt.
+ *
+ * De volgorde van publish-languages aanpassen zou ook werken, maar dat staat
+ * in de database (trp_settings) en reist niet mee met een deploy.
+ *
+ * Alleen adressen ZONDER taalvoorvoegsel worden geraakt; /en/, /de/, /fr/ en
+ * /be/ blijven gewoon hun eigen taal.
+ */
+function sokkies_taalloos_naar_standaardtaal( $url, $taal ) {
+	if ( ! class_exists( 'TRP_Translate_Press' ) ) {
+		return $url;
+	}
+	$trp      = TRP_Translate_Press::get_trp_instance();
+	$omzetter = $trp ? $trp->get_component( 'url_converter' ) : null;
+	if ( ! $omzetter || ! method_exists( $omzetter, 'get_lang_from_url_string' ) ) {
+		return $url;
+	}
+	/* Noemt het adres zelf een taal, dan is er niets te corrigeren. */
+	if ( null !== $omzetter->get_lang_from_url_string() ) {
+		return $url;
+	}
+	$instellingen = get_option( 'trp_settings', array() );
+	$standaard    = isset( $instellingen['default-language'] ) ? $instellingen['default-language'] : '';
+	if ( ! $standaard || $standaard === $taal ) {
+		return $url;
+	}
+	$slugs = isset( $instellingen['url-slugs'][ $standaard ] ) ? $instellingen['url-slugs'][ $standaard ] : '';
+	if ( ! $slugs ) {
+		return $url;
+	}
+	/* ALLEEN DE VOORPAGINA, en dat is een bewuste grens.
+	   Bij een DIEPER adres zonder taal heeft TranslatePress de slug al
+	   naar het Engels omgezet voordat deze doorverwijzing aan de beurt
+	   is: /collectie/ komt hier binnen als /collection/. Daar alsnog
+	   /nl/ voor zetten levert /nl/collection/ op - een 404, terwijl het
+	   nu tenminste op een werkende Engelse pagina uitkomt. Dat netjes
+	   oplossen vraagt dat de TAALKEUZE zelf anders valt, en die valt op
+	   plugins_loaded prioriteit 3 - buiten bereik van een thema.
+	   De melding ging over nl.sokkies.com, en dat is deze voorpagina. */
+	$paden = function_exists( 'sokkies_verzoek_paden' ) ? sokkies_verzoek_paden() : array();
+	foreach ( $paden as $pad ) {
+		if ( '/' !== $pad ) {
+			return $url;
+		}
+	}
+
+	return sokkies_site_basis() . '/' . $slugs . '/';
+}
+add_filter( 'trp_link_to_redirect_to', 'sokkies_taalloos_naar_standaardtaal', 10, 2 );
