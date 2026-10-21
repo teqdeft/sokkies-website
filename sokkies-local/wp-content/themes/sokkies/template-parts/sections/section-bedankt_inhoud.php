@@ -38,13 +38,24 @@ if ( $ref_id && class_exists( 'GFAPI' ) ) {
 $titel        = get_sub_field( 'titel' ) ?: '[Bedankt] voor je aanvraag!';
 $intro        = get_sub_field( 'intro' ) ?: 'Je hoort binnen 24 uur (op werkdagen) van ons met een persoonlijk <br>antwoord en een eerste digitaal ontwerp.';
 $ref_tonen    = ( null === get_sub_field( 'ref_tonen' ) ) ? true : (bool) get_sub_field( 'ref_tonen' );
-$stappentitel = get_sub_field( 'stappen_titel' ) ?: 'Wat gebeurt er nu?';
+$stappentitel = get_sub_field( 'stappen_titel' ) ?: 'Wat gebeurt er nu.';
 $wachttitel   = get_sub_field( 'wacht_titel' ) ?: 'Terwijl je wacht';
 $volgtitel    = get_sub_field( 'volg_titel' ) ?: 'Volg ons voor inspiratie';
 $volgtekst    = get_sub_field( 'volg_tekst' ) ?: 'Nieuwe ontwerpen, achter-de-schermen, case-studies.';
 
 /* Stap 1 meldt wanneer de aanvraag binnenkwam. Weten we dat echt (via de
-   inzending), dan die datum; anders de tekst uit het ontwerp. */
+   inzending), dan die datum; anders de tekst uit het ontwerp.
+
+   DE STAPPEN HIERONDER ZIJN DE STANDAARD VOOR ELKE BEDANKPAGINA (verzoek
+   Rick, 2026-10-20; de teksten staan er WOORDELIJK zoals hij ze mailde,
+   inclusief de punt achter de kop). Ze staan bewust in de THEMA-code en niet als
+   paginawaarden: zo geldt de nieuwe opzet meteen voor elke bedankpagina
+   die zijn velden leeg laat, en reist hij mee met een deploy. Vult de
+   klant de stappen op een pagina zelf in, dan wint die invulling —
+   precies wat Rick vroeg ("de volgende keer past Sokkies het op de
+   pagina zelf aan"). /contact/bedankt-offerte/ staat helemaal leeg en
+   volgt dus deze standaard; bedankt-contact en bedankt-sample hebben
+   hun eigen stappen en veranderen niet. */
 $stappen = get_sub_field( 'stappen' );
 if ( ! $stappen ) {
 	$stappen = array(
@@ -52,8 +63,8 @@ if ( ! $stappen ) {
 		   datum uit het ontwerp (18 mei 2026, 14:32); die kwam na elke echte
 		   aanvraag als bevestiging op het scherm en was dus altijd onjuist. */
 		array( 'titel' => 'Aanvraag ontvangen', 'tekst' => sokkies_bevestigd_op( $ref_datum ) ),
-		array( 'titel' => 'Voel de kwaliteit', 'tekst' => 'Check de stof, de pasvorm en de afwerking in het echt.' ),
-		array( 'titel' => 'Klaar voor je eigen ontwerp?', 'tekst' => 'Vraag een offerte aan of start direct de configurator.' ),
+		array( 'titel' => 'Ontwerp in je mail', 'tekst' => 'Binnen 24 uur (op werkdagen) ontvang je de eerste digitale ontwerpen met prijsopgave.' ),
+		array( 'titel' => 'Aanpassen tot het klopt', 'tekst' => 'Andere kleur, logo groter? Laat het ons weten, we passen het graag voor je aan. Eerst voelen? Dan sturen we een gratis sample!' ),
 	);
 } elseif ( $ref_datum && empty( $stappen[0]['tekst'] ) ) {
 	$stappen[0]['tekst'] = sokkies_bevestigd_op( $ref_datum );
@@ -67,8 +78,8 @@ $datum_tekst = sokkies_bevestigd_op( $ref_datum );
 $kaarten = get_sub_field( 'kaarten' );
 if ( ! $kaarten ) {
 	$kaarten = array(
-		array( 'tag' => 'Brochure', 'titel' => 'Download onze brochure 2026', 'tekst' => 'Onze volledige collectie + voorbeelden in één PDF.', 'bestand' => 'Voeten-in-de-lucht.png', 'pad' => '/downloads/' ),
-		array( 'tag' => 'Case', 'titel' => 'Lees hoe een logistieke partner hun sokken liet bedrukken', 'tekst' => 'Probleem, aanpak en resultaten.', 'bestand' => 'Sokkies_FleurBoerdonk_2.png', 'pad' => '/reviews-en-cases/' ),
+		array( 'tag' => 'Brochure', 'titel' => 'Download onze brochure', 'tekst' => 'Onze volledige collectie + voorbeelden in één PDF.', 'bestand' => 'Voeten-in-de-lucht.png', 'pad' => '/downloads/' ),
+		array( 'tag' => 'Case', 'titel' => 'Lees de case van Sanquin Bloedbanken', 'tekst' => 'Probleem, aanpak en resultaten.', 'bestand' => 'Sokkies_FleurBoerdonk_2.png', 'pad' => '/reviews-en-cases/sanquin/' ),
 		array( 'tag' => 'Inspiratie', 'titel' => 'Bekijk onze inspiration gallery', 'tekst' => 'Honderden ontwerpen van bestaande klanten.', 'bestand' => 'timeline-img6.png', 'pad' => '/reviews-en-cases/' ),
 	);
 }
