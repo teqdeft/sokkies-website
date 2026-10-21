@@ -40,7 +40,12 @@
             <p>WhatsApp: <a href="<?php echo esc_url( sokkies_wa_href() ); ?>"><strong><?php echo esc_html( sokkies_optie( 'telefoon_weergave', '+31 (0)413 410 411' ) ); ?></strong></a></p>
             <?php endif; ?>
             <p><a href="mailto:<?php echo esc_attr( sokkies_optie( 'email', 'info@sokkies.nl' ) ); ?>"><?php echo esc_html( sokkies_optie( 'email', 'info@sokkies.nl' ) ); ?></a></p>
-            <p>Adres:<br><strong>De Morgenstond 45, Heeswijk Dinther</strong></p>
+            <?php /* Op de Duitse site het Duitse adres (GmbH). Voor de andere talen
+                 blijft hier bewust de oorspronkelijke regel staan; die is korter
+                 dan het volledige adres in de footer en dat is zo ontworpen.
+                 LET OP: voor die talen leest deze kaart dus NIET uit het CMS -
+                 dat was al zo en is apart op te pakken. */ ?>
+            <p>Adres:<br><strong><?php $ct_adres = sokkies_adres_de( true ); echo $ct_adres ? $ct_adres : 'De Morgenstond 45, Heeswijk Dinther'; ?></strong></p>
             <p><strong>Werkdagen 8.30 tot 17.00 uur</strong><br><span class="ct-direct-note">Berichten buiten kantooruren beantwoorden we de eerstvolgende werkdag.</span></p>
           </aside>
         </div>

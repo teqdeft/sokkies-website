@@ -27,5 +27,39 @@ if ( ! $rijen ) { $rijen = $standaard; }
       </div>
       <?php endforeach; ?>
     </div>
+    <?php
+    /* Losse logorij onder de kaarten (verzoek Sokkies, 2026-10-21: het
+       FD Gazellen-logo). Bewust GEEN vierde kaart: die vraagt om een titel
+       en een tekst, en dit is alleen een logo. De kop is optioneel, dus
+       zonder kop staan de logo's er kaal onder; zonder logo's verschijnt
+       de hele rij niet. */
+    $logorij = array_filter( (array) get_sub_field( 'logorij' ), function ( $r ) {
+        return ! empty( $r['logo']['url'] );
+    } );
+    $logorij_titel = trim( (string) get_sub_field( 'logorij_titel' ) );
+    ?>
+    <?php if ( $logorij ) : ?>
+    <div class="dz-keur-logos" data-aos="fade-up">
+      <?php if ( '' !== $logorij_titel ) : ?><h3><?php echo sokkies_kop( $logorij_titel ); ?></h3><?php endif; ?>
+      <ul>
+        <?php foreach ( $logorij as $rij ) :
+          $naam = trim( (string) ( $rij['naam'] ?? '' ) );
+          $link = ! empty( $rij['link']['url'] ) ? $rij['link'] : null;
+          /* Een wit (diapositief) logo is onzichtbaar op deze witte sectie;
+             dat krijgt een donker vlak onder zich. Bewust een keuze en geen
+             automatische detectie: of een logo wit is valt niet betrouwbaar
+             af te lezen aan het bestand (zie dezelfde afweging bij de
+             certificaten-tabs). */
+          $donker = ! empty( $rij['donker'] );
+        ?>
+        <li<?php echo $donker ? ' class="is-donker"' : ''; ?>>
+          <?php if ( $link ) : ?><a href="<?php echo esc_url( $link['url'] ); ?>"<?php echo ! empty( $link['target'] ) ? ' target="' . esc_attr( $link['target'] ) . '" rel="noopener"' : ''; ?>><?php endif; ?>
+          <img src="<?php echo esc_url( $rij['logo']['url'] ); ?>" alt="<?php echo esc_attr( $naam ); ?>" loading="lazy">
+          <?php if ( $link ) : ?></a><?php endif; ?>
+        </li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+    <?php endif; ?>
   </div>
 </section>

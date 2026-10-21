@@ -715,9 +715,55 @@ function sokkies_tekst_regels( $tekst ) {
  *
  * Werkt ongeacht wat er in de database staat, dus ook op een omgeving waar
  * niemand het veld opnieuw opslaat.
+ *
+ * DUITSLAND HEEFT EEN EIGEN ADRES (verzoek Sokkies, 2026-10-21: er is een
+ * GmbH opgericht en de Duitse site hoort het Duitse adres te tonen). Staat
+ * het veld "Adres (Duitse site)" gevuld, dan geldt dat op /de/; staat het
+ * leeg, dan blijft overal het gewone adres staan. Zo verandert er niets
+ * voor de andere talen en hoeft er geen tweede plek bijgehouden te worden.
+ *
+ * $een_regel voor plekken waar het adres op een regel hoort (de
+ * contactkaart); de footer zet elke regel onder elkaar.
  */
-function sokkies_adres( $standaard = '' ) {
-	return sokkies_tekst_regels( sokkies_optie( 'adres', $standaard ) );
+function sokkies_adres_de( $een_regel = false ) {
+	if ( ! function_exists( 'sokkies_huidige_taal' ) || 'de' !== sokkies_huidige_taal() ) {
+		return '';
+	}
+	$adres = trim( (string) sokkies_optie( 'adres_de', '' ) );
+	if ( '' === $adres ) {
+		return '';
+	}
+
+	return $een_regel ? sokkies_adres_een_regel( $adres ) : sokkies_tekst_regels( $adres );
+}
+
+/** Adresregels achter elkaar, voor plekken waar maar één regel past. */
+function sokkies_adres_een_regel( $adres ) {
+	$regels = preg_split( '/
+||
+/', (string) $adres );
+	$regels = array_filter( array_map( function ( $r ) { return trim( $r, " 	," ); }, $regels ) );
+
+	return esc_html( implode( ', ', $regels ) );
+}
+
+function sokkies_adres( $standaard = '', $een_regel = false ) {
+	$adres = sokkies_adres_de();
+	if ( '' === $adres ) {
+		$adres = (string) sokkies_optie( 'adres', $standaard );
+	} else {
+		return $een_regel ? sokkies_adres_een_regel( sokkies_optie( 'adres_de', '' ) ) : $adres;
+	}
+	if ( $een_regel ) {
+		$regels = preg_split( '/
+||
+/', $adres );
+		$regels = array_filter( array_map( function ( $r ) { return trim( $r, " 	," ); }, $regels ) );
+
+		return esc_html( implode( ', ', $regels ) );
+	}
+
+	return sokkies_tekst_regels( $adres );
 }
 
 /**
