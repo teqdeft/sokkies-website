@@ -465,6 +465,10 @@ require_once get_template_directory() . '/inc/sample-formulier.php';
    de beheerdersmail, de bevestigingsmail en de meldingen in het formulier. */
 require_once get_template_directory() . '/inc/formulier-talen.php';
 
+// Oude adressen van de vorige site doorsturen (zie het bestand voor de
+// aanleiding: 28 ervan kwamen uit op een afbeelding in plaats van een pagina).
+require_once get_template_directory() . '/inc/oude-urls.php';
+
 /**
  * Site-instelling uit de ACF-opties-pagina, met hardcoded fallback zolang
  * de opties nog niet zijn opgeslagen (of ACF uit staat).
