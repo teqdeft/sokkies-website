@@ -12021,3 +12021,13 @@ body.pdp-calc-open{
 .dz-keur-logos a:hover { opacity: .75; }
 /* Wit (diapositief) logo: op een donker vlak, anders onzichtbaar op wit. */
 .dz-keur-logos li.is-donker { background: var(--text); border-radius: 12px; padding: 18px 26px; }
+
+/* ------------------------------------------------------------------
+   Awards-rij in de footer
+   ------------------------------------------------------------------
+   Verzoek Sokkies (2026-10-21): het FD Gazellen-logo onder de
+   keurmerken, met "Awards" als label. Zelfde opbouw als .footer-certs
+   erboven; alleen de logomaat verschilt, want een award is een breed
+   woordmerk en geen rond keurmerk-badge. */
+.footer-awards { margin-top: 22px; }
+.footer-awards .footer-certs-list img { height: 34px; width: auto; max-width: 200px; }

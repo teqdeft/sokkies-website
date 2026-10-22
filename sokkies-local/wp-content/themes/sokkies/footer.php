@@ -50,6 +50,26 @@ if ( $promo_aan ) {
                   <?php endforeach; ?>
                 </div>
               </div>
+              <?php
+              /* Awards onder de keurmerken (verzoek Sokkies, 2026-10-21: het
+                 FD Gazellen-logo hoort hier, niet alleen op /duurzaamheid/).
+                 Zelfde opbouw als de keurmerkenrij erboven, dus label plus
+                 logo's, allebei te wijzigen in Website-instellingen. Het witte
+                 logo komt goed uit op het rode vlak van de footer. */
+              $sokkies_awards = sokkies_footer_logos( 'footer_awards', array(
+                array( 'bestand' => 'fd-gazellen-2026.png', 'alt' => 'FD Gazellen 2026' ),
+              ) );
+              ?>
+              <?php if ( $sokkies_awards ) : ?>
+              <div class="footer-certs footer-awards">
+                <span class="footer-certs-label"><?php echo esc_html( sokkies_optie( 'footer_awards_label', 'Awards' ) ); ?></span>
+                <div class="footer-certs-list">
+                  <?php foreach ( $sokkies_awards as $sokkies_award ) : ?>
+                  <img src="<?php echo esc_url( $sokkies_award['url'] ); ?>" alt="<?php echo esc_attr( $sokkies_award['alt'] ); ?>">
+                  <?php endforeach; ?>
+                </div>
+              </div>
+              <?php endif; ?>
             </div>
 
             <!-- Sitemap -->

@@ -2606,6 +2606,25 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 				),
 			),
 			array(
+				'key'          => 'field_si_fi_awards_label',
+				'label'        => 'Label bij de awards',
+				'name'         => 'footer_awards_label',
+				'type'         => 'text',
+				'instructions' => 'Leeg = "Awards".',
+			),
+			array(
+				'key'          => 'field_si_fi_awards',
+				'label'        => 'Awards',
+				'name'         => 'footer_awards',
+				'type'         => 'repeater',
+				'layout'       => 'table',
+				'button_label' => 'Award toevoegen',
+				'instructions' => 'Komt onder de keurmerken in de footer. Leeg = het FD Gazellen-logo. Gebruik een WIT logo: de footer is rood.',
+				'sub_fields'   => array(
+					array( 'key' => 'field_si_fi_award_logo', 'label' => 'Logo', 'name' => 'logo', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail' ),
+				),
+			),
+			array(
 				'key'          => 'field_si_fi_socials',
 				'label'        => 'Social media',
 				'name'         => 'footer_socials',

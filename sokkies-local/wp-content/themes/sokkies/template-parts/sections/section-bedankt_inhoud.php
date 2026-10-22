@@ -38,7 +38,7 @@ if ( $ref_id && class_exists( 'GFAPI' ) ) {
 $titel        = get_sub_field( 'titel' ) ?: '[Bedankt] voor je aanvraag!';
 $intro        = get_sub_field( 'intro' ) ?: 'Je hoort binnen 24 uur (op werkdagen) van ons met een persoonlijk <br>antwoord en een eerste digitaal ontwerp.';
 $ref_tonen    = ( null === get_sub_field( 'ref_tonen' ) ) ? true : (bool) get_sub_field( 'ref_tonen' );
-$stappentitel = get_sub_field( 'stappen_titel' ) ?: 'Wat gebeurt er nu.';
+$stappentitel = get_sub_field( 'stappen_titel' ) ?: 'Wat gebeurt er nu?';
 $wachttitel   = get_sub_field( 'wacht_titel' ) ?: 'Terwijl je wacht';
 $volgtitel    = get_sub_field( 'volg_titel' ) ?: 'Volg ons voor inspiratie';
 $volgtekst    = get_sub_field( 'volg_tekst' ) ?: 'Nieuwe ontwerpen, achter-de-schermen, case-studies.';
@@ -47,8 +47,10 @@ $volgtekst    = get_sub_field( 'volg_tekst' ) ?: 'Nieuwe ontwerpen, achter-de-sc
    inzending), dan die datum; anders de tekst uit het ontwerp.
 
    DE STAPPEN HIERONDER ZIJN DE STANDAARD VOOR ELKE BEDANKPAGINA (verzoek
-   Rick, 2026-10-20; de teksten staan er WOORDELIJK zoals hij ze mailde,
-   inclusief de punt achter de kop). Ze staan bewust in de THEMA-code en niet als
+   Rick, 2026-10-20; de teksten staan er WOORDELIJK zoals hij ze mailde).
+   De kop houdt bewust een VRAAGteken: hij stond even op een punt, maar
+   dat is op 2026-10-22 teruggedraaid zodat alle drie de bedankpagina's
+   dezelfde kop hebben. Ze staan bewust in de THEMA-code en niet als
    paginawaarden: zo geldt de nieuwe opzet meteen voor elke bedankpagina
    die zijn velden leeg laat, en reist hij mee met een deploy. Vult de
    klant de stappen op een pagina zelf in, dan wint die invulling —
@@ -79,7 +81,7 @@ $kaarten = get_sub_field( 'kaarten' );
 if ( ! $kaarten ) {
 	$kaarten = array(
 		array( 'tag' => 'Brochure', 'titel' => 'Download onze brochure', 'tekst' => 'Onze volledige collectie + voorbeelden in één PDF.', 'bestand' => 'Voeten-in-de-lucht.png', 'pad' => '/downloads/' ),
-		array( 'tag' => 'Case', 'titel' => 'Lees de case van Sanquin Bloedbanken', 'tekst' => 'Probleem, aanpak en resultaten.', 'bestand' => 'Sokkies_FleurBoerdonk_2.png', 'pad' => '/reviews-en-cases/sanquin/' ),
+		array( 'tag' => 'Case', 'titel' => 'Lees de case van Sanquin', 'tekst' => 'Probleem, aanpak en resultaten.', 'bestand' => 'Sokkies_FleurBoerdonk_2.png', 'pad' => '/reviews-en-cases/sanquin/' ),
 		array( 'tag' => 'Inspiratie', 'titel' => 'Bekijk onze inspiration gallery', 'tekst' => 'Honderden ontwerpen van bestaande klanten.', 'bestand' => 'timeline-img6.png', 'pad' => '/reviews-en-cases/' ),
 	);
 }
