@@ -376,17 +376,6 @@ function sokkies_expivi_assets() {
 	}
 
 	wp_enqueue_style( 'expivi-options', 'https://assets.expivi.net/options/latest/css/app.css', array(), null );
-	/* Onze eigen opmaak voor het configuratorblok staat in een eigen bestand
-	   en wordt alleen hier geladen - op elke andere pagina zou het dode
-	   regels zijn. Na sokkies-responsive, zodat de mediaqueries erin de
-	   basisregels blijven overschrijven zoals voorheen; en na de CSS van
-	   Expivi zelf, zodat onze maten van hun paneelopmaak winnen. */
-	wp_enqueue_style(
-		'sokkies-configurator',
-		get_template_directory_uri() . '/assets/css/configurator.css',
-		array( 'sokkies-responsive', 'expivi-options' ),
-		sokkies_asset_versie( '/assets/css/configurator.css' )
-	);
 	wp_enqueue_script( 'expivi-viewer', 'https://assets.expivi.net/viewer/latest/viewer.js', array(), null, true );
 	wp_enqueue_script( 'expivi-options', 'https://assets.expivi.net/options/latest/js/app.js', array( 'expivi-viewer' ), null, true );
 
