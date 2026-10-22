@@ -324,45 +324,77 @@ function sokkies_assets() {
 add_action( 'wp_enqueue_scripts', 'sokkies_assets' );
 
 /**
- * Expivi (3D-configurator) — viewer + optiepaneel van hun CDN.
+ * Expivi (3D-configurator) - we tonen de GEHOSTE configuratorpagina van
+ * Expivi in een iframe.
  *
- * ALLEEN op een soktype waar het veld Expivi-product-ID is ingevuld: dat is
- * de enige plek waar single-sokkies_soktype.php de #expivi-viewer-markup
- * rendert. Site-breed laden zou elke pagina een 3D-viewer laten ophalen die
- * daar niets doet.
+ * WAAROM EEN IFRAME EN GEEN EIGEN EMBED (besluit 2026-10-22, Kulwant):
+ * het uiterlijk van de configurator (genummerde stappen, logo-upload,
+ * kleurenkiezer, offerteknop) is een THEMA dat in Expivi aan een SUBDOMEIN
+ * hangt, niet aan een product. Een eigen embed op ons eigen domein krijgt
+ * dat thema dus nooit; die laadt alleen hun kale optiepaneel.
  *
- * Geen versie meegegeven (null): de URL's wijzen zelf naar /latest/, dus een
- * ?ver= erachter zou alleen de cache breken zonder iets te pinnen. LET OP dat
- * /latest/ betekent dat Expivi hun kant kan wijzigen zonder dat wij iets
- * doen; willen we dat niet, dan moet er een vaste versie in de URL.
+ * Daar kwam bij dat de eigen embed helemaal niets toonde. Gemeten:
+ * /api/catalogue/{id}/meta geeft vanaf sokkies.expivi.net een
+ * 'bootstrap_data_cache_file' terug en vanaf onze domeinen NIET - de viewer
+ * heeft dan niets om te laden en blijft op de skeletonloader hangen, zonder
+ * foutmelding. Dat is domeinautorisatie aan de kant van Expivi; het token,
+ * CORS en de catalogus waren aantoonbaar in orde (alle drie 200).
  *
- * app.js hangt aan viewer.js (het optiepaneel praat met de viewer), dus die
- * volgorde staat vast via de dependency.
+ * Met het iframe draait de configurator op HUN origin, waar allebei die
+ * dingen al goed staan: het thema wordt toegepast en de productgegevens
+ * laden. Past het team het thema aan in Expivi, dan verandert onze pagina
+ * mee zonder dat er iets gedeployd hoeft te worden.
+ *
+ * LET OP: de knop "Vraag offerte aan" in de configurator verstuurt BINNEN
+ * Expivi, dus niet via ons eigen offerteformulier (Gravity Forms).
  */
+
 /**
- * Het Expivi-token voor de viewer.
+ * Het Expivi-subdomein waar de configurator vandaan komt.
  *
- * LET OP: dit token is GEEN geheim en kan dat ook niet zijn — de viewer
- * draait in de browser, dus het staat altijd leesbaar in de paginabron. Het
- * is Expivi's publieke catalogustoken; behandel het als een sleutel die bij
- * de site hoort, niet als een wachtwoord.
+ * Het thema hangt aan het subdomein, dus dit bepaalt hoe de configurator
+ * eruitziet. Zelfde volgorde als elders in dit thema: de constante in
+ * wp-config wint, dan de optie, anders de standaard - zo is er een ander
+ * subdomein te kiezen zonder deploy.
  *
- * Volgorde (zelfde patroon als sokkies_contactformulier_id): de constante
- * SOKKIES_EXPIVI_TOKEN in wp-config wint, dan de optie sokkies_expivi_token,
- * anders de waarde hieronder. Zo is het token te vervangen zonder deploy
- * wanneer Expivi hem intrekt of vernieuwt.
+ * TE DOEN: 'sokkies' toont ook de Expivi-eigen kop- en voetbalk in het
+ * kader. Zodra er een subdomein is met dit thema MAAR zonder die chrome,
+ * hoort die naam hier (of in de optie) te staan.
  */
-function sokkies_expivi_token() {
-	if ( defined( 'SOKKIES_EXPIVI_TOKEN' ) && SOKKIES_EXPIVI_TOKEN ) {
-		return (string) SOKKIES_EXPIVI_TOKEN;
+function sokkies_expivi_subdomein() {
+	if ( defined( 'SOKKIES_EXPIVI_SUBDOMEIN' ) && SOKKIES_EXPIVI_SUBDOMEIN ) {
+		return (string) SOKKIES_EXPIVI_SUBDOMEIN;
 	}
-	$optie = get_option( 'sokkies_expivi_token' );
+	$optie = get_option( 'sokkies_expivi_subdomein' );
 	if ( $optie ) {
 		return (string) $optie;
 	}
-	return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNWNmYzQyZGY5ODNlZjY4MzI1YmM5ZjZmYmY2NWRlNTJjNjM3MjU0Njg3MzMxOGZiMjA4ZGU5MDVhM2QyYzg1ZDAxMmU4NWE4ZjM0MTkzOWQiLCJpYXQiOjE3ODg4NTM0NDkuMDQ5NzQzLCJuYmYiOjE3ODg4NTM0NDkuMDQ5NzQ1LCJleHAiOjIxMDQ0NzI2NDguODA5MzYxLCJzdWIiOiI2NTA4Iiwic2NvcGVzIjpbXX0.prk3_HqEiVe1ajVJztA3IRGiyVH9iF0A_q-noONRAxpYJWI1UpHVkpTuGVnJv5xR1DhdQQU9_lGvQBjoAunwv5yYSCjcwyZYOUo5xHTIX91WF70S43_g8XTyRj6NCu39zkKDKjmTQRfu-iqyiDnXo1IpazPGPwbzNufNURcxhQkISNp84dVHLBbM4B1Qd1s6OVKCK84WzFb7BQBNxI6m3TpgjxdR5TXGu4qRbu-q6IbALM32ZB4ueovZyRYTfzAhKJUCxpIhDxTOZHOPXLBptUglaH-ECkw6qWJbWYngEofMFqTTyb3IjHT5U0XBOv0kuM7Nj-msXpBzOHP0bakO_G1PTNsGLlvxCpcgqG6ZobSw7u3b3MZ9FKMoIbR0c7mPKh5l26J3VC8PiWU6moy3B5YyNkOTgjSBZmRKwJlPowqkLZTkstPWCuqJKdCeXtNbvXXzt_d_At7ZOKXBnwUeKN3zjUnUFkK69MlKzF-q3aQxPaWr-zs5kCa5cLj-NJQ9VXzm3nXLrBhhQ5zks9xMbGApDqpvfqLJRCpgYrrWDxrDKjwti2H_RjQx2qCFqGozi1pQMkNeFcQYRN87a6RQy8qSE4mzsblRyuIdmHZRbGAZnfKyfz0PU1WtDlbWVHfD5C1jDZcXJNBYtfPijqfj-t40mKa_UE0J_qudJWnSXyE';
+	return 'sokkies';
 }
 
+/**
+ * De URL van de configuratorpagina van een product.
+ *
+ * Expivi accepteert achter /product/ zowel de slug als het ID - nagemeten:
+ * /product/27480 en /product/sokkies-svg leveren exact dezelfde pagina
+ * (byte-identiek). We gebruiken het ID, want dat staat al in het bestaande
+ * veld Expivi-product-ID; zo hoeft er in het CMS niets bijgezet te worden.
+ */
+function sokkies_expivi_url( $product_id ) {
+	return sprintf(
+		'https://%s.expivi.net/product/%d',
+		rawurlencode( sokkies_expivi_subdomein() ),
+		(int) $product_id
+	);
+}
+
+/**
+ * De configurator heeft alleen nog onze eigen opmaak nodig: het iframe laadt
+ * de viewer- en optiescripts zelf, binnen Expivi's eigen pagina. De drie
+ * CDN-bestanden die hier eerder werden ingeladen (viewer.js, options/app.js
+ * en hun app.css) zijn daarmee vervallen - samen ruim 4 MB die op onze kant
+ * niets meer deed.
+ */
 function sokkies_expivi_assets() {
 	if ( ! is_singular( 'sokkies_soktype' ) ) {
 		return;
@@ -370,46 +402,15 @@ function sokkies_expivi_assets() {
 	if ( ! function_exists( 'get_field' ) ) {
 		return;
 	}
-	$catalogus = (int) get_field( 'expivi_product_id' );
-	if ( ! $catalogus ) {
+	if ( ! (int) get_field( 'expivi_product_id' ) ) {
 		return;
 	}
 
-	wp_enqueue_style( 'expivi-options', 'https://assets.expivi.net/options/latest/css/app.css', array(), null );
-	/* Onze eigen opmaak voor het configuratorblok staat in een eigen bestand
-	   en wordt alleen hier geladen - op elke andere pagina zou het dode
-	   regels zijn. Na sokkies-responsive, zodat de mediaqueries erin de
-	   basisregels blijven overschrijven zoals voorheen; en na de CSS van
-	   Expivi zelf, zodat onze maten van hun paneelopmaak winnen. */
 	wp_enqueue_style(
 		'sokkies-configurator',
 		get_template_directory_uri() . '/assets/css/configurator.css',
-		array( 'sokkies-responsive', 'expivi-options' ),
+		array( 'sokkies-responsive' ),
 		sokkies_asset_versie( '/assets/css/configurator.css' )
-	);
-	wp_enqueue_script( 'expivi-viewer', 'https://assets.expivi.net/viewer/latest/viewer.js', array(), null, true );
-	wp_enqueue_script( 'expivi-options', 'https://assets.expivi.net/options/latest/js/app.js', array( 'expivi-viewer' ), null, true );
-
-	/* Init hangt aan app.js, dus die staat gegarandeerd al in de pagina; de
-	   load-listener wacht daarnaast tot de viewer klaar is met initialiseren.
-	   De guard op ExpiviComponent vangt een CDN die niet laadt: zonder guard
-	   gooit dat een ReferenceError en sterft alles wat erna komt. */
-	$config = array(
-		'catalogueId'     => $catalogus,
-		'viewerContainer' => '#expivi-viewer',
-		'optionContainer' => '#expivi-options',
-		'priceSelectors'  => '#expivi-price',
-		'currency'        => 'EUR',
-		'locale'          => 'nl',
-		'token'           => sokkies_expivi_token(),
-	);
-
-	wp_add_inline_script(
-		'expivi-options',
-		'window.addEventListener("load", function () {' .
-		'  if (typeof ExpiviComponent === "undefined") { return; }' .
-		'  window.SOKKIES_EXPIVI = new ExpiviComponent.default(' . wp_json_encode( $config ) . ');' .
-		'});'
 	);
 }
 add_action( 'wp_enqueue_scripts', 'sokkies_expivi_assets' );
