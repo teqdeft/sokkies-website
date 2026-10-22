@@ -381,14 +381,32 @@ function sokkies_expivi_assets() {
 	   regels zijn. Na sokkies-responsive, zodat de mediaqueries erin de
 	   basisregels blijven overschrijven zoals voorheen; en na de CSS van
 	   Expivi zelf, zodat onze maten van hun paneelopmaak winnen. */
+	/* Het Expivi-thema zelf: levert het ontwerp met de genummerde stappen.
+	   Na hun app.css (anders winnen hun standaardregels) en VOOR onze eigen
+	   opmaak hieronder, die alleen nog het raster van viewer en paneel zet.
+	   Zie de kop van het bestand: het is een ingeperkte kopie. */
+	wp_enqueue_style(
+		'sokkies-expivi-thema',
+		get_template_directory_uri() . '/assets/css/expivi-thema.css',
+		array( 'expivi-options' ),
+		sokkies_asset_versie( '/assets/css/expivi-thema.css' )
+	);
 	wp_enqueue_style(
 		'sokkies-configurator',
 		get_template_directory_uri() . '/assets/css/configurator.css',
-		array( 'sokkies-responsive', 'expivi-options' ),
+		array( 'sokkies-responsive', 'sokkies-expivi-thema' ),
 		sokkies_asset_versie( '/assets/css/configurator.css' )
 	);
 	wp_enqueue_script( 'expivi-viewer', 'https://assets.expivi.net/viewer/latest/viewer.js', array(), null, true );
 	wp_enqueue_script( 'expivi-options', 'https://assets.expivi.net/options/latest/js/app.js', array( 'expivi-viewer' ), null, true );
+	/* Het themascript bouwt de zichtbare UI bovenop hun optiepaneel. Het
+	   wacht zelf op de DOM (DOMContentLoaded plus observers), dus het hoeft
+	   niet per se voor hun app.js te staan zoals op sokkies.expivi.net - als
+	   afhankelijkheid van app.js staat window.expivi in elk geval klaar.
+	   LET OP: in dat script staat CATALOGUE_ID = 27480 HARDGECODEERD. Krijgt
+	   een soktype ooit een ander Expivi-product-ID, dan werkt het thema daar
+	   niet zonder een nieuwe kopie uit Expivi. */
+	wp_enqueue_script( 'sokkies-expivi-thema', get_template_directory_uri() . '/assets/js/expivi-thema.js', array( 'expivi-options' ), sokkies_asset_versie( '/assets/js/expivi-thema.js' ), true );
 
 	/* Init hangt aan app.js, dus die staat gegarandeerd al in de pagina; de
 	   load-listener wacht daarnaast tot de viewer klaar is met initialiseren.

@@ -451,13 +451,37 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
             $expivi_product_id = get_field( 'expivi_product_id' );
             ?>
             <?php if ( $expivi_product_id ) : ?>
-            <div class="expivi-configurator">
-              <div class="expivi-viewer">
-                <div id="expivi-viewer"></div>
-              </div>
-              <div class="expivi-options">
-                <div id="expivi-price"></div>
-                <div id="expivi-options"></div>
+            <?php
+            /* De classes page + product en de wikkel .product-container zijn
+               geen opmaak maar een AFSPRAAK met het Expivi-thema: dat script
+               zoekt op '.page.product .product-container' en hangt een deel
+               van zijn regels op '.page.product ...'. Onze eigen stylesheets
+               gebruiken geen van die drie namen (nagemeten: 0 treffers), dus
+               ze botsen nergens mee. */
+            ?>
+            <div class="expivi-configurator page product">
+              <div class="product-container">
+                <div class="expivi-viewer">
+                  <div id="expivi-viewer"></div>
+                </div>
+                <div class="expivi-options">
+                  <?php /* class price-and-button: het thema verplaatst dit blok
+                     naar boven de stappen zodra het de prijs vindt. */ ?>
+                  <div id="expivi-price" class="price-and-button"></div>
+                  <div id="expivi-options"></div>
+                  <?php
+                  /* De offerteknop. Het thema zoekt op '.btn-group', hangt er
+                     een .sk-bottom-actions omheen en zet die onder de stappen -
+                     dat is de rode balk uit het ontwerp. Zonder dit blok slaat
+                     die functie over en blijft de balk weg.
+                     De knop gaat naar ONS offerteformulier. De configuratie
+                     reist nog niet mee; dat vraagt saveConfiguration() van de
+                     viewer en een veld om het in op te slaan. */
+                  ?>
+                  <div class="btn-group">
+                    <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary"><?php echo esc_html( sokkies_cta_label() ); ?></a>
+                  </div>
+                </div>
               </div>
             </div>
             <?php else : ?>

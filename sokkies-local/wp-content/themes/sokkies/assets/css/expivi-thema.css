@@ -1,0 +1,1579 @@
+/* ==========================================================================
+   EXPIVI-THEMA "Sokkies" - INGEPERKTE KOPIE
+   ==========================================================================
+   NIET MET DE HAND BEWERKEN. Dit is een bewerkte kopie van het thema dat in
+   Expivi aan het subdomein sokkies.expivi.net hangt:
+     https://sokkies.expivi.net/storage/themes/d72aaeee885790b5090edb35d7cac4d2/assets/css/sokkies.css
+   Dat thema levert het ontwerp met de genummerde stappen, de logo-upload, de
+   kleurenkiezer en de offerteknop. Wijzigt het team het thema in Expivi, dan
+   moet deze kopie opnieuw gehaald en opnieuw ingeperkt worden - zie het
+   scopescript in de projectdocumentatie.
+
+   WAT ER IS VERANDERD t.o.v. het origineel (geautomatiseerd, 2026-10-22):
+   - 211 selectors zijn INGEPERKT tot .expivi-configurator, zodat ze alleen
+     binnen het configuratorblok gelden. Zonder dat zouden hun regels voor
+     body, html, .container, h1-h6, input en select over de hele
+     productpagina heen gaan.
+   - 77 selectors begonnen al met .page.product en zijn ongemoeid: onze
+     wikkel draagt die twee classes zelf, dus ze raken precies het goede.
+   - 11 selectors zijn BEWUST NIET ingeperkt: dat zijn de onderdelen die het
+     thema aan <body> hangt (.sk-cp-popup, .v-popper__popper, .v-overlay,
+     .sokkies-pdf-status e.a.). Die staan buiten de wikkel in de DOM, dus
+     inperken zou ze onopgemaakt laten.
+   - 24 regels zijn GESCHRAPT: hun eigen webshop-chrome (.sk-header, .sk-menu,
+     .sk-submenu) bestaat bij ons niet, plus de @import van Google Fonts -
+     de site laadt roc-grotesk al via Typekit en een extra lettertypeverzoek
+     naar Google heeft ook gevolgen voor de cookiemelding.
+   ========================================================================== */
+
+/* ============================================================
+   Sokkies — light theme overrides
+   Base: Expivi Default Theme (Vuetify 2)
+   Brand: warm-red #FA4B46, yellow #FAE16E, off-black #1C1C1C
+   Font: roc-grotesk (Adobe) → fallback Space Grotesk (Google)
+   ============================================================ */
+
+.expivi-configurator 500;600;700&display=swap');
+
+:root{
+    --sk-red:        #FA4B46;
+    --sk-red-dk:     #D43C38;
+    --sk-yellow:     #FAE16E;
+    --sk-yellow-dk:  #F4D24A;
+    --sk-black:      #1C1C1C;
+    --sk-text:       #212529;
+    --sk-text-mute:  #6c757d;
+    --sk-bg:         #ffffff;
+    --sk-bg-soft:    #f8f9fa;
+    --sk-border:     #e9ecef;
+    --sk-radius:     8px;
+    --sk-radius-lg:  12px;
+    --sk-shadow:     0 4px 16px rgba(0,0,0,0.06);
+    --sk-shadow-strong: 0 6px 20px rgba(28,28,28,0.10);
+    /* ROC Grotesk, Regular (400) + Bold (700) only. Loaded by
+       the host site (Adobe Fonts); Space Grotesk is the fallback where it is not. */
+    --sk-font:       'roc-grotesk', 'Space Grotesk', system-ui, sans-serif;
+    --sk-container:  1280px;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+.expivi-configurator,
+.expivi-configurator .container-fluid,
+.expivi-configurator .container{
+    font-family: var(--sk-font) !important;
+    color: var(--sk-text);
+    background-color: var(--sk-bg);
+}
+
+.expivi-configurator h1,
+.expivi-configurator h2,
+.expivi-configurator h3,
+.expivi-configurator h4,
+.expivi-configurator h5,
+.expivi-configurator h6,
+.expivi-configurator .v-application h1,
+.expivi-configurator .v-application h2,
+.expivi-configurator .v-application h3{
+    font-family: var(--sk-font) !important;
+    font-weight: 700 !important;
+    color: var(--sk-text);
+    letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   Header (custom — mirror of sokkies.com)
+   ============================================================ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============================================================
+   Page layout polish
+   ============================================================ */
+.expivi-configurator .container,
+.expivi-configurator .container-fluid{
+    max-width: var(--sk-container);
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.expivi-configurator main h1,
+.expivi-configurator .page-title{ color: var(--sk-text); margin-bottom: 8px; }
+
+/* ============================================================
+   Price
+   ============================================================ */
+.expivi-configurator .product-price,
+.expivi-configurator .v-application .price,
+.expivi-configurator [class*="-price"]:not([class*="cart"]){
+    color: var(--sk-red) !important;
+    font-weight: 700 !important;
+    font-size: 1.5rem;
+}
+
+/* ============================================================
+   Primary CTA — REQUEST QUOTATION
+   ============================================================ */
+.expivi-configurator .btn.btn-purchase,
+.expivi-configurator button.btn-purchase{
+    background-color: var(--sk-yellow) !important;
+    color: var(--sk-black) !important;
+    border: none !important;
+    border-radius: var(--sk-radius) !important;
+    padding: 14px 24px !important;
+    font-family: var(--sk-font) !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    box-shadow: var(--sk-shadow);
+    transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.expivi-configurator .btn.btn-purchase:hover,
+.expivi-configurator button.btn-purchase:hover{
+    background-color: var(--sk-yellow-dk) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--sk-shadow-strong);
+}
+
+/* ============================================================
+   Vuetify Tabs (CHOOSE PATTERN)
+   ============================================================ */
+.expivi-configurator .v-tabs-bar{ background-color: transparent !important; }
+
+.expivi-configurator .v-tab{
+    font-family: var(--sk-font) !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    color: var(--sk-text-mute) !important;
+    text-transform: uppercase;
+}
+.expivi-configurator .v-tab--active{ color: var(--sk-red) !important; }
+.expivi-configurator .v-tabs-slider{ background-color: var(--sk-red) !important; height: 3px !important; }
+
+/* ============================================================
+   Vuetify Switch (AntiSlip toggle) — FIXED
+   ----------------------------------------------------------
+   Vuetify 2 v-switch DOM:
+     .v-input--switch
+       └ .v-input__control
+         └ .v-input__slot
+           ├ .v-input--selection-controls__input
+           │   ├ <input role=switch aria-checked=...>
+           │   ├ .v-input--selection-controls__ripple
+           │   ├ .v-input--switch__track
+           │   └ .v-input--switch__thumb
+           └ <label>
+   Checked state: .v-input--is-dirty on root + input[aria-checked=true]
+   ============================================================ */
+.expivi-configurator .v-input--switch{ padding-top: 0 !important; margin-top: 4px !important; }
+.expivi-configurator .v-input--switch .v-input__slot{ gap: 12px; align-items: center; }
+.expivi-configurator .v-input--switch .v-input--selection-controls__input{
+    width: 44px !important;
+    height: 24px !important;
+    margin: 0 !important;
+    position: relative !important;
+}
+.expivi-configurator .v-input--switch .v-input--switch__track{
+    background-color: #d1d5db !important;
+    opacity: 1 !important;
+    width: 44px !important;
+    height: 24px !important;
+    border-radius: 12px !important;
+    top: 0 !important;
+    left: 0 !important;
+    transition: background-color 0.2s ease;
+}
+.expivi-configurator .v-input--switch .v-input--switch__thumb{
+    background-color: #ffffff !important;
+    width: 20px !important;
+    height: 20px !important;
+    top: 2px !important;
+    left: 2px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.18), 0 0 1px rgba(0,0,0,0.1) !important;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.expivi-configurator .v-input--switch.v-input--is-dirty .v-input--switch__track{
+    background-color: var(--sk-red) !important;
+}
+.expivi-configurator .v-input--switch.v-input--is-dirty .v-input--switch__thumb{
+    transform: translateX(20px) !important;
+}
+.expivi-configurator .v-input--switch .v-input--selection-controls__ripple{ display: none !important; }
+.expivi-configurator .v-input--switch label.v-label{
+    font-family: var(--sk-font) !important;
+    color: var(--sk-text) !important;
+    font-weight: 400;
+    font-size: 0.95rem;
+    margin-left: 12px !important;
+}
+
+/* ============================================================
+   Section labels (Model / Calf01 / Choose Pattern)
+   ============================================================ */
+.expivi-configurator .v-application label.theme--light,
+.expivi-configurator .options-container label,
+.expivi-configurator .choose-pattern-container label{
+    font-family: var(--sk-font) !important;
+    font-weight: 700 !important;
+    color: var(--sk-text) !important;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px !important;
+    display: block;
+}
+
+/* ============================================================
+   Custom dropdown wrapper (injected by sokkies.js)
+   Wraps a v-list to mimic a dropdown selector while
+   keeping the original v-list-item click forwarding intact.
+   ============================================================ */
+.expivi-configurator .sk-dropdown{
+    position: relative;
+    width: 100%;
+    margin: 8px 0 12px;
+}
+.expivi-configurator .sk-dropdown__trigger{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 16px;
+    font-family: var(--sk-font);
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--sk-text);
+    background: var(--sk-bg);
+    border: 1px solid var(--sk-border);
+    border-radius: var(--sk-radius);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.expivi-configurator .sk-dropdown__trigger:hover,
+.expivi-configurator .sk-dropdown.is-open .sk-dropdown__trigger{
+    border-color: var(--sk-red);
+}
+.expivi-configurator .sk-dropdown.is-open .sk-dropdown__trigger{
+    box-shadow: 0 0 0 3px rgba(250, 75, 70, 0.12);
+}
+.expivi-configurator .sk-dropdown__trigger-text{
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.expivi-configurator .sk-dropdown__chevron{
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-left: 8px;
+    color: var(--sk-text-mute);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+.expivi-configurator .sk-dropdown.is-open .sk-dropdown__chevron{
+    transform: rotate(180deg);
+    color: var(--sk-red);
+}
+.expivi-configurator .sk-dropdown__menu{
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--sk-bg);
+    border: 1px solid var(--sk-border);
+    border-radius: var(--sk-radius);
+    box-shadow: var(--sk-shadow-strong);
+    z-index: 50;
+    padding: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease;
+    max-height: 280px;
+    overflow-y: auto;
+}
+.expivi-configurator .sk-dropdown.is-open .sk-dropdown__menu{
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.expivi-configurator .sk-dropdown__option{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    font-family: var(--sk-font);
+    font-size: 0.95rem;
+    color: var(--sk-text);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.12s ease, color 0.12s ease;
+    position: relative;
+}
+.expivi-configurator .sk-dropdown__option:hover,
+.expivi-configurator .sk-dropdown__option:focus{
+    background: rgba(250, 75, 70, 0.06);
+    color: var(--sk-red);
+    outline: none;
+}
+.expivi-configurator .sk-dropdown__option.is-selected{
+    background: rgba(250, 75, 70, 0.12);
+    color: var(--sk-red);
+    font-weight: 700;
+}
+.expivi-configurator .sk-dropdown__option.is-selected:hover{
+    background: rgba(250, 75, 70, 0.18);
+}
+.expivi-configurator .sk-dropdown__check{
+    width: 18px;
+    height: 18px;
+    color: var(--sk-red);
+    flex-shrink: 0;
+    margin-left: 8px;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.expivi-configurator .sk-dropdown__option.is-selected .sk-dropdown__check{
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Hide the original v-list once converted */
+.expivi-configurator .sk-dropdown-source-hidden{ display: none !important; }
+
+/* ============================================================
+   Vuetify List (Model selector) — styled as dropdown-card
+   ----------------------------------------------------------
+   Default Theme uses v-list with v-list-item for matgroup-like
+   selectors. We style it as a clean card with the active item
+   showing a red check mark on the right.
+   ============================================================ */
+.expivi-configurator .v-list{
+    background: var(--sk-bg) !important;
+    border: 1px solid var(--sk-border) !important;
+    border-radius: var(--sk-radius-lg) !important;
+    padding: 4px !important;
+    margin: 8px 0 !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+}
+.expivi-configurator .v-list-item{
+    font-family: var(--sk-font) !important;
+    color: var(--sk-text) !important;
+    border-radius: var(--sk-radius) !important;
+    padding: 10px 14px !important;
+    min-height: 44px !important;
+    transition: background-color 0.15s ease;
+    cursor: pointer;
+}
+.expivi-configurator .v-list-item__title{
+    font-family: var(--sk-font) !important;
+    font-weight: 400 !important;
+    color: var(--sk-text) !important;
+}
+.expivi-configurator .v-list-item:hover{
+    background-color: var(--sk-bg-soft) !important;
+}
+.expivi-configurator .v-list-item--active,
+.expivi-configurator .v-list-item.v-list-item--active,
+.expivi-configurator .v-list-item--link.v-list-item--active{
+    background-color: rgba(250, 75, 70, 0.08) !important;
+}
+.expivi-configurator .v-list-item--active .v-list-item__title{
+    color: var(--sk-red) !important;
+    font-weight: 700 !important;
+}
+/* Active checkmark icon → red */
+.expivi-configurator .v-list-item--active .v-icon,
+.expivi-configurator .v-list-item--active .v-list-item__action .v-icon,
+.expivi-configurator .v-list-item--active i,
+.expivi-configurator .v-list-item--active svg{
+    color: var(--sk-red) !important;
+    fill: var(--sk-red) !important;
+}
+
+/* ============================================================
+   Dropzone (Calf01 image upload)
+   ============================================================ */
+.expivi-configurator .dropbox{
+    position: relative;
+    background: #fff !important;
+    border: 2px dashed #d1d5db !important;
+    outline: none !important;               /* kill Expivi's extra dashed outline (double line) */
+    border-radius: var(--sk-radius-lg) !important;
+    padding: 24px 16px !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05) !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.expivi-configurator .dropbox:hover,
+.expivi-configurator .dropbox.is-dragover{
+    border-color: var(--sk-red) !important;
+    background: rgba(250, 75, 70, 0.03) !important;
+    box-shadow: var(--sk-shadow-strong) !important;
+}
+/* Cloud upload icon in a soft rounded badge (matches SockClub upload card) */
+.expivi-configurator .dropbox::before{
+    content: "";
+    display: block;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 2px;
+    border-radius: 12px;
+    background: #f1f3f5 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 13v8'/%3E%3Cpath d='m8 17 4-4 4 4'/%3E%3Cpath d='M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25'/%3E%3C/svg%3E") center/24px no-repeat;
+}
+/* Recommended file types hint, right under the prompt (compact, in-flow) */
+.expivi-configurator .dropbox::after{
+    content: "Recommended files: PNG, JPG";
+    margin-top: 2px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #9aa0a6;
+}
+/* SockClub-style upload prompt wording (text swapped in by sokkies.js).
+   Kill Expivi's tall 50px vertical padding so the dropzone is compact. */
+.expivi-configurator .dropbox .browse-btn{ font-size: 0.95rem !important; line-height: 1.5 !important; padding: 6px 0 !important; }
+.expivi-configurator .dropbox .browse-btn .sk-txt-red{ color: var(--sk-red) !important; font-weight: 700 !important; }
+.expivi-configurator .dropbox .browse-btn .sk-txt-gray{ color: var(--sk-text-mute) !important; font-weight: 400 !important; }
+/* Whole card is the click target (invisible full-cover input) */
+.expivi-configurator .dropbox .input-file{
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 0 !important;
+    cursor: pointer !important;
+    z-index: 2;
+}
+.expivi-configurator .dropbox .browse-btn{
+    color: var(--sk-text-mute) !important;
+    font-size: 0.92rem !important;
+    margin: 0 !important;
+    text-align: center !important;
+    line-height: 1.5 !important;
+}
+/* "Browse" as an inline brand-red link instead of a black button */
+.expivi-configurator .dropbox .browse-btn button,
+.expivi-configurator .dropbox .browse-btn .btn{
+    background: transparent !important;
+    color: var(--sk-red) !important;
+    border: none !important;
+    padding: 0 2px !important;
+    font-family: var(--sk-font) !important;
+    font-weight: 700 !important;
+    font-size: 0.92rem !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
+    display: inline !important;
+    cursor: pointer;
+}
+/* Show the whole uploaded logo in the preview box (Expivi default v-image is
+   cover=cropped). Scoped to the logo-upload attributes so pattern thumbnails
+   (also v-image) are unaffected. */
+.expivi-configurator [data-xpv-attribute-id="285609"] .v-image__image--cover,
+.expivi-configurator [data-xpv-attribute-id="285610"] .v-image__image--cover{
+    background-size: contain !important;
+}
+/* Preview of the uploaded logo: 220x120 (64x64 reads as too small), the whole
+   logo inside (contain, above), on a light grey so a white logo still shows. */
+.expivi-configurator [data-xpv-attribute-id="285609"] .v-image,
+.expivi-configurator [data-xpv-attribute-id="285610"] .v-image{
+    width: 220px !important;
+    height: 120px !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    border-radius: 8px !important;
+    background: #F3F4F6 !important;
+    /* Off the card's left edge, in line with the file name and the tabs. */
+    margin: 4px 16px 0 !important;
+}
+/* 12px of grey around the logo: the picture is an absolute layer filling the
+   box, so it is inset rather than padded. */
+.expivi-configurator [data-xpv-attribute-id="285609"] .v-image .v-image__image,
+.expivi-configurator [data-xpv-attribute-id="285610"] .v-image .v-image__image{
+    top: 12px !important;
+    right: 12px !important;
+    bottom: 12px !important;
+    left: 12px !important;
+    width: auto !important;
+    height: auto !important;
+}
+/* Kill Vuetify's v-card elevation shadow on the preview — it reads as a gray
+   separator line between the "LOGO" header and the image. */
+.expivi-configurator [data-xpv-attribute-id="285609"] .v-card,
+.expivi-configurator [data-xpv-attribute-id="285610"] .v-card{
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+/* ============================================================
+   Logo Placement (single upload + Calf / Footbed / Both router)
+   Buttons + custom "logo uploaded" preview injected by sokkies.js
+   ============================================================ */
+.expivi-configurator .sk-place-row{ margin: 0 2px 14px; }   /* first in the step, above the logo */
+
+/* While sokkies.js drives the native ShowUploadAreaController, its floating-vue
+   menu is rendered in a body-level portal — the widget being clipped off-screen
+   does NOT hide it, so it would flash at the left edge of the viewport on every
+   placement switch. The script sets .sk-ctrl-busy on <html> for the duration. */
+html.sk-ctrl-busy .v-popper__popper{
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+/* ...and once we have seen it, that popper stays hidden: it does not always
+   close and would be left on the page's left edge. Only ever driven by script. */
+.v-popper__popper.sk-ctrl-popper{
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Anti Slip carries the logo on the calf only (sokkies.js IIFE #10). */
+.expivi-configurator .sk-place-btn[data-sel="footbed"],
+.expivi-configurator .sk-place-btn[data-sel="both"]{
+    display: none !important;
+}
+
+/* Size and Position are drawn by sokkies.js (IIFE #10): one row per field and
+   live zone, fixed label and value columns so every bar lines up. The native
+   sliders stay mounted (config owns the widget) but are not shown. */
+.expivi-configurator [data-xpv-key^="sk-logo-"] #size .v-input__slider,
+.expivi-configurator [data-xpv-key^="sk-logo-"] #position .v-input__slider{
+    display: none !important;
+}
+.expivi-configurator .sk-tf{ padding: 4px 0 0; }
+/* Zone label (Calf / Footbed) in Size, Position AND Rotate — one rule. */
+.expivi-configurator .sk-tf__zone,
+.expivi-configurator .sk-rot-zone-label{
+    margin: 0;
+    padding: 0;
+    font-family: var(--sk-font);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--sk-text);
+}
+/* Heading row: zone name left, its own Reset right. */
+.expivi-configurator .sk-tf__head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 12px 0 2px;
+}
+.expivi-configurator .sk-tf__head:first-child{ margin-top: 0; }
+/* Rotate: the hidden native slider comes first in the panel, so the first
+   zone is not :first-child — space only a zone that follows another. */
+.expivi-configurator .sk-rot-zone .sk-tf__head{ margin-top: 4px; }
+.expivi-configurator .sk-rot-zone + .sk-rot-zone .sk-tf__head{ margin-top: 12px; }
+/* !important throughout: webshop.css styles every form button. */
+.expivi-configurator body .page.product button.sk-zone-reset{
+    padding: 4px 12px !important;
+    border: 1px solid #D1D5DB !important;
+    border-radius: 999px !important;
+    background: #fff !important;
+    font-family: var(--sk-font) !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    line-height: 16px !important;
+    color: var(--sk-text) !important;
+    text-transform: none !important;
+    box-shadow: none !important;
+    cursor: pointer;
+}
+.expivi-configurator body .page.product button.sk-zone-reset:hover{ border-color: #EA5045 !important; color: #EA5045 !important; }
+.expivi-configurator .sk-tf__row{
+    display: grid !important;
+    grid-template-columns: 56px 1fr 64px !important;
+    align-items: center;
+    column-gap: 14px;
+    height: 32px;
+    margin: 0;
+    cursor: pointer;
+}
+.expivi-configurator .sk-tf__name{
+    font-family: var(--sk-font);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--sk-text);
+}
+.expivi-configurator .sk-tf__val{
+    font-family: var(--sk-font);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--sk-text);
+    text-align: right;
+    white-space: nowrap;
+    text-transform: none;    /* the widget capitalises its text: "Px" */
+}
+/* The bar, painted like the native Vuetify slider: red fill up to the thumb,
+   grey after, white thumb with a red ring. --sk-pct is set by the script. */
+.expivi-configurator .sk-tf__range{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    margin: 0;
+    border-radius: 2px;
+    background: linear-gradient(to right, #EA5045 var(--sk-pct, 0%), #E5E7EB var(--sk-pct, 0%));
+    outline: none;
+}
+.expivi-configurator .sk-tf__range::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #EA5045;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+}
+.expivi-configurator .sk-tf__range::-moz-range-thumb{
+    width: 12px;
+    height: 12px;
+    border: 2px solid #EA5045;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+}
+.expivi-configurator .sk-tf__range:focus-visible::-webkit-slider-thumb{ box-shadow: 0 0 0 4px rgba(234, 80, 69, .2); }
+
+/* The widget left 46px under the tabs' content: the tab container's 14px
+   margin, the card title's 16px padding and an actions bar holding only the
+   native "remove" button, hidden (the trash can replaces it). */
+.expivi-configurator [data-xpv-attribute-id="285609"] .tab-container,
+.expivi-configurator [data-xpv-attribute-id="285610"] .tab-container{ margin-bottom: 0 !important; }
+.expivi-configurator [data-xpv-attribute-id="285609"] .v-card__title,
+.expivi-configurator [data-xpv-attribute-id="285610"] .v-card__title{ padding-bottom: 8px !important; }
+.expivi-configurator [data-xpv-attribute-id="285609"] .v-card__actions,
+.expivi-configurator [data-xpv-attribute-id="285610"] .v-card__actions{ display: none !important; }
+.expivi-configurator .sk-place-title{
+    font-family: var(--sk-font); font-weight: 700; font-size: 0.85rem;
+    color: var(--sk-text); margin-bottom: 8px;
+}
+.expivi-configurator .sk-place-btns{ display: flex; gap: 8px; flex-wrap: nowrap; }
+.expivi-configurator .sk-place-btn{
+    flex: 1; min-width: 0; padding: 10px 6px;
+    border: 1.5px solid #d1d5db !important; border-radius: 22px !important; background: #fff;
+    font-family: var(--sk-font); font-weight: 700; font-size: 0.78rem;
+    color: var(--sk-text); cursor: pointer;
+    white-space: nowrap; text-align: center !important;
+    transition: none;   /* SockClub buttons don't react to hover — no red hover */
+}
+.expivi-configurator .sk-place-btn.active{
+    border-color: var(--sk-red) !important; color: var(--sk-red);
+    box-shadow: none;
+}
+.expivi-configurator .sk-logo-preview{
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 12px; padding: 8px 12px; background: var(--sk-bg-soft); border-radius: 8px;
+}
+.expivi-configurator .sk-logo-preview img{
+    width: 40px; height: 40px; object-fit: contain;
+    background: #fff; border: 1px solid var(--sk-border); border-radius: 6px; padding: 2px;
+}
+.expivi-configurator .sk-logo-preview .sk-rm{
+    margin-left: auto; background: none; border: none;
+    color: var(--sk-red); font-weight: 700; font-size: 0.8rem; cursor: pointer;
+}
+
+/* ============================================================
+   Configurator width — wider product page + wider options column
+   (closer to SockClub; less empty space on the right)
+   ============================================================ */
+@media (min-width: 1264px) {
+    /* Full-width row: viewer fills the left, options fixed ~720px stuck to the right.
+       No padding on the right — the options column carries its own 24px, so the
+       step rules can still run edge to edge. */
+    .page.product .container-fluid{ max-width: none !important; padding: 0 0 0 32px !important; }
+    /* webshop.css puts 3rem on both sides of this row at >=1200px, which pushed
+       the options column 48px away from the screen. Keep it on the left only. */
+    .expivi-configurator body .page.product .container-product-page-columns{ padding-right: 0 !important; }
+    .page.product .container-product-page-columns{ max-width: none !important; flex-wrap: nowrap !important; }
+    .page.product #viewer-container{ flex: 1 1 0 !important; max-width: none !important; min-width: 0 !important; }
+    .page.product #options{ flex: 0 0 720px !important; max-width: 720px !important; }
+    /* Vertical rule splitting the viewer from the step column, like the
+       reference configurator. Desktop only — the columns stack below this. */
+    .page.product #options{ border-left: 1px solid #e5e7eb !important; }
+
+    /* The price row carries its own 2x50 bar on the WRONG side of the column
+       rule (.separator::before, right:13px); drop it. */
+    .page.product .price-and-button .separator::before{ display: none !important; }
+}
+
+/* Container card around ONLY the LOGO-UPLOAD step's content (SockClub).
+   Scoped two ways: `.active-step + content` (so a collapsed step shows no empty
+   card) AND `:has(#sk-place-row)` (so ONLY the upload module gets the card — the
+   Colors / Model / Size steps stay plain).
+   Do not anchor on `:has([data-xpv-attribute-id="285609"])` (the Calf intake):
+   that widget does NOT exist in footbed-only mode — config removes it — so the
+   card would vanish on that placement. `#sk-place-row` (our Logo Placement row)
+   is injected into the upload step in EVERY mode, so the card is stable across
+   all three. */
+.page.product .v-stepper__step.active-step + .v-stepper__content:has(#sk-place-row){
+    background: #f9fafb !important;
+    border-radius: 10px !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 6px 12px -6px rgba(0, 0, 0, 0.05) !important;
+    padding: 18px 22px !important;
+    /* Align the card with the step rows' visual column (step circle -> chevron)
+       instead of the raw stepper box.
+       Vuetify gives the vertical stepper's content width:100% + margin-right:-36px,
+       so the card sticks out on BOTH sides and rides over the bottom actions —
+       `width:auto` is required for the margins to define the box. */
+    width: auto !important;
+    /* Left margin 68px lines the card up with the step TITLE, not with the step
+       number circle — anchored to the circle the card reads as wider than the
+       content column. Right margin keeps it flush with the chevron. Both are tied
+       to the 720px options column. */
+    margin: 4px 24px 16px 68px !important;
+}
+
+/* Kill Vuetify's text-field underline (.v-input__slot::before/::after — the
+   ::after is a 2px black bar) inside the stepper: the size/quantity fields are
+   drawn as bordered boxes, so the underline showed as a stray black line under
+   the input. Scoped to .v-text-field so the v-switch slots keep their styling. */
+.page.product .v-stepper .v-text-field .v-input__slot::before,
+.page.product .v-stepper .v-text-field .v-input__slot::after{
+    display: none !important;
+}
+
+/* Hide the "Previous step" / "Next step" actions. Navigation
+   stays via the accordion step headers, so these buttons are redundant. */
+.page.product .step-btn-prev,
+.page.product .step-btn-next{ display: none !important; }
+
+/* ============================================================
+   Stepper — SockClub-style step badges + chevrons
+   Black circle, white number, 14px/600, chevron per step header.
+   ============================================================ */
+.expivi-configurator .v-stepper__step__step,
+.expivi-configurator .v-stepper__step--complete .v-stepper__step__step,
+.expivi-configurator .v-stepper__step--active .v-stepper__step__step{
+    background: #000 !important;   /* black in every state (incl. complete/active), not Vuetify blue */
+    color: #fff !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    border-radius: 50% !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+/* Trash-can logo removal (injected by sokkies.js IIFE #7) */
+.expivi-configurator .sk-trash{
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    z-index: 6;
+    line-height: 0;
+    border-radius: 6px;
+    color: #868e96;
+}
+.expivi-configurator .sk-trash:hover{ color: var(--sk-red); background: var(--sk-bg-soft); }
+.expivi-configurator .v-stepper__step__step .v-icon{ color: #fff !important; font-size: 16px !important; }
+.expivi-configurator .v-stepper__label{ font-size: 14px !important; font-weight: 700 !important; color: var(--sk-text) !important; }
+.expivi-configurator .v-stepper__step{ position: relative !important; }
+.expivi-configurator .v-stepper__step::after{
+    content: "";
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%) rotate(0deg);
+    width: 18px;
+    height: 18px;
+    transition: transform 0.25s ease;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23010101' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+/* Rotate the chevron on the expanded step (Sokkies theme adds .active-step) */
+.expivi-configurator .v-stepper__step.active-step::after{ transform: translateY(-50%) rotate(180deg); }
+
+/* The column now runs edge to edge so the separators can too; the breathing
+   room lives on the elements instead. 24px keeps the chevron off the screen
+   edge, and the step's 48px right padding stops the label reaching it.
+   Do not use a negative offset: .v-stepper has overflow:hidden and clips it. */
+.page.product .v-stepper__step::after{ right: 24px; }
+
+/* Both actions share the row, 24px in from each edge. Their paddings differed
+   (14/24 vs 12/18), which made `flex: 1 1 0` produce unequal widths — unify
+   them and force border-box so the split is exact. */
+.page.product .sk-bottom-actions{
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+}
+.page.product .btn-group{
+    display: flex !important;
+    width: 100% !important;
+    gap: 12px !important;
+}
+.page.product .btn-group > button{
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 14px 18px !important;
+    height: 56px !important;
+    background: #EA5045 !important;
+    border-color: #EA5045 !important;
+    color: #fff !important;
+}
+
+/* The price read as a boxed band; drop its trailing margin. */
+.page.product p.price{ margin-bottom: 0 !important; }
+
+/* Steps are separated by a rule instead of the vertical connector line that
+   Vuetify draws down the left of a vertical stepper (Sock Club style). */
+.expivi-configurator .v-stepper__content,
+.expivi-configurator .v-stepper__content.step-content-line{ border-left: none !important; }
+
+/* 62px tall, matching the reference configurator: 32px badge + 15/15 padding.
+   Vuetify's default 24/16 padding gave 72px.
+   The separators are pseudo-elements, not borders, for two reasons: a border
+   costs layout and pushed the badge 1px off-centre (15 above / 14 below), and
+   a border cannot reach past the column's 16px padding, so the horizontal
+   rules stopped short of the vertical one instead of meeting it. */
+.page.product .v-stepper__step{
+    border-top: none !important;
+    padding: 15px 48px 15px 19px !important;
+}
+.page.product .v-stepper__step::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e5e7eb;
+}
+/* layout-manager.js writes an INLINE width here on load and again on every
+   resize/scroll (the twig calls reposition() on both). An inline declaration
+   beats any normal rule, which is why paddings alone never reached the edge —
+   only !important overrides it. */
+.page.product #configurator-container{
+    width: 100% !important;
+}
+/* webshop.css sets `#options { padding: 1rem !important }` with enough
+   specificity that it cannot be unset from the inspector.
+   Left goes to 0 so the rules start exactly on the vertical line and the step
+   number sits 20px from it (0 padding + 1px border + 19px step padding).
+   Right keeps 24px to hold the chevron off the screen edge — the rules reach
+   past it with their negative offset. */
+.expivi-configurator body .page.product .product-container #options{
+    padding-top: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+/* Closing rule, tight under the last step — the stepper's own 36px bottom
+   padding left a 45px hole before it. */
+.page.product .v-stepper{
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    position: relative;
+}
+.page.product .v-stepper::after{
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+/* ============================================================
+   Viewer container
+   ============================================================ */
+.expivi-configurator [class*="viewer"],
+.expivi-configurator #viewer-container{
+    border-radius: var(--sk-radius-lg) !important;
+    overflow: hidden;
+}
+
+/* ============================================================
+   Forms
+   ============================================================ */
+.expivi-configurator input[type=text],
+.expivi-configurator input[type=email],
+.expivi-configurator input[type=number],
+.expivi-configurator textarea,
+.expivi-configurator select{
+    font-family: var(--sk-font) !important;
+    border: 1px solid var(--sk-border) !important;
+    border-radius: var(--sk-radius) !important;
+    padding: 10px 14px !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.expivi-configurator input:focus,
+.expivi-configurator textarea:focus,
+.expivi-configurator select:focus{
+    border-color: var(--sk-red) !important;
+    box-shadow: 0 0 0 3px rgba(250, 75, 70, 0.12) !important;
+    outline: none !important;
+}
+
+/* ============================================================
+   Modals
+   ============================================================ */
+.expivi-configurator .modal-content,
+.v-dialog .v-card,
+.v-dialog > .v-card{
+    border-radius: var(--sk-radius-lg) !important;
+    font-family: var(--sk-font) !important;
+}
+.expivi-configurator .v-card__title{ font-family: var(--sk-font) !important; font-weight: 700 !important; }
+
+/* ============================================================
+   PDF status pill
+   ============================================================ */
+.sokkies-pdf-status{
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--sk-black);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: var(--sk-radius);
+    font-family: var(--sk-font);
+    font-size: 0.875rem;
+    font-weight: 400;
+    z-index: 9999;
+    box-shadow: var(--sk-shadow-strong);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.sokkies-pdf-status::before{
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sk-yellow);
+    animation: skPulse 1.2s ease-in-out infinite;
+}
+.sokkies-pdf-status.is-visible{ opacity: 1; transform: translateY(0); }
+.sokkies-pdf-status.is-error{ background: var(--sk-red); }
+.sokkies-pdf-status.is-error::before{ background: #fff; animation: none; }
+@keyframes skPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+    
+    
+    
+    
+    .expivi-configurator .container,
+.expivi-configurator .container-fluid{ padding-left: 16px; padding-right: 16px; }
+    .expivi-configurator h1{ font-size: 1.75rem; }
+    
+    
+    
+}
+
+/* ============================================================
+   Colour slot → popup picker (IIFE #4) — Sock Club style clone
+   ============================================================ */
+/* Hide a colour attribute's whole box. display:none is safe because the popup
+   reads the swatch from INLINE style and forwards clicks programmatically (both
+   work on hidden elements); off-screen positioning caused layout instability. */
+.expivi-configurator .sk-cp-srcbox{ display: none !important; }
+.expivi-configurator .sk-cp-srclist{
+  position: absolute !important;
+  left: -99999px !important;
+  width: 1px !important; height: 1px !important;
+  overflow: hidden !important; opacity: 0 !important; pointer-events: none;
+}
+
+/* grouped layout: "Cuff, Heel, Toe" + "Pattern Colors" rows of trigger tiles */
+.expivi-configurator .sk-cp-groups{ margin-top: 8px; }
+/* Label left, swatches hard right on the same line, as the reference
+   configurator does it (custom.sockclub.com). */
+.expivi-configurator .sk-cp-group{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; margin-bottom: 18px;
+}
+.expivi-configurator .sk-cp-grouptitle{
+  font-size: 16px; font-weight: 700; color: #00262B; margin: 0; flex: 0 0 auto;
+}
+.expivi-configurator .sk-cp-row{ flex: 1 1 auto; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; }
+
+/* Narrow panels cannot fit a label and six 48px tiles on one line without
+   squeezing the label, so below this width they stack the way they used to. */
+@media (max-width: 767px) {
+  .expivi-configurator .sk-cp-group{ display: block; margin-bottom: 22px; }
+  .expivi-configurator .sk-cp-grouptitle{ margin: 0 0 10px; }
+  .expivi-configurator .sk-cp-row{ justify-content: flex-start; }
+}
+
+/* compact "current colour" trigger tile */
+.expivi-configurator .sk-cp-trigger{
+  width: 48px; height: 48px; padding: 0; cursor: pointer;
+  border: 1px solid rgba(0,38,43,.15); border-radius: 8px; background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.18); transition: border-color .2s, transform .2s;
+}
+.expivi-configurator .sk-cp-trigger:hover{ border-color: #FA4B46; transform: translateY(-2px); }
+.expivi-configurator .sk-cp-trigger .sk-cp-sw{ display: block; width: 100%; height: 100%; border-radius: 7px; }
+
+/* slide-in popup */
+.sk-cp-popup{
+  position: fixed; inset: 0; z-index: 100000; display: none;
+  justify-content: flex-end; background: rgba(0,0,0,.40);
+}
+.sk-cp-popup.is-open{ display: flex; }
+/* 636px, not 620: the grid's own scrollbar eats ~15px, and 636 is what puts
+   the four columns on exactly 130px. */
+.expivi-configurator .sk-cp-panel{
+  width: 636px; max-width: 100%; height: 100%; background: #fff;
+  display: flex; flex-direction: column; box-shadow: -8px 0 24px rgba(0,0,0,.18);
+  animation: sk-cp-slide .25s ease;
+}
+@keyframes sk-cp-slide { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.expivi-configurator .sk-cp-head{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px; border-bottom: 1px solid #e5e7eb; flex: 0 0 auto;
+}
+.expivi-configurator .sk-cp-title{ font-weight: 700; font-size: 22px; color: #00262B; }
+.expivi-configurator .sk-cp-close{ background: none; border: none; font-size: 30px; line-height: 1; cursor: pointer; color: #333; }
+/* Four swatches per row, sized off the reference configurator
+   (custom.sockclub.com): 130x156 cards, 20px gap, 50px circle sitting 37px from
+   the card top, label 16px/600 #4B5563 eight pixels under it. The 20px grid
+   padding is what makes the columns land on exactly 130px. */
+.expivi-configurator .sk-cp-grid{
+  flex: 1 1 auto; overflow-y: auto; padding: 20px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; align-content: start;
+}
+.expivi-configurator .sk-cp-card{
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  height: 156px; padding: 0; cursor: pointer;
+  background: #fff; border: 4px solid #fff; border-radius: 8px;
+  box-shadow: rgba(50,50,93,.25) 0 2px 5px -1px, rgba(0,0,0,.3) 0 1px 3px -1px;
+  transition: border-color .2s, transform .2s;
+}
+.expivi-configurator .sk-cp-card:hover{ border-color: #FA4B46; transform: translateY(-2px); }
+.expivi-configurator .sk-cp-circle{
+  width: 50px; height: 50px; border-radius: 9999px;
+  box-shadow: rgba(50,50,93,.25) 0 2px 5px -1px, rgba(0,0,0,.3) 0 1px 3px -1px;
+}
+.expivi-configurator .sk-cp-group:has(> .sk-cp-row:empty){ display: none !important; }
+.expivi-configurator .sk-cp-name{ font-size: 16px; font-weight: 700; color: #4B5563; text-align: center; }
+
+/* On a phone the panel can only be as wide as the screen: at 360px four
+   columns leave 73px cards, the fourth one clips and "Cool Gray 5 C" breaks
+   over two lines. Drop back to two. */
+@media (max-width: 659px) {
+  .expivi-configurator .sk-cp-grid{ grid-template-columns: 1fr 1fr; gap: 16px; padding: 18px; }
+  .expivi-configurator .sk-cp-name{ font-size: 14px; }
+}
+
+/* Patterns: 3 tall thumbnails per row (Sock Club style). Flex-wrap with narrow
+   fixed-width tiles fits 3 in the ~310px panel (96*3 + 8*2 = 304). A CSS grid
+   broke Vuetify's .row/.col structure (one cell went full-width). Hide the
+   native "Choose The Pattern" label. */
+.expivi-configurator .sk-pattern-grid label.v-label{ display: none !important; }
+.expivi-configurator .sk-pattern-grid .row{
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+.expivi-configurator .sk-pattern-grid .row > .col,
+.expivi-configurator .sk-pattern-grid .row > [class*="col"]{
+  flex: 0 0 auto !important;
+  max-width: none !important;
+  width: auto !important;
+  padding: 0 !important;
+}
+/* Thumbnails: fixed size, DROP the sizer so there is no height/sizer mismatch
+   (which leaves the box fractional + reflowing). Height kept moderate so more
+   patterns fit per page. */
+.expivi-configurator .sk-pattern-grid .tile-card{ width: 96px !important; }
+.expivi-configurator .sk-pattern-grid .tile-card .v-image{ height: 150px !important; width: 96px !important; }
+.expivi-configurator .sk-pattern-grid .tile-card .v-responsive__sizer{ display: none !important; }
+/* The "No Pattern" tile has its label baked into the image; `cover` crops the
+   sides so the text is cut. Use `contain` for just that tile (matched by its
+   image URL) so the whole label shows. */
+.expivi-configurator .sk-pattern-grid .v-image__image[style*="NoPattern"]{
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+}
+
+/* ============================================================
+   Upload zone + model tiles + price placement (SockClub pass)
+   Values taken from custom.sockclub.com: 64px round icon badge,
+   9px icon-to-text, prompt 16/600, "Recommended files" 14/600 #9CA3AF.
+   ============================================================ */
+.page.product .dropbox{
+    padding: 16px !important;
+    gap: 9px !important;
+    border-radius: 8px !important;
+}
+.page.product .dropbox::before{
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
+}
+.page.product .dropbox .browse-btn{
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+.page.product .dropbox::after{
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #9CA3AF !important;
+    margin: 1px 0 0 !important;
+}
+
+/* Button labels centred now that the two share the row */
+.page.product .btn-group > button{
+    text-align: center !important;
+    justify-content: center !important;
+}
+
+/* Sock model tiles: rounded and lifted on hover */
+.page.product [data-xpv-attribute-id="284838"] .tile-card{
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .10), 0 1px 2px rgba(0, 0, 0, .06) !important;
+    transition: box-shadow .2s, transform .2s !important;
+}
+.page.product [data-xpv-attribute-id="284838"] .tile-card:hover{
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .12) !important;
+    transform: translateY(-2px) !important;
+}
+.page.product [data-xpv-attribute-id="284838"] .v-image{
+    border-radius: 12px !important;
+}
+/* Square, as tall as the pattern tiles (150); 50 reads as too small. The
+   tile's width is inline, hence !important. */
+.page.product [data-xpv-attribute-id="284838"] .tile-card{
+    width: 150px !important;
+    height: 150px !important;
+}
+.page.product [data-xpv-attribute-id="284838"] .tile-card .v-image{
+    width: 100% !important;
+    height: 100% !important;
+}
+.page.product [data-xpv-attribute-id="284838"] .tile-card .v-image .v-responsive__sizer{
+    padding-bottom: 100% !important;
+}
+@media (max-width: 600px) {
+    .page.product [data-xpv-attribute-id="284838"] .tile-card{
+        width: 100px !important;
+        height: 100px !important;
+    }
+}
+
+/* No price on screen. HIDDEN, not removed: the
+   configurator keeps writing into this node (`priceSelectors` in the twig) and
+   the quote and the PDF still carry the price. */
+.page.product .price-and-button{
+    display: none !important;
+}
+
+/* ============================================================
+   One screen, no page scroll — the way custom.sockclub.com does it: the configurator
+   is exactly the viewport under the site header, the open step scrolls
+   INSIDE the column, the closed steps and the action buttons stay in view.
+
+   --sk-app-top is the height of whatever sits above the configurator (the
+   site header), measured by sokkies.js because it is the host's markup,
+   not ours. 81px is our test header, used until the first measurement.
+
+   The `:has(.v-stepper)` chain gives every wrapper between #options and
+   the stepper (Vuetify's app, its wrap, three anonymous divs) the column's
+   height without naming each one. Side-by-side layout only; phones stack
+   the viewer over the steps and keep scrolling the page.
+   ============================================================ */
+@media (min-width: 992px) {
+    .expivi-configurator body .page.product .product-container.container-product-page-columns{
+        height: calc(100vh - var(--sk-app-top, 81px)) !important;
+        min-height: 560px;
+    }
+    .page.product #viewer-container{ height: 100% !important; }
+    /* webshop.css gives the viewer 75vh; the 3D resizes itself to its box. */
+    .page.product #viewer-container > #viewer{ height: 100% !important; }
+    .page.product #options{
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    .page.product #options :has(.v-stepper){
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 0 !important;   /* Vuetify's app wrap carries min-height: 100vh */
+        height: auto;
+    }
+    .page.product #options :has(.v-stepper) > :not(:has(.v-stepper)):not(.v-stepper){
+        flex: none;
+    }
+    /* `clip`, not `hidden`: a hidden box can still be scrolled by script, and
+       opening a step scrolls the stepper 16px, which cuts step 1's circle.
+       A clipped box cannot scroll at all. */
+    .page.product #options .v-stepper{
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: clip !important;
+    }
+    .page.product #options .v-stepper > .container{ flex: none; }
+    /* The open step takes the room left and scrolls its own content. */
+    /* 0 1 auto: as tall as its content, shrinking (and scrolling) only when
+       that does not fit. 1 1 auto stretches a short step (Model: 3 tiles) to
+       the whole column and leaves a large blank under it. */
+    .page.product #options .v-stepper > .container:has(> .v-stepper__step.active-step){
+        flex: 0 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    .page.product #options .v-stepper > .container:has(> .v-stepper__step.active-step) > .v-stepper__content{
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+    }
+}
+
+/* ============================================================
+   Configurator loader
+   ------------------------------------------------------------
+   Without this the column paints in stages: the raw submit buttons show up
+   first, then an empty box, and only once the options app mounts does the real
+   UI appear. Hide the column and show a spinner until sokkies.js flags it.
+
+   This has to be CSS, not JS: the hide must be in effect before #options ever
+   paints. It works because sokkies.css is the SECOND node in <body> and
+   #options comes after it, so the rule is parsed first. A JS hide would always
+   land after the first paint.
+
+   The flag is on <html> so it applies no matter how deep the app re-renders,
+   and sokkies.js sets it on a failsafe timer too, so a broken build degrades to
+   "shown" rather than a permanently blank column.
+   ============================================================ */
+.expivi-configurator .page.product #options{
+    position: relative;
+    min-height: 460px;
+}
+.expivi-configurator .page.product #options > *{
+    visibility: hidden !important;
+}
+/* The price and the button row are NOT inside #options during load — the twig
+   renders them elsewhere and sokkies.js moves them in later. Hide them by
+   their own selectors or they show up above the spinner, which is exactly
+   what the loader is meant to prevent. */
+.expivi-configurator .page.product .price-and-button,
+.expivi-configurator .page.product .btn-group{
+    visibility: hidden !important;
+}
+.expivi-configurator .page.product #options::before{
+    content: "";
+    position: absolute;
+    top: 96px;
+    left: 50%;
+    margin-left: -18px;
+    width: 36px;
+    height: 36px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #EA5045;
+    border-radius: 50%;
+    animation: sk-spin .8s linear infinite;
+}
+.expivi-configurator .page.product #options::after{
+    content: "Loading your configurator…";
+    position: absolute;
+    top: 146px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #9CA3AF;
+}
+@keyframes sk-spin { to { transform: rotate(360deg); } }
+
+/* 24px margin on .options-container pushed the whole column down. It has no
+   padding or border, so the margin collapsed outward through
+   #configurator-container and read as dead space above step 1. */
+.page.product .options-container{
+    margin-top: 0 !important;
+}
+
+/* The product page title row holds only <h1>Sokkies</h1> once sokkies.js moves
+   the price, so it renders as an empty band above the configurator. Hidden so
+   the configurator and the viewer start at the same height, right under the
+   site header.
+   NOTE: this removes the page's visible <h1>. The element stays in the DOM but
+   display:none content carries little SEO weight. */
+.page.product .container-product-page-columns > .col-12.col-lg-12{
+    display: none !important;
+}
+
+/* ============================================================
+   Pattern tiles (step 3)
+   All four are 96x150. The three repeating patterns are near-square art, so
+   they get `cover`: cropping a repeat is invisible, stretching it is not.
+   "No Pattern" is a square LABEL image — `contain` leaves it letterboxed next to
+   the others, and `cover` cuts the word in half, so it alone is stretched to
+   fill. Targeted by position because the option carries no key of its own.
+   ============================================================ */
+.page.product .sk-pattern-grid .tile-card{
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .10), 0 1px 2px rgba(0, 0, 0, .06) !important;
+    transition: box-shadow .2s, transform .2s !important;
+}
+.page.product .sk-pattern-grid .tile-card:hover{
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .12) !important;
+    transform: translateY(-2px) !important;
+}
+.page.product .sk-pattern-grid .v-image{
+    border-radius: 12px !important;
+}
+.page.product .sk-pattern-grid .v-image__image{
+    background-size: cover !important;
+}
+.page.product .sk-pattern-grid .row > .col:last-of-type .v-image__image{
+    background-size: 100% 100% !important;
+}
+
+/* ============================================================
+   Rotating logo
+   The logo rotates in QUARTER TURNS ONLY — 0 / 90 / 180 / 270: at a free
+   angle the sole render breaks up (the logo comes out fragmented), while
+   every multiple of 90 renders clean, and a quarter turn is the only step big
+   enough to read as a rotation on a shape as narrow as the sole.
+
+   So the native slider goes and sokkies.js injects `.sk-rot-row` (four
+   `.sk-place-btn` pills) into the rotate panel instead. Only the SLIDER is
+   hidden, never the panel: the pills live inside it.
+
+   This applies to ALL THREE placements (Calf · Calf + Footbed · Footbed). In
+   Calf + Footbed only ONE widget is mounted (the calf, our single intake), so
+   sokkies.js draws TWO labelled rows in that one panel and writes each zone by
+   key — the footbed's own widget stays hidden and is never needed for this.
+
+   Keyed on data-xpv-key, which survives a config rebuild; numeric ids do not.
+   Done in CSS rather than JS because config re-mounts these widgets on every
+   placement switch and inline styles lose that race (same reason as
+   #sk-zone-mask).
+   ============================================================ */
+.page.product [data-xpv-key="sk-logo-footbed-1"] #rotate .v-input__slider,
+.page.product [data-xpv-key="sk-logo-footbed-2"] #rotate .v-input__slider,
+.page.product [data-xpv-key="sk-logo-calf-1"] #rotate .v-input__slider,
+.page.product [data-xpv-key="sk-logo-calf-2"] #rotate .v-input__slider{
+    display: none !important;
+}
+.expivi-configurator .sk-rot-row{
+    display: flex;
+    gap: 8px;
+    padding: 6px 2px 2px;
+}
+/* Only drawn when a single panel carries both zones (Calf + Footbed). The
+   label has to name the zone, or two identical rows of pills are a riddle. */
+.expivi-configurator .sk-rot-zone{ padding-top: 0; }
+/* Zone label: same rule as Size / Position (.sk-tf__zone), so Calf / Footbed
+   read the same in all three tabs. */
+
+/* ============================================================
+   Logo widget — Size / Position / Rotate in the Sokkies language
+
+   Stock Vuetify draws the three tabs as small uppercase labels with a
+   blue-ish underline, and the sliders in Vuetify's default blue. Next to
+   the Logo Placement pills — which ARE the Sokkies vocabulary in this
+   panel — they read as a different product.
+
+   So the tabs become the same pill as the placement row (same border,
+   radius, weight and red active state) and the sliders take the brand
+   palette: a rounded grey track, red fill, white thumb with a red ring.
+   Behaviour is untouched — this is styling only, Vuetify still owns the
+   tab switching and the slider values.
+
+   Scoped to the logo widgets by data-xpv-key so nothing else on the page
+   inherits it, and keyed rather than id-based because config rebuilds
+   these widgets. `!important` throughout: Vuetify's own sheet is more
+   specific than a plain rule here, and sokkies.css loads from <body>.
+   ============================================================ */
+.page.product [data-xpv-key^="sk-logo"] .v-tabs-slider-wrapper{ display: none !important; }
+.page.product [data-xpv-key^="sk-logo"] .v-tabs-bar{
+    height: auto !important;
+    background: transparent !important;
+}
+.page.product [data-xpv-key^="sk-logo"] .v-tabs-bar__content{
+    gap: 8px;
+    padding: 2px 0 6px;
+}
+.page.product [data-xpv-key^="sk-logo"] .v-tab{
+    flex: 1; min-width: 0 !important; height: auto !important; padding: 9px 6px !important;
+    border: 1.5px solid #d1d5db !important; border-radius: 22px !important; background: #fff !important;
+    font-family: var(--sk-font); font-weight: 700 !important; font-size: 0.78rem !important;
+    color: var(--sk-text) !important; text-transform: capitalize !important;
+    letter-spacing: 0 !important; transition: none !important;   /* no red hover, like the placement pills */
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.page.product [data-xpv-key^="sk-logo"] .v-tab svg{ width: 15px !important; height: 15px !important; opacity: .75; }
+.page.product [data-xpv-key^="sk-logo"] .v-tab--active{
+    border-color: var(--sk-red) !important; color: var(--sk-red) !important; background: #fff !important;
+}
+.page.product [data-xpv-key^="sk-logo"] .v-tab--active svg{ opacity: 1; }
+.page.product [data-xpv-key^="sk-logo"] .v-tab::before{ display: none !important; }   /* Vuetify's grey overlay */
+
+.page.product [data-xpv-key^="sk-logo"] .v-slider{ margin: 0 4px; }
+.page.product [data-xpv-key^="sk-logo"] .v-slider__track-container{ height: 6px !important; }
+.page.product [data-xpv-key^="sk-logo"] .v-slider__track-background,
+.page.product [data-xpv-key^="sk-logo"] .v-slider__track-fill{
+    height: 6px !important;
+    border-radius: 999px !important;
+}
+.page.product [data-xpv-key^="sk-logo"] .v-slider__track-background{ background: #E5E7EB !important; }
+.page.product [data-xpv-key^="sk-logo"] .v-slider__track-fill{ background: var(--sk-red) !important; }
+.page.product [data-xpv-key^="sk-logo"] .v-slider__thumb{
+    width: 18px !important; height: 18px !important; left: -9px !important;
+    background: #fff !important; border: 2.5px solid var(--sk-red) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .18) !important;
+}
+/* the focus/drag halo is blue by default */
+.page.product [data-xpv-key^="sk-logo"] .v-slider__thumb::before{
+    background: var(--sk-red) !important;
+    opacity: .12 !important;
+}
+.page.product [data-xpv-key^="sk-logo"] .v-slider__thumb-label{
+    background: var(--sk-red) !important;
+    color: #fff !important;
+}
+.page.product [data-xpv-key^="sk-logo"] .v-input__slider .v-label,
+.page.product [data-xpv-key^="sk-logo"] #size label,
+.page.product [data-xpv-key^="sk-logo"] #position label,
+.page.product [data-xpv-key^="sk-logo"] #rotate label{
+    font-family: var(--sk-font); font-weight: 700; font-size: .78rem;
+    color: var(--sk-text) !important; text-transform: capitalize;
+}
+
+/* ---------------------------------------------------------------------------
+   Pattern theme tabs (IIFE #9). The native THEME dropdown is hidden and
+   replaced by a tab row above the thumbnails, as the reference configurator
+   does it (custom.sockclub.com, "Select Design Template").
+--------------------------------------------------------------------------- */
+.expivi-configurator .sk-theme-src{ display: none !important; }
+
+/* Taken from the reference (custom.sockclub.com, #templatePlacementButtonContainer):
+   the row is full width with `justify-content: space-between`, and each tab is
+   only as wide as its own word — NOT an equal share of the row. Equal shares
+   pad every word with dead space.
+   Type is 16px/24 semibold in grey #6B7280, with 16px of air above and below. */
+.expivi-configurator .sk-theme-tabs{
+  position: relative; display: flex; width: 100%; gap: 40px;
+  justify-content: flex-start; align-items: flex-end;
+  margin: 4px 0 14px; padding: 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+.expivi-configurator .sk-theme-tab{
+  flex: 0 0 auto; padding: 16px 0; border: 0; background: none;
+  font-size: 16px; font-weight: 700; line-height: 24px; color: #6B7280;
+  text-align: center; white-space: nowrap; cursor: pointer;
+  transition: color .15s ease;
+}
+.expivi-configurator .sk-theme-tab:hover{ color: #00262B; }
+.expivi-configurator .sk-theme-tab.active{ color: #FA4B46; font-weight: 700; }
+.expivi-configurator .sk-theme-tab:focus-visible{ outline: 2px solid #FA4B46; outline-offset: 2px; }
+
+/* The label carries the word; the underline is measured from it so the line is
+   exactly as wide as the text, not as wide as the tab's share of the row. */
+.expivi-configurator .sk-theme-label{ display: inline-block; }
+
+/* The underline is a single bar that travels to the selected label (positioned
+   and sized from JS), not one line per tab. */
+.expivi-configurator .sk-theme-ink{
+  position: absolute; left: 0; bottom: -1px; height: 2px; width: 0;
+  background: #FA4B46; opacity: 0; pointer-events: none;
+  transition: transform .25s cubic-bezier(.4, 0, .2, 1), width .25s cubic-bezier(.4, 0, .2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .expivi-configurator .sk-theme-ink{ transition: none; }
+}
+
+/* Size step: one compact row per size (label left, quantity right) so all six
+   fit on one screen. The size fields are the only
+   number inputs in the configurator. The validation line stays when it has a
+   message. */
+.expivi-configurator .container[data-xpv-attribute-id]:has(> .container input[type="number"]){
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    /* Scales with the screen height: 60px rows at 889px tall fill the panel
+       down to the actions instead of leaving it half empty, and shorter
+       screens get tighter rows instead of a scroll. */
+    padding: clamp(6px, 1.6vh, 16px) 8px clamp(6px, 1.6vh, 16px) 0 !important;
+}
+.expivi-configurator .container[data-xpv-attribute-id]:has(> .container input[type="number"]) > .v-label{ flex: 1 1 auto; margin: 0 !important; }
+.expivi-configurator .container[data-xpv-attribute-id]:has(> .container input[type="number"]) > .container{ flex: 0 0 120px; padding: 0 !important; }
+.expivi-configurator .container[data-xpv-attribute-id]:has(> .container input[type="number"]) .v-input,
+.expivi-configurator .container[data-xpv-attribute-id]:has(> .container input[type="number"]) .v-input__slot{ margin: 0 !important; }
+.expivi-configurator .container[data-xpv-attribute-id]:has(> .container input[type="number"]) .v-text-field__details:not(:has(.v-messages__message)){ display: none !important; }
+
+/* Customize Colors: every attribute in the colour panels except the pattern
+   thumbnails (the only one with a .v-image) is hidden from the first frame.
+   A pattern change makes config re-render the colour attributes as new nodes,
+   and those would show their full palettes (~550px each) until the next tick
+   tags them .sk-cp-srcbox, up to 900ms. display:none is what .sk-cp-srcbox already does; the popup
+   still reads and clicks the hidden swatches. */
+.expivi-configurator .v-window__container:has(.sk-pattern-grid) [data-xpv-attribute-id]:not(:has([data-xpv-attribute-id])):not(:has(.v-image)){
+    display: none !important;
+}
+
+/* The PDF button inherits the platform's .btn font (Work Sans); use the theme
+   font (ROC Grotesk). */
+.expivi-configurator #sokkies-pdf-btn.sk-pdf-btn{ font-family: var(--sk-font) !important; }
+/* Sock model name under each model tile (added by IIFE #11 in sokkies.js).
+   The selected model's name is bold. */
+.page.product [data-xpv-attribute-id="284838"] .sk-model-name{
+    display: block;
+    margin-top: 8px;
+    font-family: var(--sk-font) !important;
+    font-size: 14px;
+    line-height: 1.2;
+    color: var(--sk-text);
+    text-align: center;
+}
+.page.product [data-xpv-attribute-id="284838"] .tile-card:has(.active-tile) + .sk-model-name{
+    font-weight: 700;
+}
