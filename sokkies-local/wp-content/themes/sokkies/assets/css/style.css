@@ -9871,6 +9871,30 @@ main.contact{
   .ct-form-card .gfield--type-hidden{
     display:none;
   }
+
+  /* VULELEMENTEN VAN GRAVITY FORMS ERUIT.
+     GF vult in ZIJN eigen 12-koloms model de rest van een rij op met
+     <div class="spacer gfield"> en zet daar INLINE grid-column:span 6 op. Die
+     span past niet in ons 2-koloms raster, dus maakt CSS Grid er vier
+     impliciete kolommen bij: op sokkies.com gemeten werd het raster
+     52,5 / 52,5 / 229 / 229 / 0 / 0 in plaats van 2x 333,5. Gevolg: vier
+     velden naast elkaar op een rij en een berichtveld van 131px breed.
+     De spacers hebben geen inhoud, dus ze mogen uit de flow; met display:none
+     telt het element niet meer als rasteritem en verdwijnen die impliciete
+     kolommen. Geverifieerd op de live pagina: raster terug naar 333,5 + 333,5
+     en de velden exact op de posities van onze eigen opbouw.
+     WAAROM HET LOKAAL NIET OPVIEL: GF plaatst die spacers alleen als de
+     ingestelde veldbreedtes een rij niet volmaken. Dat is een verschil in de
+     FORMULIERINSTELLINGEN en die staan in de database - lokaal zijn er 0
+     spacers, op live 2. Dus geen codeverschil.
+     Ook op de twee andere formulierkaarten, die een flexrij gebruiken: daar is
+     de inline span inert, maar het element draagt wel class gfield en zou
+     daar een volle regel pakken. */
+  .ct-form-card .gform_fields > .spacer,
+  .quote-card .gform_fields > .spacer,
+  .sample-card .gform_fields > .spacer{
+    display:none;
+  }
   /* labels als in .ct-field label */
   .ct-form-card .gfield_label{
     display:block;
