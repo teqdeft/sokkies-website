@@ -435,14 +435,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
     </section>
     <?php endif; ?>
 
-<?php /* De 3D-configurator (Expivi) staat UIT.
-   Stond eerder in een HTML-commentaar met onklaar gemaakte PHP-tags
-   (<//?php). Dat werkte, maar de hele sectie — markup, PHP en de
-   commentaren — werd nog steeds naar de browser gestuurd, waar
-   crawlers en linkcheckers er kapotte links in zagen. Met if ( false )
-   blijft de code hier staan maar komt er niets meer uit.
-   WEER AANZETTEN: deze regel en de bijbehorende endif weghalen. */ ?>
-<?php if ( false ) : ?>
+
 <section class="design-now">
       <img class="design-duddle-sock" src="<?php echo esc_url( $assets ); ?>pdp-duddle-configurator.png" alt="" aria-hidden="true">
       <div class="design-bg-union" aria-hidden="true"></div>
@@ -475,7 +468,6 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
         </div>
       </div>
     </section>
-<?php endif; /* einde uitgeschakelde Expivi-sectie */ ?>
 
 <section class="usecases">
       <div class="container">
