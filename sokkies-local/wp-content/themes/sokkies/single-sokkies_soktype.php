@@ -452,11 +452,13 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
             ?>
             <?php if ( $expivi_product_id ) : ?>
             <div class="expivi-configurator">
-              <iframe class="expivi-frame"
-                      src="<?php echo esc_url( sokkies_expivi_url( $expivi_product_id ) ); ?>"
-                      title="<?php esc_attr_e( 'Sokkenconfigurator', 'sokkies' ); ?>"
-                      loading="lazy"
-                      allow="fullscreen; xr-spatial-tracking"></iframe>
+              <div class="expivi-viewer">
+                <div id="expivi-viewer"></div>
+              </div>
+              <div class="expivi-options">
+                <div id="expivi-price"></div>
+                <div id="expivi-options"></div>
+              </div>
             </div>
             <?php else : ?>
             <img src="<?php echo esc_url( $design_foto ? $design_foto['url'] : $assets . 'configurator-demo-pdp.png' ); ?>" alt="Sok preview">
