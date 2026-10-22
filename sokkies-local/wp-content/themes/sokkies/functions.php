@@ -363,6 +363,52 @@ function sokkies_expivi_token() {
 	return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNWNmYzQyZGY5ODNlZjY4MzI1YmM5ZjZmYmY2NWRlNTJjNjM3MjU0Njg3MzMxOGZiMjA4ZGU5MDVhM2QyYzg1ZDAxMmU4NWE4ZjM0MTkzOWQiLCJpYXQiOjE3ODg4NTM0NDkuMDQ5NzQzLCJuYmYiOjE3ODg4NTM0NDkuMDQ5NzQ1LCJleHAiOjIxMDQ0NzI2NDguODA5MzYxLCJzdWIiOiI2NTA4Iiwic2NvcGVzIjpbXX0.prk3_HqEiVe1ajVJztA3IRGiyVH9iF0A_q-noONRAxpYJWI1UpHVkpTuGVnJv5xR1DhdQQU9_lGvQBjoAunwv5yYSCjcwyZYOUo5xHTIX91WF70S43_g8XTyRj6NCu39zkKDKjmTQRfu-iqyiDnXo1IpazPGPwbzNufNURcxhQkISNp84dVHLBbM4B1Qd1s6OVKCK84WzFb7BQBNxI6m3TpgjxdR5TXGu4qRbu-q6IbALM32ZB4ueovZyRYTfzAhKJUCxpIhDxTOZHOPXLBptUglaH-ECkw6qWJbWYngEofMFqTTyb3IjHT5U0XBOv0kuM7Nj-msXpBzOHP0bakO_G1PTNsGLlvxCpcgqG6ZobSw7u3b3MZ9FKMoIbR0c7mPKh5l26J3VC8PiWU6moy3B5YyNkOTgjSBZmRKwJlPowqkLZTkstPWCuqJKdCeXtNbvXXzt_d_At7ZOKXBnwUeKN3zjUnUFkK69MlKzF-q3aQxPaWr-zs5kCa5cLj-NJQ9VXzm3nXLrBhhQ5zks9xMbGApDqpvfqLJRCpgYrrWDxrDKjwti2H_RjQx2qCFqGozi1pQMkNeFcQYRN87a6RQy8qSE4mzsblRyuIdmHZRbGAZnfKyfz0PU1WtDlbWVHfD5C1jDZcXJNBYtfPijqfj-t40mKa_UE0J_qudJWnSXyE';
 }
 
+/**
+ * De taalcode waarin de configurator zijn eigen teksten toont.
+ *
+ * WAAROM DIT NODIG IS: TranslatePress vertaalt de HTML die WordPress uitstuurt.
+ * Alles binnen de configurator zet de Vue-app van Expivi daarna pas in de
+ * pagina, rechtstreeks uit hun API - TP ziet die teksten dus nooit. De
+ * stapnamen, optielabels en prijsopmaak komen uit de LOCALISATIES van Expivi,
+ * en het enige wat wij doen is doorgeven welke.
+ *
+ * AFGELEID IN PLAATS VAN EEN TABEL: Expivi schrijft zijn localisaties met een
+ * koppelteken (nl-NL), TranslatePress met een liggend streepje (nl_NL), verder
+ * zijn ze gelijk. Zo werkt een taal die er later bij komt vanzelf mee.
+ * Nagemeten tegen hun eigen gegevens: de vertalingen in de catalogus staan
+ * onder nl-NL, en-GB, de-DE en fr-FR - dus precies wat deze afleiding oplevert.
+ *
+ * DE TAAL KOMT UIT DE GLOBAL, NIET UIT EEN CONSTANTE. TranslatePress zet
+ * $TRP_LANGUAGE als globale variabele; een constante TRP_LANGUAGE bestaat niet.
+ * Een eerdere opzet vroeg defined('TRP_LANGUAGE'), en dat is altijd false -
+ * daar bleef de taal onopgemerkt op Nederlands staan.
+ *
+ * UITZONDERING: de site heeft vijf talen (nl, en, de, fr en be), Expivi vier.
+ * Belgisch Nederlands bestaat daar niet, dus dat valt terug op nl-NL - anders
+ * krijgt een Belgische bezoeker de standaardtaal van de catalogus.
+ *
+ * WAT DIT NIET DOET: vertalen. Een label verschijnt pas in het Duits of Frans
+ * zodra het in Expivi onder die taal een naam heeft (Producten > Configure >
+ * Attributes, per attribuut en per keuze). Staat daar niets, dan valt Expivi
+ * terug op de basisnaam en zie je Engels - dat is inhoud, geen code.
+ *
+ * De uitkomst is te overrulen met het filter sokkies_expivi_locale, mocht
+ * Expivi ooit een andere schrijfwijze gaan gebruiken:
+ *   add_filter( 'sokkies_expivi_locale', fn( $l ) => 'en-GB' === $l ? 'en-US' : $l );
+ */
+function sokkies_expivi_locale() {
+	global $TRP_LANGUAGE;
+
+	$taal = $TRP_LANGUAGE ? str_replace( '_', '-', (string) $TRP_LANGUAGE ) : 'nl-NL';
+
+	$uitzonderingen = array( 'nl-BE' => 'nl-NL' );
+	if ( isset( $uitzonderingen[ $taal ] ) ) {
+		$taal = $uitzonderingen[ $taal ];
+	}
+
+	return (string) apply_filters( 'sokkies_expivi_locale', $taal );
+}
+
 function sokkies_expivi_assets() {
 	if ( ! is_singular( 'sokkies_soktype' ) ) {
 		return;
@@ -389,7 +435,7 @@ function sokkies_expivi_assets() {
 		'optionContainer' => '#expivi-options',
 		'priceSelectors'  => '#expivi-price',
 		'currency'        => 'EUR',
-		'locale'          => 'nl',
+		'locale'          => sokkies_expivi_locale(),
 		'token'           => sokkies_expivi_token(),
 	);
 
