@@ -1,0 +1,48 @@
+# git
+.git
+.gitignore
+
+# editor config
+.editorconfig
+
+# linting
+.eslintrc.json
+.sass-lint.yml
+webpack.mix.js
+
+# npm / composer
+package.json
+package-lock.json
+/node_modules/
+composer.json
+composer.lock
+
+# vendor - phpcs
+phpcs.xml
+/vendor/bin/
+/vendor/squizlabs/
+/vendor/phpcompatibility/
+/vendor/wp-coding-standards/
+
+# vendor - unit tests
+phpunit.xml
+/tests/
+/vendor/myclabs/
+/vendor/sebastian/
+/vendor/symfony/
+/vendor/doctrine/
+/vendor/webmozart/
+/vendor/phpdocumentor/
+/vendor/phpspec/
+/vendor/phpunit/
+
+# pipelines
+bitbucket-pipelines.yml
+
+# others
+readme.md
+.svnignore
+.vscode/
+
+# with /public we can now ignore /assets folder
+/assets

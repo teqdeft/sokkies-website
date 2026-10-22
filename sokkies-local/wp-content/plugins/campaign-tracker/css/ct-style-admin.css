@@ -1,0 +1,237 @@
+
+#wpcontent {
+	background: #120049;
+	background: radial-gradient(circle, rgb(48, 32, 96) 0%, rgb(18, 0, 73) 100%);
+}
+
+.h4wp-plugins-settings-container {
+	background: #120049;
+	background: radial-gradient(circle, rgb(48, 32, 96) 0%, rgb(18, 0, 73) 100%);
+	padding: 10px 20px 10px 20px;
+}
+
+.h4wp-plugins-settings-container h2 {
+	border-bottom: none !important;
+}
+
+.h4wp-plugins-settings-container .nav-tab {
+	border-top-right-radius: 10px;
+	border-top-left-radius: 10px;
+}
+
+.h4wp-plugins-settings-header-container {
+	width: 100%;
+	margin: 10px 0;
+	padding: 20px 0 0 0;
+	text-align: center;
+}
+
+.h4wp-plugins-settings-tab-content-container {
+	padding:22px;
+	background: #fff;
+	border:1px solid #ccc;
+	border-top: none;
+	border-radius: 10px;
+}
+
+.h4wp-plugins-settings-footer {
+	margin: 50px auto 0px auto;
+	padding-bottom: 100px;
+	text-align: center;
+}
+
+.h4wp_plugins_header_logo {
+	width: 600px;
+}
+
+.h4wp_plugins_footer_logo {
+	width: 150px;
+}
+
+
+
+@media screen AND (max-width:600px) {
+	.nav-tab{
+		width:90%;
+	}
+}
+
+
+h2.nav-tab-wrapper {
+	margin:22px 0 0 0;
+}
+
+.nav-tab-active {
+	border-bottom: 1px solid #f1f1f1 !important;
+	background: #ffffff !important;
+	color: #000 !important;
+}
+
+#ct_tab_contents section {
+	display:none;
+}
+
+#ct_tab_contents section:first-child {
+	display:block;
+}
+
+.no-js h2.nav-tab-wrapper {
+	display:none;
+}
+
+.no-js #ct_tab_contents {
+	border-top:1px solid #ccc;
+	margin-top:22px;
+}
+
+.no-js #ct_tab_contents section {
+	border-top: 1px dashed #aaa;
+	margin-top:22px;
+	padding-top:22px;
+}
+
+.no-js #ct_tab_contents section:first-child {
+	margin:0px;
+	padding:0px;
+	border:0px;
+}
+
+#ct_tab_content_custom_var input[type="text"]{
+	display: inline-block;
+	width: 300px;
+	margin-left: 20px;
+}
+
+/*
+ * Add variables values
+ */
+.ct-campaing-settings-add-values-area{
+	width:30%;
+	float:left;
+	display:block;
+}
+
+.ct-campaing-settings-values-list-area{
+	width:65%;
+	float:left;
+	display:block;
+	padding:5px 10px;
+}
+
+#ct_options_campagin_settings_supported_posttype_container label{
+	width: 23%;
+	display: inline-block;
+}
+
+.ct-campaing-settings-values-manually{
+	padding: 2px;
+    line-height: 28px;
+    height: 28px;
+    vertical-align: middle;
+	width: 60%;
+}
+
+.ct-campaing-settings-values-select{
+	width: 35%;
+}
+
+.h4wp-plugins-settings-expiry-message-container .h4wp-plugins-warning,
+.h4wp-plugins-settings-expired-message-container .h4wp-plugins-warning{
+	padding: 20px;
+	border: 1px #F00 solid;
+	background-color: #FFDDCF;
+}
+
+/*
+  * Dashicons Info
+  */
+[tooltip]{
+  margin:5px 20px;
+  position:relative;
+  display:inline-block;
+}
+[tooltip]::before {
+    content: "";
+    position: absolute;
+    top:-6px;
+    left:50%;
+    transform: translateX(-50%);
+    border-width: 4px 6px 0 6px;
+    border-style: solid;
+    border-color: rgba(0,0,0,0.7) transparent transparent     transparent;
+    z-index: 99;
+    opacity:0;
+}
+
+[tooltip-position='right']::before{
+  left:100%;
+  top:50%;
+  margin-left:1px;
+  transform:translatey(-50%) rotate(90deg)
+}
+
+[tooltip]::after {
+    content: attr(tooltip);
+    position: absolute;
+    left:50%;
+    top:-6px;
+    transform: translateX(-50%)   translateY(-100%);
+    background: rgba(0,0,0,0.7);
+    text-align: center;
+    color: #fff;
+    padding:4px 2px;
+    font-size: 12px;
+    min-width: 300px;
+    border-radius: 5px;
+    pointer-events: none;
+    padding: 4px 4px;
+    z-index:99;
+    opacity:0;
+    text-align: left;
+}
+
+[tooltip-position='right']::after{
+  left:100%;
+  top:50%;
+  margin-left:8px;
+  transform: translateX(0%)   translateY(-50%);
+}
+
+[tooltip]:hover::after,[tooltip]:hover::before {
+   opacity:1
+}
+
+/* form settings - fields mapping */
+.ct_form_settings_fields_mapping {
+  display: block;
+  width: 100%;
+  padding-top: 20px;
+}
+
+.ct_form_settings_basic_fields_mapping {
+  display: block;
+  width: calc(40% - 20px);
+  float: left;
+  background-color:rgb(218, 218, 218);
+  border-radius: 5px;
+  padding:10px;
+  margin-right:10px;
+}
+
+.ct_form_settings_advanced_fields_mapping {
+  display: block;
+  width: calc(55%-20px);
+  float: left;
+  background-color:rgb(218, 218, 218);
+  border-radius: 5px;
+  padding:10px;
+  margin-left:10px;
+}
+
+@media (max-width:1250px) {
+  .ct_form_settings_basic_fields_mapping,
+  .ct_form_settings_advanced_fields_mapping{
+    width:100%;
+    margin: 20px 0 20px 0;
+  }
+}

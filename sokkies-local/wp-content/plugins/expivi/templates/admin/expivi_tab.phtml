@@ -1,0 +1,202 @@
+<?php
+/**
+ * Admin View - Product Settings - Expivi Tab
+ *
+ * @version 1.0
+ *
+ * @var ?int $expivi_id
+ * @var string[] $expivi_product_options
+ * @var array $price_layout_options
+ * @var array $add_to_cart_process_options
+ * @var int $add_to_cart_process
+ * @var array $camera_position_thumbnail_options
+ * @var int $camera_position_thumbnail
+ * @var array $pdf_orientation_options
+ * @var string $pdf_orientation
+ * @var array $shop_flow_options
+ * @var string $shop_flow
+ * @var string $add_to_cart_text
+ * @var string $sku_generation_text
+ * @var string $sku_generation_delimiter
+ * @var bool $show_3d_hover_icon
+ * @var bool $auto_rotate_product
+ * @var bool $show_progress
+ * @var bool $show_options
+ * @var bool $hide_price
+ * @var bool $hide_price_when_zero
+ * @var bool $enable_pdf_download
+ * @var int $camera_position_thumbnail
+ * @var int $price_layout
+ * @var bool $auto_scroll_stepper
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+?>
+<div id="expivi_options" class='panel woocommerce_options_panel'>
+
+    <section class="options_group">
+        <div class="xpv-settings-header">
+            <h4><?php echo __( 'Expivi product', 'expivi' ); ?></h4>
+        </div>
+        <input type="hidden" id="xpv_pre_configuration" name="xpv_pre_configuration" />
+
+		<?php
+			// Select field for expivi products
+			woocommerce_wp_select(
+				array(
+					'id'      => 'expivi_id',
+					'label'   => __( 'Expivi product ID', 'expivi' ),
+					'options' => $expivi_product_options,
+					'value'   => $expivi_id ?? '',
+				)
+			);
+		?>
+		<?php
+		woocommerce_wp_select( array(
+			'id'      => 'xpv_add_to_cart_process',
+			'label'   => __( 'Add to cart process', 'expivi' ),
+			'options' => $add_to_cart_process_options,
+			'value'   => $add_to_cart_process,
+		) );
+		?>
+    </section>
+
+    <section class="options_group">
+        <div class="xpv-settings-header">
+            <h4><?php echo __( 'Viewer settings', 'expivi' ); ?></h4>
+        </div>
+        <p class="form-field">
+            <label for="xpv_show_3d_hover_icon"><?php echo __( 'Show 3D hover icon', 'expivi' ) ?></label>
+            <input type="checkbox" name="xpv_show_3d_hover_icon" value="1" <?php checked( '1', $show_3d_hover_icon); ?> />
+        </p>
+        <p class="form-field">
+            <label for="xpv_auto_rotate_product"><?php echo __( 'Auto rotate product', 'expivi' ) ?></label>
+            <input type="checkbox" name="xpv_auto_rotate_product" value="1" <?php checked( '1', $auto_rotate_product); ?> />
+        </p>
+        <p class="form-field">
+            <label for="xpv_show_progress"><?php echo __( 'Show progress bar', 'expivi' ) ?></label>
+            <input type="checkbox" name="xpv_show_progress" value="1" <?php checked( '1', $show_progress); ?> />
+        </p>
+        <?php
+            woocommerce_wp_select( array(
+                'id'      => 'xpv_camera_position_thumbnail',
+                'label'   => __( 'Camera position for generating thumbnail', 'expivi' ),
+                'options' => $camera_position_thumbnail_options,
+                'value'   => $camera_position_thumbnail,
+            ) );
+        ?>
+        <p class="form-field">
+            <label for="xpv_add_to_cart_text"><?php echo __( 'Change \'Add to cart\' text.', 'expivi' ) ?></label>
+            <input type="text" name="xpv_add_to_cart_text" value="<?php echo esc_attr( $add_to_cart_text ); ?>" />
+            <span for="xpv_add_to_cart_text" class="description" style="font-size:12px;font-style:italic;"><?php echo __( '(Leave blank to use default)', 'expivi' ) ?></span>
+        </p>
+        <?php
+            woocommerce_wp_select( array(
+                'id'      => 'xpv_shop_flow',
+                'label'   => __( 'Shop flow used for this product', 'expivi' ),
+                'options' => $shop_flow_options,
+                'value'   => $shop_flow,
+            ) );
+        ?>
+    </section>
+
+    <section class="options_group">
+        <div class="xpv-settings-header">
+            <h4><?php echo __( 'Option-panel settings', 'expivi' ); ?></h4>
+        </div>
+        <p class="form-field">
+            <label for="xpv_show_options"><?php echo __( 'Show options', 'expivi' ) ?></label>
+            <input type="checkbox" name="xpv_show_options" value="1" <?php checked( '1', $show_options); ?> />
+        </p>
+        <p class="form-field">
+            <label for="xpv_hide_price"><?php echo __( 'Hide price', 'expivi' ) ?></label>
+            <input type="checkbox" name="xpv_hide_price" value="1" <?php checked( '1', $hide_price); ?> />
+        </p>
+        <p class="form-field">
+            <label for="xpv_hide_price_when_zero"><?php echo __( 'Hide price when zero', 'expivi' ) ?></label>
+            <input type="checkbox" name="xpv_hide_price_when_zero" value="1" <?php checked( '1', $hide_price_when_zero); ?> />
+        </p>
+        <?php
+            woocommerce_wp_select( array(
+                'id'      => 'xpv_price_layout',
+                'label'   => __( 'Price position', 'expivi' ),
+                'options' => $price_layout_options,
+                'value'   => $price_layout,
+            ) );
+        ?>
+        <p class="form-field">
+            <label for="xpv_auto_scroll_stepper"><?php echo __( 'Auto scroll to step (experimental)', 'expivi' ) ?></label>
+            <input type="checkbox" name="xpv_auto_scroll_stepper" value="1" <?php checked( '1', $auto_scroll_stepper); ?> />
+        </p>
+        <p class="form-field">
+            <label for="xpv_enable_pdf_download"><?php echo __( 'Enable configuration download as PDF', 'expivi' ) ?></label>
+            <input type="checkbox" name="xpv_enable_pdf_download" value="1" <?php checked( '1', $enable_pdf_download); ?> />
+        </p>
+        <?php
+            woocommerce_wp_select( array(
+                'id'      => 'xpv_pdf_orientation',
+                'label'   => __( 'PDF orientation', 'expivi' ),
+                'options' => $pdf_orientation_options,
+                'value'   => $pdf_orientation,
+            ) );
+        ?>
+    </section>
+
+    <section class="options_group">
+        <div class="xpv-settings-header">
+            <h4><?php echo __( 'SKU Generation', 'expivi' ); ?></h4>
+        </div>
+        <p class="option-description">
+            <?php echo __( 'The input below can be used to generate the SKU dynamically. Text and/or numbers will directly be used as part of the SKU. Entering Attribute Key surrounded by <code>{</code> and <code>}</code> will dynamically be converted to the Key field of the selected option. Use {#} as delimiter which can be defined below.', 'expivi' ) ?>
+        </p>
+        <p class="option-description">
+            <?php echo __( 'Example: <code>L{Attribute1Key}{#}{Attribute2Key}_SKU</code> will be converted to <code>LOPT1-OPT2_SKU</code>.', 'expivi' ) ?>
+        </p>
+        <p class="form-field">
+            <label for="xpv_sku_generation_text"><?php echo __( 'Dynamic SKU Generation', 'expivi' ) ?></label>
+            <input type="text" name="xpv_sku_generation_text" value="<?php echo $sku_generation_text; ?>" />
+            <span for="xpv_sku_generation_text" class="description" style="font-size:12px;font-style:italic;"><?php echo __( '(Leave blank to disable)', 'expivi' ) ?></span>
+        </p>
+        <p class="option-description">
+            <?php echo __( 'Aside from entering text/numbers in the field above, the dynamic delimiter will only be shown if the surrounded attributes are selected to avoid multple delimiters.', 'expivi' ) ?>
+        </p>
+        <p class="form-field">
+            <label for="xpv_sku_generation_delimiter"><?php echo __( 'SKU Delimiter', 'expivi' ) ?></label>
+            <input type="text" name="xpv_sku_generation_delimiter" value="<?php echo $sku_generation_delimiter; ?>" class="small-input" />
+        </p>
+    </section>
+
+    <section class="options_group">
+        <div class="xpv-settings-header">
+            <h4><?php echo __( 'Viewer', 'expivi' ); ?></h4>
+        </div>
+        <div class="button-container">
+            <a href="javascript:;" data-initialize-viewer class="button button-primary button-small">Reload viewer</a>
+            <a href="javascript:;" data-configuration class="button button-primary button-small">Save configuration</a>
+            <a href="javascript:;" data-clear-configuration class="button button-small">Clear configuration</a>
+        </div>
+
+        <div class="expivi-container">
+            <div id="viewer-container"
+                 style="width: 55%; height: 500px; float:left; padding: 0; box-sizing: border-box;">
+            </div>
+
+            <div style="width: 45%; height: auto; float: left; padding: 0; box-sizing: border-box;">
+                <?php
+                    xpv_get_template(
+                        'viewer/configurator.phtml',
+                        array(
+                            'hide_price'          => true,
+							'price_layout'        => false,
+                            'enable_pdf_download' => false,
+                        )
+                    );
+                ?>
+            </div>
+        </div>
+        <?php wp_nonce_field( 'xpv_edit_product', 'xpv_nonce' ); ?>
+    </section>
+</div>

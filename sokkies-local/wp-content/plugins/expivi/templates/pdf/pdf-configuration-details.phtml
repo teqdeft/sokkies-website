@@ -1,0 +1,205 @@
+<?php
+/**
+ * PDF View - PDF Configuration Details
+ *
+ * @version 1.0.1
+ *
+ * @var string  $website_name Websites Name ( `get_bloginfo( 'name' )` ).
+ * @var string  $website_url Website's URL ( `get_bloginfo( 'url' )` ).
+ * @var string  $website_email Website's email ( `get_bloginfo( 'email' )` )
+ * @var string  $currency_symbol Currency symbol ( `get_woocommerce_currency_symbol()` ).
+ * @var string  $product_name Product Name defined in WooCommerce Product.
+ * @var string  $product_sku Product SKU defined in WooCommerce Product.
+ * @var ?string $dynamic_sku Dynamic SKU value.
+ * @var array   $configuration Array of configured Expivi products.
+ * @var string  $product_image Thumbnail of configuration.
+ * @var string  $template_path File path to the current theme directory.
+ * @var string  $upload_path Upload directory’s path (Example: '/wordpress/wp-content/uploads').
+ * @var string  $upload_url Upload url (Example: 'http://wordpress.com/wp-content/uploads')
+ * @var string  $themes_folder_url URL of the themes directory (Example: '/wordpress/wp-content/themes').
+ * @var mixed   $user_data Additional data provided by user using 'xpv_append_user_data_before_add_to_cart' JS function.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <style>
+        /* Default margins. */
+        @page { margin: 40px; }
+        * {
+            box-sizing: border-box;
+        }
+        html {
+            font-family: sans-serif;
+            line-height: 1.15;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            margin: 0;
+            font-family: 'Helvetica', serif;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            text-align: left;
+            background-color: #fff;
+        }
+
+        dl, ol, ul {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        .h1, .h2, .h3, .h4, .h5, .h6,
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Helvetica', serif;
+            margin-bottom: .5rem;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+        .table {
+            width: 100%;
+            margin: 0 auto;
+            padding: 0;
+            border-collapse: collapse;
+        }
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .table td,
+        .table th {
+            padding: .75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+        .table-bordered thead td,
+        .table-bordered thead th {
+            border-bottom-width: 2px;
+        }
+        .table-bordered td,
+        .table-bordered th {
+            border: 1px solid #dee2e6;
+        }
+        .attributes {
+            column-count:1;
+        }
+
+        .thumbnail {
+            margin-top: 50px;
+        }
+        .row {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+        .container-fluid {
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        .col-12 {
+            -ms-flex: 0 0 100%;
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        .mb-3, .my-3 {
+            margin-bottom: 1rem!important;
+        }
+        .small {
+            font-size: 80%;
+            font-weight: 400;
+        }
+        .p-0 {
+            padding: 0!important;
+        }
+        .m-0 {
+            margin: 0!important;
+        }
+        .list-unstyled {
+            padding-left: 0;
+            list-style: none;
+        }
+        .bg-faded {
+            background-color: #f7f7f7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid" style="text-rendering: geometricPrecision; height: 100%; position: relative">
+        <div class="row mb-2">
+            <div class="col-12">
+                <h1 class="h1"><?php echo strtoupper( $website_name ); ?>
+                    <small class="small">Configuration</small>
+                </h1>
+            </div>
+        </div>
+        <?php if ( isset( $dynamic_sku ) && ! empty( $dynamic_sku ) ) : ?>
+        <div class="row">
+            <div class="col-12">
+                <p>SKU: <?php echo esc_html( $dynamic_sku ); ?></p>
+            </div>
+        </div>
+        <?php endif; ?>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-bordered">
+                    <thead class="bg-faded">
+                    <tr>
+                        <th style="width:50%;">Product name</th>
+                        <th style="width:30%;">SKU</th>
+                        <th style="width:20%;">Unit price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach( $configuration as $config ) : ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars( $product_name ); ?></td>
+                            <td><?php echo htmlspecialchars( $product_sku ); ?></td>
+                            <td>
+                            <?php
+                                $price = number_format( htmlspecialchars( $config['price']['base'] ), 2, '.', ',' );
+                                echo $currency_symbol . $price;
+                            ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <ul class="attributes list-unstyled">
+                                    <?php foreach( $config["attributes"] as $attribute ) : ?>
+                                    <li>
+                                        <small class="small"><?php echo htmlspecialchars( $attribute["attribute_name"] ); ?> <b><?php echo htmlspecialchars( $attribute["attribute_value_name"] ); ?></b></small>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <?php if ( ! empty( $product_image ) ) : ?>
+                    <img src="<?php echo $product_image; ?>" style="width: 512px; height: 512px;" class="thumbnail"  alt=""/>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

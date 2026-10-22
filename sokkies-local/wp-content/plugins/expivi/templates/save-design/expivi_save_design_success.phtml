@@ -1,0 +1,35 @@
+<?php
+/**
+ * Save Design Modal - Success
+ *
+ * @version 1.0
+ *
+ * @var string $theme HTML class names for dark/light theme.
+ * @var array  $success_message Success message.
+ * @var array  $follow_up Template for follow-up.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<div id="success-save-design-modal" class="expivi-modal">
+    <div class="expivi-modal-content <?= $theme ?>">
+        <div class="expivi-modal-header">
+            <div class="expivi-modal-header-content">
+                <span class="expivi-modal-header-text <?= $theme ?>"><?= __('Congratulations', 'expivi') ?></span>
+                <span class="expivi-close-span"><?= __('Close', 'expivi') ?></span>
+            </div>
+        </div>
+        <div class="expivi-modal-body <?= $theme ?>">
+            <div id="success">
+                <?= $success_message ?>
+            </div>
+            <div id="follow-up">
+                <?= $follow_up ?>
+            </div>
+            <div class="expivi-loader <?= $theme ?>" id="follow-up-loader"></div>
+        </div>
+    </div>
+</div>

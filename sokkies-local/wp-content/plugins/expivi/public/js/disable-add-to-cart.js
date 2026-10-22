@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",(function(){var e=document.querySelector(".quantity"),t=document.querySelector(".single_add_to_cart_button");e.style.display="none",t.style.display="none"}));

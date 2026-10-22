@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunkwp_schema_pro=globalThis.webpackChunkwp_schema_pro||[]).push([[827],{6671:(e,t,n)=>{n.r(t),n.d(t,{default:()=>l});var o=n(4715),s=n(1609),a=n.n(s),r=n(7723),c=function(){var e=function(){return a().createElement("p",{className:"wpsp-settings-notice"},(0,r.__)("For the styling options please select the parent block from the Block Navigation."))};return a().createElement(o.InspectorControls,null,e)};const l=a().memo(c)}}]);
+//# sourceMappingURL=827.main.js.map

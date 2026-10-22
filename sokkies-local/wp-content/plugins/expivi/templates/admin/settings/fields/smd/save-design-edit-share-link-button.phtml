@@ -1,0 +1,104 @@
+<button type="button" id="save-design-edit-share-link-button" class="button button-primary">
+	Edit template
+	<i class="fa fa-pencil-square-o" style="padding-left: 5px;" aria-hidden="true"></i>
+</button>
+<i class="fa fa-spinner fa-spin" aria-hidden="true" id="save-design-edit-share-link-loading" style="display:none;padding:8px"></i>
+<i class="fa fa-exclamation-circle" aria-hidden="true" id="save-design-edit-share-link-error" style="display:none;padding:8px;color:red;">&nbsp;Unable to copy template!</i>
+
+<button type="button" id="save-design-edit-share-link-button-remove" class="button button-primary" style="background:#ff0000;border-color:#ff0000;color:#ffffff;">
+	Remove template
+	<i class="fa fa-trash-o" style="padding-left: 5px;" aria-hidden="true"></i>
+</button>
+<i class="fa fa-check" aria-hidden="true" id="save-design-edit-share-link-remove-success" style="display:none;padding:8px;color:green"></i>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		var loading = false;
+		var error = false;
+		var themeEditorUrl = '<?php echo get_admin_url() . 'theme-editor.php?file=expivi%2Fsave-design%2Fexpivi_save_design_share_link.phtml&plugin=expivi%2Fexpivi.php'; ?>';
+		const loadingIcon = document.querySelector('#save-design-edit-share-link-loading');
+		const errorIcon = document.querySelector('#save-design-edit-share-link-error');
+
+		function setLoading( aValue ) {
+			loading = aValue
+			loadingIcon.style.display = aValue ? 'inline-block' : 'none';
+		}
+
+		function setError( aValue ) {
+			error = aValue
+			errorIcon.style.display = aValue ? 'inline-block' : 'none';
+		}
+
+		const button = document.querySelector('#save-design-edit-share-link-button');
+		if (!button) {
+			return;
+		}
+
+		button.addEventListener('click', function() {
+			if (loading || error) {
+				return;
+			}
+			setLoading(true);
+
+			// Admin settings helper function.
+			window.xpv_copy_template_to_theme( 'save-design/expivi_save_design_share_link.phtml' )
+				.then(function(success) {
+					setLoading(false);
+
+					if (!success) {
+						setError(true);
+						return;
+					}
+
+					// Navigate to theme editor.
+					window.location.href = themeEditorUrl;
+				}, function(ex) {
+					setLoading(false);
+					setError(true);
+				});
+		});
+
+		const removeButton = document.querySelector('#save-design-edit-share-link-button-remove');
+		const removeSuccessIcon = document.querySelector('#save-design-edit-share-link-remove-success');
+		var removeSuccess = false;
+		if (!removeButton) {
+			return;
+		}
+
+		function setRemoveSuccess( aValue ) {
+			removeSuccess = aValue
+			removeSuccessIcon.style.display = aValue ? 'inline-block' : 'none';
+		}
+
+		<?php
+			$template_path   = XPV()->fs->combine( xpv_get_theme_dir(), XPV()->template_path(), 'save-design/expivi_save_design_share_link.phtml' );
+			$template_exists = XPV()->fs->exists( $template_path );
+		?>
+
+		const templateExists = Boolean(<?php echo $template_exists; ?>);
+
+		removeButton.disabled = !templateExists;
+
+		removeButton.addEventListener('click', function() {
+			if (loading || error || !templateExists) {
+				return;
+			}
+
+			setLoading(true);
+
+			// Admin settings helper function.
+			window.xpv_remove_template_in_theme( 'save-design/expivi_save_design_share_link.phtml' )
+				.then(function(success) {
+					setLoading(false);
+					setRemoveSuccess(success);
+
+					if (success) {
+						removeButton.disabled = true;
+					}
+				}, function(ex) {
+					setLoading(false);
+					setRemoveSuccess(false);
+				});
+		});
+	});
+</script>

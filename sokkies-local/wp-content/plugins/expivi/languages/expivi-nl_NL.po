@@ -1,0 +1,778 @@
+# Copyright (C) 2018 Expivi
+# This file is distributed under the same license as the Expivi package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Expivi 1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/expivi\n"
+"POT-Creation-Date: 2025-02-13 17:00+0100\n"
+"PO-Revision-Date: 2025-02-13 17:11+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4.2\n"
+
+#: classes/class-expivi.php:84
+msgid "Cloning is forbidden."
+msgstr "Clonen is niet toegestaan."
+
+#: classes/class-expivi.php:91
+msgid "Wakeup is forbidden."
+msgstr "Wakeup is niet toegestaan."
+
+#: classes/class-expivi.php:283
+msgid "This plugin requires to following plugin to be active: "
+msgstr "De volgende plugin moet actief zijn om deze plugin te gebruiken: "
+
+#: classes/connect-rep/class-expivi-save-design-connect-rep-controller.php:72
+msgid "Success! We'll reach out to you shortly!"
+msgstr "Succes! We nemen binnenkort contact met je op!"
+
+#: classes/helpers/class-expivi-product-helper.php:36
+#: classes/helpers/class-expivi-product-helper.php:71
+msgid "View cart"
+msgstr "Bekijk winkelwagen"
+
+#: classes/helpers/class-expivi-product-helper.php:38
+#, php-format
+msgid ""
+"You cannot add that amount to the cart &mdash; we have %1$s in stock and you "
+"already have %2$s in your cart."
+msgstr ""
+"U kunt dit aantal niet aan uw winkelmand toevoegen &mdash; we hebben er %1$s "
+"op voorraad en u heeft er al %2$s in uw winkelmand."
+
+#: classes/helpers/class-expivi-product-helper.php:73
+#, php-format
+msgid ""
+"You cannot add to the cart &mdash; we have %1$s in stock of one of the sub "
+"products and you already have %2$s in your cart."
+msgstr ""
+"U kunt niet aan de winkelwagen toevoegen - we hebben %1$s op voorraad van "
+"een van de subproducten en u heeft al %2$s in uw winkelwagen."
+
+#: classes/save-design/class-expivi-save-design-controller.php:90
+msgid "Congratulations, your custom design has been emailed to you."
+msgstr "Gefeliciteerd, het ontwerp is naar u gemaild."
+
+#: classes/woocommerce/admin/class-expivi-admin-order-manager.php:59
+#, php-format
+msgid "Sub-product %1$s stock limit (%2$s) reached!"
+msgstr "Sub-product %1$s voorraadlimiet (%2$s) bereikt!"
+
+#: classes/woocommerce/admin/class-expivi-admin-order-manager.php:319
+#: classes/woocommerce/admin/class-expivi-admin-order-manager.php:360
+msgid "Success!"
+msgstr "Succes!"
+
+#: classes/woocommerce/admin/class-expivi-admin-order-manager.php:423
+msgid ""
+"Print Ready file(s) are successfully generated. Please refresh the page to "
+"view the items."
+msgstr ""
+"De Print Ready bestanden zijn gegenereerd. Vernieuw de pagina om de links te "
+"bekijken."
+
+#: classes/woocommerce/admin/class-expivi-admin-order-manager.php:424
+msgid ""
+"Unable to generate Print Ready file(s). Connection with Expivi failed. "
+"Please try again later."
+msgstr ""
+"Kan geen Print Ready bestand(en) genereren. Verbinding met Expivi mislukt. "
+"Probeer het later opnieuw."
+
+#: classes/woocommerce/admin/class-expivi-admin-order-manager.php:425
+msgid ""
+"Unable to generate Print Ready file(s). Something went wrong. Please try "
+"again later."
+msgstr ""
+"Kan geen Print Ready bestand(en) genereren. Er is iets misgegaan. Probeer "
+"het later opnieuw."
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:66
+#: templates/admin/expivi_tab.phtml:42
+msgid "Expivi product"
+msgstr "Expivi product"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:133
+msgid "Top"
+msgstr "Boven"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:134
+msgid "Bottom"
+msgstr "Onder"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:137
+msgid "Single"
+msgstr "Enkel"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:138
+msgid "Multiple"
+msgstr "Meerdere"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:139
+msgid "Generate grouped product"
+msgstr "Genereer gegroepeerd product"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:140
+msgid "Generate grouped product and use custom price"
+msgstr "Genereer gegroepeerd product en gebruik aangepaste prijs"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:143
+msgid "Default (active camera)"
+msgstr "Standaard (actieve camera)"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:144
+msgid "Use main camera"
+msgstr "Hoofdcamera gebruiken"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:147
+msgid "Portrait"
+msgstr "Staand"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:148
+msgid "Landscape"
+msgstr "Liggend"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:151
+msgid "Add product to cart (default)"
+msgstr "Voeg product toe aan winkelwagen (standaard)"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:152
+msgid "Save design"
+msgstr "Design opslaan"
+
+#: classes/woocommerce/admin/class-expivi-admin-product-settings.php:153
+msgid "Save design & Add to cart"
+msgstr "Design opslaan & Voeg toe aan winkelwagen"
+
+#: classes/woocommerce/admin/class-expivi-admin-settings-mediator.php:79
+#: classes/woocommerce/admin/class-expivi-admin-settings-mediator.php:80
+#: templates/admin/settings/admin_settings.phtml:18
+msgid "Expivi settings"
+msgstr "Expivi instellingen"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:58
+msgid "General"
+msgstr "Algemeen"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:67
+msgid "API Url"
+msgstr "API Link"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:77
+msgid "API Token"
+msgstr "API Sleutel"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:87
+msgid "Upload URL"
+msgstr "Upload URL"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:97
+msgid "Price selector"
+msgstr "Prijs selector (HTML selector)"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:107
+msgid "Price calculation"
+msgstr "Prijsberekening"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:110
+msgid "Use website language"
+msgstr "Websitetaal gebruiken"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:111
+msgid "Use country of store location"
+msgstr "Land van winkellocatie gebruiken"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:130
+msgid "Reconfigure button in cart"
+msgstr "Herconfigureer knop in winkelwagen"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:142
+msgid "Reconfigure button text"
+msgstr "Herconfigureer knop tekst"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:153
+msgid "Append options to hook"
+msgstr "Voeg opties toe aan hook"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:176
+msgid "Blacklisted words"
+msgstr "Niet toegestane woorden"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:179
+msgid ""
+"Each word should be separated using comma. All words will be lowercased."
+msgstr ""
+"Elk woord moet gescheiden worden met behulp van komma. De tekst zal worden "
+"omgezet naar kleine letters."
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:188
+msgid "Blacklisted notification"
+msgstr "Niet toegestaan woord notificatie"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:191
+msgid ""
+"This is the notification that will be shown if the user is using a "
+"blacklisted word. It accepts html."
+msgstr ""
+"Dit is de notificatie die de gebruiker krijgt als er een niet toegestaan "
+"woord word gebruikt. HTML is toegestaan."
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:200
+msgid "Resolve blacklisted words"
+msgstr "Handel niet toegestane woorden af"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:203
+msgid "Default (do nothing)"
+msgstr "Standaard (niets doen)"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:204
+msgid "Replace words with asterisks"
+msgstr "Vervang de woorden met sterretjes"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:205
+msgid "Remove the words"
+msgstr "Verwijder de woorden"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:224
+msgid "Generated Products Shop Visibility"
+msgstr "Zichtbaarheid gegenereerde producten in winkel"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:227
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:250
+msgid "Hide Generated Products (default)"
+msgstr "Verberg gegenereerde producten (standaard)"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:228
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:251
+msgid "Display Generated Products"
+msgstr "Weergeef gegenereerde producten"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-general-settings.php:247
+msgid "Generated Products Admin Visibility"
+msgstr "Admin zichtbaardheid voor gegenereerde producten"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-info-settings.php:50
+#: classes/woocommerce/admin/settings/class-expivi-admin-info-settings.php:58
+#: classes/woocommerce/admin/settings/class-expivi-admin-info-settings.php:60
+#: classes/woocommerce/admin/settings/class-expivi-admin-info-settings.php:61
+#: classes/woocommerce/admin/settings/class-expivi-admin-info-settings.php:62
+#: classes/woocommerce/admin/settings/class-expivi-admin-info-settings.php:63
+#: classes/woocommerce/admin/settings/class-expivi-admin-info-settings.php:64
+#: classes/woocommerce/admin/settings/class-expivi-admin-info-settings.php:65
+#: classes/woocommerce/admin/settings/class-expivi-admin-info-settings.php:77
+msgid "Not available"
+msgstr "Niet beschikbaar"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-prf-settings.php:56
+msgid "Print Ready settings"
+msgstr "Print Ready instellingen"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-prf-settings.php:58
+msgid "Here you can enable and customize the print ready functionality."
+msgstr ""
+"Hier kan je de instellingen van de Print Ready functionaliteit wijzigen."
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-prf-settings.php:59
+msgid ""
+"Once everything is setup correctly, your new orders will contain a link to "
+"the generated print ready file(s)."
+msgstr ""
+"Zodra alles correct is ingesteld, bevatten je nieuwe bestellingen een link "
+"naar de gegenereerde Print Ready bestanden."
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-prf-settings.php:66
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:108
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:207
+msgid "Enable"
+msgstr "Activeer"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-prf-settings.php:70
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:113
+msgid "Go to Expivi documentation"
+msgstr "Ga naar Expivi documentatie"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-prf-settings.php:88
+msgid "Setup"
+msgstr "Setup"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-prf-settings.php:90
+msgid ""
+"We require a token of role \"Team Owner\" to communicate with Expivi API for "
+"generating the Print Ready files."
+msgstr ""
+"We vereisen een token met als rol \"Team Owner\" om de communicatie met de "
+"Expivi API voort te zetten voor het genereren van Print Ready bestanden."
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-prf-settings.php:91
+msgid ""
+"This token enables write access to your Expivi account, so keep it safe!"
+msgstr ""
+"De token bevat schrijf rechten naar uw Expivi account, dus houdt deze veilig!"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-prf-settings.php:98
+msgid "Team Owner token"
+msgstr "Team Owner token"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:99
+#: templates/save-design/expivi_save_design_form.phtml:35
+msgid "Save my design"
+msgstr "Sla mijn ontwerp op"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:140
+msgid "Share link settings"
+msgstr "Instellingen voor link delen"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:143
+msgid "Here you can change the settings for the share link functionality"
+msgstr "Hier kan je de instellingen van de deel link functionaliteit wijzigen"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:151
+msgid "Enable copy share link"
+msgstr "Schakel kopieer & deel link knop in"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:163
+msgid "Copy share link button text"
+msgstr "Kopieer deellink knop tekst"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:179
+msgid "Edit copy share link button"
+msgstr "Schakel kopieer & deel link knop in"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:198
+msgid "Connect to a Representative settings"
+msgstr "'Contact met vertegenwoordiger' instellingen"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:219
+msgid "Representative email"
+msgstr "E-mailadres van vertegenwoordiger"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:235
+msgid "Connect to a representative button text"
+msgstr "'Contact met vertegenwoordiger' knop tekst"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:250
+msgid "Edit connect to a representative button"
+msgstr "Wijzig 'contact met vertegenwoordiger' knop tekst"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:269
+msgid "Additional email address"
+msgstr "Aanvullend E-mailadres"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:272
+msgid ""
+"If you want to receive the email that is being sent to the customer, enter "
+"your email address(es) below"
+msgstr ""
+"Als u de e-mail wilt ontvangen die naar de klant wordt gestuurd, vul dan "
+"hieronder uw e-mailadres(sen) in"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:280
+msgid "Email address(es)"
+msgstr "E-mailadres(sen)"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:283
+msgid ""
+"<p class=\"text-muted\">Enter a valid email address. Multiple email adresses "
+"can be entered using <code>,</code> as separator</p>"
+msgstr ""
+"<p class=\"text-muted\">Voer een geldig e-mailadres in. U kunt meerdere e-"
+"mailadressen invoeren met <code>,</code> als scheidingsteken</p>"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:298
+msgid "Edit form"
+msgstr "Wijzig formulier"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:312
+msgid "Edit success message"
+msgstr "Wijzig success bericht"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:331
+msgid "Save my design form settings"
+msgstr "Sla mijn ontwerp formulier instellingen"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:334
+msgid "Here you can change the layout and the texts of the save my design form"
+msgstr ""
+"Hier kan je de layout en de teksten van het 'sla mijn ontwerp' op formulier"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:342
+msgid "Form theme"
+msgstr "Thema formulier"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:357
+msgid "Save my design submit button"
+msgstr "Save my design verzend knop instellingen"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:374
+msgid "Enable state selector settings"
+msgstr "Activeer Staat selector instellingen"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:377
+msgid "Enable state selection dropdown form field"
+msgstr "Activeer Staat selectie dropdown formulier veld"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:385
+msgid "Enable state dropdown"
+msgstr "Activeer Staat dropdown"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:397
+msgid "Select states from"
+msgstr "Selecteer formulier voor Staten"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:425
+msgid "Enable country selector settings"
+msgstr "Activeer Land selector instellingen"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:428
+msgid "Enable country selection dropdown form field"
+msgstr "Activeer Land selectie dropdown formulier veld"
+
+#: classes/woocommerce/admin/settings/class-expivi-admin-save-design-settings.php:436
+msgid "Enable countries dropdown"
+msgstr "Activeer landen dropdown"
+
+#: classes/woocommerce/class-expivi-cart-manager.php:166
+msgid "Unfortunately configured products cannot be restored"
+msgstr "Helaas, reeds geconfigureerde producten kunnen niet hersteld worden"
+
+#: classes/woocommerce/class-expivi-cart-manager.php:293
+#: classes/woocommerce/class-expivi-cart-manager.php:304
+#: classes/woocommerce/class-expivi-cart-manager.php:423
+#: classes/woocommerce/class-expivi-cart-manager.php:479
+msgid "Could not add products to cart."
+msgstr "Kan geen producten toevoegen aan winkelwagen."
+
+#: classes/woocommerce/class-expivi-cart-manager.php:369
+#: classes/woocommerce/class-expivi-cart-manager.php:382
+#: classes/woocommerce/class-expivi-cart-manager.php:438
+msgid "Could not add to cart, one of the sub-products is out of stock!"
+msgstr ""
+"Kan item niet in de winkelwagen zetten, een van de sub-producten is niet op "
+"voorraad!"
+
+#: classes/woocommerce/class-expivi-cart-manager.php:504
+msgid "Could not add to cart, products not found in stock!"
+msgstr ""
+"Kan item niet in de winkelwagen zetten, een van de sub-producten is niet op "
+"voorraad!"
+
+#: classes/woocommerce/class-expivi-cart-manager.php:512
+msgid "Could not add to cart, product is out of stock!"
+msgstr ""
+"Kan item niet in de winkelwagen zetten, een van de sub-producten is niet op "
+"voorraad!"
+
+#: classes/woocommerce/class-expivi-cart-manager.php:612
+msgid "Could not do price calculation"
+msgstr "Er is iets fout gegaan met de prijsberekening"
+
+#: classes/woocommerce/class-expivi-catalogue.php:43
+msgid "Configure product"
+msgstr "Product configureren"
+
+#: classes/woocommerce/class-expivi-checkout-manager.php:117
+#: classes/woocommerce/class-expivi-checkout-manager.php:134
+#, php-format
+msgid ""
+"Sorry, we do not have enough \"%1$s\" in stock to fulfill your order (%2$s "
+"available). We apologize for any inconvenience caused."
+msgstr ""
+"Sorry, we hebben niet genoeg '%1$s' op voorraad om uw bestelling te "
+"voltooien (%2$s beschikbaar). Onze excuses voor enig ongemak."
+
+#: classes/woocommerce/class-expivi-configurator.php:151
+msgid "Failed to save the design"
+msgstr "Het ontwerp kan niet worden opgeslagen"
+
+#: classes/woocommerce/class-expivi-configurator.php:187
+msgid "Unable to add the items to your cart, there are validation errors"
+msgstr ""
+"Er zijn validatie fouten gevonden, hierdoor konden de producten niet worden "
+"toegevoegd aan uw winkelwagen"
+
+#: classes/woocommerce/class-expivi-configurator.php:211
+msgid "State"
+msgstr "Staat"
+
+#: classes/woocommerce/class-expivi-configurator.php:212
+msgid "Country"
+msgstr "Land"
+
+#: classes/woocommerce/class-expivi-social-sharing.php:181
+msgid "Failed to initiate sharing"
+msgstr "Kan delen niet starten"
+
+#: classes/woocommerce/class-expivi-social-sharing.php:182
+msgid "Share module not available yet."
+msgstr "Deel module is nog niet beschikbaar."
+
+#: classes/woocommerce/class-expivi-validation.php:59
+#, php-format
+msgid "%s contains a blacklisted word."
+msgstr "%s bevat een word dat is niet toegestaan."
+
+#: templates/admin/expivi_tab.phtml:51
+msgid "Expivi product ID"
+msgstr "Expivi product ID"
+
+#: templates/admin/expivi_tab.phtml:60
+msgid "Add to cart process"
+msgstr "Process toevoegen aan winkelwagen"
+
+#: templates/admin/expivi_tab.phtml:69
+msgid "Viewer settings"
+msgstr "Viewer instellingen"
+
+#: templates/admin/expivi_tab.phtml:72
+msgid "Show 3D hover icon"
+msgstr "Toon 3D hover icoon"
+
+#: templates/admin/expivi_tab.phtml:76
+msgid "Auto rotate product"
+msgstr "Automatisch roteren product"
+
+#: templates/admin/expivi_tab.phtml:80
+msgid "Show progress bar"
+msgstr "Laad progressie zien"
+
+#: templates/admin/expivi_tab.phtml:86
+msgid "Camera position for generating thumbnail"
+msgstr "Camerapositie voor het genereren van thumbnail"
+
+#: templates/admin/expivi_tab.phtml:92
+msgid "Change 'Add to cart' text."
+msgstr "Wijzig 'Add to cart' tekst."
+
+#: templates/admin/expivi_tab.phtml:94
+msgid "(Leave blank to use default)"
+msgstr "(Laat leeg staan om standaard te gebruiken)"
+
+#: templates/admin/expivi_tab.phtml:99
+msgid "Shop flow used for this product"
+msgstr "Shop flow voor dit product"
+
+#: templates/admin/expivi_tab.phtml:108
+msgid "Option-panel settings"
+msgstr "Opties-paneel instellingen"
+
+#: templates/admin/expivi_tab.phtml:111
+msgid "Show options"
+msgstr "Toon opties"
+
+#: templates/admin/expivi_tab.phtml:115
+msgid "Hide price"
+msgstr "Verberg prijs"
+
+#: templates/admin/expivi_tab.phtml:119
+msgid "Hide price when zero"
+msgstr "Verberg prijs bij nul"
+
+#: templates/admin/expivi_tab.phtml:125
+msgid "Price position"
+msgstr "Prijs positie"
+
+#: templates/admin/expivi_tab.phtml:131
+msgid "Auto scroll to step (experimental)"
+msgstr "Automatisch scrollen naar stap (experimenteel)"
+
+#: templates/admin/expivi_tab.phtml:135
+msgid "Enable configuration download as PDF"
+msgstr "Zet configuration download als PDF aan"
+
+#: templates/admin/expivi_tab.phtml:141
+msgid "PDF orientation"
+msgstr "PDF orientatie"
+
+#: templates/admin/expivi_tab.phtml:150
+msgid "SKU Generation"
+msgstr "SKU Generatie"
+
+#: templates/admin/expivi_tab.phtml:153
+msgid ""
+"The input below can be used to generate the SKU dynamically. Text and/or "
+"numbers will directly be used as part of the SKU. Entering Attribute Key "
+"surrounded by <code>{</code> and <code>}</code> will dynamically be "
+"converted to the Key field of the selected option. Use {#} as delimiter "
+"which can be defined below."
+msgstr ""
+"De onderstaande invoer kan worden gebruikt om de SKU dynamisch te genereren. "
+"Tekst en/of getallen worden direct gebruikt als onderdeel van de SKU. Het "
+"invoeren van Attribute Key omringt door <code>{</code> en <code>}</code> "
+"wordt dynamisch geconverteerd naar het veld Key veld van de geselecteerde "
+"optie. Gebruik {#} als scheidingsteken dat hieronder kan worden gedefinieerd."
+
+#: templates/admin/expivi_tab.phtml:156
+msgid ""
+"Example: <code>L{Attribute1Key}{#}{Attribute2Key}_SKU</code> will be "
+"converted to <code>LOPT1-OPT2_SKU</code>."
+msgstr ""
+"Voorbeeld: <code>L{Attribute1Key}{#}{Attribute2Key}_SKU</code> wordt "
+"geconverteerd naar <code>LOPT1-OPT2_SKU</code>."
+
+#: templates/admin/expivi_tab.phtml:159
+msgid "Dynamic SKU Generation"
+msgstr "Dynamische SKU Generatie"
+
+#: templates/admin/expivi_tab.phtml:161
+msgid "(Leave blank to disable)"
+msgstr "(Laat leeg staan om standaard te gebruiken)"
+
+#: templates/admin/expivi_tab.phtml:164
+msgid ""
+"Aside from entering text/numbers in the field above, the dynamic delimiter "
+"will only be shown if the surrounded attributes are selected to avoid "
+"multple delimiters."
+msgstr ""
+"Afgezien van het invoeren van tekst/getallen in het bovenstaande veld, wordt "
+"het dynamische scheidingsteken alleen weergegeven als de omrande kenmerken "
+"zijn geselecteerd om aaneengesloten scheidingstekens te voorkomen."
+
+#: templates/admin/expivi_tab.phtml:167
+msgid "SKU Delimiter"
+msgstr "SKU Scheidingsteken"
+
+#: templates/admin/expivi_tab.phtml:174
+msgid "Viewer"
+msgstr "Viewer"
+
+#: templates/admin/orders/order_item_table_values.phtml:32
+msgid "Print Ready Files:"
+msgstr "Print Ready bestanden:"
+
+#: templates/admin/settings/admin_settings_info.phtml:19
+msgid "Plugin / System information"
+msgstr "Plugin / Systeeminformatie"
+
+#: templates/admin/settings/admin_settings_info.phtml:25
+msgid "Expivi Plugin"
+msgstr "Expivi product"
+
+#: templates/admin/settings/admin_settings_info.phtml:60
+msgid "System"
+msgstr "Systeem"
+
+#: templates/admin/settings/admin_settings_logs.phtml:18
+msgid "Expivi Logs"
+msgstr "Expivi Logs"
+
+#: templates/admin/settings/admin_settings_logs.phtml:21
+msgid "Filename"
+msgstr "Bestandsnaam"
+
+#: templates/admin/settings/admin_settings_logs.phtml:31
+msgid "Select"
+msgstr "Kies"
+
+#: templates/admin/settings/admin_settings_logs.phtml:38
+msgid "No logs found."
+msgstr "Geen logs gevonden."
+
+#: templates/cart/cart_sub_product_item.phtml:28
+msgid "Weight"
+msgstr "Gewicht"
+
+#: templates/cart/product_item_details.phtml:28
+msgid "Total weight"
+msgstr "Totaal gewicht"
+
+#: templates/save-design/expivi_save_design_form.phtml:36
+#: templates/save-design/expivi_save_design_success.phtml:22
+msgid "Close"
+msgstr "Sluit"
+
+#: templates/save-design/expivi_save_design_form_fields.phtml:14
+msgid "Email address"
+msgstr "E-mailadres"
+
+#: templates/save-design/expivi_save_design_success.phtml:21
+msgid "Congratulations"
+msgstr "Gefeliciteerd"
+
+#: templates/save-design/expivi_save_design_success_message.phtml:16
+msgid "Start over"
+msgstr "Begin opnieuw"
+
+#~ msgid "Stock limit reached, the quantity of the product is reduced."
+#~ msgstr "Voorraad limiet bereikt, het aantal van het product is verlaagd."
+
+#, php-format
+#~ msgid "Stock limit reached(%s)"
+#~ msgstr "Voorraadlimiet bereikt(%s)"
+
+#~ msgid "Sub-product "
+#~ msgstr "Sub-product "
+
+#~ msgid "Change the layout of the form"
+#~ msgstr "Wijzig het ontwerp van het formulier"
+
+#~ msgid "Save my design button on form"
+#~ msgstr "Sla mijn ontwerp op knop op formulier"
+
+#~ msgid "Enable connect to rep"
+#~ msgstr "Activeer 'contact met vertegenwoordiger'"
+
+#~ msgid "Enable functionality"
+#~ msgstr "Functionaliteit inschakelen"
+
+#~ msgid "Edit button"
+#~ msgstr "Wijzig knop"
+
+#~ msgid ""
+#~ "Enable and disable form-fields for the form by clicking the checkboxes"
+#~ msgstr "Schakel formulier Velden in en uit door middel van de checkboxes"
+
+#~ msgid "Form form-fields"
+#~ msgstr "Formulier velden"
+
+#~ msgid "email"
+#~ msgstr "e-mailadres"
+
+#~ msgid "Customize your form"
+#~ msgstr "Het formulier aanpassen"
+
+#~ msgid "Name"
+#~ msgstr "Naam"
+
+#~ msgid "Organization"
+#~ msgstr "Organisatie"
+
+#~ msgid "Phone number"
+#~ msgstr "Telefoonnummer"
+
+#~ msgid "City"
+#~ msgstr "Woonplaats"
+
+#~ msgid "Phone"
+#~ msgstr "Telefoonnummer"
+
+#~ msgid "name"
+#~ msgstr "Naam"
+
+#~ msgid "city"
+#~ msgstr "Woonplaats"
+
+#~ msgid "Placeable products"
+#~ msgstr "Plaatsbare producten"
+
+#~ msgid "Other Expivi products"
+#~ msgstr "Andere Expivi producten"
+
+#~ msgid "Add products"
+#~ msgstr "Product toevoegen"
+
+#~ msgid "Configure"
+#~ msgstr "Product configureren"
+
+#~ msgid "Overview"
+#~ msgstr "Overzicht"
+
+#~ msgid "You can drag and drop products into the scene"
+#~ msgstr "Je kunt producten vanuit hier in de scene slepen"
+
+#~ msgid "Action to append to"
+#~ msgstr "Actie om configurator aan toe te voegen"

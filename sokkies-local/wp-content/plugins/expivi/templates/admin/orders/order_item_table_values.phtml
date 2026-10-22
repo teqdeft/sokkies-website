@@ -1,0 +1,64 @@
+<?php
+/**
+ * Admin View - WC Order Product Table Body
+ *
+ * @version 1.1
+ *
+ * @var int $order_id
+ * @var int $order_item_id
+ * @var array $configured_product Expivi configuration of a single product.
+ * @var array $options Attributes from Expivi configured product.
+ * @var array $articles Articles / SKU's from Expivi configured product.
+ * @var string $dynamic_sku Dynamic SKU. Will be empty if not configured.
+ * @var string[] $print_ready_preview_links List of links to Expivi print ready preview page for generated files.
+ * @var array $print_ready_hashmap Map of [prf_id => hash]. If hash is empty, the request to Expivi API didn't succeed during checkout.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+?>
+<td>
+    <?php
+        // Attributes.
+        foreach ( $options as $option ) {
+            echo '<b>' . esc_html( $option['name'] ) . '</b> ' . esc_html( $option['value'] ) . '<br />';
+        }
+
+        // Print Ready files.
+        if ( ! empty( $print_ready_preview_links ) ) {
+            echo '<br>';
+            echo '<p><b>' . __( 'Print Ready Files:' ) . '</b></p>';
+            foreach ( $print_ready_preview_links as $prf_preview_link ) {
+                echo '<a target="_blank" href="' . $prf_preview_link . '">' .
+                    $prf_preview_link .
+                    '&nbsp;<i class="fa fa-external-link"></i>' .
+                    '</a><br>';
+            }
+        }
+
+        // Print Ready retry.
+        $show_retry = count( array_filter( $print_ready_hashmap, fn ($value) => empty( $value ) ) ) > 0;
+
+        if ( $show_retry ) {
+            echo '<p><b>Note: </b>It seems that not all Print Ready files were generated during checkout.</p>';
+            echo '<button type="button" class="button button-primary xpv_generate_failed_prf_btn" data-order-id="'. $order_id .'" data-order-item-id="'. $order_item_id .'">'.
+                'Generate Print Ready files'.
+                '<i class="fa fa-spinner fa-spin loading-icon" aria-hidden="true" style="display:none;margin-left:12px"></i>' .
+                '</button>';
+        }
+    ?>
+</td>
+<td>
+    <?php
+        // SKU's.
+        foreach ( $articles as $article ) {
+            echo esc_html( $article ) . '<br />';
+        }
+    ?>
+
+    <?php if ( isset( $dynamic_sku ) && ! empty( $dynamic_sku ) ) : ?>
+        <?php echo esc_html( $dynamic_sku ); ?>
+    <?php endif; ?>
+</td>

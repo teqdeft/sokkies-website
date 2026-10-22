@@ -1,0 +1,31 @@
+<?php
+/**
+ * Email View - Base Footer
+ *
+ * @version 1.0
+ *
+ * @var string $share_link Link to configured Expivi product.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<table role="presentation"
+       style="font-family:'Work Sans',Avenir,Helvetica,sans-serif;box-sizing:border-box;border-top:1px solid #edeff2;margin-top:25px;padding-top:25px">
+    <tbody>
+        <tr>
+            <td style="font-family:'Work Sans',Avenir,Helvetica,sans-serif;box-sizing:border-box">
+                <p style="font-family:'Work Sans',Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#74787e;line-height:1.5em;margin-top:0;text-align:left;font-size:12px">
+                    If you’re having trouble clicking the "Share design" button, copy and paste the URL below into your web
+                    browser:
+                    <a href="<?php echo esc_attr( $share_link ); ?>"
+                       style="font-family:'Work Sans',Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#3869d4"
+                       target="_blank"><?php echo esc_attr( $share_link ); ?></a>
+                </p>
+                <br>
+            </td>
+        </tr>
+    </tbody>
+</table>

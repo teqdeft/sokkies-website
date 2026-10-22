@@ -1,0 +1,41 @@
+<?php
+/**
+ * Viewer - Options
+ *
+ * @version 1.0
+ *
+ * @var bool   $hide_price
+ * @var string $price_layout Layout of price: '0' - Top, '1' - Bottom.
+ * @var bool   $enable_pdf_download
+ * @var bool   $enable_save_design
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+?>
+<div class="expivi-right-sidebar">
+
+	<!-- Show error messages here -->
+	<div id="expivi-error-messages"></div>
+
+	<!-- Options Panel -->
+	<div id="configurator" class="configurator">
+		<div id="option-container"></div>
+	</div>
+
+    <?php wp_nonce_field( 'xpv_add_cart', 'xpv_nonce' ); ?>
+</div>
+
+<?php if ( (bool) $hide_price !== true && isset( $price_layout ) && $price_layout === '1' ) : ?>
+	<div class="title-rating-price xpv_price_bottom">
+		<?php do_action( 'expivi_price' ); ?>
+	</div>
+<?php endif; ?>
+
+<input type="hidden" id="xpv_form_type" class="submit" name="xpv_form_type" value="add-to-cart">
+
+<?php if ( isset( $enable_pdf_download ) && boolval( $enable_pdf_download ) === true ) : ?>
+	<input type="submit" id="xpv_request_pdf_btn" class="submit" name="xpv_submit_pdf" value="Download PDF" disabled>
+<?php endif; ?>

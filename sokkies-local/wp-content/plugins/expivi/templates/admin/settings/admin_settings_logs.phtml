@@ -1,0 +1,40 @@
+<?php
+/**
+ * Admin View - Settings Logs
+ *
+ * @version 1.0
+ *
+ * @var array $logs
+ * @var string $active_log
+ * @var string $active_log_contents
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
+
+<div class="expivi-admin-settings-logs">
+    <h2><?php echo __( 'Expivi Logs', 'expivi' ); ?></h2>
+    <?php if ( isset( $logs ) && ! empty( $logs ) ) : ?>
+        <div class="expivi-logs-header">
+            <h5><?php echo __( 'Filename', 'expivi' ); ?>: <code><?php echo esc_html( $active_log ); ?></code></h5>
+            <form action="#" method="POST">
+                <select class="expivi-logs" name="expivi-log">
+                    <?php foreach ( $logs as $key => $value ) : ?>
+                        <option value="<?php echo esc_attr( $key ); ?>" <?php echo $value === $active_log ? 'selected' : ''; ?>>
+                            <?php echo esc_html( $value ); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" class="button button-primary">
+                    <?php echo __( 'Select', 'expivi' ); ?>
+                </button>
+            </form>
+        </div>
+
+        <textarea disabled><?php echo esc_html( $active_log_contents ); ?></textarea>
+    <?php else : ?>
+        <p><?php echo __( 'No logs found.', 'expivi' ); ?></p>
+    <?php endif; ?>
+</div>

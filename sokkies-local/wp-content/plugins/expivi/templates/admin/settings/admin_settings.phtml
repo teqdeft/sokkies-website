@@ -1,0 +1,39 @@
+<?php
+/**
+ * Admin View - Settings
+ *
+ * @version 1.0
+ *
+ * @var array $tabs
+ * @var string $active_tab
+ * @var array $template
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+?>
+<div class="wrap expivi-admin-settings">
+    <h2><?php esc_html( __('Expivi settings','expivi') ); ?></h2>
+
+    <h2 class="nav-tab-wrapper">
+        <?php if ( isset( $tabs ) && isset( $active_tab ) ) : ?>
+            <?php foreach ( $tabs as $tab ) : ?>
+                <a href="?page=expivi&tab=<?php echo $tab['tab']; ?>" class="nav-tab <?php echo $active_tab === $tab['tab'] ? 'nav-tab-active' : ''; ?>">
+                    <?php echo $tab['title']; ?>
+                </a>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </h2>
+
+    <?php
+        if ( isset( $template ) ) {
+            xpv_get_template(
+                $template['template_path'],
+                $template['template_data'],
+                false
+            );
+        }
+    ?>
+</div>

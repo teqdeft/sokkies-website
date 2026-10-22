@@ -1,0 +1,55 @@
+<?php
+/**
+ * Woocommerce Review-Order Template
+ *
+ * @version 3.8.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+
+<?php
+
+foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+    $_product = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
+
+    if ( ! $_product || ! $_product->get_meta( 'xpv_generated' ) ) {
+        continue;
+    }
+
+    if ( $_product->exists() && $cart_item['quantity'] > 0 && apply_filters( 'woocommerce_checkout_cart_item_visible', true, $cart_item, $cart_item_key ) ) {
+        ?>
+        <tr class="<?= esc_attr( apply_filters( 'woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key ) ); ?>">
+            <td class="product-name">
+                <?= wp_kses_post( apply_filters( 'woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key ) ) . '&nbsp;'; ?>
+                <?= apply_filters( 'woocommerce_checkout_cart_item_quantity', ' <strong class="product-quantity">' . sprintf( '&times;&nbsp;%s', $cart_item['quantity'] ) . '</strong>', $cart_item, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <?= wc_get_formatted_cart_item_data( $cart_item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+            </td>
+            <td class="product-total">
+                <?= apply_filters( 'woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ), $cart_item, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+            </td>
+        </tr>
+        <?php
+    }
+
+    $quantities = $_product->get_meta( 'xpv_grouped_products_quantities' );
+    $grouped_products_ids = $_product->get_meta('xpv_grouped_products_ids');
+
+    foreach ( $grouped_products_ids as $product_id ) {
+        $grouped_product = wc_get_product( $product_id );
+        $grouped_product_quantity = $quantities[$grouped_product->get_sku()] * $cart_item['quantity'];
+        ?>
+        <tr>
+            <td class="product-name">
+                <?= esc_html( $grouped_product->get_name() ). '&nbsp;'; ?>
+                <strong class="product-quantity"> <?= sprintf( '&times;&nbsp;%s', esc_html( $grouped_product_quantity ) ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> </strong>
+            </td>
+        </tr>
+        <?php
+    }
+}
+
+?>

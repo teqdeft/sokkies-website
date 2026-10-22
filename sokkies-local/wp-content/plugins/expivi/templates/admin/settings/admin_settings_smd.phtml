@@ -1,0 +1,19 @@
+<?php
+/**
+ * Admin View - Settings SMD
+ *
+ * @version 1.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+?>
+<div class="expivi-admin-settings-smd">
+	<form action="options.php" method="POST">
+		<?php settings_fields( 'expivi-smd-settings' ); ?>
+		<?php do_settings_sections( 'save-design' ); ?>
+		<?php submit_button(); ?>
+	</form>
+</div>

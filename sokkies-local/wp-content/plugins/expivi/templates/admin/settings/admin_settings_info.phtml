@@ -1,0 +1,139 @@
+<?php
+/**
+ * Admin View - Settings Info
+ *
+ * @version 1.0
+ *
+ * @var array $plugin_data
+ * @var array $system_data
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+?>
+<div class="expivi-admin-settings-info">
+    <img src="<?php echo XPV()->plugin_url() . '/public/img/company-logo-black.png'; ?>" class="company-logo" />
+
+    <h2><?php echo __( 'Plugin / System information', 'expivi' ); ?></h2>
+
+    <?php if ( isset( $plugin_data ) && ! empty( $plugin_data ) ) : ?>
+    <table class="wp-list-table widefat fixed striped table-view-list">
+        <thead>
+            <tr>
+                <th colspan="2"><?php echo __( 'Expivi Plugin', 'expivi' ); ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Plugin version</td>
+                <td><?php echo esc_attr( $plugin_data['version'] ); ?></td>
+            </tr>
+            <tr>
+                <td>Locale</td>
+                <td><?php echo esc_attr( $plugin_data['locale'] ); ?></td>
+            </tr>
+            <tr>
+                <td>Country</td>
+                <td><?php echo esc_attr( $plugin_data['country'] ); ?></td>
+            </tr>
+            <tr>
+                <td>WooCommerce enabled</td>
+                <td>
+                    <?php if ( true === $plugin_data['wc_active'] ) : ?>
+                        <mark class="yes"><span class="dashicons dashicons-yes"></span></mark>
+                        <span>(version <?php echo esc_attr( $plugin_data['wc_version'] ); ?>)</span>
+                    <?php else : ?>
+                        <mark class="no"><span class="dashicons dashicons-no"></span></mark>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <?php endif; ?>
+
+    <?php if ( isset( $system_data ) && ! empty( $system_data ) ) : ?>
+    <table class="wp-list-table widefat fixed striped table-view-list">
+        <thead>
+            <tr>
+                <th colspan="2"><?php echo __( 'System', 'expivi' ); ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Environment type</td>
+                <td><?php echo esc_attr( $system_data['env_type'] ); ?></td>
+            </tr>
+            <tr>
+                <td>Multisite</td>
+                <td>
+                    <?php if ( true === $system_data['multisite'] ) : ?>
+                        <mark class="yes"><span class="dashicons dashicons-yes"></span></mark>
+                    <?php else : ?>
+                        <mark class="no"><span class="dashicons dashicons-no"></span></mark>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Debug Mode Enabled (<code>WP_DEBUG</code>)</td>
+                <td>
+                    <?php if ( true === $system_data['debug_mode'] ) : ?>
+                        <mark class="yes"><span class="dashicons dashicons-yes"></span></mark>
+                    <?php else : ?>
+                        <mark class="no"><span class="dashicons dashicons-no"></span></mark>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Script Debug Mode Enabled (<code>SCRIPT_DEBUG</code>)</td>
+                <td>
+                    <?php if ( true === $system_data['script_mode'] ) : ?>
+                        <mark class="yes"><span class="dashicons dashicons-yes"></span></mark>
+                    <?php else : ?>
+                        <mark class="no"><span class="dashicons dashicons-no"></span></mark>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Logging Enabled (<code>WP_DEBUG_LOG</code>)</td>
+                <td>
+                    <?php if ( true === $system_data['debug_log_mode'] ) : ?>
+                        <mark class="yes"><span class="dashicons dashicons-yes"></span></mark>
+                    <?php else : ?>
+                        <mark class="no"><span class="dashicons dashicons-no"></span></mark>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Server info</td>
+                <td><?php echo esc_attr( $system_data['server_info'] ); ?></td>
+            </tr>
+            <tr>
+                <td>PHP version</td>
+                <td><?php echo esc_attr( $system_data['php_version'] ) . ' ' . ( true === $system_data['php_64bit'] ? '(64-bit)' : '(32-bit)' ); ?></td>
+            </tr>
+            <tr>
+                <td>PHP post max size</td>
+                <td><?php echo esc_attr( $system_data['php_max_post_size'] ); ?></td>
+            </tr>
+            <tr>
+                <td>PHP time limit</td>
+                <td><?php echo esc_attr( $system_data['php_time_limit'] ); ?></td>
+            </tr>
+            <tr>
+                <td>PHP max input vars</td>
+                <td><?php echo esc_attr( $system_data['php_max_input_vars'] ); ?></td>
+            </tr>
+            <tr>
+                <td>Max upload size</td>
+                <td><?php echo esc_attr( $system_data['php_max_upload_size'] ); ?></td>
+            </tr>
+            <tr>
+                <td>MySQL version</td>
+                <td><?php echo esc_attr( $system_data['mysql_version'] ); ?></td>
+            </tr>
+        </tbody>
+    </table>
+    <?php endif; ?>
+</div>

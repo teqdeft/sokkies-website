@@ -1,0 +1,42 @@
+<?php
+/**
+ * Email View - Order Item Details
+ *
+ * @version 1.0
+ *
+ * @var array   $configuration Configured Expivi product.
+ * @var ?string $dynamic_sku Dynamic SKU.
+ * @var int     $product_id ID of WooCommerce Product.
+ * @var int     $quantity Quantity.
+ * @var bool    $xpv_generated Option to check whether the product is generated (bundled product).
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+echo '<br /><br />';
+
+foreach ( $configuration['attributes'] as $attribute ) {
+    echo '<br><b>' . esc_html( $attribute['attribute_name'] ) . '</b>&nbsp;' . esc_html( $attribute['attribute_value_name'] );
+}
+
+if ( ! empty( $dynamic_sku ) ) {
+    echo '<br><b>SKU:</b>&nbsp;' . esc_html( $dynamic_sku );
+}
+
+if ( isset( $xpv_generated ) && $xpv_generated === true ) {
+    $product = wc_get_product( $product_id );
+    $quantities = $product->get_meta( 'xpv_grouped_products_quantities' );
+    $grouped_products_ids = $product->get_meta('xpv_grouped_products_ids');
+
+    echo '<br />';
+
+    foreach ($grouped_products_ids as $grouped_product_id) {
+        $grouped_product = wc_get_product( $grouped_product_id );
+        $grouped_product_quantity = $quantities[$grouped_product->get_sku()] * $quantity;
+
+        echo esc_html( $grouped_product->get_name() ). '&nbsp;';
+        echo ' <strong class="product-quantity">' . sprintf( '&times;&nbsp;%s', esc_html( $grouped_product_quantity ) ) . '</strong>' . '<br />';
+    }
+}

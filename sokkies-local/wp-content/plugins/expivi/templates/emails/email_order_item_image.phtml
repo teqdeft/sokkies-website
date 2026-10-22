@@ -1,0 +1,18 @@
+<?php
+/**
+ * Email View - Order Item Image
+ *
+ * @version 1.0
+ *
+ * @var string $image_src Thumbnail of configured Expivi product (url).
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<br/>
+<br/>
+
+<img src="<?php echo esc_url( $image_src ); ?>" width="128" height="128" border="0" style="width:128px;height:128px;display:inline-block;border:0;" alt="" />

@@ -1,0 +1,37 @@
+<?php
+/**
+ * Woocommerce Cart Sub-Product Template
+ *
+ * @version 3.8.0
+ *
+ * @var WC_Product $product
+ * @var int        $quantity
+ * @var WC_Product $grouped_product
+ * @var string     $cart_item_key
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+?>
+
+<tr class="woocommerce-cart-form__cart-item cart_item">
+    <td class="product-remove" style="border:none"></td>
+    <td class="product-thumbnail" style="border: none">
+        <?php echo $product->get_image(); ?>
+    </td>
+    <td class="product-name" style="border: none">
+        <?php echo esc_html( $product->get_name() ); ?>
+        <br/>
+        <?php
+            if ( $product->has_weight() ) {
+                echo __( 'Weight', 'expivi' ) . ': ' . esc_html( $product->get_weight() );
+            }
+        ?>
+    </td>
+    <td class="product-price" style="border: none"></td>
+    <td class="product-quantity" style="border: none">
+        <?php echo esc_html( $quantity ); ?>
+    </td>
+    <td class="product-subtotal" style="border:none"></td>
+</tr>

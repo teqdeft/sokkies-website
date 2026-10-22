@@ -1,0 +1,19 @@
+<?php
+/**
+ * Admin View - Settings PRF
+ *
+ * @version 1.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<div class="expivi-admin-settings-prf">
+    <form action="options.php" method="POST">
+        <?php settings_fields( 'expivi-prf-settings' ); ?>
+        <?php do_settings_sections( 'prf-settings' ); ?>
+        <?php submit_button(); ?>
+    </form>
+</div>

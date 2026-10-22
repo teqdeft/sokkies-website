@@ -1,0 +1,41 @@
+<?php
+/**
+ * Viewer - Viewer
+ *
+ * @version 1.0
+ *
+ * @var bool   $hide_price
+ * @var string $price_layout Layout of price: '0' - Top, '1' - Bottom.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+?>
+<div class="title-rating-price xpv_price_top">
+	<?php do_action( 'expivi_title' ); ?>
+	<?php
+		if ( (bool) $hide_price !== true && ( !$price_layout || $price_layout === '0' ) ) {
+			do_action( 'expivi_price' );
+		}
+	?>
+</div>
+<div class="expivi_viewer_outer_container">
+	<div class="expivi_viewer_inner_container">
+		<?php
+		// Apply default classes to maximize theme compatibility
+		$columns         = apply_filters( 'woocommerce_product_thumbnails_columns', 4 );
+		$wrapper_classes = apply_filters( 'woocommerce_single_product_image_gallery_classes', array(
+			'woocommerce-product-gallery',
+			'woocommerce-product-gallery--' . ( has_post_thumbnail() ? 'with-images' : 'without-images' ),
+			'woocommerce-product-gallery--columns-' . absint( $columns ),
+			'images',
+		) );
+		?>
+
+		<div id="viewer-container"
+			class="viewer <?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', $wrapper_classes ) ) ); ?>"
+		></div>
+	</div>
+</div>

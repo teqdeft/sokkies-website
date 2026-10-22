@@ -1,0 +1,26 @@
+<?php
+/**
+ * Save Design Modal - Follow-up
+ *
+ * @version 1.0
+ *
+ * @var string $theme HTML class names for dark/light theme.
+ * @var bool   $copy_share_link_bool Option to indicate whether to render the 'share link' template.
+ * @var string $share_link Template of `save-design/expivi_save_design_share_link.phtml`.
+ * @var bool   $connect_to_rep_bool Option to indicate whether to render the 'connect to representative' template.
+ * @var string $connect_rep Template of `save-design/expivi_save_design_connect_rep.phtml`.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<p id="response" class="expivi-modal-form <?= $theme ?>"></p>
+<?php if( $copy_share_link_bool ) : ?>
+    <input type="hidden" id="share-link"><br>
+    <?= $share_link ?>
+<?php endif; ?>
+<?php if( $connect_to_rep_bool ) : ?>
+    <?= $connect_rep ?>
+<?php endif; ?>

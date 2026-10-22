@@ -1,0 +1,18 @@
+<?php
+/**
+ * Catalogue View - Product Item Details
+ *
+ * @version 1.0
+ *
+ * @var string $product_url Retrieves the full permalink for the product.
+ * @var string $configure_product_name Text for configure product button.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<a href="<?php echo esc_url( $product_url ); ?>" class="button">
+    <?php echo esc_attr( $configure_product_name ); ?>
+</a>

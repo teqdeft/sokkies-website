@@ -1,0 +1,19 @@
+<?php
+/**
+ * Admin View - Settings General
+ *
+ * @version 1.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+?>
+<div class="expivi-admin-settings-general">
+    <form action="options.php" method="POST">
+        <?php settings_fields( 'expivi-settings' ); ?>
+        <?php do_settings_sections( 'expivi' ); ?>
+        <?php submit_button(); ?>
+    </form>
+</div>

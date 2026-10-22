@@ -1,0 +1,53 @@
+<?php
+/**
+ * Shows an order item
+ *
+ * @package WooCommerce\Admin
+ * @var int           $item_id The id of the item being displayed.
+ * @var WC_Order_Item $item The item being displayed.
+ * @var WC_Order      $order WooCommerce order.
+ * @var WC_Product    $product WooCommerce product.
+ *
+ * @version 1.0
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+$row_class            = apply_filters( 'woocommerce_admin_html_order_item_class', ! empty( $class ) ? $class : '', $item, $order );
+$quantities           = $product->get_meta( 'xpv_grouped_products_quantities' );
+$grouped_products_ids = $product->get_meta('xpv_grouped_products_ids');
+
+foreach ( $grouped_products_ids as $product_id ) :
+    $grouped_product          = wc_get_product( $product_id );
+    $grouped_product_quantity = $quantities[ $grouped_product->get_sku() ] * $item->get_quantity();
+    $thumbnail                = apply_filters( 'woocommerce_admin_order_item_thumbnail', $grouped_product->get_image( 'thumbnail', array( 'title' => '' ), false ), $grouped_product->get_id(), $grouped_product );
+?>
+<tr class="item <?= esc_attr( $row_class ); ?>">
+    <td class="thumb">
+        <div class="wc-order-item-thumbnail"> <?= wp_kses_post( $thumbnail ) ?> </div>
+    </td>
+    <td class="name" data-sort-value="<?= esc_attr( $grouped_product->get_name() ); ?>">
+        <div class="wc-order-item-name"> <?=  wp_kses_post( $grouped_product->get_name() ); ?> </div>
+
+        <?php if ( $grouped_product->get_sku() ) : ?>
+            <div class="wc-order-item-sku"><strong> <?= esc_html__( 'SKU:', 'woocommerce' ) ?> </strong>  <?= esc_html( $grouped_product->get_sku() ); ?> </div>
+        <?php endif; ?>
+    </td>
+
+    <?php do_action( 'woocommerce_admin_order_item_values', $grouped_product, false, absint( $item_id ) ); ?>
+
+    <td></td>
+    <td></td>
+    <td></td>
+
+    <td class="quantity" width="1%">
+        <div class="view">
+            <small class="times">&times;</small> &nbsp; <?= esc_html( $grouped_product_quantity ); ?>
+        </div>
+    </td>
+
+    <td></td>
+</tr>
+<?php
+endforeach;
+?>

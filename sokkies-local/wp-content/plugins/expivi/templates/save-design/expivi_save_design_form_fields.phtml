@@ -1,0 +1,16 @@
+<?php
+/**
+ * Save Design Modal - Form Fields
+ *
+ * @version 1.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<label class=save-design-form-label for="xpv-userdata-email">
+    <?= __( 'Email address', 'expivi' ) ?><abbr aria-label="required">*</abbr>
+</label>
+<input class="expivi-modal-user-data" minlength="4" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" id="xpv-userdata-email" type="email" name="userdata[email]" data-required="true" required>

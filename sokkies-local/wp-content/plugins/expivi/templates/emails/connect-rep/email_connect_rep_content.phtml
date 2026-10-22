@@ -1,0 +1,67 @@
+<?php
+/**
+ * Email View - Connect Representative Content
+ *
+ * @version 1.0.1
+ *
+ * @var string $shop_name Website's name ( `get_bloginfo( 'name' )` ).
+ * @var array  $configuration Array of configured Expivi products.
+ * @var string $share_link Link pointing to product page including id of the configuration so the configuration will be loaded.
+ * @var mixed  $user_data Data filled by user in Save My Design form.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<div>
+    <h1 style="font-family:'Work Sans',Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#2f3133;font-size:19px;font-weight:bold;margin-top:0;text-align:left">Hi</h1>
+    <br>
+    <p style="font-family:'Work Sans',Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#74787e;font-size:16px;line-height:1.5em;margin-top:0;text-align:left">
+        <?php echo $user_data['name'] ?? 'A customer'; ?> has requested contact with a sale representative.
+    </p>
+    <br>
+    <table style="border-collapse:collapse;border-spacing:0;text-align: center; width:100%;" class="tg">
+        <tbody>
+        <?php foreach($user_data as $key => $data): ?>
+        <tr>
+            <td style="border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;vertical-align:top;word-break:normal">
+                <p style="text-transform:capitalize;font-family:'Work Sans',Avenir,Helvetica,sans-serif;box-sizing:border-box;font-size:16px;line-height:1.5em;margin-top:0;text-align:center">
+                    <strong><?php echo $key ?></strong>
+                </p>
+            </td>
+            <td style="border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;vertical-align:top;word-break:normal">
+                <p style="font-family:'Work Sans',Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#74787e;font-size:16px;line-height:1.5em;margin-top:0;text-align:center">
+                    <?php echo $data ?>
+                </p>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    <br>
+    <a href="<?php echo esc_attr($share_link); ?>" style="margin-right:auto;margin-left:auto;font-family:'Work Sans',Avenir,Helvetica,sans-serif;box-sizing:border-box;border-radius:3px;color:#fff;display:inline-block;text-decoration:none;background-color:#3f3f3f;border-top:10px solid #3f3f3f;border-right:18px solid #3f3f3f;border-bottom:10px solid #3f3f3f;border-left:18px solid #3f3f3f">
+        Go to the saved design
+    </a>
+    <br>
+    <br>
+
+    <p>Configuration details:</p>
+    <?php
+    if ( ! empty( $configuration ) ) {
+        foreach ( $configuration as $configured_product ) {
+            $attributes = $configured_product['attributes'];
+            foreach ( $attributes as $attribute ) {
+                if ( ! empty( $attribute['attribute_name'] ) && ! empty( $attribute['attribute_value_name'] ) ) {
+                    echo '<b>' . esc_html( $attribute['attribute_name'] ) . '</b> ' . esc_html( $attribute['attribute_value_name'] ) . '<br />';
+                }
+            }
+        }
+    }
+    ?>
+
+    <br>
+    <p style="font-family:'Work Sans',Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#74787e;font-size:16px;line-height:1.5em;margin-top:0;text-align:left">Regards,</p>
+    <strong style="font-family:'Work Sans',Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#74787e;font-size:16px;line-height:1.5em;margin-top:0;text-align:left"><?php echo $shop_name; ?></strong>
+</div>
