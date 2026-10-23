@@ -164,6 +164,33 @@ function sokkies_configurator_assets() {
 		sokkies_configurator_versie( 'assets/js/expivi-thema.js' ),
 		true
 	);
+	/* DE OFFERTE-/PDF-STROOM. Gekopieerd uit de Next.js-referentie van Expivi
+	   (lib/sokkies-prf.js) - zie de kop van het bestand. Levert
+	   window.SokkiesPrf.generateMockupPdf(), die in vijf stappen een PDF van
+	   het ontwerp maakt. Alles met het viewertoken, dus zonder server van ons
+	   ertussen.
+	   De catalogus komt uit het veld van DIT soktype in plaats van uit een
+	   hardgecodeerd getal; het bestandsnummer van de print-ready file is wel
+	   vast, dat hoort bij de catalogus en staat in hun documentatie. */
+	wp_enqueue_script(
+		'sokkies-prf',
+		sokkies_configurator_url( 'assets/js/prf.js' ),
+		array( 'expivi-options' ),
+		sokkies_configurator_versie( 'assets/js/prf.js' ),
+		true
+	);
+	/* VOOR het bestand, niet erna: prf.js leest deze waarden meteen bij het
+	   laden, dus later zetten is te laat. */
+	wp_add_inline_script(
+		'sokkies-prf',
+		'window.SOKKIES_CONFIGURATOR = ' . wp_json_encode(
+			array(
+				'catalogueId'    => $catalogus,
+				'printReadyFile' => 9139,
+			)
+		) . ';',
+		'before'
+	);
 
 	/* Init hangt aan app.js, dus die staat gegarandeerd al in de pagina; de
 	   load-listener wacht daarnaast tot de viewer klaar is met initialiseren.
