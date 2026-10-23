@@ -227,6 +227,37 @@ function sokkies_configurator_assets() {
 add_action( 'wp_enqueue_scripts', 'sokkies_configurator_assets' );
 
 /**
+ * Het ontwerp uit de configurator in het uploadveld van het offerteformulier.
+ *
+ * Draait op de pagina waar het formulier staat, niet op de configurator. Welke
+ * pagina dat is, weten we niet op voorhand - de slug verschilt per taal - dus
+ * haken we in op het moment dat Gravity Forms zijn eigen scripts inlaadt. Dan
+ * is zeker dat het formulier er is, en krijgen we het formulier zelf mee.
+ *
+ * Alleen voor ONS offerteformulier: andere formulieren hebben hier niets aan.
+ * De id wordt opgezocht via de helper van het thema (die kijkt op titel, want
+ * Gravity Forms hernummert bij een import); bestaat die niet, dan doen we
+ * niets in plaats van te gokken.
+ */
+function sokkies_configurator_offerte_bijlage( $form ) {
+	if ( ! function_exists( 'sokkies_offerte_form_id' ) ) {
+		return;
+	}
+	$offerte = (int) sokkies_offerte_form_id();
+	if ( ! $offerte || (int) rgar( $form, 'id' ) !== $offerte ) {
+		return;
+	}
+	wp_enqueue_script(
+		'sokkies-offerte-bijlage',
+		sokkies_configurator_url( 'assets/js/offerte-bijlage.js' ),
+		array(),
+		sokkies_configurator_versie( 'assets/js/offerte-bijlage.js' ),
+		true
+	);
+}
+add_action( 'gform_enqueue_scripts', 'sokkies_configurator_offerte_bijlage' );
+
+/**
  * crossorigin="anonymous" op de twee scripts van Expivi.
  *
  * assets.expivi.net stuurt Access-Control-Allow-Origin ALLEEN mee als het

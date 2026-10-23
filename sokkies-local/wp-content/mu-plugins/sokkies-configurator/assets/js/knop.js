@@ -101,3 +101,97 @@
             });
     });
 })();
+
+/* =============================================================
+   De offerteknop: eerst de PDF maken, dan pas door naar het formulier.
+
+   Het bestand reist mee via sessionStorage; offerte-bijlage.js zet het daar
+   in het uploadveld. Waarom niet de blob zelf: een blob-URL overleeft geen
+   paginawissel, en meegeven via de URL kan niet. base64 in sessionStorage
+   kan wel - de PDF is zo'n 50 kB en als base64 ongeveer 70 kB, ruim binnen
+   de limiet van enkele megabytes.
+   ============================================================= */
+
+(function () {
+    'use strict';
+
+    var SLEUTEL = 'sokkies-ontwerp-pdf';
+    var link = document.querySelector('[data-sokkies-offerte]');
+    if (!link || !window.SokkiesPrf) {
+        return;   /* zonder JS blijft het een gewone link naar het formulier */
+    }
+
+    var oorspronkelijk = link.textContent;
+    var bezigNu = false;
+
+    var STAPPEN = {
+        1: 'Ontwerp opslaan',
+        2: 'Ontwerp klaarzetten',
+        3: 'Drukbestand aanvragen',
+        4: 'Even geduld, we maken de weergave',
+        5: 'PDF samenstellen'
+    };
+
+    function klaar() {
+        try {
+            var app = window.ExpiviOptionsAppInstance;
+            return !!(app && app.$children[0] && app.$children[0].$data.appReady);
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function bewaren(blob) {
+        return new Promise(function (resolve) {
+            var lezer = new FileReader();
+            lezer.onload = function () {
+                try {
+                    sessionStorage.setItem(SLEUTEL, JSON.stringify({
+                        naam: 'sokkies-ontwerp.pdf',
+                        type: 'application/pdf',
+                        base64: String(lezer.result).split(',')[1]
+                    }));
+                } catch (e) {
+                    /* Vol of geweigerd: dan gaat de bezoeker zonder bijlage
+                       door. Beter dan hem hier laten stranden. */
+                }
+                resolve();
+            };
+            lezer.onerror = function () { resolve(); };
+            lezer.readAsDataURL(blob);
+        });
+    }
+
+    link.addEventListener('click', function (e) {
+        if (bezigNu) {
+            e.preventDefault();
+            return;
+        }
+        if (!klaar()) {
+            return;   /* configurator nog niet geladen: gewoon doorlinken */
+        }
+
+        e.preventDefault();
+        bezigNu = true;
+        link.setAttribute('aria-busy', 'true');
+
+        window.SokkiesPrf.generateMockupPdf({}, function (stap, label) {
+            link.textContent = (STAPPEN[stap] || label) + '\u2026';
+        })
+            .then(function (res) { return bewaren(res.blob); })
+            .catch(function (err) {
+                if (window.console) {
+                    console.error('Sokkies PDF:', err);
+                }
+            })
+            .then(function () {
+                /* Hoe dan ook doorgaan naar het formulier - met bijlage als
+                   het lukte, zonder als het misging. De aanvraag is
+                   belangrijker dan de mockup. */
+                link.textContent = oorspronkelijk;
+                link.removeAttribute('aria-busy');
+                bezigNu = false;
+                window.location.href = link.getAttribute('href');
+            });
+    });
+})();

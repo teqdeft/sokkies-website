@@ -472,7 +472,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                   ?>
                   <div class="btn-group">
                     <button type="button" class="btn btn-secondary" data-sokkies-pdf>Bekijk je ontwerp (PDF)</button>
-                    <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary"><?php echo esc_html( sokkies_cta_label() ); ?></a>
+                    <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary" data-sokkies-offerte><?php echo esc_html( sokkies_cta_label() ); ?></a>
                   </div>
                 </div>
               </div>
