@@ -113,6 +113,57 @@ function sokkies_configurator_versie( $pad ) {
 	$bestand = __DIR__ . '/' . $pad;
 	return file_exists( $bestand ) ? (string) filemtime( $bestand ) : '0.1.0';
 }
+
+/**
+ * Welk soktype uit de configurator hoort bij welke keuze op het formulier.
+ *
+ * DIT MOET EEN LIJST ZIJN, geen woordvergelijking zoals bij de kaartfoto's.
+ * Expivi noemt zijn modellen in het Engels ("RegularSocks", "CyclingSocks")
+ * en het formulier in het Nederlands ("Regulier", "Wieler"); daar valt niets
+ * aan te matchen - Regular en Regulier beginnen niet eens hetzelfde.
+ *
+ * De sleutel is de ruwe naam van de attribuutwaarde in Expivi (zichtbaar als
+ * attribute_value_name), NIET het label dat de bezoeker ziet: dat label wordt
+ * per taal vertaald en zou dus op /fr/ iets anders zijn.
+ *
+ * De waarde is de Nederlandse keuze op het offerteformulier. Die wordt
+ * hieronder uitgeklapt naar alle schrijfwijzen, zodat dezelfde kaart ook op
+ * het sampleformulier werkt ("Regulier" daar is "Reguliere sokken").
+ *
+ * Komt er een model bij in Expivi, dan hoort hier een regel bij - of een
+ * filter in het thema. Staat een model er niet in, dan laten we het
+ * formulier met rust; een verkeerd vinkje is erger dan geen vinkje.
+ */
+function sokkies_configurator_soktype_kaart() {
+	$kaart = array(
+		'RegularSocks'  => 'Regulier',
+		'SportSocks'    => 'Sport',
+		'AntiSlipSocks' => 'Antislip',
+		'CyclingSocks'  => 'Wieler',
+		'WorkSocks'     => 'Werk',
+		'bambooSocks'   => 'Bamboe',
+	);
+
+	/**
+	 * Laat de koppeling model -> formulierkeuze aanpassen.
+	 *
+	 * @param array $kaart Expivi-modelnaam => Nederlandse keuze.
+	 */
+	$kaart = (array) apply_filters( 'sokkies_expivi_soktypes', $kaart );
+
+	$uit = array();
+	foreach ( $kaart as $model => $keuze ) {
+		$keuze = trim( (string) $keuze );
+		if ( '' === (string) $model || '' === $keuze ) {
+			continue;
+		}
+		$uit[ (string) $model ] = function_exists( 'sokkies_soktype_varianten' )
+			? array_values( sokkies_soktype_varianten( $keuze ) )
+			: array( $keuze );
+	}
+
+	return $uit;
+}
 function sokkies_configurator_assets() {
 	if ( ! is_singular( 'sokkies_soktype' ) ) {
 		return;
@@ -187,6 +238,7 @@ function sokkies_configurator_assets() {
 			array(
 				'catalogueId'    => $catalogus,
 				'printReadyFile' => 9139,
+				'soktypes'       => sokkies_configurator_soktype_kaart(),
 			)
 		) . ';',
 		'before'
@@ -253,6 +305,17 @@ function sokkies_configurator_offerte_bijlage( $form ) {
 		array(),
 		sokkies_configurator_versie( 'assets/js/offerte-bijlage.js' ),
 		true
+	);
+	/* De koppeling model -> formulierkeuze hoort hier ÓÓK: deze pagina laadt
+	   prf.js niet, dus het blok met SOKKIES_CONFIGURATOR dat op de
+	   productpagina staat, bestaat hier niet. In twee losse regels en niet
+	   met Object.assign, zodat het ook werkt als het object er al is. */
+	wp_add_inline_script(
+		'sokkies-offerte-bijlage',
+		'window.SOKKIES_CONFIGURATOR = window.SOKKIES_CONFIGURATOR || {};'
+		. 'window.SOKKIES_CONFIGURATOR.soktypes = '
+		. wp_json_encode( sokkies_configurator_soktype_kaart() ) . ';',
+		'before'
 	);
 }
 add_action( 'gform_enqueue_scripts', 'sokkies_configurator_offerte_bijlage' );

@@ -1,30 +1,35 @@
 /* =============================================================
-   De PDF uit de configurator in het uploadveld van het offerteformulier.
+   Het ontwerp uit de configurator overnemen op het offerteformulier.
 
-   De configurator zet het bestand in sessionStorage (zie knop.js) en stuurt
-   de bezoeker hierheen. Dit script haalt het eruit en geeft het aan de
-   uploader van Gravity Forms, zodat het veld "Upload je ontwerp" het toont
-   alsof de bezoeker het zelf gekozen had - en het dus gewoon meegaat met de
-   inzending.
+   Twee dingen reizen mee in sessionStorage (gezet door knop.js):
+
+     sokkies-ontwerp-pdf       de PDF van het ontwerp
+     sokkies-ontwerp-soktype   het gekozen sokmodel
+
+   Ze staan LOS van elkaar en worden hier ook los afgehandeld: het maken van
+   de PDF duurt een seconde of tien en kan stranden, en dan hoort de gekozen
+   sok nog steeds op het formulier te staan.
    ============================================================= */
 
 (function () {
     'use strict';
 
-    var SLEUTEL = 'sokkies-ontwerp-pdf';
+    var PDF_SLEUTEL     = 'sokkies-ontwerp-pdf';
+    var SOKTYPE_SLEUTEL = 'sokkies-ontwerp-soktype';
 
-    function lees() {
+    function lees(sleutel) {
         try {
-            var ruw = sessionStorage.getItem(SLEUTEL);
-            return ruw ? JSON.parse(ruw) : null;
+            return sessionStorage.getItem(sleutel);
         } catch (e) {
             return null;
         }
     }
 
-    function wissen() {
-        try { sessionStorage.removeItem(SLEUTEL); } catch (e) { /* niets */ }
+    function wissen(sleutel) {
+        try { sessionStorage.removeItem(sleutel); } catch (e) { /* niets */ }
     }
+
+    /* ---------- 1. de PDF in het uploadveld ---------- */
 
     /* base64 terug naar bytes. Niet via fetch(dataURL): dat is asynchroon en
        kan door een Content-Security-Policy geblokkeerd worden. */
@@ -51,10 +56,22 @@
         return null;
     }
 
-    function plaatsen() {
-        var opslag = lees();
-        if (!opslag || !opslag.base64) {
+    function plaatsPdf() {
+        var ruw = lees(PDF_SLEUTEL);
+        if (!ruw) {
             return true; // niets te doen, stoppen met wachten
+        }
+
+        var opslag;
+        try {
+            opslag = JSON.parse(ruw);
+        } catch (e) {
+            wissen(PDF_SLEUTEL);
+            return true;
+        }
+        if (!opslag || !opslag.base64) {
+            wissen(PDF_SLEUTEL);
+            return true;
         }
 
         var uploader = uploaderVinden();
@@ -91,17 +108,85 @@
 
         /* Ook bij een mislukking wissen: anders probeert elke volgende pagina
            het opnieuw met hetzelfde bestand. */
-        wissen();
+        wissen(PDF_SLEUTEL);
         return true;
     }
 
+    /* ---------- 2. de gekozen sok aanvinken ---------- */
+
+    function zelfdeNaam(a, b) {
+        return String(a).trim().toLowerCase() === String(b).trim().toLowerCase();
+    }
+
+    function kiesSoktype() {
+        var model = lees(SOKTYPE_SLEUTEL);
+        if (!model) {
+            return true;
+        }
+
+        /* Welke keuze hoort bij dit model, staat in PHP (zie
+           sokkies_configurator_soktype_kaart). Kennen we het model niet, dan
+           laten we het formulier met rust: een verkeerd vinkje is erger dan
+           geen vinkje. */
+        var kaart = (window.SOKKIES_CONFIGURATOR && window.SOKKIES_CONFIGURATOR.soktypes) || {};
+        var namen = kaart[model];
+        if (!namen || !namen.length) {
+            wissen(SOKTYPE_SLEUTEL);
+            return true;
+        }
+
+        var vakjes = document.querySelectorAll('.of-soktypes input[type="checkbox"]');
+        if (!vakjes.length) {
+            return false; // formulier nog niet gerenderd
+        }
+
+        var doel = null;
+        Array.prototype.forEach.call(vakjes, function (vakje) {
+            if (doel) { return; }
+            for (var i = 0; i < namen.length; i++) {
+                if (zelfdeNaam(namen[i], vakje.value)) { doel = vakje; return; }
+            }
+        });
+
+        if (doel && !doel.checked) {
+            doel.checked = true;
+            /* Via een echt change-event, zodat offerte.js zijn eigen werk
+               doet: de kaart markeren, de andere keuzes uitzetten (het
+               formulier staat op één soort) en de extra's bijwerken die maar
+               bij bepaalde soktypes horen. Zelf die staat nazetten zou dat
+               dubbelop doen en uit de pas kunnen lopen. */
+            doel.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        wissen(SOKTYPE_SLEUTEL);
+        return true;
+    }
+
+    /* ---------- volhouden tot allebei klaar ---------- */
+
     /* De uploader wordt door Gravity Forms pas opgezet als het formulier
        gerenderd is, en bij een formulier met stappen gebeurt dat opnieuw na
-       elke stap. Daarom even volhouden in plaats van een keer proberen. */
-    var pogingen = 0;
-    var klok = setInterval(function () {
-        if (plaatsen() || ++pogingen > 40) {
-            clearInterval(klok);
-        }
-    }, 250);
+       elke stap. Daarom even volhouden in plaats van een keer proberen.
+
+       NA DOMContentLoaded beginnen, want offerte.js zet dan de eerder
+       ingevulde velden terug. Zouden wij eerder zijn, dan overschrijft die
+       terugzetronde onze keuze met een oude. */
+    function beginnen() {
+        var pdfKlaar = false;
+        var sokKlaar = false;
+        var pogingen = 0;
+        var klok = setInterval(function () {
+            if (!pdfKlaar) { pdfKlaar = plaatsPdf(); }
+            if (!sokKlaar) { sokKlaar = kiesSoktype(); }
+            if ((pdfKlaar && sokKlaar) || ++pogingen > 40) {
+                clearInterval(klok);
+            }
+        }, 250);
+    }
+
+    if ('loading' === document.readyState) {
+        document.addEventListener('DOMContentLoaded', function () { setTimeout(beginnen, 0); });
+    } else {
+        setTimeout(beginnen, 0);
+    }
 })();

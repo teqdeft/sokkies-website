@@ -162,6 +162,53 @@
         });
     }
 
+    /* Het gekozen sokmodel reist apart mee, zodat het formulier de goede
+       kaart aanvinkt. BEWUST EEN EIGEN SLEUTEL en niet samen met de PDF: de
+       keuze hoort ook over te komen als het maken van de PDF misgaat. */
+    var SOKTYPE_SLEUTEL = 'sokkies-ontwerp-soktype';
+
+    /* We bewaren de RUWE waardenaam uit Expivi ("SportSocks"), niet het
+       label dat de bezoeker ziet: dat wordt per taal vertaald en zou op /fr/
+       dus iets anders zijn. Het attribuut heet "Sock model"; we zoeken het
+       op slug ('model'), want die verandert niet mee met een hernoeming. */
+    function bewaarSoktype() {
+        return Promise.resolve()
+            .then(function () {
+                return window.expivi && window.expivi.getProductAttributes
+                    ? window.expivi.getProductAttributes()
+                    : null;
+            })
+            .then(function (lijst) {
+                if (!lijst || !lijst.length) {
+                    return;
+                }
+                var attribuut = null;
+                for (var i = 0; i < lijst.length; i++) {
+                    if (lijst[i] && ('model' === lijst[i].slug || 'Sock model' === lijst[i].name)) {
+                        attribuut = lijst[i];
+                        break;
+                    }
+                }
+                if (!attribuut) {
+                    return;
+                }
+                var waarden = attribuut.attribute_values || [];
+                for (var j = 0; j < waarden.length; j++) {
+                    if (waarden[j] && waarden[j].id === attribuut.selected_value_id) {
+                        var naam = waarden[j].name || waarden[j].object_name || '';
+                        if (naam) {
+                            sessionStorage.setItem(SOKTYPE_SLEUTEL, naam);
+                        }
+                        return;
+                    }
+                }
+            })
+            .catch(function () {
+                /* Lukt het niet, dan gaat de bezoeker gewoon door; hij kiest
+                   zijn sok dan zelf op het formulier. */
+            });
+    }
+
     link.addEventListener('click', function (e) {
         if (bezigNu) {
             e.preventDefault();
@@ -174,6 +221,10 @@
         e.preventDefault();
         bezigNu = true;
         link.setAttribute('aria-busy', 'true');
+
+        /* Eerst de keuze vastleggen, daarna pas de PDF: zo staat de goede
+           sok ook op het formulier als de PDF hierna strandt. */
+        bewaarSoktype();
 
         window.SokkiesPrf.generateMockupPdf({}, function (stap, label) {
             link.textContent = (STAPPEN[stap] || label) + '\u2026';
