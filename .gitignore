@@ -20,4 +20,6 @@ sokkies-local/wp-content/plugins/wp-migrate-db/
 # Gravity Forms: live heeft een eigen installatie die niet uit deze repo komt.
 # Meecommitten zou die via de FTPS-deploy overschrijven (circa 24 MB).
 sokkies-local/wp-content/plugins/gravityforms/
-sokkies-local/wp-content/mu-plugins/
+# mu-plugins: de HULPbestanden van deze machine blijven lokaal, maar onze
+# eigen configurator-plugin hoort wel in de repo (en dus op de server).
+sokkies-local/wp-content/mu-plugins/wp-migrate-db-pro-compatibility.php
