@@ -435,14 +435,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
     </section>
     <?php endif; ?>
 
-<?php /* De 3D-configurator (Expivi) staat UIT.
-   Stond eerder in een HTML-commentaar met onklaar gemaakte PHP-tags
-   (<//?php). Dat werkte, maar de hele sectie — markup, PHP en de
-   commentaren — werd nog steeds naar de browser gestuurd, waar
-   crawlers en linkcheckers er kapotte links in zagen. Met if ( false )
-   blijft de code hier staan maar komt er niets meer uit.
-   WEER AANZETTEN: deze regel en de bijbehorende endif weghalen. */ ?>
-<?php if ( false ) : ?>
+
 <section class="design-now">
       <img class="design-duddle-sock" src="<?php echo esc_url( $assets ); ?>pdp-duddle-configurator.png" alt="" aria-hidden="true">
       <div class="design-bg-union" aria-hidden="true"></div>
@@ -458,13 +451,29 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
             $expivi_product_id = get_field( 'expivi_product_id' );
             ?>
             <?php if ( $expivi_product_id ) : ?>
-            <div class="expivi-configurator">
-              <div class="expivi-viewer">
-                <div id="expivi-viewer"></div>
-              </div>
-              <div class="expivi-options">
-                <div id="expivi-price"></div>
-                <div id="expivi-options"></div>
+            <div class="expivi-configurator page product">
+              <div class="product-container">
+                <div class="expivi-viewer">
+                  <div id="expivi-viewer"></div>
+                </div>
+                <div class="expivi-options">
+                  <?php /* class price-and-button: het thema verplaatst dit blok
+                     naar boven de stappen zodra het de prijs vindt. */ ?>
+                  <div id="expivi-price" class="price-and-button"></div>
+                  <div id="expivi-options"></div>
+                  <?php
+                  /* De offerteknop. Het thema zoekt op '.btn-group', hangt er
+                     een .sk-bottom-actions omheen en zet die onder de stappen -
+                     dat is de rode balk uit het ontwerp. Zonder dit blok slaat
+                     die functie over en blijft de balk weg.
+                     De knop gaat naar ONS offerteformulier. De configuratie
+                     reist nog niet mee; dat vraagt saveConfiguration() van de
+                     viewer en een veld om het in op te slaan. */
+                  ?>
+                  <div class="btn-group">
+                    <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary"><?php echo esc_html( sokkies_cta_label() ); ?></a>
+                  </div>
+                </div>
               </div>
             </div>
             <?php else : ?>
@@ -475,7 +484,6 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
         </div>
       </div>
     </section>
-<?php endif; /* einde uitgeschakelde Expivi-sectie */ ?>
 
 <section class="usecases">
       <div class="container">

@@ -103,6 +103,16 @@ function sokkies_configurator_locale() {
 	return (string) apply_filters( 'sokkies_expivi_locale', $taal );
 }
 
+/** De URL van een bestand in deze plugin. Werkt ook vanuit mu-plugins. */
+function sokkies_configurator_url( $pad ) {
+	return plugins_url( $pad, __FILE__ );
+}
+
+/** Versie = wijzigingsdatum van het bestand, zodat de cache vanzelf breekt. */
+function sokkies_configurator_versie( $pad ) {
+	$bestand = __DIR__ . '/' . $pad;
+	return file_exists( $bestand ) ? (string) filemtime( $bestand ) : '0.1.0';
+}
 function sokkies_configurator_assets() {
 	if ( ! is_singular( 'sokkies_soktype' ) ) {
 		return;
@@ -116,8 +126,44 @@ function sokkies_configurator_assets() {
 	}
 
 	wp_enqueue_style( 'expivi-options', 'https://assets.expivi.net/options/latest/css/app.css', array(), null );
+	/* De opmaak van datzelfde thema, INGEPERKT tot .expivi-configurator - zie
+	   de kop van het bestand. Na hun app.css, anders winnen hun
+	   standaardregels. */
+	wp_enqueue_style(
+		'sokkies-expivi-thema',
+		sokkies_configurator_url( 'assets/css/expivi-thema.css' ),
+		array( 'expivi-options' ),
+		sokkies_configurator_versie( 'assets/css/expivi-thema.css' )
+	);
+	/* En onze eigen opmaak als laatste: die zet alleen het raster van viewer en
+	   paneel, en moet dus van allebei winnen. */
+	wp_enqueue_style(
+		'sokkies-configurator',
+		sokkies_configurator_url( 'assets/css/configurator.css' ),
+		array( 'sokkies-responsive', 'sokkies-expivi-thema' ),
+		sokkies_configurator_versie( 'assets/css/configurator.css' )
+	);
 	wp_enqueue_script( 'expivi-viewer', 'https://assets.expivi.net/viewer/latest/viewer.js', array(), null, true );
 	wp_enqueue_script( 'expivi-options', 'https://assets.expivi.net/options/latest/js/app.js', array( 'expivi-viewer' ), null, true );
+	/* HET GEDRAGSSCRIPT VAN HET THEMA - zonder dit blijft het optiepaneel leeg.
+	   Gemeten met een schakelaar: zonder dit bestand doet de optie-app alleen
+	   de meta-aanroep, komt er geen bootstrap en blijft appReady false, ook na
+	   55 seconden. Met dit bestand laadt het product en staat de hele UI er.
+	   Het bouwt bovendien de sk-elementen (stappen, logo-upload, kleurenkiezer,
+	   offertebalk) en injecteert daar zelf CSS voor.
+	   De referentie-integratie van Expivi doet precies hetzelfde: die kopieert
+	   assets/js/sokkies.js naar public/ en laadt hem na de viewer.
+	   LET OP: dit is een LETTERLIJKE kopie, zodat een nieuwe versie er zo
+	   overheen kan. Wijzigt het thema in Expivi, dan moet deze kopie opnieuw
+	   gehaald worden - en de CSS opnieuw ingeperkt. In dat script staat ook
+	   CATALOGUE_ID = 27480 hardgecodeerd. */
+	wp_enqueue_script(
+		'sokkies-expivi-thema',
+		sokkies_configurator_url( 'assets/js/expivi-thema.js' ),
+		array( 'expivi-options' ),
+		sokkies_configurator_versie( 'assets/js/expivi-thema.js' ),
+		true
+	);
 
 	/* Init hangt aan app.js, dus die staat gegarandeerd al in de pagina; de
 	   load-listener wacht daarnaast tot de viewer klaar is met initialiseren.

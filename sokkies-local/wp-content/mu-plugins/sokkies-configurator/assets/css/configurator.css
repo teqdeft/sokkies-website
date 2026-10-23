@@ -1,0 +1,173 @@
+/* ==========================================================================
+   EXPIVI 3D-CONFIGURATOR (productpagina)
+   ==========================================================================
+   Dit bestand zet ALLEEN het kader: hoe groot het configuratorblok is en hoe
+   viewer en optiepaneel naast elkaar staan. Het uiterlijk BINNEN het paneel
+   (genummerde stappen, logo-upload, kleurenkiezer) komt uit expivi-thema.css
+   en het bijbehorende script - zie de kop van die bestanden.
+
+   Laadvolgorde (sokkies_expivi_assets() in functions.php):
+     app.css van Expivi -> expivi-thema.css -> dit bestand
+   zodat onze maten van hun paneelopmaak winnen.
+
+   Laadt alleen op een soktype met een Expivi-product-ID; elders zou het dode
+   regels zijn.
+   ========================================================================== */
+
+/* De kaart is per band een VASTE hoogte (620 t/m 275px), gemaakt voor de oude
+   previewfoto. Het optiepaneel is veel hoger: gemeten 975px aan inhoud bij
+   vier stappen. De kaart groeit daarom mee met het blok; achtergrond, de
+   ronding van 35px en overflow:hidden blijven staan en knippen de hoeken van
+   het blok netjes af. */
+.conf-preview-card:has(.expivi-configurator){
+  height:auto;
+  align-items:stretch;
+  justify-content:stretch;
+}
+.expivi-configurator{
+  width:100%;
+  height:880px;
+}
+.expivi-configurator .product-container{
+  display:grid;
+  /* Het paneel is BREED met opzet: de modelkaarten en het patroonraster
+     staan in het ontwerp naast elkaar, en onder ~500px vallen ze terug naar
+     een kaart per regel. Ter vergelijking, hun eigen pagina bij 1440:
+     viewer 640, paneel 719. */
+  grid-template-columns:minmax(0,1fr) 560px;
+  align-items:stretch;
+  width:100%;
+  height:100%;
+}
+.expivi-viewer{
+  position:relative;
+  min-width:0;
+  background:#fff;
+}
+.expivi-configurator #expivi-viewer{
+  height:100%;
+}
+.expivi-configurator #expivi-viewer canvas{
+  display:block;
+}
+.expivi-options{
+  min-width:0;
+  /* Het paneel is langer dan het blok, dus het scrolt zelf; de kaart knipt
+     met overflow:hidden af. */
+  overflow-y:auto;
+  background:#fff;
+  border-left:1px solid var(--border-light);
+  padding:22px 20px;
+}
+.expivi-configurator #expivi-price{
+  font-family:var(--roc-grotesk);
+  font-size:var(--h5-font-size);
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:14px;
+}
+.expivi-configurator #expivi-price:empty{
+  margin-bottom:0;
+}
+
+/* De offerteknop in de balk onder de stappen. Het thema PLAATST die balk wel
+   (.sk-bottom-actions, met de knop erin) maar rekent voor de knop zelf op
+   Bootstrap - .btn en .btn-primary. Deze site laadt geen Bootstrap, dus
+   zonder onderstaande regels staat er een kale blauwe link.
+   Maten 1:1 overgenomen van sokkies.expivi.net: 56px hoog, radius 8,
+   14,4px/700, letter-spacing 0,576px, hoofdletters. Kleur via onze eigen
+   token, zodat de knop meeloopt met de huisstijl. */
+.expivi-configurator .sk-bottom-actions,
+.expivi-configurator .sk-bottom-actions .btn-group{
+  width:100%;
+}
+.expivi-configurator .sk-bottom-actions .btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:56px;
+  padding:14px 18px;
+  background:var(--coral);
+  color:#fff;
+  border:0;
+  border-radius:8px;
+  font-family:var(--roc-grotesk);
+  font-size:14.4px;
+  font-weight:700;
+  letter-spacing:.576px;
+  text-transform:uppercase;
+  text-align:center;
+  text-decoration:none;
+  transition:background .2s ease;
+}
+.expivi-configurator .sk-bottom-actions .btn:hover,
+.expivi-configurator .sk-bottom-actions .btn:focus-visible{
+  background:var(--text);
+  color:#fff;
+}
+/* ==========================================================================
+   Responsive
+   Alleen de breedteverdeling en de hoogte van het blok. Wat erin staat is
+   zelf responsive (het thema zet de kaarten onder elkaar als het smal wordt).
+   ========================================================================== */
+
+@media (min-width:1440px) and (max-width:1679px){
+  .expivi-configurator .product-container{ grid-template-columns:minmax(0,1fr) 520px; }
+}
+
+@media (min-width:1280px) and (max-width:1439px){
+  .expivi-configurator .product-container{ grid-template-columns:minmax(0,1fr) 500px; }
+}
+
+@media (min-width:992px) and (max-width:1279px){
+  .expivi-configurator .product-container{ grid-template-columns:minmax(0,1fr) 460px; }
+  .expivi-options{ padding:18px 16px; }
+}
+
+@media (max-width:991px){
+  /* Naast elkaar houdt geen van beide kolommen hier een werkbare maat over,
+     dus viewer boven en paneel eronder - zoals de pagina van Expivi zelf ook
+     doet op deze breedte. */
+  /* GEEN vaste hoogte meer zodra het stapelt. Met een vast blok moest de
+     bezoeker BINNEN het paneel scrollen om bij stap 4 en de offerteknop te
+     komen - een scrollvlak in een scrollende pagina, en op een telefoon raak
+     je de knop dan simpelweg niet. Nu groeit het blok met zijn inhoud mee en
+     scrollt de pagina gewoon door. */
+  .expivi-configurator{ height:auto; }
+  .expivi-configurator .product-container{ grid-template-columns:minmax(0,1fr); height:auto; }
+  .expivi-viewer{ height:380px; }
+  .expivi-options{ overflow-y:visible; }
+  .expivi-options{
+    border-left:0;
+    border-top:1px solid var(--border-light);
+    padding:20px;
+  }
+}
+
+
+
+@media (max-width:520px){
+  /* De drie patroontabs (Classic/Happy/Christmas) passen hier niet naast
+     elkaar: de derde stak 7px buiten het blok en werd door de kaart
+     afgeknipt. Zijwaarts vegen, net als de andere chiprijen op de site.
+     Bewust geen flex-wrap: de actieve-tab-streep eronder wordt door hun
+     script op een regel berekend en zou bij wikkelen onder de verkeerde
+     tab komen te staan. */
+  .expivi-configurator .sk-theme-tabs{
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .expivi-configurator .sk-theme-tabs::-webkit-scrollbar{ display:none; }
+  .expivi-configurator .sk-theme-tab{ flex:0 0 auto; }
+
+  /* Onze knoptekst is langer dan hun "Request quotation" en brak hier over
+     twee regels (71px hoog). Iets kleiner, dan past hij op een regel. */
+  .expivi-configurator .sk-bottom-actions .btn{
+    padding:14px 12px;
+    font-size:13px;
+    letter-spacing:.4px;
+  }
+  .expivi-viewer{ height:300px; }
+  .expivi-options{ padding:16px; }
+}
