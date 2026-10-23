@@ -142,3 +142,38 @@ function sokkies_configurator_assets() {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'sokkies_configurator_assets' );
+
+/**
+ * crossorigin="anonymous" op de twee scripts van Expivi.
+ *
+ * assets.expivi.net stuurt Access-Control-Allow-Origin ALLEEN mee als het
+ * verzoek een Origin-header draagt. Gemeten op viewer.js:
+ *   zonder Origin : 200, geen ACAO, Vary: accept-encoding, cf-cache-status HIT
+ *   met Origin    : 200, ACAO: *, Vary: Origin, ...,      cf-cache-status MISS
+ * Het zijn dus twee aparte cache-items, en zonder Origin ligt er een kopie
+ * ZONDER de CORS-header op de rand.
+ *
+ * Dat is een probleem omdat viewer.js de three.js-bundel zelf opnieuw opvraagt
+ * met crossorigin. Belandt op een rand eerst een verzoek zonder Origin, dan
+ * staat daar een kopie zonder ACAO in de cache - en die wordt tot 31 dagen
+ * (max-age=2678400) aan iedereen in die regio gegeven. Elk CORS-verzoek
+ * daarna faalt, ook al laadde het bestand eerder prima. Het symptoom is
+ * precies dat: een CORS-fout over een bestand dat het altijd deed.
+ *
+ * Daarom vragen wij het meteen MET Origin op. Dat kost niets: de server
+ * antwoordt met ACAO: *, dus er hoeft geen domein voor te worden
+ * vrijgegeven.
+ *
+ * ZIT ER AL EEN crossorigin IN, dan blijft de tag met rust - zo kan dit nooit
+ * dubbel in de tag komen als WordPress of een plugin het ook zet.
+ */
+function sokkies_configurator_script_crossorigin( $tag, $handle ) {
+	if ( ! in_array( $handle, array( 'expivi-viewer', 'expivi-options' ), true ) ) {
+		return $tag;
+	}
+	if ( false !== strpos( $tag, 'crossorigin' ) ) {
+		return $tag;
+	}
+	return str_replace( ' src=', ' crossorigin="anonymous" src=', $tag );
+}
+add_filter( 'script_loader_tag', 'sokkies_configurator_script_crossorigin', 10, 2 );
