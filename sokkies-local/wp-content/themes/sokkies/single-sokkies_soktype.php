@@ -471,6 +471,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                      viewer en een veld om het in op te slaan. */
                   ?>
                   <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" data-sokkies-pdf>Bekijk je ontwerp (PDF)</button>
                     <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary"><?php echo esc_html( sokkies_cta_label() ); ?></a>
                   </div>
                 </div>

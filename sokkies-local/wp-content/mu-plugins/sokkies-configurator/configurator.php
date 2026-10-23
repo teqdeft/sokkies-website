@@ -191,6 +191,16 @@ function sokkies_configurator_assets() {
 		) . ';',
 		'before'
 	);
+	/* De knop die de PDF maakt en opent. Apart van prf.js, zodat die pijplijn
+	   een losse motor blijft die straks ook door het offerteformulier gebruikt
+	   kan worden. */
+	wp_enqueue_script(
+		'sokkies-pdf-knop',
+		sokkies_configurator_url( 'assets/js/knop.js' ),
+		array( 'sokkies-prf' ),
+		sokkies_configurator_versie( 'assets/js/knop.js' ),
+		true
+	);
 
 	/* Init hangt aan app.js, dus die staat gegarandeerd al in de pagina; de
 	   load-listener wacht daarnaast tot de viewer klaar is met initialiseren.

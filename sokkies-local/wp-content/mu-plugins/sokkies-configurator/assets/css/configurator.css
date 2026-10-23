@@ -26,7 +26,11 @@
 }
 .expivi-configurator{
   width:100%;
-  height:880px;
+  /* 880 was precies genoeg voor een balk met EEN knop (56 hoog plus 2x24
+     padding = 104). Met de PDF-knop erbij is die balk 172 hoog gemeten, en
+     dan viel de offerteknop onder de rand van de kaart - die knipt af met
+     overflow:hidden. Vandaar 68px erbij. */
+  height:948px;
 }
 .expivi-configurator .product-container{
   display:grid;
@@ -100,6 +104,33 @@
   text-align:center;
   text-decoration:none;
   transition:background .2s ease;
+}
+/* De PDF-knop staat NAAST de offerteknop in dezelfde balk. Omlijnd in plaats
+   van gevuld: twee corale blokken naast elkaar lezen als twee hoofdacties,
+   terwijl het aanvragen van een offerte de belangrijkste is en het bekijken
+   van het ontwerp de bijrol speelt. Maten gelijk, zodat ze op een lijn staan. */
+.expivi-configurator .sk-bottom-actions button.btn-secondary[data-sokkies-pdf]{
+  /* !important is hier GEEN gemakzucht. Het thema kleurt ELKE knop in deze
+     balk (ook een zonder class, nagemeten) met #EA5045, en het doet dat via
+     stijl die het script zelf injecteert EN bewaakt met MutationObservers.
+     Een gewone regel verliest daar structureel van: uitzetten van welk
+     stylesheet dan ook verandert de kleur niet, want hij wordt opnieuw gezet.
+     Alleen deze variant is zo gemarkeerd; de hoofdknop laat het thema met
+     rust. */
+  background:transparent !important;
+  color:var(--coral) !important;
+  border:1px solid var(--coral) !important;
+}
+.expivi-configurator .sk-bottom-actions button.btn-secondary[data-sokkies-pdf]:hover,
+.expivi-configurator .sk-bottom-actions button.btn-secondary[data-sokkies-pdf]:focus-visible{
+  background:var(--coral) !important;
+  color:#fff !important;
+}
+/* Tijdens het genereren (tien seconden) moet zichtbaar zijn dat er iets
+   gebeurt en mag er niet nog een keer geklikt worden. */
+.expivi-configurator .sk-bottom-actions .btn[disabled]{
+  opacity:.6;
+  cursor:default;
 }
 .expivi-configurator .sk-bottom-actions .btn:hover,
 .expivi-configurator .sk-bottom-actions .btn:focus-visible{
