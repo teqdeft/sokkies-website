@@ -156,62 +156,6 @@
     markeerAlles();
   }
 
-  /* ---------- 2b. opties die niet zonder elkaar kunnen ----------
-   * Gevraagd door de klant: individuele verzending gaat niet zonder
-   * geschenkdoosjes, terwijl geschenkdoosjes wel los besteld mogen worden.
-   * Eenrichtingsverkeer dus. Welke optie welke nodig heeft staat in het CMS
-   * en komt als data-vereist op de kaart binnen (inc/offerte-formulier.php).
-   *
-   * Aanzetten  -> de vereiste optie gaat mee aan.
-   * Uitzetten  -> alles wat DEZE optie nodig had, gaat uit.
-   * De omgekeerde weg blijft vrij: de vereiste optie los aanvinken mag. */
-  function vereistVan(vakje) {
-    var kaart = vakje.closest('[data-vereist]');
-    if (!kaart) { return []; }
-    return (kaart.getAttribute('data-vereist') || '').split('|')
-      .map(function (s) { return s.trim(); })
-      .filter(function (s) { return s !== ''; });
-  }
-
-  function extraMetWaarde(lijst, waarde) {
-    return lijst.filter(function (v) {
-      return (v.value || '').trim() === waarde;
-    })[0] || null;
-  }
-
-  /* Een kaart die door de soktype-voorwaarde verborgen is, mag niet stilletjes
-     aangevinkt worden: de bezoeker ziet hem niet en de server haalt hem er
-     toch weer uit. */
-  function kaartZichtbaar(vakje) {
-    var kaart = vakje.closest('.gchoice');
-    return !(kaart && kaart.classList.contains('is-verborgen'));
-  }
-
-  function pasVereistToe(gewijzigd) {
-    if (!gewijzigd) { return; }
-    var lijst = vakjes('of-extras');
-    if (!lijst.length) { return; }
-
-    if (gewijzigd.checked) {
-      vereistVan(gewijzigd).forEach(function (naam) {
-        var nodig = extraMetWaarde(lijst, naam);
-        if (nodig && !nodig.checked && kaartZichtbaar(nodig)) {
-          nodig.checked = true;
-          markeerKeuze(nodig);
-        }
-      });
-      return;
-    }
-
-    var waarde = (gewijzigd.value || '').trim();
-    lijst.forEach(function (v) {
-      if (v === gewijzigd || !v.checked) { return; }
-      if (vereistVan(v).indexOf(waarde) !== -1) {
-        v.checked = false;
-        markeerKeuze(v);
-      }
-    });
-  }
   /* ---------- 3. adresopzoeking ---------- */
   var bezig = false;
 
@@ -754,7 +698,7 @@
     if ('checkbox' === t.type) {
       markeerKeuze(t);
       if (t.closest('.of-soktypes')) { pasSoktypesToe(t); pasExtrasVoorwaarden(); }
-      if (t.closest('.of-extras')) { pasVereistToe(t); pasExtrasToe(t); markeerAlles(); }
+      if (t.closest('.of-extras')) { pasExtrasToe(t); markeerAlles(); }
     }
     bewaar();
   });
@@ -860,14 +804,7 @@
       kaart.classList.toggle('is-verborgen', !mag);
       if (!mag) {
         var vakje = kaart.querySelector('input[type="checkbox"]');
-        if (vakje && vakje.checked) {
-          vakje.checked = false;
-          markeerKeuze(vakje);
-          /* Verdwijnt een optie die een andere nodig had, dan kan die andere
-             niet blijven staan. */
-          pasVereistToe(vakje);
-          iets = true;
-        }
+        if (vakje && vakje.checked) { vakje.checked = false; markeerKeuze(vakje); iets = true; }
       }
     });
     if (!iets) { return; }
