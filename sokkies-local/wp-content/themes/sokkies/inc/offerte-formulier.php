@@ -1703,6 +1703,15 @@ function sokkies_offerte_soktype_keuzes() {
 	return $cache;
 }
 
+/* De lijst "Kan niet zonder" toont dezelfde opties als het formulier zelf
+   kent, zodat er geen naam overgetypt hoeft te worden die later verandert. */
+add_filter( 'acf/load_field/key=field_si_extra_vereist', function ( $veld ) {
+	$keuzes = sokkies_offerte_extra_keuzes();
+	if ( $keuzes ) {
+		$veld['choices'] = $keuzes;
+	}
+	return $veld;
+} );
 add_filter( 'acf/load_field/key=field_si_extra_types', function ( $veld ) {
 	$keuzes = sokkies_offerte_soktype_keuzes();
 	if ( $keuzes ) {
@@ -1741,6 +1750,45 @@ function sokkies_offerte_extra_voorwaarden() {
 	return $cache;
 }
 
+/**
+ * Per extra-optie de opties die er altijd bij horen; leeg = geen.
+ *
+ * Gevraagd door de klant: "Individuele verzending gaat niet zonder
+ * Geschenkdoosjes", terwijl geschenkdoosjes wel los besteld mogen worden.
+ * De koppeling is dus EENRICHTINGSVERKEER en staat in het CMS
+ * (Website-instellingen > Aanvullende opties > "Kan niet zonder"), niet in
+ * code: welke optie welke nodig heeft is een keuze van de klant.
+ */
+function sokkies_offerte_extra_vereist() {
+	static $cache = null;
+	if ( null !== $cache ) {
+		return $cache;
+	}
+	$cache = array();
+	$rijen = function_exists( 'get_field' ) ? get_field( 'offerte_extras', 'option' ) : array();
+	if ( ! is_array( $rijen ) ) {
+		return $cache;
+	}
+	foreach ( $rijen as $rij ) {
+		$naam  = isset( $rij['naam'] ) ? sokkies_offerte_keuzetekst( trim( (string) $rij['naam'] ) ) : '';
+		$nodig = isset( $rij['vereist'] ) ? array_filter( (array) $rij['vereist'] ) : array();
+		if ( '' === $naam || ! $nodig ) {
+			continue;
+		}
+		$schoon = array();
+		foreach ( $nodig as $n ) {
+			$n = sokkies_offerte_keuzetekst( trim( (string) $n ) );
+			// Zichzelf vereisen zou de bezoeker klemzetten.
+			if ( '' !== $n && $n !== $naam ) {
+				$schoon[] = $n;
+			}
+		}
+		if ( $schoon ) {
+			$cache[ $naam ] = array_values( array_unique( $schoon ) );
+		}
+	}
+	return $cache;
+}
 /**
  * VANGNET OP DE SERVER: een kaart die verborgen is kan met een aangepaste
  * verzending alsnog worden meegestuurd. De waarde wordt er dan hier uit
@@ -1787,6 +1835,88 @@ add_action( 'gform_pre_submission', function ( $form ) {
 	}
 } );
 
+/**
+ * TWEEDE VANGNET: een optie die niet zonder een andere kan, krijgt die andere
+ * er alsnog bij. Het scherm vinkt hem al aan, maar JavaScript kan uitvallen -
+ * en dan hoort er geen offerte binnen te komen met individuele verzending
+ * zonder geschenkdoosjes.
+ *
+ * Draait op prioriteit 11, dus NA het vangnet hierboven: dat verwijdert eerst
+ * de extra's die niet bij het gekozen soktype horen. Pas daarna heeft het zin
+ * om aan te vullen, anders vullen we iets aan dat er net uit gehaald wordt.
+ *
+ * Aanvullen en niet weigeren: de bezoeker heeft de optie bewust gekozen en
+ * krijgt hem op het scherm ook mét de vereiste optie te zien. Zijn aanvraag
+ * afkeuren om iets wat wij kunnen rechtzetten zou hem onnodig ophouden.
+ */
+add_action( 'gform_pre_submission', function ( $form ) {
+	if ( ! is_array( $form ) || ! sokkies_form_eigen_opmaak( $form['id'] ) ) {
+		return;
+	}
+	$vereist = sokkies_offerte_extra_vereist();
+	if ( ! $vereist ) {
+		return;
+	}
+	$voorwaarden = sokkies_offerte_extra_voorwaarden();
+
+	$types    = array(); // gekozen soktypes
+	$sleutels = array(); // keuzetekst => input-sleutel
+	$aan      = array(); // keuzeteksten die nu aanstaan
+
+	foreach ( $form['fields'] as $veld ) {
+		$css      = ' ' . preg_replace( '/\s+/', ' ', trim( (string) $veld->cssClass ) ) . ' ';
+		$is_type  = false !== strpos( $css, ' of-soktypes ' );
+		$is_extra = false !== strpos( $css, ' of-extras ' );
+		if ( ! $is_type && ! $is_extra ) {
+			continue;
+		}
+		$keuzes = (array) $veld->choices;
+		foreach ( (array) $veld->inputs as $i => $invoer ) {
+			$sleutel = 'input_' . str_replace( '.', '_', $invoer['id'] );
+			$gevuld  = ! empty( $_POST[ $sleutel ] );
+			if ( $is_type ) {
+				if ( $gevuld ) {
+					// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Gravity Forms doet de controle.
+					$types[] = sokkies_offerte_keuzetekst( wp_unslash( $_POST[ $sleutel ] ) );
+				}
+				continue;
+			}
+			/* De keuze hoort bij de invoer op DEZELFDE positie. We hebben hier
+			   ook de niet-aangevinkte nodig: zonder die sleutel kunnen we een
+			   ontbrekende optie niet alsnog meesturen. */
+			$tekst = isset( $keuzes[ $i ]['value'] )
+				? sokkies_offerte_keuzetekst( $keuzes[ $i ]['value'] )
+				: '';
+			if ( '' === $tekst ) {
+				continue;
+			}
+			$sleutels[ $tekst ] = $sleutel;
+			if ( $gevuld ) {
+				$aan[] = $tekst;
+			}
+		}
+	}
+
+	foreach ( $aan as $tekst ) {
+		if ( empty( $vereist[ $tekst ] ) ) {
+			continue;
+		}
+		foreach ( $vereist[ $tekst ] as $nodig ) {
+			if ( in_array( $nodig, $aan, true ) || empty( $sleutels[ $nodig ] ) ) {
+				continue;
+			}
+			/* Hoort de vereiste optie helemaal niet bij dit soktype, dan niet
+			   toevoegen: het vangnet hierboven zou hem er direct weer uit
+			   halen, en de bezoeker heeft hem ook nooit gezien. */
+			if ( ! empty( $voorwaarden[ $nodig ] )
+				&& ! array_intersect( $voorwaarden[ $nodig ], $types ) ) {
+				continue;
+			}
+			$_POST[ $sleutels[ $nodig ] ] = $nodig;
+			$aan[] = $nodig;
+		}
+	}
+}, 11 );
 function sokkies_extra_kaartfoto( $keuzetekst ) {
 	$url = sokkies_kaartfoto_kies( $keuzetekst, sokkies_extra_kaartfotos() );
 	if ( $url ) {
@@ -1862,6 +1992,21 @@ add_filter( 'gform_field_choice_markup_pre_render', function ( $markup, $choice,
 			$markup = preg_replace(
 				'#^(\s*<[a-z]+)#i',
 				'$1 data-alleen-bij="' . esc_attr( implode( '|', $voorwaarden[ $tekst ] ) ) . '"',
+				$markup,
+				1
+			);
+		}
+	}
+
+	/* En welke opties niet zonder elkaar kunnen. Zelfde idee: Gravity Forms
+	   kent geen logica per losse keuze, dus het staat als data-attribuut op
+	   de kaart en offerte.js doet de rest. */
+	if ( 'extra' === $soort ) {
+		$vereist = sokkies_offerte_extra_vereist();
+		if ( ! empty( $vereist[ $tekst ] ) ) {
+			$markup = preg_replace(
+				'#^(\s*<[a-z]+)#i',
+				'$1 data-vereist="' . esc_attr( implode( '|', $vereist[ $tekst ] ) ) . '"',
 				$markup,
 				1
 			);
