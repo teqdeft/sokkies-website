@@ -88,6 +88,10 @@ class TRP_IN_Automatic_Language_Detection {
 	 * Enqueue script on all front-end pages
 	 */
 	public function enqueue_cookie_adding() {
+        if ( $this->is_page_builder_editor_request() ) {
+            return;
+        }
+
 		$trp_language_cookie_data = $this->get_language_cookie_data();
         if ( apply_filters( 'trp_ald_enqueue_redirecting_script', true ) ) {
             wp_enqueue_script( 'trp-language-cookie', TRP_IN_ALD_PLUGIN_URL . 'assets/js/trp-language-cookie.js', array( 'jquery' ), TRP_IN_ALD_PLUGIN_VERSION );
@@ -262,11 +266,37 @@ class TRP_IN_Automatic_Language_Detection {
     }
 
 	public function activate_popup(){
+        if ( $this->is_page_builder_editor_request() ) {
+            return;
+        }
+
 	    require_once('partials/popup.php');
     }
 
     public function activate_hello_bar(){
+        if ( $this->is_page_builder_editor_request() ) {
+            return;
+        }
+
         require_once('partials/no-text-popup.php');
+    }
+
+    /**
+     * Whether the current request is a page builder editor session.
+     *
+     * Page builders (Elementor, Divi, Breakdance, WPBakery) render the edited page inside an iframe,
+     * which is a regular front-end request. Without this check the language suggestion popup / hello bar
+     * is printed on top of the editing canvas.
+     *
+     * @return bool
+     */
+    protected function is_page_builder_editor_request() {
+        // Defined in TranslatePress core. Guard it so the add-on keeps working with older core versions.
+        if ( ! function_exists( 'trp_is_page_builder_editor_request' ) ) {
+            return false;
+        }
+
+        return trp_is_page_builder_editor_request();
     }
 
     /**

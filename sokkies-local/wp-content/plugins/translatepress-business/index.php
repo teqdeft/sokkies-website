@@ -3,7 +3,7 @@
 Plugin Name: TranslatePress - Business
 Plugin URI: https://translatepress.com/
 Description: Experience a better way of translating your WordPress site using a visual front-end translation editor, with full support for WooCommerce and site builders.
-Version: 1.8.7
+Version: 1.8.8
 Author: Cozmoslabs, Razvan Mocanu, Madalin Ungureanu
 Author URI: https://cozmoslabs.com/
 Text Domain: translatepress-multilingual
@@ -548,7 +548,7 @@ function trp_business_update(){
         $license_key = trim(get_option('trp_license_key'));
         // setup the updater
         $edd_updater = new TRP_EDD_SL_Plugin_Updater(TRP_BUSINESS_STORE_URL, __FILE__, array(
-                'version' => '1.8.7',        // current version number
+                'version' => '1.8.8',        // current version number
                 'license' => $license_key,    // license key (used get_option above to retrieve from DB)
                 'item_name' => TRP_BUSINESS_ITEM_NAME,    // name of this plugin
                 'item_id' => '222',

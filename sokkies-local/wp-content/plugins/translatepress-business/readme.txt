@@ -3,9 +3,9 @@ Contributors: cozmoslabs, razvan.mo, madalin.ungureanu, sareiodata
 Donate link: https://www.translatepress.com/
 Tags: translate, translation, multilingual, automatic translation, bilingual, front-end translation, google translate, language
 Requires at least: 3.1.0
-Tested up to: 7.1
+Tested up to: 7.1.3
 Requires PHP: 7.4
-Stable tag: 1.8.7
+Stable tag: 1.8.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,10 @@ For more information please check out our [documentation](https://translatepress
 
 
 == Changelog ==
+= 1.8.8 =
+* Fixed meta tag og:locale when using SEOPress to follow current TranslatePress language
+* Keep the language detection popup out of page builder editors
+
 = 1.8.7 =
 * Improved the term slug translation query to prevent SQL injection vulnerabilities
 * Improved the slug uniqueness query to prevent SQL injection vulnerabilities

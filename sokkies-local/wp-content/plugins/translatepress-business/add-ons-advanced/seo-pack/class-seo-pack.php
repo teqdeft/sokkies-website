@@ -82,6 +82,8 @@ class TRP_IN_Seo_Pack {
 
         $this->loader->add_filter( 'trp_node_accessors', $this, 'add_seo_node_accessor_details', 10, 1 );
 
+        $this->loader->add_filter( 'seopress_social_og_locale', $this, 'filter_seopress_og_locale', 99999, 1 );
+
         $this->loader->add_filter( 'trp_st_string_types_config', $this->string_translation, 'add_string_translation_types', 10, 2 );
         $this->loader->add_filter( 'trp_editors_navigation', $this->string_translation, 'enable_editors_navigation', 10, 1 );
 
@@ -506,6 +508,23 @@ class TRP_IN_Seo_Pack {
         );
 
         return $node_accessor_array;
+    }
+
+    /**
+     * Strips the TranslatePress language variant suffixes (de_DE_formal, de_CH_informal,
+     * nl_NL_formal, pt_PT_ao90) from the SEOPress og:locale tag, as they aren't valid
+     * OpenGraph locales.
+     *
+     * The tag already follows the current language because TranslatePress filters 'locale'.
+     * SEOPress only normalizes the locale when the intl extension is available, unlike
+     * Yoast SEO and Rank Math which always validate it against the Facebook locales list,
+     * so only SEOPress needs this.
+     *
+     * @param string $html The og:locale meta tag(s) markup, including any og:locale:alternate tags.
+     * @return string
+     */
+    public function filter_seopress_og_locale( $html ) {
+        return preg_replace( '/(<meta property="og:locale" content="[^"]*?)_(?:formal|informal|ao90)"/', '$1"', $html, 1 );
     }
 
     /**

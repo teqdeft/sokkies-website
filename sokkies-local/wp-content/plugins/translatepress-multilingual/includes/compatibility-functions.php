@@ -823,6 +823,22 @@ function trp_strip_request_metadata_keys( $metadata ){
 }
 
 /**
+ * Let Hummingbird start its page-cache buffer before TranslatePress.
+ *
+ * Both normally start at init priority 0, but TranslatePress registers first.
+ * Buffers are processed in reverse order, so Hummingbird would cache the page
+ * before it is translated and before #TRPLINKPROCESSED markers are removed.
+ */
+add_filter( 'trp_start_output_buffer_priority', 'trp_hummingbird_compatibility' );
+function trp_hummingbird_compatibility( $priority ){
+    if ( defined( 'WPHB_VERSION' ) && (int) $priority === 0 ) {
+        return 1;
+    }
+
+    return $priority;
+}
+
+/**
  * Compatibility with NextGEN Gallery
  *
  * They start an output buffer at init -1 (before ours at init 0). They print footer scripts after we run translate_page,
@@ -2282,13 +2298,27 @@ function trp_AIOSEO_remove_gettext_hooks($trp_loader){
  */
 add_filter( 'trp_needed_language', 'trp_page_builders_compatibility_with_subdirectory_for_default_language', 10, 4 );
 function trp_page_builders_compatibility_with_subdirectory_for_default_language( $needed_language, $lang_from_url, $settings, $trp) {
-    if ( ( ( isset( $_GET['action'] ) && $_GET['action'] === 'elementor' ) || isset( $_GET['elementor-preview'] ) ) //Elementor
-        || trp_divi_is_builder_request() //Divi 4 & 5. Divi 4 appended PageSpeed=off to the builder URL, Divi 5 no longer does, so don't rely on it
-        || trp_is_breakdance_builder_request() //Breakdance builder shell (?breakdance=builder) and canvas iframe (breakdance_iframe=true)
-        || ( ( isset( $_GET['vc_action'] ) && $_GET['vc_action'] === 'vc_inline' ) || ( isset( $_GET['vc_editable'] ) && $_GET['vc_editable'] === 'true' ) ) ) { //WPBakery
+    if ( trp_is_page_builder_editor_request() ) {
         $needed_language = $settings['default-language'];
     }
     return $needed_language;
+}
+
+/**
+ * Whether the current request is a page builder editor session (the builder shell or its preview iframe).
+ *
+ * The preview iframe of a page builder is a regular front-end request, so front-end output such as the
+ * Automatic User Language Detection popup would otherwise show up on top of the editing canvas.
+ *
+ * @return bool
+ */
+function trp_is_page_builder_editor_request() {
+    $is_builder_request = ( ( isset( $_GET['action'] ) && $_GET['action'] === 'elementor' ) || isset( $_GET['elementor-preview'] ) ) //Elementor
+        || trp_divi_is_builder_request() //Divi 4 & 5. Divi 4 appended PageSpeed=off to the builder URL, Divi 5 no longer does, so don't rely on it
+        || trp_is_breakdance_builder_request() //Breakdance builder shell (?breakdance=builder) and canvas iframe (breakdance_iframe=true)
+        || ( ( isset( $_GET['vc_action'] ) && $_GET['vc_action'] === 'vc_inline' ) || ( isset( $_GET['vc_editable'] ) && $_GET['vc_editable'] === 'true' ) ); //WPBakery
+
+    return apply_filters( 'trp_is_page_builder_editor_request', $is_builder_request );
 }
 
 /**
@@ -3696,7 +3726,17 @@ function trp_divi_wrap_module_with_post_id($output, $render_slug, $module) {
 /**
  * Compatibility with redirect plugins when SEO Pack rewrites REQUEST_URI for translated slugs.
  */
-add_filter( 'rank_math/redirection/pre_search', 'trp_rank_math_use_original_request_uri_for_redirections', 9, 3 );
+add_action( 'plugins_loaded', 'trp_register_rank_math_seo_pack_compatibility', 20 );
+function trp_register_rank_math_seo_pack_compatibility() {
+    if ( ! defined( 'TRP_IN_SP_PLUGIN_VERSION' ) || ! class_exists( 'RankMath', false ) ) {
+        return;
+    }
+
+    add_filter( 'rank_math/redirection/pre_search', 'trp_rank_math_use_original_request_uri_for_redirections', 9, 3 );
+    add_filter( 'rank_math/redirection/add_redirect_header', 'trp_guard_rank_math_redirect', PHP_INT_MAX );
+    add_filter( 'request', 'trp_rank_math_category_redirect_language', 9 );
+}
+
 function trp_rank_math_use_original_request_uri_for_redirections( $check, $uri, $full_uri ) {
     if ( ! is_null( $check ) ) {
         return $check;
@@ -3728,6 +3768,84 @@ function trp_rank_math_use_original_request_uri_for_redirections( $check, $uri, 
     }
 
     return $redirection ?: $check;
+}
+
+/**
+ * Rank Math calls this filter immediately before wp_redirect(), after resolving its target.
+ * Leave its header preference unchanged; only guard this redirect attempt.
+ */
+function trp_guard_rank_math_redirect( $add_header ) {
+    if ( ! empty( trp_get_original_request_uri() ) ) {
+        add_filter( 'wp_redirect', 'trp_prevent_rank_math_self_redirect', PHP_INT_MAX );
+    }
+
+    return $add_header;
+}
+
+/**
+ * Cancel a Rank Math self-redirect using the visitor URL preserved before URI rewriting.
+ */
+function trp_prevent_rank_math_self_redirect( $location ) {
+    remove_filter( 'wp_redirect', 'trp_prevent_rank_math_self_redirect', PHP_INT_MAX );
+
+    if ( ! is_string( $location ) || $location === '' ) {
+        return $location;
+    }
+
+    // A form submission can legitimately redirect to the same URL for a new GET request.
+    if ( isset( $_SERVER['REQUEST_METHOD'] ) && ! in_array( $_SERVER['REQUEST_METHOD'], array( 'GET', 'HEAD' ), true ) ) {
+        return $location;
+    }
+
+    // The translated-slug cache preserves the visitor URL before SEO Pack rewrites REQUEST_URI.
+    $trp = TRP_Translate_Press::get_trp_instance();
+    $current_url = $trp->get_component( 'url_converter' )->cur_page_url();
+    $target = wp_parse_url( WP_Http::make_absolute_url( $location, $current_url ) );
+    $current = wp_parse_url( $current_url );
+
+    if ( ! is_array( $target ) || ! is_array( $current ) ) {
+        return $location;
+    }
+
+    $normalize_url = static function ( $url ) {
+        $url['scheme'] = strtolower( isset( $url['scheme'] ) ? $url['scheme'] : '' );
+        $url['host'] = strtolower( isset( $url['host'] ) ? $url['host'] : '' );
+        $url['port'] = isset( $url['port'] ) ? $url['port'] : ( $url['scheme'] === 'https' ? 443 : 80 );
+        $url['path'] = isset( $url['path'] ) && $url['path'] !== '' ? $url['path'] : '/';
+        ksort( $url );
+        return $url;
+    };
+
+    return $normalize_url( $target ) === $normalize_url( $current ) ? false : $location;
+}
+
+/**
+ * Rank Math strips the category base during request parsing, before its redirect module.
+ */
+function trp_rank_math_category_redirect_language( $query_vars ) {
+    global $TRP_LANGUAGE;
+
+    if ( ! isset( $query_vars['rank_math_category_redirect'] ) || ! is_string( $query_vars['rank_math_category_redirect'] ) || empty( $TRP_LANGUAGE ) ) {
+        return $query_vars;
+    }
+
+    $trp = TRP_Translate_Press::get_trp_instance();
+    $settings = $trp->get_component( 'settings' )->get_settings();
+    if ( $TRP_LANGUAGE === $settings['default-language'] ) {
+        return $query_vars;
+    }
+
+    $category_url = trailingslashit( get_option( 'home' ) ) . user_trailingslashit( $query_vars['rank_math_category_redirect'], 'category' );
+    add_filter( 'wp_redirect', function ( $location ) use ( $category_url, $TRP_LANGUAGE ) {
+        if ( $location !== $category_url ) {
+            return $location;
+        }
+
+        $trp = TRP_Translate_Press::get_trp_instance();
+        return $trp->get_component( 'url_converter' )->get_url_for_language( $TRP_LANGUAGE, $location, '' );
+    } );
+
+    return $query_vars;
 }
 
 /**
@@ -3941,4 +4059,205 @@ function trp_wps_hide_login_skip_language_for_slug( $skip, $url, $path ) {
     }
 
     return $skip;
+}
+
+/**
+ * Compatibility with Slider Revolution.
+ *
+ * Slider Revolution prints the data of a module as a JSON blob inside a <script> tag
+ * ( SR7.JSON['...'] = {...} ) and builds part of the module from it on the client side.
+ * The URL of a layer link action lives in that JSON whenever the layer is not rendered
+ * as a plain <a href> in the markup: the jQuery link type ( which the editor forces on
+ * row, column and group layers ), the slide link and every layer that the module only
+ * renders on the client. TranslatePress rewrites URLs found in the HTML markup, not
+ * inside scripts, so those links keep pointing to the default language and clicking
+ * them sends the visitor back to the default language version of the page.
+ *
+ * Convert the internal URLs stored in the slider JSON to the current language.
+ *
+ * @since 3.3.5
+ *
+ * @param array $data Slider data that Slider Revolution is about to json_encode.
+ * @return array
+ */
+add_filter( 'sr_load_slider_json', 'trp_slider_revolution_add_language_to_json_links' );
+function trp_slider_revolution_add_language_to_json_links( $data ) {
+    if ( ! is_array( $data ) || empty( $data['slides'] ) || ! is_array( $data['slides'] ) ) {
+        return $data;
+    }
+
+    foreach ( $data['slides'] as $slide_key => $slide ) {
+
+        // The whole slide can be a link ( Slide Options -> Link & SEO ).
+        if ( ! empty( $slide['params']['seo']['link'] ) ) {
+            $data['slides'][ $slide_key ]['params']['seo']['link'] = trp_slider_revolution_get_link_for_current_language( $slide['params']['seo']['link'] );
+        }
+
+        if ( empty( $slide['layers'] ) || ! is_array( $slide['layers'] ) ) {
+            continue;
+        }
+
+        foreach ( $slide['layers'] as $layer_key => $layer ) {
+            if ( ! is_array( $layer ) ) {
+                continue;
+            }
+
+            // Version 7 layers keep the link of an <a> layer directly on the layer.
+            if ( ! empty( $layer['href'] ) ) {
+                $data['slides'][ $slide_key ]['layers'][ $layer_key ]['href'] = trp_slider_revolution_get_link_for_current_language( $layer['href'] );
+            }
+
+            if ( empty( $layer['actions']['action'] ) || ! is_array( $layer['actions']['action'] ) ) {
+                continue;
+            }
+
+            foreach ( $layer['actions']['action'] as $action_key => $action ) {
+                if ( ! is_array( $action ) || empty( $action['action'] ) ) {
+                    continue;
+                }
+
+                if ( $action['action'] === 'link' ) {
+                    $link_key = 'image_link';
+                } elseif ( $action['action'] === 'menu' ) {
+                    $link_key = 'menu_link';
+                } else {
+                    continue;
+                }
+
+                if ( empty( $action[ $link_key ] ) ) {
+                    continue;
+                }
+
+                $data['slides'][ $slide_key ]['layers'][ $layer_key ]['actions']['action'][ $action_key ][ $link_key ] =
+                    trp_slider_revolution_get_link_for_current_language( $action[ $link_key ] );
+            }
+        }
+    }
+
+    return $data;
+}
+
+/**
+ * Compatibility with Slider Revolution.
+ *
+ * The legacy version 6 front-end does not use the JSON blob for the layer actions, it writes
+ * them in a data-actions attribute instead. TranslatePress does not rewrite URLs found in
+ * custom attributes, so the links of jQuery type layer actions need the same treatment there.
+ *
+ * @since 3.3.5
+ *
+ * @param array $events Actions that Slider Revolution is about to write in data-actions.
+ * @return array
+ */
+add_filter( 'rs_action_output_layer_action', 'trp_slider_revolution_add_language_to_layer_actions' );
+function trp_slider_revolution_add_language_to_layer_actions( $events ) {
+    if ( ! is_array( $events ) ) {
+        return $events;
+    }
+
+    foreach ( $events as $key => $event ) {
+        if ( ! is_array( $event ) || empty( $event['url'] ) || empty( $event['a'] ) ) {
+            continue;
+        }
+
+        if ( ! in_array( $event['a'], array( 'simplelink', 'menulink' ), true ) ) {
+            continue;
+        }
+
+        $events[ $key ]['url'] = trp_slider_revolution_get_link_for_current_language( $event['url'] );
+    }
+
+    return $events;
+}
+
+/**
+ * Compatibility with Slider Revolution.
+ *
+ * Add the current language to an internal URL stored by Slider Revolution, following the same
+ * rules TranslatePress applies to the href of an <a> tag found in the markup of the page.
+ *
+ * @since 3.3.5
+ *
+ * @param string $url URL as stored by Slider Revolution.
+ * @return string
+ */
+function trp_slider_revolution_get_link_for_current_language( $url ) {
+    if ( ! is_string( $url ) ) {
+        return $url;
+    }
+
+    $trimmed_url = trim( $url );
+
+    // Skip empty values, anchors and non http(s) schemes such as mailto:, tel: or javascript:.
+    if ( $trimmed_url === '' || strpos( $trimmed_url, '#' ) === 0 ) {
+        return $url;
+    }
+    if ( preg_match( '/^[a-z][a-z0-9+.-]*:/i', $trimmed_url ) && stripos( $trimmed_url, 'http' ) !== 0 ) {
+        return $url;
+    }
+
+    // Slider Revolution stores protocol relative URLs ( //example.com/page ) when the Protocol
+    // option of the action is left on auto. Resolve them so that the host can be compared, then
+    // put the URL back in the form it was stored in.
+    $is_protocol_relative = ( strpos( $trimmed_url, '//' ) === 0 );
+    if ( $is_protocol_relative ) {
+        $trimmed_url = ( is_ssl() ? 'https:' : 'http:' ) . $trimmed_url;
+    }
+
+    // Anything that is neither absolute nor starting at the root of the site is relative to the
+    // current path ( or a host name typed without a protocol ). Adding a language would break it.
+    if ( ! preg_match( '#^https?://#i', $trimmed_url ) && strpos( $trimmed_url, '/' ) !== 0 ) {
+        return $url;
+    }
+
+    global $TRP_LANGUAGE;
+
+    $trp                 = TRP_Translate_Press::get_trp_instance();
+    $settings            = $trp->get_component( 'settings' )->get_settings();
+    $url_converter       = $trp->get_component( 'url_converter' );
+    $translation_render  = $trp->get_component( 'translation_render' );
+
+    if ( ! is_object( $url_converter ) || ! is_object( $translation_render ) ) {
+        return $url;
+    }
+
+    $default_language        = $settings['default-language'];
+    $subdirectory_on_default = ( isset( $settings['add-subdirectory-to-default-language'] ) && $settings['add-subdirectory-to-default-language'] === 'yes' );
+
+    if ( $settings['force-language-to-custom-links'] !== 'yes' ) {
+        return $url;
+    }
+    if ( $TRP_LANGUAGE === $default_language && ! $subdirectory_on_default ) {
+        return $url;
+    }
+
+    $local_url         = $translation_render->maybe_is_local_url( $trimmed_url, home_url() );
+    $language_from_url = $url_converter->get_lang_from_url_string( $local_url );
+
+    if ( $translation_render->is_external_link( $local_url, home_url() ) ||
+         $translation_render->is_admin_link( $local_url ) ||
+         $url_converter->url_is_file( $local_url ) ||
+         ( $language_from_url !== null && ! ( $subdirectory_on_default && $language_from_url === $default_language ) ) ) {
+        return $url;
+    }
+
+    /**
+     * Run the URL through the same filter that TRP_Translation_Render::handle_custom_links_and_forms()
+     * applies to the href of an <a> tag, so that Slider Revolution links obey the "Do not translate
+     * certain paths" setting and any other filter hooked to it.
+     *
+     * The fourth argument is the <a> node that the URL was found on. There is no such node here,
+     * the URL comes from the slider data, so null is passed instead.
+     */
+    $new_url = apply_filters( 'trp_force_custom_links', $url_converter->get_url_for_language( $TRP_LANGUAGE, $local_url, '' ), $local_url, $TRP_LANGUAGE, null );
+
+    if ( ! is_string( $new_url ) || $new_url === '' ) {
+        return $url;
+    }
+
+    if ( $is_protocol_relative ) {
+        $new_url = preg_replace( '#^https?://#i', '//', $new_url );
+    }
+
+    return $new_url;
 }
