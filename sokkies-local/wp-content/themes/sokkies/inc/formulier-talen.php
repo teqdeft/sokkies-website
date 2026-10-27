@@ -108,21 +108,21 @@ function sokkies_form_placeholders( $taal ) {
 			'Bijv. 100'                              => 'E.g. 100',
 			'Is er iets dat we nog moeten weten?'    => 'Is there anything else we should know?',
 			'Vertel kort waar we je mee kunnen helpen.' => 'Tell us briefly how we can help you.',
-			'Vertel kort wat je zoekt: aantallen, kleuren, deadline — en hoe jij jouw perfecte sokken voor je ziet.' => 'Tell us briefly what you are looking for: quantities, colours, deadline — and how you picture your perfect socks.',
+			'Vertel kort wat je zoekt: kleuren, deadline en hoe jij jouw perfecte sokken voor je ziet.' => 'Tell us briefly what you are looking for: colours, deadline and how you picture your perfect socks.',
 		),
 		'de' => array(
 			'Optioneel'                              => 'Optional',
 			'Bijv. 100'                              => 'z. B. 100',
 			'Is er iets dat we nog moeten weten?'    => 'Gibt es noch etwas, das wir wissen sollten?',
 			'Vertel kort waar we je mee kunnen helpen.' => 'Sagen Sie uns kurz, wobei wir Ihnen helfen können.',
-			'Vertel kort wat je zoekt: aantallen, kleuren, deadline — en hoe jij jouw perfecte sokken voor je ziet.' => 'Sagen Sie uns kurz, was Sie suchen: Stückzahl, Farben, Termin — und wie Sie sich Ihre perfekten Socken vorstellen.',
+			'Vertel kort wat je zoekt: kleuren, deadline en hoe jij jouw perfecte sokken voor je ziet.' => 'Sagen Sie uns kurz, was Sie suchen: Farben, Termin und wie Sie sich Ihre perfekten Socken vorstellen.',
 		),
 		'fr' => array(
 			'Optioneel'                              => 'Facultatif',
 			'Bijv. 100'                              => 'Ex. 100',
 			'Is er iets dat we nog moeten weten?'    => 'Y a-t-il autre chose que nous devrions savoir ?',
 			'Vertel kort waar we je mee kunnen helpen.' => 'Dites-nous brièvement comment nous pouvons vous aider.',
-			'Vertel kort wat je zoekt: aantallen, kleuren, deadline — en hoe jij jouw perfecte sokken voor je ziet.' => 'Dites-nous brièvement ce que vous cherchez : quantités, couleurs, délai — et comment vous imaginez vos chaussettes idéales.',
+			'Vertel kort wat je zoekt: kleuren, deadline en hoe jij jouw perfecte sokken voor je ziet.' => 'Dites-nous brièvement ce que vous cherchez : couleurs, délai et comment vous imaginez vos chaussettes idéales.',
 		),
 	);
 
