@@ -2191,6 +2191,9 @@ function sokkies_form_url_veld( $form ) {
 		return $form;
 	}
 
+	// De stapparameter van Gravity Forms hoort niet in de vastgelegde URL.
+	$url = sokkies_url_zonder_gf_stap( $url, rgar( $form, 'id' ) );
+
 	foreach ( $form['fields'] as $veld ) {
 		if ( isset( $veld->defaultValue ) && '{embed_url}' === trim( (string) $veld->defaultValue ) ) {
 			$veld->defaultValue = $url;
@@ -2200,6 +2203,105 @@ function sokkies_form_url_veld( $form ) {
 	return $form;
 }
 add_filter( 'gform_pre_render', 'sokkies_form_url_veld' );
+
+/**
+ * Het stapnummer van Gravity Forms uit een vastgelegde URL halen.
+ *
+ * Sinds Gravity Forms 3.2.0 houdt het formulier de huidige stap bij in de
+ * adresbalk: de front-end bouwt "gf_page_" + formulier-id en schrijft dat met
+ * history.replaceState weg (assets/js/dist/scripts-theme.min.js, bereikbaar via
+ * window.gform.pagination). Voor de bezoeker is dat winst - een stap wordt
+ * deelbaar en de terugknop van de browser werkt binnen het formulier - maar de
+ * parameter staat er ook op het moment van verzenden. Zo belandde hij in de
+ * vastgelegde URL van de aanvraag, en daarmee in de beheerdersmail en in
+ * Pipedrive. Gemeld door de klant (2026-10-27): "voorheen stond er gewoon
+ * /nl/offerte/".
+ *
+ * ALLEEN DEZE ENE PARAMETER GAAT ERUIT. _gl, gclid en gbraid komen van Google
+ * Ads en blijven staan: daar draait de attributie op.
+ *
+ * BEWUST GEEN remove_query_arg(). Die ontleedt de querystring met wp_parse_str
+ * en bouwt hem opnieuw op via urlencode_deep, waardoor de sterretjes in een
+ * _gl-waarde (1*geo7qm*_up*MQ..) terugkomen als %2A. De waarde blijft dan
+ * gelijk, de vastgelegde tekst niet. Vandaar een chirurgische vervanging die
+ * de rest byte voor byte laat staan.
+ *
+ * @param string $url     De URL zoals vastgelegd.
+ * @param int    $form_id Het formulier waar de stapparameter bij hoort.
+ *
+ * @return string
+ */
+function sokkies_url_zonder_gf_stap( $url, $form_id ) {
+	$url     = (string) $url;
+	$form_id = absint( $form_id );
+
+	if ( '' === $url || ! $form_id ) {
+		return $url;
+	}
+
+	// De naam bij Gravity Forms zelf opvragen, zodat hij nooit uit de pas loopt.
+	$arg = method_exists( 'GFFormDisplay', 'get_page_query_arg' )
+		? GFFormDisplay::get_page_query_arg( $form_id )
+		: 'gf_page_' . $form_id;
+
+	if ( false === strpos( $url, $arg . '=' ) ) {
+		return $url;
+	}
+
+	$url = preg_replace( '/([?&])' . preg_quote( $arg, '/' ) . '=[^&#]*/', '$1', $url );
+
+	// Opruimen wat er van de scheidingstekens overblijft: ?& , && en een losse
+	// ? of & vlak voor het anker of het einde van de URL.
+	$url = preg_replace( '/\?&+/', '?', $url );
+	$url = preg_replace( '/&&+/', '&', $url );
+	$url = preg_replace( '/[?&]+(#|$)/', '$1', $url );
+
+	return $url;
+}
+
+/**
+ * Vangnet bij het opslaan, ook voor velden die wij niet zelf vullen.
+ *
+ * Het veld "URL" zetten we hierboven zelf, maar de campagne-tracker vult zijn
+ * eigen verborgen velden met de URL uit de adresbalk. Op aanvraag 934 stond de
+ * stapparameter daardoor in veld 37 ("URL") en in veld 24 ("Attribute 4").
+ * Dit filter pakt elke waarde die als URL wordt opgeslagen, ongeacht wie hem
+ * heeft gezet.
+ *
+ * Alleen onze eigen formulieren, en alleen waarden die echt met http(s)://
+ * beginnen - een vrij tekstveld blijft dus onaangeroerd.
+ *
+ * NIET AANGERAAKT: de eigen kolom source_url van Gravity Forms. Die wordt bij
+ * het verzenden uit REQUEST_URI gevuld, en de postback gaat naar de action van
+ * het formulier, waar Gravity Forms de stapparameter er zelf al uit haalt
+ * (form_display.php:1171). Nagemeten op aanvraag 934: source_url was schoon.
+ * Bovendien leest sokkies_form_taal() die kolom om de taal van de mail te
+ * bepalen; daar blijven we vanaf zolang er niets mis mee is.
+ *
+ * @param string $waarde De waarde zoals die opgeslagen zou worden.
+ * @param array  $entry  De aanvraag.
+ * @param object $veld   Het veld.
+ * @param array  $form   Het formulier.
+ *
+ * @return string
+ */
+function sokkies_veldwaarde_zonder_gf_stap( $waarde, $entry, $veld, $form ) {
+	if ( ! is_string( $waarde ) || '' === $waarde ) {
+		return $waarde;
+	}
+
+	$form_id = (int) rgar( $form, 'id' );
+	if ( ! $form_id || ! sokkies_form_eigen_opmaak( $form_id ) ) {
+		return $waarde;
+	}
+
+	if ( 0 !== strpos( $waarde, 'http://' ) && 0 !== strpos( $waarde, 'https://' ) ) {
+		return $waarde;
+	}
+
+	return sokkies_url_zonder_gf_stap( $waarde, $form_id );
+}
+add_filter( 'gform_save_field_value', 'sokkies_veldwaarde_zonder_gf_stap', 10, 4 );
 
 /**
  * Een landwaarde omzetten naar de landcode (ISO 3166-1 alfa-2).
