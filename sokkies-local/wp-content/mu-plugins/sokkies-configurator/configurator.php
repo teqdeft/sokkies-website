@@ -108,6 +108,29 @@ function sokkies_configurator_url( $pad ) {
 	return plugins_url( $pad, __FILE__ );
 }
 
+
+/**
+ * Staat de configurator aan?
+ *
+ * EEN schakelaar voor TWEE plekken: deze plugin laadt de bestanden van Expivi
+ * in, het thema rendert het vak op de productpagina. Staan die los van elkaar,
+ * dan laadt een soktypepagina ruim 200 kB Expivi voor een vak dat er niet is
+ * en gooit viewer.js twee keer "Cannot read properties of null (reading
+ * 'offsetWidth')" omdat zijn aanknopingspunt ontbreekt. Precies die halve
+ * toestand stond op dev.
+ *
+ * STAAT NU UIT (verzoek 2026-10-27: configuratorsectie verbergen op de PDP).
+ *
+ * WEER AANZETTEN: zet in wp-config.php
+ *     define( 'SOKKIES_CONFIGURATOR_AAN', true );
+ * of geef true terug via het filter sokkies_configurator_aan. De code blijft
+ * gewoon staan, er komt alleen niets meer uit.
+ */
+function sokkies_configurator_aan() {
+	$aan = defined( 'SOKKIES_CONFIGURATOR_AAN' ) ? (bool) SOKKIES_CONFIGURATOR_AAN : false;
+
+	return (bool) apply_filters( 'sokkies_configurator_aan', $aan );
+}
 /** Versie = wijzigingsdatum van het bestand, zodat de cache vanzelf breekt. */
 function sokkies_configurator_versie( $pad ) {
 	$bestand = __DIR__ . '/' . $pad;
@@ -165,6 +188,9 @@ function sokkies_configurator_soktype_kaart() {
 	return $uit;
 }
 function sokkies_configurator_assets() {
+	if ( ! sokkies_configurator_aan() ) {
+		return;
+	}
 	if ( ! is_singular( 'sokkies_soktype' ) ) {
 		return;
 	}

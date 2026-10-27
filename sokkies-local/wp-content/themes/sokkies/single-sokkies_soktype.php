@@ -435,7 +435,19 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
     </section>
     <?php endif; ?>
 
+<?php /* De 3D-configurator (Expivi) staat UIT (verzoek 2026-10-27).
 
+   Niet in een HTML-commentaar: dat stuurt de hele sectie - markup, PHP en al -
+   alsnog naar de browser, waar crawlers en linkcheckers er kapotte links in
+   zien. Zo blijft de code staan maar komt er niets meer uit.
+
+   DEZELFDE SCHAKELAAR stuurt ook de mu-plugin die de bestanden van Expivi
+   inlaadt. Zonder dat zou deze pagina ruim 200 kB laden voor een vak dat er
+   niet is, en gooit viewer.js een fout omdat zijn aanknopingspunt ontbreekt.
+
+   WEER AANZETTEN: zie sokkies_configurator_aan() in
+   wp-content/mu-plugins/sokkies-configurator/configurator.php. */ ?>
+<?php if ( function_exists( 'sokkies_configurator_aan' ) && sokkies_configurator_aan() ) : ?>
 <section class="design-now">
       <img class="design-duddle-sock" src="<?php echo esc_url( $assets ); ?>pdp-duddle-configurator.png" alt="" aria-hidden="true">
       <div class="design-bg-union" aria-hidden="true"></div>
@@ -485,6 +497,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
         </div>
       </div>
     </section>
+    <?php endif; /* einde uitgeschakelde Expivi-sectie */ ?>
 
 <section class="usecases">
       <div class="container">
