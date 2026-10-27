@@ -26,11 +26,14 @@
 }
 .expivi-configurator{
   width:100%;
-  /* 880 was precies genoeg voor een balk met EEN knop (56 hoog plus 2x24
-     padding = 104). Met de PDF-knop erbij is die balk 172 hoog gemeten, en
-     dan viel de offerteknop onder de rand van de kaart - die knipt af met
-     overflow:hidden. Vandaar 68px erbij. */
-  height:948px;
+  /* De kaart is zo hoog als de optiekolom nodig heeft. Eerder stond hier 948:
+     de modeltegels waren toen 150px en de prijsregel stond er nog boven, en
+     met de knoppenbalk van 172 (twee knoppen) liep de offerteknop anders
+     onder de rand - die knipt af met overflow:hidden. Met tegels van 80 en
+     de prijs verborgen past het ruim binnen 750 (gemeten op 1440: 232px over
+     onder de knoppen, en de optiekolom scrolt niet).
+     WIJZIG JE DE INHOUD van de optiekolom, meet dan opnieuw. */
+  height:750px;
 }
 .expivi-configurator .product-container{
   display:grid;
@@ -62,6 +65,9 @@
   background:#fff;
   border-left:1px solid var(--border-light);
   padding:22px 20px;
+}
+.expivi-options .price{
+  display:none;
 }
 .expivi-configurator #expivi-price{
   font-family:var(--roc-grotesk);

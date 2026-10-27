@@ -33,15 +33,14 @@
    Font: roc-grotesk (Adobe) → fallback Space Grotesk (Google)
    ============================================================ */
 
-.expivi-configurator 500;600;700&display=swap');
 
 :root{
     --sk-red:        #FA4B46;
     --sk-red-dk:     #D43C38;
     --sk-yellow:     #FAE16E;
     --sk-yellow-dk:  #F4D24A;
-    --sk-black:      #1C1C1C;
-    --sk-text:       #212529;
+    --sk-black:      #241a18;
+    --sk-text:       #28121B;
     --sk-text-mute:  #6c757d;
     --sk-bg:         #ffffff;
     --sk-bg-soft:    #f8f9fa;
@@ -52,7 +51,7 @@
     --sk-shadow-strong: 0 6px 20px rgba(28,28,28,0.10);
     /* ROC Grotesk, Regular (400) + Bold (700) only. Loaded by
        the host site (Adobe Fonts); Space Grotesk is the fallback where it is not. */
-    --sk-font:       'roc-grotesk', 'Space Grotesk', system-ui, sans-serif;
+    --sk-font:       "roc-grotesk", sans-serif;
     --sk-container:  1280px;
 }
 
@@ -798,7 +797,7 @@ html.sk-ctrl-busy .v-popper__popper{
 }
 .expivi-configurator .sk-trash:hover{ color: var(--sk-red); background: var(--sk-bg-soft); }
 .expivi-configurator .v-stepper__step__step .v-icon{ color: #fff !important; font-size: 16px !important; }
-.expivi-configurator .v-stepper__label{ font-size: 14px !important; font-weight: 700 !important; color: var(--sk-text) !important; }
+.expivi-configurator .v-stepper__label{ font-weight: 500 !important; color: var(--sk-text) !important; }
 .expivi-configurator .v-stepper__step{ position: relative !important; }
 .expivi-configurator .v-stepper__step::after{
     content: "";
@@ -1184,8 +1183,8 @@ html.sk-ctrl-busy .v-popper__popper{
 /* Square, as tall as the pattern tiles (150); 50 reads as too small. The
    tile's width is inline, hence !important. */
 .page.product [data-xpv-attribute-id="284838"] .tile-card{
-    width: 150px !important;
-    height: 150px !important;
+    width: 80px !important;
+    height: 80px !important;
 }
 .page.product [data-xpv-attribute-id="284838"] .tile-card .v-image{
     width: 100% !important;
