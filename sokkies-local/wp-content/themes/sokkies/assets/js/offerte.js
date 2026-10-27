@@ -883,3 +883,92 @@
     jQuery(document).on('gform_confirmation_loaded', wis);
   }
 })();
+
+/* =============================================================
+   De stapparameter van Gravity Forms uit de adresbalk houden.
+
+   Sinds Gravity Forms 3.2.0 schrijft het formulier de huidige stap in de
+   URL: gf_page_{formulier-id}={stap}, met history.replaceState/pushState
+   (assets/js/dist/scripts-theme.min.js). Een stap wordt daarmee deelbaar,
+   maar de klant wil de schone /nl/offerte/ terug - en langs die weg belandde
+   de parameter ook in de vastgelegde URL van de aanvraag.
+
+   We gebruiken de eigen API van Gravity Forms, window.gform.pagination
+   .removePageQueryArg(), en geen eigen ingreep in history: die API bestaat
+   precies hiervoor en blijft werken als GF zijn interne opbouw wijzigt.
+   Bestaat hij niet (andere versie), dan halen we de parameter zelf weg -
+   chirurgisch, zodat _gl, gclid en gbraid byte voor byte blijven staan.
+
+   OPRUIMEN GEBEURT EEN TIK LATER (setTimeout 0). Gravity Forms schrijft de
+   URL synchroon in zijn eigen afhandeling van dezelfde events; door een tik
+   te wachten maakt het niet uit of onze luisteraar voor of na die van GF is
+   geregistreerd.
+   ============================================================= */
+
+(function () {
+    'use strict';
+
+    function formulierIds() {
+        var ids = [];
+        Array.prototype.forEach.call(
+            document.querySelectorAll('form[data-formid]'),
+            function (formulier) {
+                var id = parseInt(formulier.getAttribute('data-formid'), 10);
+                if (id > 0 && ids.indexOf(id) === -1) {
+                    ids.push(id);
+                }
+            }
+        );
+        return ids;
+    }
+
+    /* Terugval zonder de GF-API: alleen deze ene parameter eruit, de rest
+       onaangeroerd - dezelfde aanpak als sokkies_url_zonder_gf_stap in PHP. */
+    function zelfWeghalen(id) {
+        var naam = 'gf_page_' + id;
+        if (window.location.search.indexOf(naam + '=') === -1) {
+            return;
+        }
+
+        var schoon = window.location.search
+            .replace(new RegExp('([?&])' + naam + '=[^&#]*'), '$1')
+            .replace(/\?&+/, '?')
+            .replace(/&&+/g, '&')
+            .replace(/[?&]+$/, '');
+
+        window.history.replaceState(
+            window.history.state,
+            '',
+            window.location.pathname + schoon + window.location.hash
+        );
+    }
+
+    function opruimen() {
+        var paginering = window.gform && window.gform.pagination;
+
+        formulierIds().forEach(function (id) {
+            if (paginering && typeof paginering.removePageQueryArg === 'function') {
+                paginering.removePageQueryArg(id);
+            } else {
+                zelfWeghalen(id);
+            }
+        });
+    }
+
+    function straks() {
+        window.setTimeout(opruimen, 0);
+    }
+
+    [
+        'gform/post_render',
+        'gform/ajax/post_page_change',
+        'gform/frontend_pages/evaluated'
+    ].forEach(function (naam) {
+        document.addEventListener(naam, straks);
+    });
+
+    /* Bij terug en vooruit zet Gravity Forms de parameter opnieuw. */
+    window.addEventListener('popstate', straks);
+
+    straks();
+})();
