@@ -3456,6 +3456,17 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 					array( 'key' => 'field_soktype_spec_tekst', 'label' => 'Tekst', 'name' => 'tekst', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'all', 'instructions' => 'Selecteer woorden en gebruik de linkknop om ze te linken. Een tabel plak je vanuit Word/Excel/Google Docs, of je zet hem via het tabblad Tekst in HTML; de opmaak komt uit de stylesheet.' ),
 				),
 			),
+			/* Het merkverhaal onderaan de productpagina. Stond hardgecodeerd
+			   in de template, dus op elke productpagina dezelfde tekst en
+			   niet te bewerken (melding klant 2026-10-28). Leeg = de
+			   standaardtekst, zodat een type zonder eigen verhaal niet
+			   ineens een leeg vlak krijgt. */
+			array( 'key' => 'field_soktype_merk_titel', 'label' => 'Merkverhaal: kop', 'name' => 'merk_titel', 'type' => 'text', 'instructions' => 'Het tekstblok onderaan de productpagina. Leeg = de standaardtekst die nu op alle productpagina&#039;s staat. Een woord tussen [blokhaken] wordt geel.' ),
+			array( 'key' => 'field_soktype_merk_tekst_1', 'label' => 'Merkverhaal: tekst (boven)', 'name' => 'merk_tekst_1', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'all', 'instructions' => 'Leeg = de standaardtekst. Plak GEEN kale URL op een eigen regel; links maak je met de linkknop op geselecteerde woorden.' ),
+			array( 'key' => 'field_soktype_merk_tussenkop', 'label' => 'Merkverhaal: tussenkop', 'name' => 'merk_tussenkop', 'type' => 'text', 'instructions' => 'Leeg = de standaardtekst.' ),
+			array( 'key' => 'field_soktype_merk_tekst_2', 'label' => 'Merkverhaal: tekst (onder)', 'name' => 'merk_tekst_2', 'type' => 'wysiwyg', 'toolbar' => 'sokkies_eenvoudig', 'media_upload' => 0, 'tabs' => 'all', 'instructions' => 'Leeg = de standaardtekst.' ),
+			array( 'key' => 'field_soktype_merk_link', 'label' => 'Merkverhaal: link', 'name' => 'merk_link', 'type' => 'link', 'return_format' => 'array', 'instructions' => 'De "Lees meer"-link onder de tekst. Leeg = naar Over ons. Zet je hieronder "Tekst inklappen" aan, dan wordt het een uitklapknop en wordt deze link niet gebruikt.' ),
+			array( 'key' => 'field_soktype_merk_inklappen', 'label' => 'Merkverhaal: tekst inklappen', 'name' => 'merk_inklappen', 'type' => 'true_false', 'ui' => 1, 'default_value' => 0, 'instructions' => 'Aan = de tekst wordt afgekapt en "Lees meer" klapt hem open, zoals op de homepage. Past de tekst al binnen de hoogte, dan verdwijnt de knop vanzelf.' ),
 			array(
 				'key'           => 'field_soktype_faq_vragen',
 				'label'         => 'Veelgestelde vragen',

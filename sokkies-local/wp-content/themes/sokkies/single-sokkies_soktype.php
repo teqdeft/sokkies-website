@@ -633,32 +633,32 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
     ) );
     ?>
 
-<section class="brand-intro brand-light">
-      <div class="container">
-        <div class="brand-duddle-icons">
-          <img class="dubble-left" src="<?php echo esc_url( $assets_uri ); ?>media/sock-duddle-l.png" alt="" aria-hidden="true">
-          <img class="dubble-right" src="<?php echo esc_url( $assets_uri ); ?>media/sock-duddle-r.png" alt="" aria-hidden="true">
-        </div>
-        <div class="brand-intro-inner">
-          <h2>Sokken bedrukken voor elk bedrijf</h2>
-          <p>Custom sokken zijn een opvallend en blijvend relatiegeschenk. Bij Sokkies werk je vanaf 50 paar en krijg je binnen 24 uur een digitaal proefontwerp. Bij Sokkies hebben we onze eigen productie: van ontwerp tot levering beheren we het proces zelf. Zo garanderen we kwaliteit en snelle doorlooptijden.</p>
-          <h6>Bekend van reguliere sokken, sportsokken en bamboesokken — en duurzaam dankzij onze One Tree Planted samenwerking.</h6>
-          <p>Voor sportclubs, bedrijven en sponsoren werkt het hetzelfde. Vanaf 50 paar in jouw eigen ontwerp, kleur en formaat. Met of zonder geschenkdoosje. Wat ooit een gimmick was, is inmiddels een serieuze marketingtool.</p>
-          <?php /* Stond op "#" en ging dus nergens heen; het merkverhaal-blok
-             elders op de site linkt naar Over ons, dus dat is hier ook de
-             bestemming. */ ?>
-          <a href="<?php echo esc_url( home_url( '/over-ons/' ) ); ?>" class="brand-intro-link">
-            Lees meer
-            <svg xmlns="http://www.w3.org/2000/svg" width="9.39" height="12.199" viewBox="0 0 9.39 12.199">
-              <g id="Group_491" data-name="Group 491" transform="translate(-653.793 -7826)">
-                <path id="Path_3671" data-name="Path 3671" d="M1216,541.6c.392.226,4,4,4,4l-4,4" transform="translate(1204.102 6617.5) rotate(90)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
-                <path id="Path_3670" data-name="Path 3670" d="M1289.087,547h11" transform="translate(1205.497 6537.413) rotate(90)" fill="none" stroke="#28121b" stroke-linecap="round" stroke-width="1"/>
-              </g>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </section>
+<?php
+    /* Het merkverhaal. Stond hier hardgecodeerd, dus op elke productpagina
+       dezelfde tekst die de klant niet kon aanpassen (melding 2026-10-28).
+       Nu per soktype te vullen onder Soktypes > [type] > Productpagina.
+
+       LEEG = DE TEKST DIE ER ALTIJD AL STOND. Bewust wel een terugval hier,
+       anders raken alle elf productpagina's dit blok kwijt zodra de code
+       deployt: de veldwaarden zijn database en reizen niet mee. */
+    $merk_titel   = trim( (string) get_field( 'merk_titel' ) ) ?: 'Sokken bedrukken voor elk bedrijf';
+    $merk_tekst_1 = trim( (string) get_field( 'merk_tekst_1' ) ) ?: 'Custom sokken zijn een opvallend en blijvend relatiegeschenk. Bij Sokkies werk je vanaf {minimum} paar en krijg je binnen 24 uur een digitaal proefontwerp. Bij Sokkies hebben we onze eigen productie: van ontwerp tot levering beheren we het proces zelf. Zo garanderen we kwaliteit en snelle doorlooptijden.';
+    $merk_tussen  = trim( (string) get_field( 'merk_tussenkop' ) ) ?: 'Bekend van reguliere sokken, sportsokken en bamboesokken — en duurzaam dankzij onze One Tree Planted samenwerking.';
+    $merk_tekst_2 = trim( (string) get_field( 'merk_tekst_2' ) ) ?: 'Voor sportclubs, bedrijven en sponsoren werkt het hetzelfde. Vanaf {minimum} paar in jouw eigen ontwerp, kleur en formaat. Met of zonder geschenkdoosje. Wat ooit een gimmick was, is inmiddels een serieuze marketingtool.';
+    $merk_link    = get_field( 'merk_link' );
+
+    get_template_part( 'template-parts/sections/deel', 'brand-intro', array(
+      'stijl_klasse' => ' brand-light',
+      'titel'        => $merk_titel,
+      'tekst_1'      => $merk_tekst_1,
+      'tussenkop'    => $merk_tussen,
+      'tekst_2'      => $merk_tekst_2,
+      /* Stond op "#" en ging dus nergens heen; het merkverhaal elders op de
+         site linkt naar Over ons, dus dat is hier ook de bestemming. */
+      'link'         => $merk_link ?: array( 'url' => home_url( '/over-ons/' ) ),
+      'inklappen'    => (bool) get_field( 'merk_inklappen' ),
+    ) );
+    ?>
 
     <!-- FAQ -->
     <?php
