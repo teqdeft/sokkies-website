@@ -2725,3 +2725,42 @@ add_filter( 'gform_pre_submission_filter', function ( $form ) {
 
 	return $form;
 }, 20 );
+
+/**
+ * Een pagina met een Gravity Form hoort niet in de paginacache.
+ *
+ * Gemeld op 2026-10-28: het uploaden van een ontwerp op /offerte/ gaf
+ * "Error: 403, Your session has expired. Please refresh the page and try
+ * again." Dat is geen uploadfout maar een NONCE-fout - Gravity Forms geeft
+ * hem af in includes/upload.php:468 als _gform_file_upload_nonce_{form}_{veld}
+ * niet klopt.
+ *
+ * DE OORZAAK ZIT IN DE CACHE, NIET IN HET FORMULIER. Nagemeten op live:
+ * de server is LiteSpeed, /nl/offerte/ komt terug met X-LiteSpeed-Cache: hit
+ * en X-LiteSpeed-Cache-Control: public,max-age=604800 - zeven dagen. De
+ * nonce staat in die gecachete HTML (teruggevonden als
+ * _gform_file_upload_nonce_31_3), en een WordPress-nonce is hooguit 24 uur
+ * geldig. Zodra de cache ouder is dan een dag krijgt dus ELKE bezoeker die
+ * een ontwerp uploadt die 403, niet alleen wie zit te testen. Hetzelfde
+ * geldt voor de andere nonces in de pagina (ajax_submission_nonce).
+ *
+ * IN CODE EN NIET IN DE LITESPEED-INSTELLINGEN: die staan in de database en
+ * reizen niet mee met een deploy, dus op elke omgeving zou iemand het
+ * handmatig moeten herhalen - en dat vergeten is hier onzichtbaar tot een
+ * klant klaagt dat hij zijn ontwerp niet kwijt kan.
+ *
+ * ESI - een gaatje in de cache voor alleen de nonce - is het alternatief,
+ * maar staat op deze site uit (litespeed.conf.esi is leeg) en is een
+ * serverinstelling. De hele formulierpagina overslaan is hier eerlijker:
+ * aan zo'n pagina valt weinig te cachen en hij moet vooral werken.
+ *
+ * Geldt voor ELK Gravity Form, niet alleen het onze: elk formulier draagt
+ * dezelfde nonces. do_action() op een site zonder LiteSpeed doet niets.
+ */
+add_filter( 'gform_pre_render', 'sokkies_form_niet_cachen', 5 );
+function sokkies_form_niet_cachen( $form ) {
+	if ( ! is_admin() ) {
+		do_action( 'litespeed_control_set_nocache', 'Sokkies: Gravity Forms-nonce verloopt eerder dan de cache' );
+	}
+	return $form;
+}
