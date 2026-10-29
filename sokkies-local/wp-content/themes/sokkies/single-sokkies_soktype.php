@@ -768,6 +768,7 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
           <label class="calc-label" for="qtyInput">Aantal paar</label>
           <div class="calc-slider-row">
             <div class="calc-slider-progress">
+              <label for="qtyRange" class="sokkies-sr-only">Aantal paar instellen met de schuifregelaar</label>
               <input type="range" id="qtyRange" min="<?php echo (int) $staffel_min; ?>" max="5000" step="10" value="250">
               <div class="calc-scale"><span><?php echo (int) $staffel_min; ?></span><span>5.000+</span></div>
             </div>

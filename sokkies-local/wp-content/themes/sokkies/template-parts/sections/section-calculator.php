@@ -41,9 +41,10 @@ $staffel_min = max( (int) sokkies_minimale_afname(), (int) $matrix[ $eerste ]['r
           <h3>Bereken jouw prijs</h3>
 
           <div class="calc-field">
-            <label class="calc-label">Aantal paar</label>
+            <label class="calc-label" for="qtyInput">Aantal paar</label>
             <div class="calc-slider-row">
               <div class="calc-slider-progress">
+                <label for="qtyRange" class="sokkies-sr-only">Aantal paar instellen met de schuifregelaar</label>
                 <input type="range" id="qtyRange" min="<?php echo (int) $staffel_min; ?>" max="5000" step="10" value="250">
                 <div class="calc-scale"><span><?php echo (int) $staffel_min; ?></span><span>5.000+</span></div>
               </div>

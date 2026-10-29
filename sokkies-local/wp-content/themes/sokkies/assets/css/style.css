@@ -12004,3 +12004,25 @@ body.pdp-calc-open{
    woordmerk en geen rond keurmerk-badge. */
 .footer-awards { margin-top: 22px; }
 .footer-awards .footer-certs-list img { height: 34px; width: auto; max-width: 200px; }
+
+
+/* ====================================================================
+   ALLEEN VOOR SCHERMLEZERS (2026-10-29)
+   Lighthouse: de schuifregelaar en het aantalveld van de calculator
+   hadden geen label, dus een schermlezer kondigt ze aan als kaal
+   "slider" en "spin button".
+   BEWUST EEN ECHT <label> EN GEEN aria-label: label-TEKST wordt door
+   TranslatePress gewoon meevertaald, een aria-label-attribuut niet -
+   dat zou op /en/, /de/ en /fr/ Nederlands blijven.
+   Het recept hieronder (1px clip-path) is de gangbare variant die de
+   tekst voor schermlezers bereikbaar houdt; display:none zou hem juist
+   verbergen voor iedereen.
+   ==================================================================== */
+.sokkies-sr-only{
+  position:absolute;
+  width:1px;height:1px;
+  margin:-1px;padding:0;border:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
