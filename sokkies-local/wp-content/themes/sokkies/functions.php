@@ -424,6 +424,45 @@ function sokkies_jquery_naar_voet() {
 }
 add_action( 'wp_enqueue_scripts', 'sokkies_jquery_naar_voet', 999 );
 
+/**
+ * JS-COOKIE BUITEN DE GECOMBINEERDE BUNDEL (2026-10-29).
+ *
+ * De campagne-tracker drukt ct-basic.js af als een KAAL script-tag op wp_footer
+ * met prioriteit 99992 (campaign-tracker.php:1481), dus niet via
+ * wp_enqueue_script. WordPress drukt de gewone voet-scripts af op prioriteit 20,
+ * ruim daarvoor - in de HTML staat de volgorde dus goed.
+ *
+ * Maar zodra LiteSpeed de voet-scripts COMBINEERT en met defer inlaadt, draait
+ * die bundel pas NA het parsen, terwijl ct-basic.js een gewoon script is dat
+ * meteen draait. Dan is h4wp_ct_Cookies (de global uit js.cookie.min.js) er nog
+ * niet en sterft ct-basic op:
+ *
+ *     Uncaught ReferenceError: h4wp_ct_Cookies is not defined
+ *         at ct-basic.js:24
+ *
+ * Gevolg: de campagnebron-cookie wordt niet gezet en de attributie in de
+ * formulieren klopt niet meer.
+ *
+ * GEMETEN, dev naast live: op live combineert LiteSpeed niet (js.cookie.min.js
+ * staat er als eigen script en h4wp_ct_Cookies is gewoon een object), op dev wel
+ * en daar valt hij om. Het verschil zit dus in de LiteSpeed-INSTELLINGEN, die in
+ * de database staan en niet meedeployen - vandaar dat de ene omgeving het doet
+ * en de andere niet.
+ *
+ * data-no-optimize houdt LiteSpeed van dit ene bestand af. Het blijft daarmee een
+ * gewoon script in de voet dat op prioriteit 20 wordt afgedrukt en dus altijd
+ * voor ct-basic draait, ongeacht hoe de combine-instellingen staan. Zelfde truc
+ * als bij de Typekit-CSS hierboven.
+ */
+function sokkies_cookie_los( $tag, $handle ) {
+	if ( 'js-cookie' === $handle ) {
+		$tag = str_replace( '<script ', '<script data-no-optimize="1" ', $tag );
+	}
+
+	return $tag;
+}
+add_filter( 'script_loader_tag', 'sokkies_cookie_los', 10, 2 );
+
 /* De Expivi-configurator is verhuisd naar een eigen mu-plugin:
    wp-content/mu-plugins/sokkies-configurator/configurator.php
    Daar staan het token, de taalkeuze en het inladen van hun scripts. Het
