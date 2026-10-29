@@ -102,8 +102,8 @@ $staffel_min = max( (int) sokkies_minimale_afname(), (int) $matrix[ $eerste ]['r
         <!-- Right: staffelprijzen -->
         <div class="calc-panel calc-right">
           <div class="staffel-head">
-            <h5>Staffelprijzen</h5>
-            <h5 id="staffelType"><?php echo esc_html( $matrix[ $eerste ]['label'] ); ?></h5>
+            <h3>Staffelprijzen</h3>
+            <h3 id="staffelType"><?php echo esc_html( $matrix[ $eerste ]['label'] ); ?></h3>
           </div>
           <div class="staffel-table">
             <div class="staffel-row staffel-head-row">

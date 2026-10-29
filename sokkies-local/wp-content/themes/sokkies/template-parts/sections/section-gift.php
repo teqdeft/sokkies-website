@@ -33,7 +33,7 @@ $extra_class = ! empty( $args['class'] ) ? ' ' . esc_attr( $args['class'] ) : ''
           <?php if ( ! empty( $rij['foto'] ) ) : ?><img src="<?php echo esc_url( $rij['foto']['url'] ); ?>" alt="<?php echo esc_attr( $rij['titel'] ); ?>"><?php endif; ?>
         </div>
         <div class="gift-body">
-          <h5><?php echo esc_html( $rij['titel'] ); ?></h5>
+          <h3><?php echo esc_html( $rij['titel'] ); ?></h3>
           <?php if ( ! empty( $rij['punten'] ) ) : ?>
           <ul>
             <?php foreach ( $rij['punten'] as $punt ) : ?>
@@ -55,7 +55,7 @@ $extra_class = ! empty( $args['class'] ) ? ' ' . esc_attr( $args['class'] ) : ''
           <img src="<?php echo esc_url( $assets . $rij['bestand'] ); ?>" alt="<?php echo esc_attr( $rij['titel'] ); ?>">
         </div>
         <div class="gift-body">
-          <h5><?php echo esc_html( $rij['titel'] ); ?></h5>
+          <h3><?php echo esc_html( $rij['titel'] ); ?></h3>
           <ul>
             <?php foreach ( $rij['punten'] as $punt ) : ?>
             <li><?php echo esc_html( $punt ); ?></li>

@@ -1781,13 +1781,13 @@ font-weight: 600;
     justify-content:space-between;
     margin-bottom:14px;
   }
-  .staffel-head h5:first-of-type{
-    
+  .staffel-head h3:first-of-type{
+    font-size: var(--h5-font-size);
     font-weight: 700;
     color:var(--text);
   }
-  .staffel-head h5:last-of-type{
-    
+  .staffel-head h3:last-of-type{
+    font-size: var(--h5-font-size);
     font-weight: 700;
     color:var(--coral);
     text-transform:lowercase;
@@ -1958,8 +1958,8 @@ font-weight: 600;
     flex-direction:column;
     flex:1;
   }
-  .gift-body h5{
-    
+  .gift-body h3{
+    font-size: var(--h5-font-size);
     font-weight: 700;
     color:var(--text);
     margin-bottom:10px;
@@ -7036,7 +7036,7 @@ font-weight: 600;
     flex-direction:column;
     padding:8px 30px 4px 0;
   }
-  .promo-float-body h5{
+  .promo-float-body h3{
     font-family:var(--roc-grotesk);
     font-weight:700;
     font-size:22px;
