@@ -382,6 +382,48 @@ function sokkies_typekit_hints( $hints, $relatie ) {
 }
 add_filter( 'wp_resource_hints', 'sokkies_typekit_hints', 10, 2 );
 
+/**
+ * JQUERY UIT DE KOP (2026-10-29).
+ *
+ * Lighthouse op live: jquery.min.js blokkeert het renderen 1320ms - meer dan de
+ * complete stylesheet (1000ms). De oorzaak is NIET Gravity Forms of de
+ * GTM-tag (die registreert zonder dependencies en zijn inline-code is kaal JS),
+ * maar de plugin CAMPAIGN TRACKER:
+ *
+ *     wp_enqueue_script( 'jquery' );                                 // geen $in_footer
+ *     wp_enqueue_script( 'js-cookie', ..., array( 'jquery' ), ... ); // dus allemaal
+ *     wp_enqueue_script( 'ct-front',  ..., array( 'jquery', ... ) ); // in de KOP
+ *
+ * Alle drie laten $in_footer weg, dus staan ze in de kop - op ELKE pagina, ook
+ * waar helemaal geen formulier staat. De tracker schrijft alleen een cookie met
+ * de campagnebron; dat hoeft niet voor het eerste renderen te gebeuren.
+ *
+ * WAAROM DIT VEILIG IS: wp_script_add_data(.., 'group', 1) is geen harde
+ * verhuizing maar een VOORKEUR. WordPress herberekent de groep in
+ * WP_Scripts::set_group(): blijkt er in de kop alsnog iets van jQuery af te
+ * hangen, dan wordt de groep daar teruggezet naar 0 en staat jQuery gewoon weer
+ * boven. Een afhankelijkheid kan hier dus niet door stranden.
+ *
+ * BEWUST NIET GEDAAN - defer op jQuery. Dat leest als de nettere oplossing, maar
+ * Gravity Forms drukt inline jQuery-blokken af en een inline <script> draait
+ * ALTIJD voor een uitgesteld script. Dat zou de offerte- en sampleformulieren
+ * slopen, en daar hangen echte leads aan. Deze aanpak verplaatst alleen de
+ * volgorde binnen de pagina en laat die inline-blokken op hun plek staan.
+ *
+ * De plugin zelf is bewust niet aangepast: dat is code van derden en een update
+ * overschrijft het weer.
+ */
+function sokkies_jquery_naar_voet() {
+	if ( is_admin() ) {
+		return;
+	}
+
+	foreach ( array( 'jquery', 'jquery-core', 'jquery-migrate', 'js-cookie', 'ct-front' ) as $handle ) {
+		wp_script_add_data( $handle, 'group', 1 );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'sokkies_jquery_naar_voet', 999 );
+
 /* De Expivi-configurator is verhuisd naar een eigen mu-plugin:
    wp-content/mu-plugins/sokkies-configurator/configurator.php
    Daar staan het token, de taalkeuze en het inladen van hun scripts. Het
