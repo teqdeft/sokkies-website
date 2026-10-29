@@ -149,50 +149,49 @@ $assets = get_template_directory_uri() . '/assets/media/';
        <div class="swiper gallery-swiper">
          <div class="swiper-wrapper">
            <?php
-           /* De fotoslider levert het LCP-element. Lighthouse-opsplitsing op live:
-                TTFB                 130ms
-                Resource load delay  3730ms   <- hier zit het probleem
-                Resource load duration 260ms
-                Element render delay  110ms
-              Oftewel 88% van de LCP is WACHTEN tot de afbeelding uberhaupt mag
-              beginnen; het laden zelf duurt maar 260ms. Dat wachten komt doordat
-              LiteSpeed alle afbeeldingen op JS-lazyload zet (146 van de 152 op de
-              homepage), zodat de hero pas start nadat de gecombineerde JS is
-              uitgevoerd.
-              Lighthouse wees per meting een ANDERE slide aan als LCP-element
-              (fietsen = de derde, mcdonalds = de vierde, nooit de eerste); dat
-              hangt af van schermbreedte en de stand van de marquee. Daarom gaan de
-              eerste VIER slides direct mee in de HTML.
-              fetchpriority staat BEWUST op alleen de eerste. Hij heeft een ronde op
-              alle vier gestaan om de audit "fetchpriority=high should be applied"
-              groen te krijgen, en dat werkte, maar de meting erna was slechter.
-              Die audit is bovendien Unscored - een hint, geen onderdeel van de
-              score. Drie metingen op live, in volgorde:
+           /* GEEN eager/fetchpriority meer op de heroslides - BEWUST, en dit is
+              het resultaat van een halve dag meten. Niet terugzetten zonder eerst
+              de onderkant van dit blok te lezen.
+
+              Het begon goed: LiteSpeed zet alle afbeeldingen op JS-lazyload (145
+              van de 155 op de homepage), dus de hero begon pas te laden nadat de
+              gecombineerde JS was uitgevoerd. "Resource load delay" was 3730ms van
+              een LCP van 4230ms. De eerste vier slides direct laten laden haalde
+              die wachttijd eruit.
+
+              Alleen bleek dat niets op te leveren. Drie metingen op live:
 
                                 TTFB  delay  duration  render  TOTAAL
-                1 eager, lazy    130   3730      260     110    4230
+                alles lazy       130   3730      260     110    4230
                 4 eager, 1 fp    330   1110     2020      30    3490
                 4 eager, 4 fp    330    860     2900     130    4220
 
-              De WACHTTIJD daalt netjes (3730 -> 1110 -> 860), maar de LAADTIJD
-              stijgt even hard (260 -> 2020 -> 2900) en het totaal staat daarmee
-              weer op het beginpunt. Vier foto's van samen ruim 2 MB delen simpelweg
-              de bandbreedte: 2900ms voor een bestand van ~440 KB is zo'n 150 KB/s,
-              dus verdringing en geen latency. De middelste rij is de beste meting
-              die we hebben, dus daar staat hij nu op.
-              LET OP - dit is met markup niet verder op te lossen. Zolang die foto's
-              850x1120 PNG's van een halve megabyte zijn, blijft LCP rond de 4
-              seconden, ongeacht welke vlaggen erop staan. Kleinere bestanden
-              (thumbnails regenereren + WebP) halen de laadtijd onderuit en pas dan
-              betaalt al het bovenstaande zich uit.
-              De rest blijft lazy; de marquee herhaalt tot minstens 16 slides en die
-              horen niet in het kritieke pad. */
-           $direct = 4;
-           for ( $i = 0; $i < $doel; $i++ ) :
-             $foto  = $fotos[ $i % count( $fotos ) ];
-             $vroeg = ( $i < $direct );
-           ?>
-           <div class="swiper-slide"><img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ?: 'Sok' ); ?>"<?php echo $vroeg ? ' loading="eager" data-no-lazy="1"' : ''; ?><?php echo 0 === $i ? ' fetchpriority="high"' : ''; ?>></div>
+              De wachttijd daalt netjes, maar de LAADtijd stijgt even hard en het
+              totaal blijft gelijk. De reden is simpel: die vier foto's zijn samen
+              ruim 2 MB en delen de bandbreedte. 2900ms voor een bestand van ~440 KB
+              is zo'n 150 KB/s - verdringing, geen latency. Met alles lazy laadde er
+              maar een foto tegelijk en die was in 260ms binnen; hij begon alleen
+              veel te laat.
+
+              DOORSLAGGEVEND: Kulwant meldde na het uitrollen dat de hele pagina
+              trager AANVOELT op live. Dat klopt met de meting - we downloaden nu
+              2 MB voordat er iets anders aan de beurt is, op elke paginaweergave,
+              en al het andere (ook de lazyload-afbeeldingen eronder) staat daar
+              achter in de rij. Een LCP die gelijk blijft is die prijs niet waard.
+
+              WANNEER WEL WEER AANZETTEN: zodra de heroslides kleine bestanden zijn.
+              Ze worden nu als 850x1120 PNG van een halve megabyte geleverd in een
+              vak van 266x350. De resized varianten ONTBREKEN op de server (de
+              database kent ze, de bestanden geven een soft-404 met status 200), dus
+              er kan ook geen srcset op. Regenereer de thumbnails en zet WebP aan;
+              dan kost 'duration' nog een paar honderd ms en levert eager laden wel
+              gewoon winst op. Zet dan terug:
+                  de eerste 4 slides: loading="eager" data-no-lazy="1"
+                  alleen de eerste:   fetchpriority="high"
+              (fetchpriority op alle vier gehad; dat maakte de Lighthouse-audit
+              groen maar die is Unscored en de meting werd er slechter van.) */
+           for ( $i = 0; $i < $doel; $i++ ) : $foto = $fotos[ $i % count( $fotos ) ]; ?>
+           <div class="swiper-slide"><img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ?: 'Sok' ); ?>"></div>
            <?php endfor; ?>
          </div>
        </div>
