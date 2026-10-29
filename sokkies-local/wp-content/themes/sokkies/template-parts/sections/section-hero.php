@@ -159,31 +159,40 @@ $assets = get_template_directory_uri() . '/assets/media/';
               LiteSpeed alle afbeeldingen op JS-lazyload zet (146 van de 152 op de
               homepage), zodat de hero pas start nadat de gecombineerde JS is
               uitgevoerd.
-              Lighthouse wees eerst sokken-bedrukken-fietsen.png aan als
-              LCP-element en in de meting erna sokken-bedrukken-mcdonalds.png - de
-              DERDE en toen de VIERDE slide, nooit de eerste. Welke slide het wordt
-              hangt af van schermbreedte en stagger en wisselt dus per meting;
-              daarom gaan de eerste VIER slides direct mee in de HTML.
-              fetchpriority staat nu op alle vier en niet meer op alleen de eerste.
-              Eerst stond hij bewust op een, om de prioriteit niet te verwateren,
-              maar dat liet "fetchpriority=high should be applied" falen zodra het
-              LCP-element een andere slide was. Alle vier staan sowieso in beeld en
-              zijn alle vier een LCP-kandidaat, dus hoog is hier gewoon de waarheid.
-              De render-blokkerende CSS wordt nog altijd eerder opgehaald.
+              Lighthouse wees per meting een ANDERE slide aan als LCP-element
+              (fietsen = de derde, mcdonalds = de vierde, nooit de eerste); dat
+              hangt af van schermbreedte en de stand van de marquee. Daarom gaan de
+              eerste VIER slides direct mee in de HTML.
+              fetchpriority staat BEWUST op alleen de eerste. Hij heeft een ronde op
+              alle vier gestaan om de audit "fetchpriority=high should be applied"
+              groen te krijgen, en dat werkte, maar de meting erna was slechter.
+              Die audit is bovendien Unscored - een hint, geen onderdeel van de
+              score. Drie metingen op live, in volgorde:
+
+                                TTFB  delay  duration  render  TOTAAL
+                1 eager, lazy    130   3730      260     110    4230
+                4 eager, 1 fp    330   1110     2020      30    3490
+                4 eager, 4 fp    330    860     2900     130    4220
+
+              De WACHTTIJD daalt netjes (3730 -> 1110 -> 860), maar de LAADTIJD
+              stijgt even hard (260 -> 2020 -> 2900) en het totaal staat daarmee
+              weer op het beginpunt. Vier foto's van samen ruim 2 MB delen simpelweg
+              de bandbreedte: 2900ms voor een bestand van ~440 KB is zo'n 150 KB/s,
+              dus verdringing en geen latency. De middelste rij is de beste meting
+              die we hebben, dus daar staat hij nu op.
+              LET OP - dit is met markup niet verder op te lossen. Zolang die foto's
+              850x1120 PNG's van een halve megabyte zijn, blijft LCP rond de 4
+              seconden, ongeacht welke vlaggen erop staan. Kleinere bestanden
+              (thumbnails regenereren + WebP) halen de laadtijd onderuit en pas dan
+              betaalt al het bovenstaande zich uit.
               De rest blijft lazy; de marquee herhaalt tot minstens 16 slides en die
-              horen niet in het kritieke pad.
-              LET OP - dit haalt alleen de WACHTTIJD weg. Na de vorige ronde zakte
-              "resource load delay" van 3730ms naar 1110ms, maar "resource load
-              duration" ging van 260ms naar 2020ms: vier foto's van samen ruim 2 MB
-              die tegelijk binnenkomen. Dat laatste is niet met markup op te lossen,
-              daar zijn kleinere bestanden voor nodig (thumbnails regenereren +
-              WebP). */
+              horen niet in het kritieke pad. */
            $direct = 4;
            for ( $i = 0; $i < $doel; $i++ ) :
              $foto  = $fotos[ $i % count( $fotos ) ];
              $vroeg = ( $i < $direct );
            ?>
-           <div class="swiper-slide"><img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ?: 'Sok' ); ?>"<?php echo $vroeg ? ' loading="eager" data-no-lazy="1" fetchpriority="high"' : ''; ?>></div>
+           <div class="swiper-slide"><img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ?: 'Sok' ); ?>"<?php echo $vroeg ? ' loading="eager" data-no-lazy="1"' : ''; ?><?php echo 0 === $i ? ' fetchpriority="high"' : ''; ?>></div>
            <?php endfor; ?>
          </div>
        </div>
