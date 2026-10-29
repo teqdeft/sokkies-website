@@ -6819,3 +6819,71 @@ button staat consistent op alle 21 pagina's en is mobiel verborgen via
   Chrome/macOS, melding Kulwant); `large-sock-element.svg` (1920×1093, bevat de
   foto) is nu het directe background zoals gepland. Er zijn geen CSS-masks meer
   op de site. Framing gecheckt door Kulwant na de fix.
+
+DEPLOY-TOPOLOGIE GECORRIGEERD + PRESTATIERONDE (2026-10-29, n.a.v. een
+  GTmetrix-rapport van Kulwant: grade E, LCP 4,4s, TBT 646ms).
+  EERST DE BELANGRIJKSTE CORRECTIE OP DIT DOCUMENT ZELF. Hierboven staat bij
+  "CI/CD DOOR TEAM" dat elke push "die sokkies-local/** raakt" deployt en dat
+  de CI "alleen sokkies-local/**" synct. Allebei niet waar: deploy.yml heeft
+  GEEN paths-filter (alleen branches: main) en local-dir staat op ./, dus de
+  HELE repo gaat mee. En het deployt niet alleen naar dev: de wijzigingen van
+  vandaag stonden binnen enkele minuten ook op SOKKIES.COM. Bewezen met
+  markers die alleen uit deze commits kunnen komen (id='sokkies-typekit-css'
+  met data-no-optimize, de twee typekit-preconnects, vier heroslides met
+  loading="eager"). Live loopt wel ACHTER op dev - op het moment van schrijven
+  een commit, met style.css van 27 okt tegen 29 okt op dev - via een
+  mechanisme dat NIET in deze repo staat (er is maar een workflow-bestand).
+  Uitgezocht hoe die tweede stap loopt is niet gelukt; navragen bij Kulwant.
+  Hij heeft 2026-10-29 bevestigd dat pushen naar main naar productie mag.
+  DE DEPLOY LAG 7 DAGEN STIL en niemand wist het. De sync-state op de server
+  (.ftp-deploy-sync-state.json, generatedTime) stond op 22 okt 15:39. Commit
+  881a4e7c zette 14 minuten later plugins (7097 bestanden, 214 MB),
+  taalbestanden (26 MB) en htmlv (58 MB) in de repo; FTP-Deploy-Action uploadt
+  bestand voor bestand en haalde de time-out van 60 minuten daarna nooit meer.
+  Gevolg: 23 commits nooit geland, waaronder de nocache-fix voor de
+  403-uploadfout. OPGELOST door plugins/languages/htmlv uit te sluiten in
+  deploy.yml (ze blijven WEL in git, alleen het uploaden vervalt); een run
+  duurt nu ~60 seconden. LES: een groene push zegt niets - controleer de
+  sync-state of een marker op de server.
+  LET OP: dat sync-state-bestand is PUBLIEK opvraagbaar (560 KB met elk pad in
+  de repo). Hoort achter een deny.
+  WAT ER AAN PRESTATIES IS GEDAAN (code; de rest is database/dashboard):
+  (1) Typekit stond via LiteSpeed IN de gecombineerde CSS van 522 KB, met een
+  eigen @import naar p.typekit.net erachter. Fonts waren daardoor pas op
+  2225ms binnen terwijl ze op font-display:auto staan - tekst is dus tot dat
+  moment ONZICHTBAAR. Nu data-no-optimize op het Typekit-bestand plus
+  preconnect op beide hosts, zodat het parallel met de grote CSS laadt.
+  (2) De LCP-opsplitsing wees 3730ms "resource load delay" aan op een
+  heroslide, tegen 260ms echte laadtijd. Oorzaak: LiteSpeed zet alle
+  afbeeldingen op JS-lazyload (146 van de 152). De eerste VIER slides gaan nu
+  direct mee; vier en niet een, omdat Lighthouse de DERDE aanwees en dat per
+  schermbreedte verschilt. fetchpriority blijft op alleen de eerste.
+  (3) jQuery blokkeerde het renderen 1320ms omdat CAMPAIGN TRACKER hem zonder
+  $in_footer enqueuet. Via wp_script_add_data(..,'group',1) naar de voet; dat
+  is een VOORKEUR, WP_Scripts::set_group() zet hem terug als er in de kop
+  alsnog iets van afhangt.
+  (4) Labels voor de twee calculatorvelden en een aria-label op het logo.
+  NIET OP TE LOSSEN IN CODE, staat nog open: de resized afbeeldingen ONTBREKEN
+  op de server (de database kent ze, de bestanden geven een soft-404 met
+  status 200) - daarom staat overal $foto['url'] en nergens srcset, en daarom
+  worden foto's van 850x1120 in een vak van 266x350 gepropt. Thumbnails
+  regenereren is de grootste resterende winst (Lighthouse: 3462 KiB). Verder:
+  WebP staat uit, font-display:swap is een Adobe-dashboardinstelling, en
+  Cookiebot laat 22 tags en 9 cookies vuren VOOR er toestemming is - dat is
+  naast een nalevingskwestie ook het grootste deel van de 1357ms
+  script-evaluatie (20 van de 22 scripts zijn third-party, waarvan 13 Klaviyo).
+  DRIE MEETVALKUILEN DIE ME VANDAAG ELK EEN VERKEERDE CONCLUSIE KOSTTEN:
+  - grep -c telt REGELS. Live-HTML is geminificeerd op een paar regels, dus
+    vier eager afbeeldingen lazen als "1" en ik dacht even dat live achterliep
+    terwijl alles er stond. Tel met grep -o ... | wc -l.
+  - LiteSpeed noemt de gecombineerde CSS naar de SET bronbestanden, niet naar
+    de inhoud. Wijzigt style.css, dan wordt dezelfde URL herschreven en
+    serveert de browser zijn gecachte kopie: de regel stond wel in het bestand
+    en niet in de CSSOM. Na een deploy dus ALTIJD de cache legen.
+  - de h4wp_ct_Cookies-fout: ik heb er drie keer naast gezeten (eerst mijn
+    jQuery-wijziging, toen js-cookie, toen de combine-instelling). De echte
+    oorzaak is een DATABASE-instelling van campaign-tracker: staat
+    populating_way niet op 'javascript', dan wordt ct-front.js - het ENIGE
+    bestand met "var h4wp_ct_Cookies = Cookies.noConflict();" - niet
+    geenqueued, terwijl ct-basic.js onvoorwaardelijk wordt afgedrukt. Lokaal
+    staat die optie wel op javascript, op de servers niet. Zet hem daar gelijk.
