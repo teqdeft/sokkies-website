@@ -27,6 +27,12 @@ jobs:
           local-dir: ./                 # deploy the entire repo
           server-dir: /public_html/sokkies-website/
           dangerous-clean-slate: false
+          # LET OP: plugins, taalbestanden en htmlv blijven WEL in git staan, maar
+          # gaan NIET mee over FTPS. Commit 881a4e7c zette 7097 plugin-bestanden
+          # (214 MB) in de repo; sindsdien liep elke deploy in de time-out van 60
+          # minuten en is er sinds 2026-10-22 niets meer op dev geland (23 commits).
+          # Dev installeert zijn eigen plugins via WordPress, dus dit hoeft er niet
+          # langs. Versiebeheer blijft, alleen het uploaden vervalt.
           exclude: |
             **/.git*
             **/.git*/**
@@ -43,3 +49,6 @@ jobs:
             **/sokkies-local/wp-content/upgrade/**
             **/sokkies-local/wp-content/cache/**
             **/*.log
+            **/sokkies-local/wp-content/plugins/**
+            **/sokkies-local/wp-content/languages/**
+            **/htmlv/**
