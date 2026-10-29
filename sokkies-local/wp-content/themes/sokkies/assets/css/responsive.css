@@ -5269,7 +5269,7 @@
   .footer-contact{
     display:contents;
   }
-  .footer-contact > h5{
+  .footer-contact > h4{
     grid-column:2;
     grid-row:2;
     margin-bottom:20px;
@@ -9008,7 +9008,7 @@
   .footer-contact{
     display:contents;
   }
-  .footer-contact > h5{
+  .footer-contact > h4{
     grid-column:2;
     grid-row:2;
     margin-bottom:20px;

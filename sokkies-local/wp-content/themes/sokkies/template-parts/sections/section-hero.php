@@ -159,20 +159,31 @@ $assets = get_template_directory_uri() . '/assets/media/';
               LiteSpeed alle afbeeldingen op JS-lazyload zet (146 van de 152 op de
               homepage), zodat de hero pas start nadat de gecombineerde JS is
               uitgevoerd.
-              Lighthouse wees sokken-bedrukken-fietsen.png aan als LCP-element - de
-              DERDE slide, niet de eerste. Welke slide het wordt hangt af van de
-              schermbreedte en de stagger, dus de eerste VIER slides gaan nu direct
-              mee in de HTML. Dat kost weinig: ze laden parallel en duren 260ms per
-              stuk. fetchpriority blijft bewust op alleen de eerste - die vlag op
-              vier afbeeldingen zetten verwatert de prioriteit.
+              Lighthouse wees eerst sokken-bedrukken-fietsen.png aan als
+              LCP-element en in de meting erna sokken-bedrukken-mcdonalds.png - de
+              DERDE en toen de VIERDE slide, nooit de eerste. Welke slide het wordt
+              hangt af van schermbreedte en stagger en wisselt dus per meting;
+              daarom gaan de eerste VIER slides direct mee in de HTML.
+              fetchpriority staat nu op alle vier en niet meer op alleen de eerste.
+              Eerst stond hij bewust op een, om de prioriteit niet te verwateren,
+              maar dat liet "fetchpriority=high should be applied" falen zodra het
+              LCP-element een andere slide was. Alle vier staan sowieso in beeld en
+              zijn alle vier een LCP-kandidaat, dus hoog is hier gewoon de waarheid.
+              De render-blokkerende CSS wordt nog altijd eerder opgehaald.
               De rest blijft lazy; de marquee herhaalt tot minstens 16 slides en die
-              horen niet in het kritieke pad. */
+              horen niet in het kritieke pad.
+              LET OP - dit haalt alleen de WACHTTIJD weg. Na de vorige ronde zakte
+              "resource load delay" van 3730ms naar 1110ms, maar "resource load
+              duration" ging van 260ms naar 2020ms: vier foto's van samen ruim 2 MB
+              die tegelijk binnenkomen. Dat laatste is niet met markup op te lossen,
+              daar zijn kleinere bestanden voor nodig (thumbnails regenereren +
+              WebP). */
            $direct = 4;
            for ( $i = 0; $i < $doel; $i++ ) :
              $foto  = $fotos[ $i % count( $fotos ) ];
              $vroeg = ( $i < $direct );
            ?>
-           <div class="swiper-slide"><img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ?: 'Sok' ); ?>"<?php echo $vroeg ? ' loading="eager" data-no-lazy="1"' : ''; ?><?php echo 0 === $i ? ' fetchpriority="high"' : ''; ?>></div>
+           <div class="swiper-slide"><img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ?: 'Sok' ); ?>"<?php echo $vroeg ? ' loading="eager" data-no-lazy="1" fetchpriority="high"' : ''; ?>></div>
            <?php endfor; ?>
          </div>
        </div>

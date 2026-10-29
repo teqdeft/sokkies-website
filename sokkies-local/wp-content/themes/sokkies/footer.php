@@ -74,7 +74,7 @@ if ( $promo_aan ) {
 
             <!-- Sitemap -->
             <div class="footer-col footer-links">
-              <h5><?php echo esc_html( sokkies_optie( 'footer_titel', 'Sokkies' ) ); ?></h5>
+              <h4><?php echo esc_html( sokkies_optie( 'footer_titel', 'Sokkies' ) ); ?></h4>
               <div class="footer-links-cols">
                 <?php foreach ( sokkies_footermenu() as $kolom ) : ?>
                 <?php if ( ! $kolom ) { continue; } ?>
@@ -89,7 +89,7 @@ if ( $promo_aan ) {
 
             <!-- Contact -->
             <div class="footer-col footer-contact">
-              <h5>Contact</h5>
+              <h4>Contact</h4>
               <div class="footer-contact-row">
                 <ul>
                   <?php if ( sokkies_telefoon_tonen() ) : ?>
