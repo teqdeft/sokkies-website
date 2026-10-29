@@ -148,8 +148,18 @@ $assets = get_template_directory_uri() . '/assets/media/';
      <section class="gallery">
        <div class="swiper gallery-swiper">
          <div class="swiper-wrapper">
-           <?php for ( $i = 0; $i < $doel; $i++ ) : $foto = $fotos[ $i % count( $fotos ) ]; ?>
-           <div class="swiper-slide"><img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ?: 'Sok' ); ?>"></div>
+           <?php
+           /* De eerste slide staat bij het laden in beeld en is de LCP-kandidaat.
+              LiteSpeed zet standaard ALLE afbeeldingen op JS-lazyload (gemeten op
+              live: 146 van de 152 op de homepage, inclusief deze), waardoor de hero
+              pas begint te laden NADAT de gecombineerde JS is uitgevoerd - rond
+              1,8s. data-no-lazy houdt LiteSpeed van dit ene plaatje af en
+              fetchpriority zet het vooraan, zodat de preload-scanner het al bij de
+              HTML meeneemt.
+              De overige slides blijven bewust lazy: de marquee herhaalt tot minstens
+              16 slides en die horen niet in het kritieke pad. */
+           for ( $i = 0; $i < $doel; $i++ ) : $foto = $fotos[ $i % count( $fotos ) ]; ?>
+           <div class="swiper-slide"><img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ?: 'Sok' ); ?>"<?php echo 0 === $i ? ' fetchpriority="high" data-no-lazy="1"' : ''; ?>></div>
            <?php endfor; ?>
          </div>
        </div>

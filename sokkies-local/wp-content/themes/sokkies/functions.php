@@ -323,6 +323,65 @@ function sokkies_assets() {
 }
 add_action( 'wp_enqueue_scripts', 'sokkies_assets' );
 
+/**
+ * LETTERTYPES UIT DE WACHTRIJ VAN DE GECOMBINEERDE CSS (2026-10-29).
+ *
+ * GEMETEN OP LIVE, niet aangenomen. LiteSpeed plakte use.typekit.net/eru5btu.css
+ * IN het gecombineerde stylesheet. Dat bestand is 522 KB (98 KB brotli), en het
+ * Typekit-bestand bevat zelf nog een @import naar p.typekit.net. De browser
+ * ontdekte de lettertypes daardoor pas aan het eind van een ketting:
+ *
+ *    729ms  HTML binnen
+ *   1317ms  gecombineerde CSS binnen   <- PAS HIER wordt Typekit ontdekt
+ *   1390ms  p.typekit.net binnen
+ *   2225ms  de 9 fontbestanden binnen
+ *
+ * Drie verzoeken ACHTER elkaar terwijl ze naast elkaar konden. Twee ingrepen:
+ *
+ * 1. data-no-optimize="1" houdt LiteSpeed van dit ene bestand af, zodat het een
+ *    eigen <link> bovenin de <head> blijft. De preload-scanner ziet het dan
+ *    meteen bij binnenkomst van de HTML en haalt het PARALLEL met de grote CSS
+ *    op in plaats van erna. De cascade loopt geen gevaar: eru5btu.css bevat
+ *    alleen @font-face-regels (7 KB), geen opmaak, dus de volgorde doet er niet
+ *    toe.
+ * 2. preconnect, zodat DNS en TLS al staan voor het eerste fontverzoek vertrekt.
+ *    use.typekit.net krijgt crossorigin (fontbestanden gaan ALTIJD met CORS, en
+ *    dat is een aparte verbinding dan die van het stylesheet); p.typekit.net
+ *    levert alleen CSS en krijgt dus de gewone variant.
+ *
+ * LET OP - de @import naar p.typekit.net blijft bewust staan. Dat is de telling
+ * van Adobe en die hoort bij de licentie; niet weghalen.
+ *
+ * NOG OPEN, en dit kan NIET vanuit code: alle 9 fonts staan op
+ * font-display:auto, wat Chrome als 'block' behandelt. Tekst is dus ONZICHTBAAR
+ * tot de fonts binnen zijn. ?display=swap aan de kit-URL hangen werkt niet
+ * (getest: het antwoord blijft font-display:auto) - dat is een instelling in het
+ * Adobe Fonts-project zelf. Zet die op swap en de tekst verschijnt meteen in de
+ * terugvalletter; dat kost wel een zichtbare lettersprong, dus het is een keuze
+ * van de klant.
+ */
+function sokkies_typekit_los( $tag, $handle ) {
+	if ( 'sokkies-typekit' === $handle ) {
+		$tag = str_replace( '<link ', '<link data-no-optimize="1" ', $tag );
+	}
+
+	return $tag;
+}
+add_filter( 'style_loader_tag', 'sokkies_typekit_los', 10, 2 );
+
+function sokkies_typekit_hints( $hints, $relatie ) {
+	if ( 'preconnect' === $relatie ) {
+		$hints[] = array(
+			'href'        => 'https://use.typekit.net',
+			'crossorigin' => 'anonymous',
+		);
+		$hints[] = array( 'href' => 'https://p.typekit.net' );
+	}
+
+	return $hints;
+}
+add_filter( 'wp_resource_hints', 'sokkies_typekit_hints', 10, 2 );
+
 /* De Expivi-configurator is verhuisd naar een eigen mu-plugin:
    wp-content/mu-plugins/sokkies-configurator/configurator.php
    Daar staan het token, de taalkeuze en het inladen van hun scripts. Het
