@@ -149,17 +149,30 @@ $assets = get_template_directory_uri() . '/assets/media/';
        <div class="swiper gallery-swiper">
          <div class="swiper-wrapper">
            <?php
-           /* De eerste slide staat bij het laden in beeld en is de LCP-kandidaat.
-              LiteSpeed zet standaard ALLE afbeeldingen op JS-lazyload (gemeten op
-              live: 146 van de 152 op de homepage, inclusief deze), waardoor de hero
-              pas begint te laden NADAT de gecombineerde JS is uitgevoerd - rond
-              1,8s. data-no-lazy houdt LiteSpeed van dit ene plaatje af en
-              fetchpriority zet het vooraan, zodat de preload-scanner het al bij de
-              HTML meeneemt.
-              De overige slides blijven bewust lazy: de marquee herhaalt tot minstens
-              16 slides en die horen niet in het kritieke pad. */
-           for ( $i = 0; $i < $doel; $i++ ) : $foto = $fotos[ $i % count( $fotos ) ]; ?>
-           <div class="swiper-slide"><img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ?: 'Sok' ); ?>"<?php echo 0 === $i ? ' fetchpriority="high" data-no-lazy="1"' : ''; ?>></div>
+           /* De fotoslider levert het LCP-element. Lighthouse-opsplitsing op live:
+                TTFB                 130ms
+                Resource load delay  3730ms   <- hier zit het probleem
+                Resource load duration 260ms
+                Element render delay  110ms
+              Oftewel 88% van de LCP is WACHTEN tot de afbeelding uberhaupt mag
+              beginnen; het laden zelf duurt maar 260ms. Dat wachten komt doordat
+              LiteSpeed alle afbeeldingen op JS-lazyload zet (146 van de 152 op de
+              homepage), zodat de hero pas start nadat de gecombineerde JS is
+              uitgevoerd.
+              Lighthouse wees sokken-bedrukken-fietsen.png aan als LCP-element - de
+              DERDE slide, niet de eerste. Welke slide het wordt hangt af van de
+              schermbreedte en de stagger, dus de eerste VIER slides gaan nu direct
+              mee in de HTML. Dat kost weinig: ze laden parallel en duren 260ms per
+              stuk. fetchpriority blijft bewust op alleen de eerste - die vlag op
+              vier afbeeldingen zetten verwatert de prioriteit.
+              De rest blijft lazy; de marquee herhaalt tot minstens 16 slides en die
+              horen niet in het kritieke pad. */
+           $direct = 4;
+           for ( $i = 0; $i < $doel; $i++ ) :
+             $foto  = $fotos[ $i % count( $fotos ) ];
+             $vroeg = ( $i < $direct );
+           ?>
+           <div class="swiper-slide"><img src="<?php echo esc_url( $foto['url'] ); ?>" alt="<?php echo esc_attr( $foto['alt'] ?: 'Sok' ); ?>"<?php echo $vroeg ? ' loading="eager" data-no-lazy="1"' : ''; ?><?php echo 0 === $i ? ' fetchpriority="high"' : ''; ?>></div>
            <?php endfor; ?>
          </div>
        </div>
