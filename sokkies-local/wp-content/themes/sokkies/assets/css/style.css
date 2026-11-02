@@ -9842,6 +9842,24 @@ main.contact{
     .brand-collapse,.brand-intro-toggle svg{transition:none;}
   }
 
+/* ===== Gravity Forms: velden met zichtbaarheid "Verborgen" =====
+   GF zet op zo'n veld alleen de class gfield_visibility_hidden; het verbergen
+   zelf doet zijn EIGEN stylesheet. Onze drie formulieren (contact, offerte,
+   sample) draaien via gform_form_theme_slug op het LEGACY-thema terwijl ze
+   MODERNE markup gebruiken, en in die combinatie laadt GF geen enkele eigen
+   CSS: de legacy-regel wordt alleen meegestuurd bij legacy MARKUP
+   (get_form_enqueue_assets in form_display.php) en de gravity-theme-regel
+   hangt aan een wrapper-class die we dan niet krijgen. Zonder onderstaande
+   regel staat een veld dat op "Verborgen" is gezet dus gewoon in beeld
+   (melding Kulwant 2026-11-02, contactformulier veld 34). Precies hetzelfde
+   gat als bij .gfield--type-hidden hieronder.
+   display:none mag hier: GF valideert een visibility-hidden veld nooit
+   (is_field_validation_supported), dus er kan geen foutmelding onzichtbaar
+   raken. De waarde wordt nog steeds meegestuurd en bij de inzending bewaard. */
+  .gform_wrapper .gfield_visibility_hidden{
+    display:none;
+  }
+
 /* ===== Contactformulier op Gravity Forms in de htmlv-opmaak =====
    De kaart (.ct-form-card) en de knoppen komen uit contact.html; hieronder
    krijgt de GF-markup binnen die kaart dezelfde maten, kleuren en het
