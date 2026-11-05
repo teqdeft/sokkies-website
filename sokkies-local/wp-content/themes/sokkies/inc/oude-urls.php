@@ -43,6 +43,22 @@
  * EEN DOEL UIT HET SCHEMA IS GECORRIGEERD: drie regels wezen naar
  * .../a-loving-pair-for-a-silver-wedding/, dat nergens meer bestaat. De case
  * heet nu trouwsokken; alle drie de talen zijn daarop gezet en gecontroleerd.
+ *
+ * BELGIE BLIJFT OP /be/ (2026-11-05, melding Rick). Hierboven staat al dat het
+ * schema Belgie op /nl/ wil vouwen en dat dat is overgeslagen voor de zeven
+ * kale /be/-paden, omdat /be/ een gepubliceerde taal is. Dat besluit was maar
+ * half doorgevoerd: de 35 DIEPERE /be/-adressen wezen nog wel naar /nl/, dus
+ * /be/product/antislip-sokken-bedrukken/ kwam uit op /nl/collectie/antislipsokken/
+ * en gooide de bezoeker alsnog uit zijn taal. Alle 35 wijzen nu naar /be/.
+ *
+ * DIT WAS OOK DE REDEN DAT RICKS REGELS IN REDIRECTION NIETS DEDEN: deze
+ * functie hangt op 'init' met prioriteit 1 en sluit af met exit, dus de plugin
+ * komt voor deze adressen nooit aan de beurt. Alleen bij bamboesokken wel --
+ * de tabel kent '/be/product/bamboesokken/' zonder '-bedrukken', dus die ene
+ * URL viel erdoorheen. Dat was precies de uitzondering die het aanwees.
+ *
+ * De 35 /be/-doelen zijn stuk voor stuk op live gecontroleerd: alle 35 geven
+ * 200. Er wordt dus nergens naar een 404 gestuurd.
  */
 
 /**
@@ -54,41 +70,41 @@
 function sokkies_oude_urls() {
 	return array(
 		'/5-things-you-need-to-know-before-designing-your-socks/'               => '/en/blog/5-things-you-need-to-know-for-designing-your-socks/',
-		'/be/5-dingen-die-je-moet-weten-voor-het-ontwerpen-van-jouw-sokken/'    => '/nl/blog/5-dingen-die-je-moet-weten-voor-het-ontwerpen-van-jouw-sokken/',
-		'/be/aanbod/'                                                           => '/nl/collectie/',
-		'/be/aanvragen/'                                                        => '/nl/offerte/',
-		'/be/contact/disclaimer/'                                               => '/nl/disclaimer/',
-		'/be/contact/impressum/'                                                => '/nl/impressum/',
-		'/be/de-10-beste-gelegenheden-voor-custom-sokken/'                      => '/nl/blog/de-10-beste-gelegenheden-voor-custom-sokken/',
-		'/be/dikke-warme-huissokken-voor-mijn-bedrijf/'                         => '/nl/blog/dikke-warme-huissokken-voor-mijn-bedrijf/',
-		'/be/hoe-houd-ik-mijn-sokken-in-perfecte-staat/'                        => '/nl/blog/hoe-houd-ik-mijn-sokken-in-perfecte-staat/',
-		'/be/hoe-worden-sokken-gemaakt/'                                        => '/nl/blog/hoe-worden-sokken-gemaakt/',
-		'/be/maak-jouw-relatiegeschenk-nog-leuker-met-deze-extra-s/'            => '/nl/blog/maak-jouw-relatiegeschenk-nog-leuker-met-deze-extras/',
-		'/be/option/inpakservice/'                                              => '/nl/opties/inpakservice/',
-		'/be/option/kaartjes/'                                                  => '/nl/opties/kaartjes/',
-		'/be/option/label/'                                                     => '/nl/opties/labels/',
-		'/be/product/antislip-sokken-bedrukken/'                                => '/nl/collectie/antislipsokken/',
-		'/be/product/babysokken-bedrukken/'                                     => '/nl/collectie/babysokken/',
-		'/be/product/bamboesokken/'                                             => '/nl/collectie/bamboesokken/',
-		'/be/product/kerstsokken-bedrukken/'                                    => '/nl/collectie/kerstsokken/',
-		'/be/product/labels/'                                                   => '/nl/opties/labels/',
-		'/be/product/reguliere-sokken/'                                         => '/nl/collectie/reguliere-sokken/',
-		'/be/product/skisokken-bedrukken/'                                      => '/nl/collectie/skisokken/',
-		'/be/product/sportsokken-bedrukken/'                                    => '/nl/collectie/sportsokken/',
-		'/be/product/werksokken-bedrukken/'                                     => '/nl/collectie/werksokken/',
-		'/be/product/wielersokken-bedrukken/'                                   => '/nl/collectie/wielersokken/',
-		'/be/product/yoga-pilates-sokken-bedrukken/'                            => '/nl/collectie/yoga-pilates-sokken/',
-		'/be/product/zorgsokken-bedrukken/'                                     => '/nl/collectie/zorgsokken/',
-		'/be/project/de-halm/'                                                  => '/nl/reviews-en-cases/de-halm/',
-		'/be/project/dhl-parcel/'                                               => '/nl/reviews-en-cases/dhl-parcel/',
-		'/be/project/een-liefdevol-paar-voor-een-zilveren-huwelijk/'            => '/nl/reviews-en-cases/trouwsokken/',
-		'/be/project/forfarmers-reudink/'                                       => '/nl/reviews-en-cases/forfarmers-reudink/',
-		'/be/project/kaleido/'                                                  => '/nl/reviews-en-cases/kaleido/',
-		'/be/project/sanquin-23/'                                               => '/nl/reviews-en-cases/sanquin/',
-		'/be/projecten/'                                                        => '/nl/reviews-en-cases/',
-		'/be/spoedlevering-nodig-geen-stress-wij-regelen-het/'                  => '/nl/blog/spoedlevering-nodig-geen-stress-wij-regelen-het/',
-		'/be/welke-sokkenmaten-zijn-er-alles-wat-je-moet-weten/'                => '/nl/blog/welke-sokkenmaten-zijn-er-alles-wat-je-moet-weten/',
-		'/be/welke-type-sokken-zijn-er-mogelijk/'                               => '/nl/blog/welke-type-sokken-zijn-er-mogelijk/',
+		'/be/5-dingen-die-je-moet-weten-voor-het-ontwerpen-van-jouw-sokken/'    => '/be/blog/5-dingen-die-je-moet-weten-voor-het-ontwerpen-van-jouw-sokken/',
+		'/be/aanbod/'                                                           => '/be/collectie/',
+		'/be/aanvragen/'                                                        => '/be/offerte/',
+		'/be/contact/disclaimer/'                                               => '/be/disclaimer/',
+		'/be/contact/impressum/'                                                => '/be/impressum/',
+		'/be/de-10-beste-gelegenheden-voor-custom-sokken/'                      => '/be/blog/de-10-beste-gelegenheden-voor-custom-sokken/',
+		'/be/dikke-warme-huissokken-voor-mijn-bedrijf/'                         => '/be/blog/dikke-warme-huissokken-voor-mijn-bedrijf/',
+		'/be/hoe-houd-ik-mijn-sokken-in-perfecte-staat/'                        => '/be/blog/hoe-houd-ik-mijn-sokken-in-perfecte-staat/',
+		'/be/hoe-worden-sokken-gemaakt/'                                        => '/be/blog/hoe-worden-sokken-gemaakt/',
+		'/be/maak-jouw-relatiegeschenk-nog-leuker-met-deze-extra-s/'            => '/be/blog/maak-jouw-relatiegeschenk-nog-leuker-met-deze-extras/',
+		'/be/option/inpakservice/'                                              => '/be/opties/inpakservice/',
+		'/be/option/kaartjes/'                                                  => '/be/opties/kaartjes/',
+		'/be/option/label/'                                                     => '/be/opties/labels/',
+		'/be/product/antislip-sokken-bedrukken/'                                => '/be/collectie/antislipsokken/',
+		'/be/product/babysokken-bedrukken/'                                     => '/be/collectie/babysokken/',
+		'/be/product/bamboesokken/'                                             => '/be/collectie/bamboesokken/',
+		'/be/product/kerstsokken-bedrukken/'                                    => '/be/collectie/kerstsokken/',
+		'/be/product/labels/'                                                   => '/be/opties/labels/',
+		'/be/product/reguliere-sokken/'                                         => '/be/collectie/reguliere-sokken/',
+		'/be/product/skisokken-bedrukken/'                                      => '/be/collectie/skisokken/',
+		'/be/product/sportsokken-bedrukken/'                                    => '/be/collectie/sportsokken/',
+		'/be/product/werksokken-bedrukken/'                                     => '/be/collectie/werksokken/',
+		'/be/product/wielersokken-bedrukken/'                                   => '/be/collectie/wielersokken/',
+		'/be/product/yoga-pilates-sokken-bedrukken/'                            => '/be/collectie/yoga-pilates-sokken/',
+		'/be/product/zorgsokken-bedrukken/'                                     => '/be/collectie/zorgsokken/',
+		'/be/project/de-halm/'                                                  => '/be/reviews-en-cases/de-halm/',
+		'/be/project/dhl-parcel/'                                               => '/be/reviews-en-cases/dhl-parcel/',
+		'/be/project/een-liefdevol-paar-voor-een-zilveren-huwelijk/'            => '/be/reviews-en-cases/trouwsokken/',
+		'/be/project/forfarmers-reudink/'                                       => '/be/reviews-en-cases/forfarmers-reudink/',
+		'/be/project/kaleido/'                                                  => '/be/reviews-en-cases/kaleido/',
+		'/be/project/sanquin-23/'                                               => '/be/reviews-en-cases/sanquin/',
+		'/be/projecten/'                                                        => '/be/reviews-en-cases/',
+		'/be/spoedlevering-nodig-geen-stress-wij-regelen-het/'                  => '/be/blog/spoedlevering-nodig-geen-stress-wij-regelen-het/',
+		'/be/welke-sokkenmaten-zijn-er-alles-wat-je-moet-weten/'                => '/be/blog/welke-sokkenmaten-zijn-er-alles-wat-je-moet-weten/',
+		'/be/welke-type-sokken-zijn-er-mogelijk/'                               => '/be/blog/welke-type-sokken-zijn-er-mogelijk/',
 		'/contact/disclaimer/'                                                  => '/en/disclaimer/',
 		'/contact/imprint/'                                                     => '/en/impressum/',
 		'/de/5-dinge-die-sie-wissen-sollten-bevor-sie-ihre-socken-entwerfen./'  => '/de/blog/5-dingen-die-je-moet-weten-voor-het-ontwerpen-van-jouw-sokken/',
