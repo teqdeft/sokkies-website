@@ -2499,9 +2499,14 @@ function sokkies_land_sorteersleutel( $naam ) {
  * VERSTUURT is de landcode. Die code is in elke taal dezelfde, zodat het
  * vervolgsysteem één waarde krijgt ongeacht de taal waarin de aanvraag binnenkwam.
  *
- * Nederland, Belgie en Duitsland staan bovenaan omdat daar het leeuwendeel van
- * de aanvragen vandaan komt; de rest volgt alfabetisch IN DIE TAAL, dus
- * Oostenrijk onder de O op /nl/ en Autriche onder de A op /fr/.
+ * Nederland, Belgie, Duitsland en Frankrijk staan bovenaan omdat daar het
+ * leeuwendeel van de aanvragen vandaan komt; de rest volgt alfabetisch IN DIE
+ * TAAL, dus Oostenrijk onder de O op /nl/ en Autriche onder de A op /fr/.
+ *
+ * FRANKRIJK IS 2026-11-13 TOEGEVOEGD (melding Rick). Hij noemde Nederland,
+ * Duitsland en Frankrijk als de markten, en Frankrijk stond als enige van die
+ * drie niet in dit kopje maar ergens in het alfabet. Belgie blijft staan: dat
+ * is een eigen gepubliceerde taal met een eigen /be/-sectie.
  */
 function sokkies_landveld_keuzes( $taal = null ) {
 	$taal  = $taal ? $taal : sokkies_huidige_taal();
@@ -2510,7 +2515,7 @@ function sokkies_landveld_keuzes( $taal = null ) {
 		return array();
 	}
 
-	$boven = array( 'NL', 'BE', 'DE' );
+	$boven = array( 'NL', 'BE', 'DE', 'FR' );
 	$rest  = array_diff_key( $namen, array_flip( $boven ) );
 
 	uasort(
