@@ -553,9 +553,14 @@ html.sk-ctrl-busy .v-popper__popper{
     pointer-events: none !important;
 }
 
-/* Anti Slip carries the logo on the calf only (sokkies.js IIFE #10). */
-.expivi-configurator .sk-place-btn[data-sel="footbed"],
-.expivi-configurator .sk-place-btn[data-sel="both"]{
+/* Anti Slip carries the logo on the calf only (sokkies.js IIFE #10).
+   SCOPED TO html.sk-calf-only (2026-11-16). That class is what IIFE #10
+   already toggles on <html> when the selected Sock model is Anti Slip, but
+   no stylesheet ever read it, so this rule ran unscoped and hid Footbed and
+   Calf + Footbed on EVERY model - the placement row showed one pill instead
+   of three. */
+html.sk-calf-only .expivi-configurator .sk-place-btn[data-sel="footbed"],
+html.sk-calf-only .expivi-configurator .sk-place-btn[data-sel="both"]{
     display: none !important;
 }
 
@@ -1274,61 +1279,41 @@ html.sk-ctrl-busy .v-popper__popper{
 }
 
 /* ============================================================
-   Configurator loader
+   Configurator loader — VERHUISD naar configurator.css (2026-11-16)
    ------------------------------------------------------------
-   Without this the column paints in stages: the raw submit buttons show up
-   first, then an empty box, and only once the options app mounts does the real
-   UI appear. Hide the column and show a spinner until sokkies.js flags it.
+   Hier stond een loader die NOOIT heeft gedraaid. Niet weggehaald omdat hij
+   overbodig was, maar omdat hij aantoonbaar niets deed - en dat is het
+   vervelende soort dode code: hij leest als een werkende voorziening, dus
+   niemand kijkt er nog naar als het vak leeg blijft.
 
-   This has to be CSS, not JS: the hide must be in effect before #options ever
-   paints. It works because sokkies.css is the SECOND node in <body> and
-   #options comes after it, so the rule is parsed first. A JS hide would always
-   land after the first paint.
+   Twee onafhankelijke redenen, allebei nagemeten:
 
-   The flag is on <html> so it applies no matter how deep the app re-renders,
-   and sokkies.js sets it on a failsafe timer too, so a broken build degrades to
-   "shown" rather than a permanently blank column.
+   1. SELECTOR. Alles was gescoped als `.expivi-configurator .page.product`,
+      een AFSTAMMELING. In onze template staan die drie classes op HETZELFDE
+      element (<div class="expivi-configurator page product">), dus die
+      selector matcht hier nooit. Op de eigen themapagina van Expivi zit
+      .page.product wel een niveau dieper - vandaar de schrijfwijze; dit
+      bestand is daarvandaan overgenomen.
+   2. ELEMENT. De spinner en de verberging hingen aan #options. Dat element
+      bestaat in onze pagina niet; het is de container van Expivi's eigen
+      pagina. Bij ons heet het #expivi-options. Gemeten op de productpagina:
+      #options nul keer aanwezig, voor en na het laden.
+
+   Er was nog een derde gat, en dat zat niet in dit bestand: expivi-thema.js
+   zet html.sk-configurator-ready zodra de stepper en onze verplaatste
+   knoppenbalk er staan (met een vangnet van twaalf seconden), maar geen
+   enkele stylesheet las die class. De JS-kant hoefde dus niet aangepast te
+   worden, alleen deze CSS-kant.
+
+   DE WERKENDE LOADER STAAT NU IN configurator.css, onder "Laadweergave": hij
+   hangt aan diezelfde vlag, gebruikt #expivi-options en .expivi-viewer, en
+   heeft bewust geen tekst naast de ring (tekst in content: ziet
+   TranslatePress niet, dus die zou op /en/, /de/ en /fr/ Nederlands blijven).
+
+   De keyframes sk-spin stonden hier ook en zijn mee verdwenen: ze werden
+   nergens anders gebruikt. De nieuwe loader draait op sokkies-draai, in
+   hetzelfde bestand als de regel die hem gebruikt.
    ============================================================ */
-.expivi-configurator .page.product #options{
-    position: relative;
-    min-height: 460px;
-}
-.expivi-configurator .page.product #options > *{
-    visibility: hidden !important;
-}
-/* The price and the button row are NOT inside #options during load — the twig
-   renders them elsewhere and sokkies.js moves them in later. Hide them by
-   their own selectors or they show up above the spinner, which is exactly
-   what the loader is meant to prevent. */
-.expivi-configurator .page.product .price-and-button,
-.expivi-configurator .page.product .btn-group{
-    visibility: hidden !important;
-}
-.expivi-configurator .page.product #options::before{
-    content: "";
-    position: absolute;
-    top: 96px;
-    left: 50%;
-    margin-left: -18px;
-    width: 36px;
-    height: 36px;
-    border: 3px solid #e5e7eb;
-    border-top-color: #EA5045;
-    border-radius: 50%;
-    animation: sk-spin .8s linear infinite;
-}
-.expivi-configurator .page.product #options::after{
-    content: "Loading your configurator…";
-    position: absolute;
-    top: 146px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 700;
-    color: #9CA3AF;
-}
-@keyframes sk-spin { to { transform: rotate(360deg); } }
 
 /* 24px margin on .options-container pushed the whole column down. It has no
    padding or border, so the margin collapsed outward through

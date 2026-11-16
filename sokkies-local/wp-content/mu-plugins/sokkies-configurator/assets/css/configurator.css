@@ -80,68 +80,120 @@
   margin-bottom:0;
 }
 
-/* De offerteknop in de balk onder de stappen. Het thema PLAATST die balk wel
-   (.sk-bottom-actions, met de knop erin) maar rekent voor de knop zelf op
-   Bootstrap - .btn en .btn-primary. Deze site laadt geen Bootstrap, dus
-   zonder onderstaande regels staat er een kale blauwe link.
-   Maten 1:1 overgenomen van sokkies.expivi.net: 56px hoog, radius 8,
-   14,4px/700, letter-spacing 0,576px, hoofdletters. Kleur via onze eigen
-   token, zodat de knop meeloopt met de huisstijl. */
+/* De twee knoppen onder de stappen, in de huisstijl.
+   Ze stonden als corale blokken met hoofdletters en radius 8 - dat waren de
+   maten van sokkies.expivi.net, niet van deze site. Nu volgen ze .cta en
+   .cta-light uit style.css: pil van 50px, padding 12px 25.27px,
+   body-font-size, 600, en de lift van 2px bij hover. GEEN hoofdletters en
+   GEEN letter-spacing: geen enkele knop op de site heeft die.
+
+   WAAROM NIET GEWOON class="cta": die markup komt uit de template maar leeft
+   in de app van Expivi, die zijn knoppenblok opnieuw opbouwt en verplaatst
+   (.btn-group gaat naar .sk-bottom-actions). Classes die wij erop zetten
+   overleven dat niet; hun eigen .btn/.btn-primary/.btn-secondary wel. Daarom
+   dezelfde OPMAAK op hun classes, met onze tokens als bron.
+
+   NIET gescoped op .sk-bottom-actions: tot het script het blok verplaatst
+   heeft staat .btn-group nog bij de prijs, en dan zouden de knoppen heel
+   even ongestyled in beeld staan.
+
+   !important is hier geen gemakzucht. expivi-thema.css zet op
+   .page.product .btn-group > button een vaste hoogte van 56px, padding
+   14/18 en #EA5045 - alle drie met !important - en hun eigen opmaak wordt
+   bovendien door het script bewaakt. Zonder dezelfde markering wint dat van
+   deze regels. Alleen de eigenschappen die daar echt tegenover staan zijn zo
+   gemarkeerd; de rest is gewoon.
+
+   EN DAAROM STAAT .btn-primary / .btn-secondary ER DUBBEL BIJ. Hun regel
+   .page.product .btn-group > button telt (0,3,1) en wint daarmee van een
+   kale .expivi-configurator .btn-group .btn (0,3,0) - ook voor hoogte en
+   padding, die zij ook vastzetten. Met de tweede class erbij staat deze
+   regel op (0,4,0) en wint hij wel. Zonder die ene class bleef de
+   PDF-knop 56px hoog terwijl de offerteknop de maat van de huisstijl kreeg: twee knoppen
+   onder elkaar met verschillende hoogtes. */
 .expivi-configurator .sk-bottom-actions,
 .expivi-configurator .sk-bottom-actions .btn-group{
   width:100%;
 }
-.expivi-configurator .sk-bottom-actions .btn{
+.expivi-configurator .btn-group .btn.btn-primary,
+.expivi-configurator .btn-group .btn.btn-secondary{
   display:flex;
   align-items:center;
   justify-content:center;
-  width:100%;
-  min-height:56px;
-  padding:14px 18px;
-  background:var(--coral);
-  color:#fff;
-  border:0;
-  border-radius:8px;
+  /* width:100% + de flex-wrap die het script op .btn-group zet = de knoppen
+     onder elkaar, met hun gap van 12px ertussen. */
+  flex:0 0 auto !important;
+  width:100% !important;
+  min-width:0 !important;
+  height:auto !important;
+  margin:0 !important;
+  padding:12px 25.27px !important;
+  border-radius:50px !important;
   font-family:var(--roc-grotesk);
-  font-size:14.4px;
-  font-weight:700;
-  letter-spacing:.576px;
-  text-transform:uppercase;
+  font-size:var(--body-font-size);
+  font-weight:600 !important;
+  letter-spacing:normal !important;
+  text-transform:none !important;
   text-align:center;
   text-decoration:none;
-  transition:background .2s ease;
+  cursor:pointer;
+  transition:.2s ease-in-out;
+  transform:translateY(0);
 }
-/* De PDF-knop staat NAAST de offerteknop in dezelfde balk. Omlijnd in plaats
-   van gevuld: twee corale blokken naast elkaar lezen als twee hoofdacties,
-   terwijl het aanvragen van een offerte de belangrijkste is en het bekijken
-   van het ontwerp de bijrol speelt. Maten gelijk, zodat ze op een lijn staan. */
-.expivi-configurator .sk-bottom-actions button.btn-secondary[data-sokkies-pdf]{
-  /* !important is hier GEEN gemakzucht. Het thema kleurt ELKE knop in deze
-     balk (ook een zonder class, nagemeten) met #EA5045, en het doet dat via
-     stijl die het script zelf injecteert EN bewaakt met MutationObservers.
-     Een gewone regel verliest daar structureel van: uitzetten van welk
-     stylesheet dan ook verandert de kleur niet, want hij wordt opnieuw gezet.
-     Alleen deze variant is zo gemarkeerd; de hoofdknop laat het thema met
-     rust. */
-  background:transparent !important;
-  color:var(--coral) !important;
-  border:1px solid var(--coral) !important;
+/* GEEL BOVEN WIT, zoals overal op de site: de hero zet de .cta boven de
+   .cta-light, de slot-CTA ook. In de markup van Expivi staat de PDF-knop
+   eerst; met order draaien we dat om zonder aan de DOM te komen - hun app
+   bouwt dat blok opnieuw op, dus een omgezette volgorde in de template zou
+   niet blijven staan. */
+.expivi-configurator .btn-group .btn.btn-primary{ order:1; }
+.expivi-configurator .btn-group .btn.btn-secondary{ order:2; }
+
+/* De hoofdactie: dezelfde gele knop als "Gratis ontwerp aanvragen" in de
+   header, zelfde tekst ook. */
+.expivi-configurator .btn-group a.btn-primary[data-sokkies-offerte]{
+  background:var(--yellow) !important;
+  border:1.5px solid var(--yellow) !important;
+  color:var(--dark) !important;
 }
-.expivi-configurator .sk-bottom-actions button.btn-secondary[data-sokkies-pdf]:hover,
-.expivi-configurator .sk-bottom-actions button.btn-secondary[data-sokkies-pdf]:focus-visible{
-  background:var(--coral) !important;
-  color:#fff !important;
+.expivi-configurator .btn-group a.btn-primary[data-sokkies-offerte]:hover,
+.expivi-configurator .btn-group a.btn-primary[data-sokkies-offerte]:focus-visible{
+  background:var(--yellow-hover) !important;
+  border-color:var(--yellow-hover) !important;
+  transform:translateY(-2px);
+}
+/* BEZIG MET HET ONTWERP. knop.js zet .is-bezig zodra het maken van de PDF
+   loopt. Dat duurt vijftien tot twintig seconden, en zonder zichtbaar
+   verschil klikt een bezoeker ernaast of weg - dan komt hij zonder ontwerp
+   op het formulier en lijkt het kapot. De gele vulling blijft staan, alleen
+   gedempt: de knop is niet weg, hij is bezig. pointer-events eruit zodat een
+   tweede klik niets doet; de lift bij hover ook, want die suggereert dat er
+   nog iets te klikken valt. */
+.expivi-configurator .btn-group .btn.is-bezig{
+  pointer-events:none;
+  opacity:.7;
+  cursor:progress;
+  transform:none !important;
+}
+/* De PDF-knop is de bijrol en krijgt daarom .cta-light: wit met een dunne
+   donkere rand. Twee gevulde knoppen onder elkaar lezen als twee
+   hoofdacties, en het aanvragen van een ontwerp is de belangrijkste. */
+.expivi-configurator .btn-group button.btn-secondary[data-sokkies-pdf]{
+  background:var(--white) !important;
+  border:.5px solid var(--dark) !important;
+  color:var(--dark) !important;
+}
+.expivi-configurator .btn-group button.btn-secondary[data-sokkies-pdf]:hover,
+.expivi-configurator .btn-group button.btn-secondary[data-sokkies-pdf]:focus-visible{
+  background:var(--light-beige) !important;
+  transform:translateY(-2px);
 }
 /* Tijdens het genereren (tien seconden) moet zichtbaar zijn dat er iets
    gebeurt en mag er niet nog een keer geklikt worden. */
-.expivi-configurator .sk-bottom-actions .btn[disabled]{
+.expivi-configurator .btn-group .btn.btn-primary[disabled],
+.expivi-configurator .btn-group .btn.btn-secondary[disabled]{
   opacity:.6;
   cursor:default;
-}
-.expivi-configurator .sk-bottom-actions .btn:hover,
-.expivi-configurator .sk-bottom-actions .btn:focus-visible{
-  background:var(--text);
-  color:#fff;
+  transform:none !important;
 }
 /* ==========================================================================
    Responsive
@@ -199,12 +251,106 @@
   .expivi-configurator .sk-theme-tab{ flex:0 0 auto; }
 
   /* Onze knoptekst is langer dan hun "Request quotation" en brak hier over
-     twee regels (71px hoog). Iets kleiner, dan past hij op een regel. */
-  .expivi-configurator .sk-bottom-actions .btn{
-    padding:14px 12px;
-    font-size:13px;
-    letter-spacing:.4px;
+     twee regels (71px hoog). Minder zijpadding, dan past hij op een regel.
+     De tekengrootte blijft het body-token; op deze band is dat al kleiner,
+     en een eigen maat zou de knop uit de huisstijl trekken. */
+  .expivi-configurator .btn-group .btn.btn-primary,
+  .expivi-configurator .btn-group .btn.btn-secondary{
+    padding:12px 14px !important;
   }
   .expivi-viewer{ height:300px; }
   .expivi-options{ padding:16px; }
+}
+
+/* ==========================================================================
+   Laadweergave
+   --------------------------------------------------------------------------
+   De configurator heeft seconden nodig voordat Expivi zijn viewer en zijn
+   optiepaneel heeft opgebouwd. Tot dat moment stond hier een LEEG WIT VLAK
+   met alleen onze eigen knoppen erboven - niets dat zei dat er iets laadt.
+
+   ER WAS AL EEN LOADER BEDOELD, in expivi-thema.css ("Configurator loader"),
+   en die heeft nooit iets gedaan. Twee onafhankelijke redenen, allebei
+   nagemeten:
+
+   1. Hij is gescoped als `.expivi-configurator .page.product` - een
+      AFSTAMMELING. In onze template staan die classes op HETZELFDE element
+      (<div class="expivi-configurator page product">), dus die selector
+      matcht hier nooit.
+   2. Hij hangt aan #options, en dat element bestaat in onze pagina niet: dat
+      is de container van Expivi's eigen themapagina. Bij ons heet het
+      #expivi-options. Gemeten: #options is nul keer aanwezig, voor en na het
+      laden.
+
+   De JS-kant werkt wel: expivi-thema.js zet html.sk-configurator-ready zodra
+   de stepper EN onze verplaatste knoppenbalk er staan, met een vangnet van
+   twaalf seconden als de app nooit mount. Die vlag stond alleen in geen
+   enkele stylesheet - vandaar deze regels.
+
+   GEEN TEKST BIJ DE SPINNER. Tekst in CSS (content:"...") ziet
+   TranslatePress niet, dus die zou op /en/, /de/ en /fr/ Nederlands blijven -
+   precies de fout die de melding op het offerteformulier eerder had. Een
+   draaiende ring zegt genoeg.
+   ========================================================================== */
+html:not(.sk-configurator-ready) .expivi-configurator #expivi-options > *,
+html:not(.sk-configurator-ready) .expivi-configurator #expivi-price,
+html:not(.sk-configurator-ready) .expivi-configurator .price-and-button,
+html:not(.sk-configurator-ready) .expivi-configurator .btn-group{
+  /* visibility en geen display:none - de app meet tijdens het opbouwen de
+     breedte van zijn eigen container, en die is nul als hij niet gerenderd
+     wordt. */
+  visibility:hidden !important;
+}
+/* De ring staat in het VIEWER-vak: daar verschijnt straks de sok, dus daar
+   kijkt de bezoeker al. .expivi-viewer is de buitenste div en heeft
+   position:relative (zie boven); de app schrijft alleen in #expivi-viewer
+   daarbinnen, dus dit pseudo-element zit hem nooit in de weg. */
+html:not(.sk-configurator-ready) .expivi-viewer::before{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:38px;
+  height:38px;
+  margin:-19px 0 0 -19px;
+  border:3px solid rgb(40 18 27 / 12%);
+  border-top-color:var(--coral);
+  border-radius:50%;
+  animation:sokkies-draai .8s linear infinite;
+}
+/* Eigen naam en niet de sk-spin uit expivi-thema.css: dan hangt deze loader
+   niet aan een keyframe in een ander bestand. */
+@keyframes sokkies-draai{ to{ transform:rotate(360deg); } }
+/* Respecteert de systeeminstelling "minder beweging": dan geen draaiende
+   ring maar een rustige pulse. */
+@media (prefers-reduced-motion:reduce){
+  html:not(.sk-configurator-ready) .expivi-viewer::before{
+    animation:sokkies-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes sokkies-pulse{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
+}
+
+/* ==========================================================================
+   De configurator in de paginakop
+   --------------------------------------------------------------------------
+   Layout 'hero', veld "3D-configurator in de kop" - bedoeld voor de
+   configuratorpagina, waar de bezoeker meteen wil ontwerpen in plaats van
+   eerst door te klikken naar een productpagina.
+
+   Op de productpagina zit de configurator in .conf-preview-card, en DIE levert
+   het witte vlak met de ronde hoeken. In de kop bestaat zo'n kaart niet, dus
+   die maken we hier zelf - met dezelfde radius van 25px als de rest van de
+   site, zodat het geen vreemde eend in de bijt is op het corale vlak.
+   ========================================================================== */
+.conf-hero-configurator{
+  padding:0 0 60px;
+}
+.conf-hero-configurator .expivi-configurator{
+  background:#fff;
+  border-radius:25px;
+  overflow:hidden;
+}
+@media (max-width:767px){
+  .conf-hero-configurator{ padding-bottom:40px; }
+  .conf-hero-configurator .expivi-configurator{ border-radius:15px; }
 }

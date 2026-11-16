@@ -2218,3 +2218,69 @@
 
 
   })();
+
+
+/* =============================================================
+   STEP 24 — de linker-parameter van Google Analytics uit de adresbalk.
+
+   GA4 plakt bij cross-domain-meting een _gl achter de aangeklikte link:
+   ?_gl=1*6196ky*_up*MQ..*_ga*MTAzNjUx...  Dat is de clientstatus in een
+   blob, en hij heeft maar EEN taak: door de volgende pagina gelezen worden
+   om de sessie door te zetten. Daarna is het dode ballast die meereist in
+   gedeelde links, bladwijzers en de browsergeschiedenis.
+
+   WEGHALEN MAG PAS ALS GA HEM GELEZEN HEEFT. Doen we het eerder, dan ziet
+   Analytics een bezoeker die van een ander domein komt als een nieuwe
+   sessie en klopt de toeschrijving niet meer. We wachten daarom op het
+   _ga-cookie: dat zet gtag zodra hij de clientstatus heeft verwerkt. Komt
+   dat cookie er niet (geen toestemming via Cookiebot), dan heeft ook
+   niemand de parameter gelezen en ruimen we hem na tien seconden alsnog op.
+
+   CHIRURGISCH, net als de gf_page-opruiming in offerte.js: alleen _gl
+   eruit, al het andere blijft byte voor byte staan. gclid, gbraid en utm_*
+   horen juist WEL in de URL - die leest niet alleen GA maar ook Google Ads.
+
+   DE OORZAAK ZIT NIET HIER maar in de cross-domain-instelling van de
+   GTM-container (tagging.sokkies.com). GA decoreert alleen links naar een
+   domein dat in die lijst staat, dus er staat er kennelijk een die ook op
+   deze host matcht. Dit opruimen is het vangnet, geen vervanging daarvan.
+
+   LET OP: het verborgen URL-veld van de formulieren wordt server-side
+   gevuld (sokkies_form_url_veld), dus daar staat _gl nog wel in. Dat is
+   een aparte plek met een aparte oplossing.
+   ============================================================= */
+(function () {
+  'use strict';
+
+  var PARAM = '_gl';
+
+  if (!window.history || !window.history.replaceState) { return; }
+  if (window.location.search.indexOf(PARAM + '=') === -1) { return; }
+
+  function gaHeeftGelezen() {
+    return /(^|;\s*)_ga=/.test(document.cookie);
+  }
+
+  function opruimen() {
+    var schoon = window.location.search
+      .replace(new RegExp('([?&])' + PARAM + '=[^&#]*'), '$1')
+      .replace(/\?&+/, '?')
+      .replace(/&&+/g, '&')
+      .replace(/[?&]+$/, '');
+
+    window.history.replaceState(
+      window.history.state,
+      '',
+      window.location.pathname + schoon + window.location.hash
+    );
+  }
+
+  var pogingen = 0;
+  var klok = setInterval(function () {
+    /* 40 x 250 ms = tien seconden terugvaltijd. */
+    if (gaHeeftGelezen() || ++pogingen > 40) {
+      clearInterval(klok);
+      opruimen();
+    }
+  }, 250);
+})();

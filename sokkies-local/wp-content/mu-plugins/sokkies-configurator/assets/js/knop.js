@@ -29,6 +29,7 @@
         4: "Even geduld, we maken de weergave",
         5: "PDF samenstellen"
     };
+    var TOTAAL = 5;
 
     /* Is de configurator al zover dat er iets te bewaren valt? saveConfiguration
        op een half geladen product levert een onbruikbaar ontwerp op. */
@@ -72,7 +73,10 @@
         bezig('Ontwerp opslaan…');
 
         window.SokkiesPrf.generateMockupPdf({}, function (stap, label) {
-            bezig((STAPPEN[stap] || label) + '…');
+            /* Met de teller erbij (2/5) is te zien DAT het vordert. Zonder
+               teller wisselt er alleen een woord en lijkt een trage stap op
+               vastlopen - en dit duurt vijftien tot twintig seconden. */
+            bezig((STAPPEN[stap] || label) + ' (' + stap + '/' + TOTAAL + ')…');
         })
             .then(function (res) {
                 terug();
@@ -116,6 +120,10 @@
     'use strict';
 
     var SLEUTEL = 'sokkies-ontwerp-pdf';
+    /* Lukte het niet, dan moet het formulier dat kunnen zeggen. Zonder deze
+       vlag landt de bezoeker met een leeg uploadveld op /offerte/ zonder te
+       horen waarom - niet te onderscheiden van kapot. */
+    var FOUT_SLEUTEL = 'sokkies-ontwerp-fout';
     var link = document.querySelector('[data-sokkies-offerte]');
     if (!link || !window.SokkiesPrf) {
         return;   /* zonder JS blijft het een gewone link naar het formulier */
@@ -131,6 +139,38 @@
         4: 'Even geduld, we maken de weergave',
         5: 'PDF samenstellen'
     };
+    var TOTAAL = 5;
+
+    function foutOnthouden() {
+        try { sessionStorage.setItem(FOUT_SLEUTEL, '1'); } catch (e) { /* niets */ }
+    }
+
+    function foutWissen() {
+        try { sessionStorage.removeItem(FOUT_SLEUTEL); } catch (e) { /* niets */ }
+    }
+
+    /* De knop ONMISKENBAAR bezig maken. Dit duurt vijftien tot twintig
+       seconden; met alleen een wisselend woord ziet een bezoeker niet dat er
+       iets loopt, klikt hij ernaast of weg, en komt hij zonder ontwerp op het
+       formulier - precies het beeld van "het werkt niet".
+       pointer-events gaat eruit via de klasse, zodat een tweede klik niets
+       doet. aria-disabled en NIET het disabled-attribuut: dat laatste bestaat
+       niet op een <a>, en tabindex weghalen zou de knop uit de toetsenbord-
+       volgorde tillen terwijl hij straks weer gewoon werkt. */
+    function bezig(stap, label) {
+        link.classList.add('is-bezig');
+        link.setAttribute('aria-busy', 'true');
+        link.setAttribute('aria-disabled', 'true');
+        link.textContent = (STAPPEN[stap] || label) + ' (' + stap + '/' + TOTAAL + ')…';
+    }
+
+    function nietMeerBezig() {
+        link.textContent = oorspronkelijk;
+        link.classList.remove('is-bezig');
+        link.removeAttribute('aria-busy');
+        link.removeAttribute('aria-disabled');
+        bezigNu = false;
+    }
 
     function klaar() {
         try {
@@ -151,13 +191,23 @@
                         type: 'application/pdf',
                         base64: String(lezer.result).split(',')[1]
                     }));
+                    /* NALEZEN. setItem gooit niet overal als de opslag vol
+                       zit of geweigerd wordt - sommige browsers slikken het
+                       stil. Zonder deze controle gaat de bezoeker dan zonder
+                       ontwerp EN zonder melding verder, en dat is precies de
+                       stille mislukking die niet te vinden is. */
+                    if (!sessionStorage.getItem(SLEUTEL)) {
+                        foutOnthouden();
+                    }
                 } catch (e) {
-                    /* Vol of geweigerd: dan gaat de bezoeker zonder bijlage
-                       door. Beter dan hem hier laten stranden. */
+                    /* Vol of geweigerd: de bezoeker gaat zonder bijlage door,
+                       maar het formulier zegt nu wel dat het ontwerp er niet
+                       bij zit. */
+                    foutOnthouden();
                 }
                 resolve();
             };
-            lezer.onerror = function () { resolve(); };
+            lezer.onerror = function () { foutOnthouden(); resolve(); };
             lezer.readAsDataURL(blob);
         });
     }
@@ -214,23 +264,31 @@
             e.preventDefault();
             return;
         }
+
+        /* Een vlag van een VORIGE poging mag deze niet vervuilen. */
+        foutWissen();
+
         if (!klaar()) {
-            return;   /* configurator nog niet geladen: gewoon doorlinken */
+            /* Configurator nog niet geladen: gewoon doorlinken, zoals altijd -
+               de aanvraag is belangrijker dan de mockup. Maar WEL onthouden
+               dat er geen ontwerp meereist, anders staat de bezoeker straks
+               voor een leeg uploadveld zonder enige uitleg. */
+            foutOnthouden();
+            return;
         }
 
         e.preventDefault();
         bezigNu = true;
-        link.setAttribute('aria-busy', 'true');
+        bezig(1, STAPPEN[1]);
 
         /* Eerst de keuze vastleggen, daarna pas de PDF: zo staat de goede
            sok ook op het formulier als de PDF hierna strandt. */
         bewaarSoktype();
 
-        window.SokkiesPrf.generateMockupPdf({}, function (stap, label) {
-            link.textContent = (STAPPEN[stap] || label) + '\u2026';
-        })
+        window.SokkiesPrf.generateMockupPdf({}, bezig)
             .then(function (res) { return bewaren(res.blob); })
             .catch(function (err) {
+                foutOnthouden();
                 if (window.console) {
                     console.error('Sokkies PDF:', err);
                 }
@@ -238,10 +296,9 @@
             .then(function () {
                 /* Hoe dan ook doorgaan naar het formulier - met bijlage als
                    het lukte, zonder als het misging. De aanvraag is
-                   belangrijker dan de mockup. */
-                link.textContent = oorspronkelijk;
-                link.removeAttribute('aria-busy');
-                bezigNu = false;
+                   belangrijker dan de mockup; het formulier zegt daar zelf
+                   wat er niet meekwam (offerte-bijlage.js). */
+                nietMeerBezig();
                 window.location.href = link.getAttribute('href');
             });
     });

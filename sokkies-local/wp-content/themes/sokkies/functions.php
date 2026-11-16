@@ -360,14 +360,56 @@ add_action( 'wp_enqueue_scripts', 'sokkies_assets' );
  * terugvalletter; dat kost wel een zichtbare lettersprong, dus het is een keuze
  * van de klant.
  */
-function sokkies_typekit_los( $tag, $handle ) {
-	if ( 'sokkies-typekit' === $handle ) {
-		$tag = str_replace( '<link ', '<link data-no-optimize="1" ', $tag );
+/**
+ * DE BIBLIOTHEKEN VAN EEN CDN BUITEN DE BUNDEL VAN LITESPEED (2026-11-16).
+ *
+ * Hierboven staat waarom Typekit er al buiten viel: snelheid. Voor Swiper en
+ * AOS is de reden zwaarder - ZONDER DIT IS DE SITE STUK VOOR UITGELOGDE
+ * BEZOEKERS, en alleen voor hen. LiteSpeed optimaliseert namelijk alleen voor
+ * gasten (optm-guest_only), dus ingelogd ziet niemand het.
+ *
+ * Wat er gebeurt: "Combine External and Inline JS" haalt een script van een
+ * ander domein OP en schrijft de inhoud in een eigen bestand. Lukt dat ophalen
+ * niet, dan verdwijnt het script gewoon - er blijft geen <script>-tag over.
+ * Gemeten op de homepage als gast:
+ *
+ *     cdn.jsdelivr.net/.../swiper-bundle.min.js   0 tags in de pagina
+ *     Swiper= in het gecombineerde bestand        0 keer
+ *     --swiper-theme-color in de gecombineerde css 0 keer
+ *
+ * En dan is het niet "de sliders doen het niet". custom.js roept Swiper aan op
+ * het TOPNIVEAU van een IIFE, dus de ReferenceError breekt de rest van dat
+ * bestand af: accordeons, filters, het mobiele menu, de thumbnailpijlen - alles
+ * wat eronder staat. Vandaar "de site werkt niet".
+ *
+ * OP LIVE LUKT HET OPHALEN WEL (het gecombineerde bestand is daar 310 kB en
+ * bevat Swiper), dus daar is het nooit opgevallen. Dat maakt het juist riskant:
+ * één mislukte fetch op het moment dat de cache opnieuw wordt opgebouwd en de
+ * halve site ligt plat, zonder dat er iets aan de code veranderd is.
+ *
+ * data-no-optimize is het eigen merkteken van LiteSpeed. De browser haalt deze
+ * drie bestanden dan gewoon zelf bij het CDN op - één verzoek extra, maar wel
+ * eentje die niet stilletjes kan verdwijnen. De preconnect hieronder dekt de
+ * vertraging af.
+ */
+function sokkies_cdn_handles() {
+	return array( 'sokkies-typekit', 'swiper', 'aos' );
+}
+
+function sokkies_cdn_los( $tag, $handle ) {
+	if ( ! in_array( $handle, sokkies_cdn_handles(), true ) ) {
+		return $tag;
+	}
+	if ( false !== strpos( $tag, 'data-no-optimize' ) ) {
+		return $tag;
 	}
 
-	return $tag;
+	/* Eén keer vervangen, op de EERSTE tag: een script-tag met inline-code
+	   erachter (wp_add_inline_script) mag niet ook gemarkeerd worden. */
+	return preg_replace( '#<(link|script)\s#', '<$1 data-no-optimize="1" ', $tag, 1 );
 }
-add_filter( 'style_loader_tag', 'sokkies_typekit_los', 10, 2 );
+add_filter( 'style_loader_tag', 'sokkies_cdn_los', 10, 2 );
+add_filter( 'script_loader_tag', 'sokkies_cdn_los', 10, 2 );
 
 function sokkies_typekit_hints( $hints, $relatie ) {
 	if ( 'preconnect' === $relatie ) {
@@ -376,6 +418,15 @@ function sokkies_typekit_hints( $hints, $relatie ) {
 			'crossorigin' => 'anonymous',
 		);
 		$hints[] = array( 'href' => 'https://p.typekit.net' );
+		/* Swiper en AOS worden sinds 2026-11-16 niet meer ingepakt (zie
+		   sokkies_cdn_los): de browser haalt ze zelf bij jsdelivr. Met de
+		   verbinding al open kost dat geen extra wachttijd voor het eerste
+		   verzoek. crossorigin, want script-tags naar een ander domein halen
+		   met CORS op. */
+		$hints[] = array(
+			'href'        => 'https://cdn.jsdelivr.net',
+			'crossorigin' => 'anonymous',
+		);
 	}
 
 	return $hints;
@@ -808,9 +859,7 @@ function sokkies_adres_de( $een_regel = false ) {
 
 /** Adresregels achter elkaar, voor plekken waar maar één regel past. */
 function sokkies_adres_een_regel( $adres ) {
-	$regels = preg_split( '/
-||
-/', (string) $adres );
+	$regels = preg_split( '/\r\n|\r|\n/', (string) $adres );
 	$regels = array_filter( array_map( function ( $r ) { return trim( $r, " 	," ); }, $regels ) );
 
 	return esc_html( implode( ', ', $regels ) );
@@ -824,9 +873,7 @@ function sokkies_adres( $standaard = '', $een_regel = false ) {
 		return $een_regel ? sokkies_adres_een_regel( sokkies_optie( 'adres_de', '' ) ) : $adres;
 	}
 	if ( $een_regel ) {
-		$regels = preg_split( '/
-||
-/', $adres );
+		$regels = preg_split( '/\r\n|\r|\n/', $adres );
 		$regels = array_filter( array_map( function ( $r ) { return trim( $r, " 	," ); }, $regels ) );
 
 		return esc_html( implode( ', ', $regels ) );

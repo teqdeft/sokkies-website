@@ -456,13 +456,17 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
         <div class="conf-preview">
           <div class="conf-preview-card">
             <?php
-            /* Met een Expivi-product-ID staat hier de echte 3D-configurator;
-               zonder ID blijft het de statische preview-foto. Die terugval is
-               nodig: alleen dit soktype heeft een ID, de rest zou anders een
-               lege kaart tonen. */
-            $expivi_product_id = get_field( 'expivi_product_id' );
+            /* Staat het vinkje "3D-configurator tonen" aan, dan staat hier de
+               echte configurator; staat het uit, dan blijft het de statische
+               preview-foto. Die terugval moet blijven: een type zonder
+               configurator zou anders een lege kaart tonen.
+               De vraag wordt gesteld aan de mu-plugin, zodat deze template en
+               het inladen van de bestanden van Expivi altijd hetzelfde
+               antwoord krijgen - staan die twee uit elkaar, dan laadt de
+               pagina 200 kB voor een vak dat er niet is (of andersom). */
+            $expivi_aan = function_exists( 'sokkies_configurator_voor_type' ) && sokkies_configurator_voor_type();
             ?>
-            <?php if ( $expivi_product_id ) : ?>
+            <?php if ( $expivi_aan ) : ?>
             <div class="expivi-configurator page product">
               <div class="product-container">
                 <div class="expivi-viewer">
@@ -484,7 +488,18 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
                   ?>
                   <div class="btn-group">
                     <button type="button" class="btn btn-secondary" data-sokkies-pdf>Bekijk je ontwerp (PDF)</button>
-                    <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary" data-sokkies-offerte><?php echo esc_html( sokkies_cta_label() ); ?></a>
+                    <?php
+                  /* EIGEN LABEL en niet sokkies_cta_label(). Die tekst staat ook
+                     op de knop in de header, en sinds die twee dezelfde gele pil
+                     zijn is op de productpagina niet meer te zien welke van de
+                     twee het ontwerp meeneemt - de header-knop is een gewone
+                     link naar het formulier. "dit ontwerp" zegt precies wat
+                     deze knop extra doet.
+                     Gewone Nederlandse tekst, dus TranslatePress vertaalt hem
+                     zoals alle andere zichtbare tekst; de vier vertalingen staan
+                     in de woordenboeken. */
+                  ?>
+                    <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary" data-sokkies-offerte>Vraag dit ontwerp aan</a>
                   </div>
                 </div>
               </div>

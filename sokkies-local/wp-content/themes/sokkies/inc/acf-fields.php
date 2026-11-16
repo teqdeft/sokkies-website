@@ -151,6 +151,20 @@ add_action( 'acf/init', function () {
 								'default_value' => 'standaard',
 							),
 							array(
+								'key'               => 'field_hero_configurator',
+								'label'             => '3D-configurator in de kop',
+								'name'              => 'configurator_tonen',
+								'type'              => 'true_false',
+								'ui'                => 1,
+								'default_value'     => 0,
+								'instructions'      => 'Zet de 3D-configurator onder de titel, zodat de bezoeker meteen kan ontwerpen - bedoeld voor de configuratorpagina. MAAR EEN PER PAGINA: de configurator gebruikt vaste element-ids, dus een tweede op dezelfde pagina werkt niet. De configurator verschijnt alleen als hij ook site-breed aan staat; dat is een instelling in de code.',
+								'conditional_logic' => array(
+									array(
+										array( 'field' => 'field_hero_variant', 'operator' => '==', 'value' => 'configurator' ),
+									),
+								),
+							),
+							array(
 								'key'           => 'field_hero_fotos',
 								'label'         => 'Fotoslider onder de titel',
 								'name'          => 'fotos',
@@ -3442,7 +3456,15 @@ Het item is vanzelf gemarkeerd als "huidige pagina" wanneer de bezoeker op de ge
 			array( 'key' => 'field_soktype_pdp_fotos', 'label' => 'Productfoto\'s', 'name' => 'pdp_fotos', 'type' => 'gallery', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'insert' => 'append', 'instructions' => 'Eerste foto = grote foto; de rest wordt de miniaturenrij. Leeg = de kaartfoto. Aanbevolen: 1480 x 1480 px per foto (vierkant).' ),
 			array( 'key' => 'field_soktype_pdp_video', 'label' => 'Productvideo', 'name' => 'pdp_video', 'type' => 'file', 'return_format' => 'array', 'mime_types' => 'mp4,webm,mov', 'instructions' => 'Optioneel — komt als laatste miniatuur met een afspeelknop; speelt af in het grote vak.' ),
 			array( 'key' => 'field_soktype_pdp_video_still', 'label' => 'Video-miniatuur', 'name' => 'pdp_video_still', 'type' => 'image', 'return_format' => 'array', 'preview_size' => 'thumbnail', 'instructions' => 'Het plaatje op de video-miniatuur. Leeg = de eerste productfoto. Aanbevolen: 280 x 280 px (vierkant).' ),
-			array( 'key' => 'field_soktype_expivi_product_id', 'label' => 'Expivi-product-ID', 'name' => 'expivi_product_id', 'type' => 'number', 'min' => 0, 'step' => 1, 'instructions' => 'Het ID van dit soktype in Expivi (de 3D-configurator). Leeg = geen configurator voor dit type.' ),
+			/* Was een nummerveld (Expivi-product-ID) tot 2026-11-16. Dat nummer is
+			   voor elk soktype hetzelfde - er is EEN catalogus bij Expivi en het
+			   soktype is daarbinnen een keuze - dus het stond elf keer in het CMS
+			   terwijl het nergens verschilde. Het nummer zit nu in
+			   sokkies_configurator_catalogus() en hier blijft een vinkje over.
+			   De oude waarden blijven in de database staan: zolang dit vinkje op
+			   een soktype nooit is opgeslagen, bepaalt dat oude ID of de
+			   configurator er staat - zie sokkies_configurator_voor_type(). */
+			array( 'key' => 'field_soktype_configurator_tonen', 'label' => '3D-configurator tonen', 'name' => 'configurator_tonen', 'type' => 'true_false', 'ui' => 1, 'default_value' => 1, 'instructions' => 'Aan = de bezoeker ontwerpt zijn sok op deze pagina. Uit = de statische voorbeeldfoto. Er valt niets in te vullen: alle soktypen zitten in dezelfde catalogus bij Expivi. De configurator verschijnt alleen als hij ook site-breed aan staat; dat is een instelling in de code.' ),
 			array(
 				'key'          => 'field_soktype_pdp_specs',
 				'label'        => 'De specs (uitklaplijst)',

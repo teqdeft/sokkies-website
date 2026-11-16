@@ -58,6 +58,30 @@ function sokkies_configurator_token() {
 }
 
 /**
+ * Het catalogus-ID bij Expivi.
+ *
+ * EEN NUMMER VOOR DE HELE SITE: alle soktypen zitten in dezelfde catalogus en
+ * zijn daarbinnen een keuze van het attribuut Model (RegularSocks, SportSocks,
+ * AntiSlipSocks ... - zie sokkies_configurator_soktype_kaart). Daarom staat
+ * het hier in code en niet per soktype in het CMS.
+ *
+ * Zelfde volgorde als sokkies_configurator_token(): de constante
+ * SOKKIES_EXPIVI_CATALOGUS in wp-config wint, dan de optie
+ * sokkies_configurator_catalogus, anders de waarde hieronder. Zo is een
+ * andere catalogus te kiezen zonder deploy.
+ */
+function sokkies_configurator_catalogus() {
+	if ( defined( 'SOKKIES_EXPIVI_CATALOGUS' ) && SOKKIES_EXPIVI_CATALOGUS ) {
+		return (int) SOKKIES_EXPIVI_CATALOGUS;
+	}
+	$optie = (int) get_option( 'sokkies_configurator_catalogus' );
+	if ( $optie ) {
+		return $optie;
+	}
+	return 27480;
+}
+
+/**
  * De taalcode waarin de configurator zijn eigen teksten toont.
  *
  * WAAROM DIT NODIG IS: TranslatePress vertaalt de HTML die WordPress uitstuurt.
@@ -131,6 +155,53 @@ function sokkies_configurator_aan() {
 
 	return (bool) apply_filters( 'sokkies_configurator_aan', $aan );
 }
+
+/**
+ * Staat de configurator op DIT soktype?
+ *
+ * WAAROM EEN VINKJE EN GEEN ID MEER (verzoek 2026-11-16, Kulwant): het veld
+ * Expivi-product-ID vroeg per soktype een nummer, terwijl dat nummer overal
+ * hetzelfde is - er is EEN catalogus bij Expivi en het soktype is daarbinnen
+ * een keuze van het attribuut Model. Elf keer hetzelfde getal overtypen
+ * levert alleen typefouten op. De catalogus staat nu in
+ * sokkies_configurator_catalogus() en per type blijft een vinkje over.
+ *
+ * AAN VOOR ALLE SOKTYPEN, tenzij het vinkje uit staat (verzoek 2026-11-16,
+ * Kulwant: "enable it for all soktypes"). Dat zit BEWUST in deze terugval en
+ * niet in een rij databasewaarden: code deployt en de database niet, dus
+ * vinkjes zetten op elf soktypen zou op dev en op live opnieuw moeten. Nu
+ * staat hij overal aan zodra de code er is, en is hij per type met een tik
+ * uit te zetten.
+ *
+ * HET OUDE EXPIVI-PRODUCT-ID DOET HIER NIETS MEER. Dat veld bepaalde tot
+ * vandaag welk type de configurator kreeg (alleen Reguliere sokken had een
+ * nummer). De waarden blijven in de database staan - ze zijn onschadelijk en
+ * weggooien vraagt een databasestap die toch niet meedeployt - maar er wordt
+ * niet meer naar gekeken.
+ *
+ * get_post_meta EN NIET get_field: alleen zo is "nooit opgeslagen" te
+ * onderscheiden van "uitgezet". get_field geeft in allebei die gevallen de
+ * standaardwaarde van het veld terug, en dan zou het vinkje nooit uit kunnen.
+ *
+ * De uitkomst is te overrulen met het filter sokkies_configurator_voor_type.
+ *
+ * @param int|null $post_id Het soktype; leeg = het huidige bericht.
+ * @return bool
+ */
+function sokkies_configurator_voor_type( $post_id = null ) {
+	$post_id = $post_id ? (int) $post_id : (int) get_the_ID();
+	if ( ! $post_id ) {
+		return false;
+	}
+
+	if ( metadata_exists( 'post', $post_id, 'configurator_tonen' ) ) {
+		$aan = (bool) get_post_meta( $post_id, 'configurator_tonen', true );
+	} else {
+		$aan = true;
+	}
+
+	return (bool) apply_filters( 'sokkies_configurator_voor_type', $aan, $post_id );
+}
 /** Versie = wijzigingsdatum van het bestand, zodat de cache vanzelf breekt. */
 function sokkies_configurator_versie( $pad ) {
 	$bestand = __DIR__ . '/' . $pad;
@@ -187,17 +258,67 @@ function sokkies_configurator_soktype_kaart() {
 
 	return $uit;
 }
+/**
+ * Staat de configurator in de KOP van deze pagina?
+ *
+ * De paginakop (layout 'hero') heeft sinds 2026-11-16 het veld
+ * "3D-configurator in de kop". Dat is bedoeld voor de configuratorpagina: daar
+ * staat de configurator in de banner in plaats van op een productpagina.
+ *
+ * RECHTSTREEKS IN POSTMETA en niet via get_field(): deze vraag wordt gesteld op
+ * wp_enqueue_scripts, en daar bestaat de secties-lus nog niet. De hele
+ * flexible content ophalen om er een vinkje uit te vissen is bovendien zwaar
+ * werk voor een ja/nee - zelfde afweging als sokkies_pagina_foto() in het
+ * thema. De sleutels liggen vast op secties_{index}_{veld}.
+ *
+ * LET OP: dit kijkt ALLEEN naar de kop-sectie. Het soktype heeft een veld met
+ * dezelfde naam, maar dat staat zonder secties-voorvoegsel in de database en
+ * wordt hier dus niet meegeteld.
+ *
+ * @param int|null $post_id De pagina; leeg = de opgevraagde pagina.
+ * @return bool
+ */
+function sokkies_configurator_in_kop( $post_id = null ) {
+	if ( ! $post_id && ! is_singular() ) {
+		return false;
+	}
+
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+	if ( ! $post_id ) {
+		return false;
+	}
+
+	global $wpdb;
+
+	$patroon = $wpdb->esc_like( 'secties_' ) . '%' . $wpdb->esc_like( '_configurator_tonen' );
+	$aan     = $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT meta_value FROM {$wpdb->postmeta}
+			 WHERE post_id = %d AND meta_key LIKE %s AND meta_value = '1'
+			 LIMIT 1",
+			$post_id,
+			$patroon
+		)
+	);
+
+	return ! empty( $aan );
+}
+
 function sokkies_configurator_assets() {
 	if ( ! sokkies_configurator_aan() ) {
 		return;
 	}
-	if ( ! is_singular( 'sokkies_soktype' ) ) {
+	/* Twee plekken waar de configurator kan staan: op een soktype (het vinkje
+	   per type) en in de kop van een pagina (het vinkje op de hero-sectie,
+	   voor de configuratorpagina). Buiten die twee laden we niets. */
+	if ( is_singular( 'sokkies_soktype' ) ) {
+		if ( ! sokkies_configurator_voor_type() ) {
+			return;
+		}
+	} elseif ( ! sokkies_configurator_in_kop() ) {
 		return;
 	}
-	if ( ! function_exists( 'get_field' ) ) {
-		return;
-	}
-	$catalogus = (int) get_field( 'expivi_product_id' );
+	$catalogus = sokkies_configurator_catalogus();
 	if ( ! $catalogus ) {
 		return;
 	}
@@ -246,9 +367,10 @@ function sokkies_configurator_assets() {
 	   window.SokkiesPrf.generateMockupPdf(), die in vijf stappen een PDF van
 	   het ontwerp maakt. Alles met het viewertoken, dus zonder server van ons
 	   ertussen.
-	   De catalogus komt uit het veld van DIT soktype in plaats van uit een
-	   hardgecodeerd getal; het bestandsnummer van de print-ready file is wel
-	   vast, dat hoort bij de catalogus en staat in hun documentatie. */
+	   De catalogus komt uit sokkies_configurator_catalogus() - een nummer
+	   voor de hele site, want alle soktypen zitten in dezelfde catalogus; het
+	   bestandsnummer van de print-ready file is ook vast, dat hoort bij die
+	   catalogus en staat in hun documentatie. */
 	wp_enqueue_script(
 		'sokkies-prf',
 		sokkies_configurator_url( 'assets/js/prf.js' ),
@@ -317,6 +439,31 @@ add_action( 'wp_enqueue_scripts', 'sokkies_configurator_assets' );
  * Gravity Forms hernummert bij een import); bestaat die niet, dan doen we
  * niets in plaats van te gokken.
  */
+/**
+ * De zin die het offerteformulier toont als het ontwerp niet meekwam.
+ *
+ * EIGEN TABEL EN GEEN __(): het thema heeft geen tekstdomein en de site draait
+ * op locale en_US met TranslatePress ervoor - vertalen gebeurt hier dus net als
+ * bij de veldlabels in inc/formulier-talen.php met een eigen kaart.
+ * Aanspreekvorm 1-op-1 daarvandaan: Duits en Frans formeel (Sie / vous),
+ * Nederlands informeel.
+ *
+ * Een onbekende taal (en Belgisch Nederlands, dat hier 'nl' oplevert) valt
+ * terug op het Nederlands.
+ */
+function sokkies_configurator_ontwerp_melding() {
+	$zinnen = array(
+		'nl' => 'We konden je ontwerp niet meesturen. Voeg het hieronder zelf toe.',
+		'en' => 'We could not attach your design. Please add it below.',
+		'de' => 'Ihr Entwurf konnte nicht mitgeschickt werden. Fügen Sie ihn bitte unten hinzu.',
+		'fr' => "Nous n'avons pas pu joindre votre design. Ajoutez-le ci-dessous.",
+	);
+
+	$taal = function_exists( 'sokkies_huidige_taal' ) ? sokkies_huidige_taal() : 'nl';
+
+	return isset( $zinnen[ $taal ] ) ? $zinnen[ $taal ] : $zinnen['nl'];
+}
+
 function sokkies_configurator_offerte_bijlage( $form ) {
 	if ( ! function_exists( 'sokkies_offerte_form_id' ) ) {
 		return;
@@ -340,7 +487,15 @@ function sokkies_configurator_offerte_bijlage( $form ) {
 		'sokkies-offerte-bijlage',
 		'window.SOKKIES_CONFIGURATOR = window.SOKKIES_CONFIGURATOR || {};'
 		. 'window.SOKKIES_CONFIGURATOR.soktypes = '
-		. wp_json_encode( sokkies_configurator_soktype_kaart() ) . ';',
+		. wp_json_encode( sokkies_configurator_soktype_kaart() ) . ';'
+		/* De melding die offerte-bijlage.js boven het sleepvlak zet als het
+		   ontwerp niet meekwam. HIER en niet in het JS-bestand, want
+		   TranslatePress vertaalt alleen wat WordPress uitstuurt; tekst die
+		   JavaScript later in de pagina zet ziet hij nooit. Zonder dit stond
+		   er op /en/, /de/ en /fr/ een Nederlandse zin - nagemeten op
+		   /en/quote/. */
+		. 'window.SOKKIES_CONFIGURATOR.ontwerpMelding = '
+		. wp_json_encode( sokkies_configurator_ontwerp_melding() ) . ';',
 		'before'
 	);
 }
@@ -380,3 +535,45 @@ function sokkies_configurator_script_crossorigin( $tag, $handle ) {
 	return str_replace( ' src=', ' crossorigin="anonymous" src=', $tag );
 }
 add_filter( 'script_loader_tag', 'sokkies_configurator_script_crossorigin', 10, 2 );
+
+/**
+ * De twee bestanden van Expivi buiten de JS-optimalisatie van LiteSpeed houden.
+ *
+ * ZONDER DIT WERKT DE CONFIGURATOR NIET. LiteSpeed staat hier op "Combine JS"
+ * EN "Combine External and Inline JS" (optm-js_comb en optm-js_comb_ext_inl,
+ * allebei 1). Dat betekent dat hij een script van een ander domein OPHAALT en
+ * de inhoud in een eigen bestand onder wp-content/litespeed/js/ schrijft.
+ * Gemeten op live: dat gecombineerde bestand is 310 kB en bevat de
+ * Swiper-bundel, die nergens anders vandaan komt dan cdn.jsdelivr.net -
+ * externe scripts worden dus echt ingesloten. Gemeten op de productpagina:
+ * met de combine aan staan er NUL script-tags naar assets.expivi.net in de
+ * pagina en is window.expivi undefined; dan doet "Bekijk je ontwerp (PDF)"
+ * niets en reist er geen ontwerp mee naar het offerteformulier, want allebei
+ * leunen op window.expivi.saveConfiguration en window.expivi.apiToken.
+ *
+ * Voor Expivi mag inlijven sowieso niet, om twee redenen:
+ *
+ * 1. viewer.js haalt zijn eigen three.js-bundel na met een pad dat relatief is
+ *    aan assets.expivi.net. Staat de code op sokkies.com, dan wijst dat pad
+ *    nergens heen. Datzelfde navragen is ook precies waarom hierboven
+ *    crossorigin op de tag staat.
+ * 2. De URL's wijzen naar /latest/. Een kopie in ons bundelbestand bevriest
+ *    die versie tot iemand de cache leegt, terwijl Expivi aan hun kant
+ *    gewoon doorontwikkelt. Dan praat een oude viewer met een nieuwe API.
+ *
+ * data-no-optimize is het eigen merkteken van LiteSpeed (optimize.cls.php
+ * regel 880, 1133 en 1167), dus dit werkt ZONDER een instelling in de
+ * database - dezelfde reden waarom de schakelaar hierboven in code staat.
+ * Het uitsluiten geldt alleen voor deze twee handles; onze eigen scripts
+ * (expivi-thema.js, prf.js, knop.js) worden gewoon meegenomen.
+ */
+function sokkies_configurator_script_niet_optimaliseren( $tag, $handle ) {
+	if ( ! in_array( $handle, array( 'expivi-viewer', 'expivi-options' ), true ) ) {
+		return $tag;
+	}
+	if ( false !== strpos( $tag, 'data-no-optimize' ) ) {
+		return $tag;
+	}
+	return str_replace( ' src=', ' data-no-optimize="1" src=', $tag );
+}
+add_filter( 'script_loader_tag', 'sokkies_configurator_script_niet_optimaliseren', 10, 2 );

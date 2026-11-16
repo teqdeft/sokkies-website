@@ -16,6 +16,7 @@
 
     var PDF_SLEUTEL     = 'sokkies-ontwerp-pdf';
     var SOKTYPE_SLEUTEL = 'sokkies-ontwerp-soktype';
+    var FOUT_SLEUTEL    = 'sokkies-ontwerp-fout';
 
     function lees(sleutel) {
         try {
@@ -27,6 +28,10 @@
 
     function wissen(sleutel) {
         try { sessionStorage.removeItem(sleutel); } catch (e) { /* niets */ }
+    }
+
+    function schrijf(sleutel, waarde) {
+        try { sessionStorage.setItem(sleutel, waarde); } catch (e) { /* niets */ }
     }
 
     /* ---------- 1. de PDF in het uploadveld ---------- */
@@ -101,6 +106,11 @@
                het formulier. */
             uploader.addFile(wikkel);
         } catch (e) {
+            /* Zeggen en niet alleen loggen: een bezoeker opent geen console.
+               Direct melden, want de lus heeft meldFout() mogelijk al
+               afgevinkt toen er nog geen vlag stond. */
+            schrijf(FOUT_SLEUTEL, '1');
+            meldFout();
             if (window.console) {
                 console.error('Sokkies: ontwerp kon niet worden toegevoegd', e);
             }
@@ -162,6 +172,57 @@
         return true;
     }
 
+    /* ---------- 3. zeggen dat het ontwerp niet meekwam ---------- */
+
+    /* Zonder dit komt de bezoeker op een leeg uploadveld en hoort hij nergens
+       waarom zijn ontwerp er niet staat - precies het beeld van "het werkt
+       niet". De melding staat BIJ het uploadveld en niet bovenaan de pagina:
+       daar moet hij iets doen.
+
+       role="status" en geen alert: het is geen fout van de bezoeker en het
+       hoeft zijn invoer niet te onderbreken; een schermlezer leest het voor
+       zodra hij uitgesproken is.
+
+       De vlag wordt in knop.js gezet - zowel als het maken van de PDF
+       strandt als wanneer de configurator nog niet klaar was bij de klik. */
+    function meldFout() {
+        if (!lees(FOUT_SLEUTEL)) {
+            return true;
+        }
+
+        var veld = document.querySelector('.of-upload') ||
+                   document.querySelector('.gfield--type-fileupload');
+        if (!veld) {
+            return false;   // formulier nog niet gerenderd
+        }
+
+        if (!veld.querySelector('.of-ontwerp-melding')) {
+            var melding = document.createElement('p');
+            melding.className = 'of-ontwerp-melding';
+            melding.setAttribute('role', 'status');
+            /* De zin komt uit PHP (sokkies_configurator_ontwerp_melding), want
+               TranslatePress ziet geen tekst die JavaScript in de pagina zet -
+               hier hardgecodeerd stond er op /en/ een Nederlandse zin. De
+               Nederlandse zin blijft als terugval staan voor het geval het
+               inline-blok er niet is. */
+            melding.textContent =
+                (window.SOKKIES_CONFIGURATOR && window.SOKKIES_CONFIGURATOR.ontwerpMelding) ||
+                'We konden je ontwerp niet meesturen. Voeg het hieronder zelf toe.';
+
+            /* Boven het sleepvlak, onder het label: "hieronder" moet ook
+               kloppen met waar de melding staat. */
+            var vak = veld.querySelector('.ginput_container');
+            if (vak) {
+                veld.insertBefore(melding, vak);
+            } else {
+                veld.appendChild(melding);
+            }
+        }
+
+        wissen(FOUT_SLEUTEL);
+        return true;
+    }
+
     /* ---------- volhouden tot allebei klaar ---------- */
 
     /* De uploader wordt door Gravity Forms pas opgezet als het formulier
@@ -172,14 +233,29 @@
        ingevulde velden terug. Zouden wij eerder zijn, dan overschrijft die
        terugzetronde onze keuze met een oude. */
     function beginnen() {
-        var pdfKlaar = false;
-        var sokKlaar = false;
-        var pogingen = 0;
+        var pdfKlaar  = false;
+        var sokKlaar  = false;
+        var foutKlaar = false;
+        var pogingen  = 0;
         var klok = setInterval(function () {
-            if (!pdfKlaar) { pdfKlaar = plaatsPdf(); }
-            if (!sokKlaar) { sokKlaar = kiesSoktype(); }
-            if ((pdfKlaar && sokKlaar) || ++pogingen > 40) {
+            if (!pdfKlaar)  { pdfKlaar  = plaatsPdf(); }
+            if (!sokKlaar)  { sokKlaar  = kiesSoktype(); }
+            if (!foutKlaar) { foutKlaar = meldFout(); }
+            /* 80 x 250 ms = twintig seconden. Was tien, maar op een trage
+               machine is de uploader van Gravity Forms er dan nog niet en
+               verdween het ontwerp zonder een woord. */
+            if ((pdfKlaar && sokKlaar && foutKlaar) || ++pogingen > 80) {
                 clearInterval(klok);
+
+                /* Opgegeven terwijl er NOG een ontwerp klaarstond: de
+                   uploader is nooit verschenen. Niet stil laten verdampen -
+                   opruimen en het zeggen, anders probeert de volgende pagina
+                   het opnieuw met hetzelfde bestand. */
+                if (!pdfKlaar && lees(PDF_SLEUTEL)) {
+                    wissen(PDF_SLEUTEL);
+                    schrijf(FOUT_SLEUTEL, '1');
+                    meldFout();
+                }
             }
         }, 250);
     }

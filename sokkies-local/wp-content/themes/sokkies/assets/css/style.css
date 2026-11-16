@@ -10641,6 +10641,17 @@ main.contact{
     border:0;
     padding:0;
   }
+  /* Het ontwerp uit de configurator kwam niet mee; offerte-bijlage.js zet
+     deze regel boven het sleepvlak. Zelfde register als .of-adres-info
+     hieronder: gewone tekstkleur, want het is geen fout van de bezoeker -
+     alleen iets wat hij nu zelf moet doen. De marge zit ONDER en niet boven,
+     omdat hij boven het veld staat waar hij naar verwijst. */
+  .quote-card .of-ontwerp-melding{
+    font-size:calc(var(--body-font-size) - 2px);
+    color:var(--text);
+    opacity:.75;
+    margin:0 0 8px;
+  }
   /* Zelfde plek, maar in de gewone tekstkleur: een postcode buiten Nederland
      is geen fout van de bezoeker, alleen iets wat de opzoekdienst niet kent. */
   .quote-card .of-adres-info{
