@@ -429,18 +429,32 @@ function sokkies_configurator_blok( $klasse = '' ) {
 	<?php
 	return ob_get_clean();
 }
-function sokkies_configurator_assets() {
+/**
+ * Staat de configurator op deze pagina?
+ *
+ * Twee plekken: op een soktype (het vinkje per type) en in een sectie van een
+ * pagina (het vinkje op de kop of op het voorbeeldblok). Buiten die twee laden
+ * we niets.
+ *
+ * Apart gezet omdat niet alleen de enqueue dit moet weten: de verbindingshints
+ * en de preloads hieronder horen ALLEEN op zo'n pagina te staan. Een preconnect
+ * op een pagina zonder configurator kost een verbinding die nergens voor
+ * gebruikt wordt.
+ */
+function sokkies_configurator_op_pagina() {
 	if ( ! sokkies_configurator_aan() ) {
-		return;
+		return false;
 	}
-	/* Twee plekken waar de configurator kan staan: op een soktype (het vinkje
-	   per type) en in de kop van een pagina (het vinkje op de hero-sectie,
-	   voor de configuratorpagina). Buiten die twee laden we niets. */
+
 	if ( is_singular( 'sokkies_soktype' ) ) {
-		if ( ! sokkies_configurator_voor_type() ) {
-			return;
-		}
-	} elseif ( ! sokkies_configurator_in_sectie() ) {
+		return (bool) sokkies_configurator_voor_type();
+	}
+
+	return (bool) sokkies_configurator_in_sectie();
+}
+
+function sokkies_configurator_assets() {
+	if ( ! sokkies_configurator_op_pagina() ) {
 		return;
 	}
 	$catalogus = sokkies_configurator_catalogus();
@@ -702,3 +716,82 @@ function sokkies_configurator_script_niet_optimaliseren( $tag, $handle ) {
 	return str_replace( ' src=', ' data-no-optimize="1" src=', $tag );
 }
 add_filter( 'script_loader_tag', 'sokkies_configurator_script_niet_optimaliseren', 10, 2 );
+
+/**
+ * VERBINDINGEN EN DOWNLOADS VAST OPSTARTEN voor de configurator.
+ *
+ * GEMETEN VOORDAT DIT ER KWAM, op de live configuratorpagina:
+ *
+ *   assets.expivi.net  viewer.js 2,8 MB -> 580 kB brotli, app.js 1,5 MB -> 439 kB
+ *                      app.css 630 kB -> 77 kB; cache 31 dagen
+ *   de 3D-kant begint PAS laat: expivi.net (api), admin.expivi.net,
+ *   data.expivi.net en cache.expivi.net worden alle vier voor het eerst
+ *   aangesproken nadat de rest van de pagina al binnen is
+ *
+ * Het ophalen zelf is dus niet het probleem (hun CDN is snel en comprimeert
+ * met brotli), maar de KETTING is lang: pas als viewer.js en app.js zijn
+ * gedraaid gaat de app praten met de api, en pas daarna komen model en
+ * texturen van weer andere hosts. Elke nieuwe host kost opnieuw DNS plus TLS -
+ * gemeten 70 tot 110 ms per host, en die stapelen op in een ketting.
+ *
+ * TWEE INGREPEN, allebei puur additief:
+ *
+ * 1. PRECONNECT naar de vier hosts die de app later nodig heeft. Dan staan DNS
+ *    en TLS er al voordat de app ze aanspreekt. assets.expivi.net krijgt
+ *    crossorigin, want scripts van een ander domein worden met CORS gehaald;
+ *    zonder dat attribuut opent de browser straks een TWEEDE verbinding en is
+ *    de winst weg. admin.expivi.net blijft eruit: dat zijn een paar kleine
+ *    verzoeken en meer dan een handvol preconnects werkt averechts.
+ *
+ * 2. PRELOAD van viewer.js en app.js. Ze staan in de VOET, dus de browser
+ *    begint er pas aan als hij de hele pagina heeft doorgelezen. Met een
+ *    preload in de kop loopt dat downloaden vast mee terwijl de HTML nog
+ *    verwerkt wordt; de script-tags in de voet pakken daarna de kopie uit de
+ *    cache. De uitvoeringsvolgorde verandert niet - dat is precies waarom het
+ *    preload is en niet een verplaatsing naar de kop.
+ *
+ * ALLEEN OP PAGINA'S MET EEN CONFIGURATOR. Elders zou dit verbindingen openen
+ * en megabytes ophalen die nergens gebruikt worden.
+ *
+ * WAT DIT NIET OPLOST, eerlijk erbij: het zwaarste werk is het uitpakken en
+ * uitvoeren van ruim 4 MB javascript en daarna het ophalen van model en
+ * texturen. Dat gebeurt aan de kant van Expivi en daar komen we met hints niet
+ * aan. Dit wint de wachttijd tussen de schakels, niet de schakels zelf.
+ */
+function sokkies_configurator_verbindingen( $hints, $relatie ) {
+	if ( 'preconnect' !== $relatie || ! sokkies_configurator_op_pagina() ) {
+		return $hints;
+	}
+
+	$hints[] = array(
+		'href'        => 'https://assets.expivi.net',
+		'crossorigin' => 'anonymous',
+	);
+	$hints[] = array( 'href' => 'https://expivi.net' );
+	$hints[] = array( 'href' => 'https://data.expivi.net' );
+	$hints[] = array( 'href' => 'https://cache.expivi.net' );
+
+	return $hints;
+}
+add_filter( 'wp_resource_hints', 'sokkies_configurator_verbindingen', 10, 2 );
+
+function sokkies_configurator_preload() {
+	if ( ! sokkies_configurator_op_pagina() ) {
+		return;
+	}
+
+	$scripts = array(
+		'https://assets.expivi.net/viewer/latest/viewer.js',
+		'https://assets.expivi.net/options/latest/js/app.js',
+	);
+
+	foreach ( $scripts as $src ) {
+		printf(
+			'<link rel="preload" as="script" href="%s" crossorigin="anonymous">' . "\n",
+			esc_url( $src )
+		);
+	}
+}
+/* Vroeg in wp_head, zodat het downloaden begint voordat de rest van de kop
+   is afgewerkt - daar zit juist de winst. */
+add_action( 'wp_head', 'sokkies_configurator_preload', 2 );
