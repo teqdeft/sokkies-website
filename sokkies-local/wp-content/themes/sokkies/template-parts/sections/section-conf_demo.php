@@ -4,6 +4,17 @@
  * configurator.html (preview-kaart + witte doodles + 3 pluspunten).
  */
 $foto   = get_sub_field( 'foto' );
+/* De ECHTE configurator in plaats van de voorbeeldfoto (veld "Echte
+   configurator tonen"). De markup komt uit de mu-plugin, die hem hoogstens
+   een keer per pagina afgeeft; staat hij al in de kop, dan geeft hij hier
+   een lege string terug en blijft de foto gewoon staan. */
+$wil    = function_exists( 'sokkies_configurator_blok' )
+	&& ( get_sub_field( 'configurator_tonen' )
+		/* OF de pagina vraagt er elders om - dan komt hij hier terecht,
+		   want dit blok gaat voor de kop. Zo klopt het ook zolang alleen
+		   de kop nog aangevinkt staat in de database. */
+		|| ( function_exists( 'sokkies_configurator_in_sectie' ) && sokkies_configurator_in_sectie() ) );
+$blok   = $wil ? sokkies_configurator_blok() : '';
 $rijen  = get_sub_field( 'punten' );
 $assets = get_template_directory_uri() . '/assets/media/';
 $standaard = array(
@@ -18,8 +29,12 @@ if ( ! $rijen ) { $rijen = $standaard; }
   <div class="conf-duddle-l" aria-hidden="true"></div>
   <div class="container">
     <div class="conf-preview">
-      <div class="conf-preview-card">
+      <div class="conf-preview-card<?php echo $blok ? ' heeft-configurator' : ''; ?>">
+        <?php if ( $blok ) : ?>
+        <?php echo $blok; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+        <?php else : ?>
         <img src="<?php echo esc_url( $foto ? $foto['url'] : $assets . 'configurator-demo.png' ); ?>" alt="Sok preview">
+        <?php endif; ?>
       </div>
     </div>
 

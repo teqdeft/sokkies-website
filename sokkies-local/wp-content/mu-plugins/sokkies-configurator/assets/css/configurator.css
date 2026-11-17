@@ -354,3 +354,29 @@ html:not(.sk-configurator-ready) .expivi-viewer::before{
   .conf-hero-configurator{ padding-bottom:40px; }
   .conf-hero-configurator .expivi-configurator{ border-radius:15px; }
 }
+
+/* ==========================================================================
+   De configurator in het voorbeeldblok
+   --------------------------------------------------------------------------
+   Layout 'conf_demo', veld "Echte configurator tonen": de voorbeeldfoto in
+   .conf-preview-card maakt plaats voor de werkende configurator.
+
+   DE KAART IS GEMAAKT VOOR EEN FOTO en zit daarom vast op 620px hoog, met
+   overflow:hidden eromheen. De configurator is 750px, dus zonder deze regel
+   wordt de onderkant - inclusief de twee knoppen - er gewoon afgeknipt.
+   height:auto laat de kaart de hoogte van de configurator aannemen; in de
+   smalle banden staat die zelf al op auto, dus daar groeit hij gewoon mee.
+
+   De radius van 35px en overflow:hidden van de kaart blijven staan en doen
+   hier het werk dat .conf-hero-configurator zelf moet regelen - vandaar dat
+   dit blok geen eigen afronding zet.
+
+   display:block in plaats van de flex-centrering van de kaart: de
+   configurator is zelf al 100% breed en regelt zijn eigen indeling; met
+   align-items:center zou hij als flexitem zijn hoogte verliezen.
+   ========================================================================== */
+.configurator-section .conf-preview-card.heeft-configurator{
+  height:auto;
+  display:block;
+  background:#fff;
+}

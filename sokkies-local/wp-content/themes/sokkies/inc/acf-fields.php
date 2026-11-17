@@ -1408,6 +1408,15 @@ add_action( 'acf/init', function () {
 						'acfe_flexible_thumbnail' => get_template_directory_uri() . '/assets/acf-previews/conf_demo.png',
 						'sub_fields' => array(
 							array(
+								'key'          => 'field_cd_configurator',
+								'label'        => 'Echte configurator tonen',
+								'name'         => 'configurator_tonen',
+								'type'         => 'true_false',
+								'ui'           => 1,
+								'default_value' => 0,
+								'instructions' => 'Vervangt de voorbeeld-afbeelding door de werkende 3D-configurator. MAAR EEN PER PAGINA: staat hij ook al in de paginakop aangevinkt, dan wint die en blijft hier de afbeelding staan. De configurator verschijnt alleen als hij ook site-breed aan staat; dat is een instelling in de code.',
+							),
+							array(
 								'key'          => 'field_cd_foto',
 								'label'        => 'Voorbeeld-afbeelding',
 								'name'         => 'foto',

@@ -259,11 +259,13 @@ function sokkies_configurator_soktype_kaart() {
 	return $uit;
 }
 /**
- * Staat de configurator in de KOP van deze pagina?
+ * Vraagt EEN van de secties van deze pagina om de configurator?
  *
- * De paginakop (layout 'hero') heeft sinds 2026-11-16 het veld
- * "3D-configurator in de kop". Dat is bedoeld voor de configuratorpagina: daar
- * staat de configurator in de banner in plaats van op een productpagina.
+ * Twee layouts hebben daarvoor een vinkje, allebei met dezelfde veldnaam
+ * 'configurator_tonen': de paginakop ('hero', sinds 2026-11-16) en het
+ * voorbeeldblok ('conf_demo', sinds 2026-11-17). Omdat de sleutel hieronder
+ * met een jokerteken op de INDEX zoekt, hoeft er voor een derde layout met
+ * datzelfde veld niets aan deze functie te veranderen.
  *
  * RECHTSTREEKS IN POSTMETA en niet via get_field(): deze vraag wordt gesteld op
  * wp_enqueue_scripts, en daar bestaat de secties-lus nog niet. De hele
@@ -278,7 +280,7 @@ function sokkies_configurator_soktype_kaart() {
  * @param int|null $post_id De pagina; leeg = de opgevraagde pagina.
  * @return bool
  */
-function sokkies_configurator_in_kop( $post_id = null ) {
+function sokkies_configurator_in_sectie( $post_id = null ) {
 	if ( ! $post_id && ! is_singular() ) {
 		return false;
 	}
@@ -304,6 +306,111 @@ function sokkies_configurator_in_kop( $post_id = null ) {
 	return ! empty( $aan );
 }
 
+/**
+ * Heeft deze pagina een sectie met deze layout?
+ *
+ * Leest de secties-lijst rechtstreeks uit postmeta, om dezelfde reden als
+ * sokkies_configurator_in_sectie(): dit wordt gevraagd terwijl de secties-lus
+ * nog niet loopt, en de hele flexible content ophalen is zwaar werk voor een
+ * ja/nee.
+ *
+ * @param string   $layout  De naam van de layout, bijv. 'conf_demo'.
+ * @param int|null $post_id De pagina; leeg = de opgevraagde pagina.
+ * @return bool
+ */
+function sokkies_pagina_heeft_sectie( $layout, $post_id = null ) {
+	if ( ! $post_id && ! is_singular() ) {
+		return false;
+	}
+
+	$post_id = $post_id ? (int) $post_id : (int) get_queried_object_id();
+	if ( ! $post_id ) {
+		return false;
+	}
+
+	$secties = get_post_meta( $post_id, 'secties', true );
+
+	return is_array( $secties ) && in_array( $layout, $secties, true );
+}
+
+/**
+ * Welke sectie krijgt de configurator als er meer dan een om hem vraagt?
+ *
+ * HET VOORBEELDBLOK WINT ALTIJD VAN DE KOP. Dat is een bewuste keuze van de
+ * klant (2026-11-17): in het ontwerp is .conf-preview-card de plek waar de
+ * configurator hoort, de kop houdt gewoon titel en tekst.
+ *
+ * WAAROM DIT IN CODE STAAT EN NIET IN TWEE VINKJES: de vinkjes staan in de
+ * DATABASE en die deployt niet mee. Zonder deze regel zou de verhuizing pas
+ * zichtbaar worden als iemand de database synchroniseert of de vinkjes op live
+ * met de hand omzet - en tot dat moment zou live de configurator in de kop
+ * blijven tonen terwijl de code al iets anders zegt. Met deze regel komt het in
+ * BEIDE toestanden op dezelfde plek uit: of de kop nu aangevinkt staat of het
+ * voorbeeldblok, de configurator belandt in het voorbeeldblok zodra dat blok op
+ * de pagina staat.
+ *
+ * De kop blijft dus bruikbaar voor een pagina ZONDER voorbeeldblok; daar
+ * verandert er niets.
+ *
+ * @return bool True als de kop hem moet laten staan.
+ */
+function sokkies_configurator_kop_wijkt() {
+	return sokkies_pagina_heeft_sectie( 'conf_demo' );
+}
+/**
+ * De markup van de configurator - HOOGSTENS EEN KEER PER PAGINA.
+ *
+ * WAAROM EEN GEDEELDE FUNCTIE EN GEEN MARKUP IN DE TEMPLATE: de app van Expivi
+ * maakt zich vast aan de IDS #expivi-viewer en #expivi-options. Twee blokken op
+ * een pagina betekent dus twee keer hetzelfde id en een configurator die niet
+ * start. Met een statische vlag kan dat niet meer gebeuren, ook niet als er per
+ * ongeluk twee secties tegelijk om de configurator vragen - bijvoorbeeld als de
+ * code al gedeployd is terwijl de database nog de oude vinkjes heeft. De EERSTE
+ * sectie wint dan, en dat is de bovenste op de pagina.
+ *
+ * Het blok rendert alleen als de configurator ook site-breed aan staat; de
+ * aanroeper hoeft dat dus niet zelf te controleren.
+ *
+ * Er hoort geen soktype bij: het catalogus-ID is site-breed en de bezoeker
+ * kiest zijn model in stap 1.
+ *
+ * @param string $klasse Extra class op het buitenste blok, voor de sectie die
+ *                       hem plaatst.
+ * @return string De HTML, of een lege string als er al een blok staat.
+ */
+function sokkies_configurator_blok( $klasse = '' ) {
+	static $gerenderd = false;
+
+	if ( $gerenderd || ! sokkies_configurator_aan() ) {
+		return '';
+	}
+	$gerenderd = true;
+
+	$classes = 'expivi-configurator page product';
+	if ( $klasse ) {
+		$classes .= ' ' . $klasse;
+	}
+
+	ob_start();
+	?>
+	<div class="<?php echo esc_attr( $classes ); ?>">
+	  <div class="product-container">
+	    <div class="expivi-viewer">
+	      <div id="expivi-viewer"></div>
+	    </div>
+	    <div class="expivi-options">
+	      <div id="expivi-price" class="price-and-button"></div>
+	      <div id="expivi-options"></div>
+	      <div class="btn-group">
+	        <button type="button" class="btn btn-secondary" data-sokkies-pdf>Bekijk je ontwerp (PDF)</button>
+	        <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary" data-sokkies-offerte>Vraag dit ontwerp aan</a>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<?php
+	return ob_get_clean();
+}
 function sokkies_configurator_assets() {
 	if ( ! sokkies_configurator_aan() ) {
 		return;
@@ -315,7 +422,7 @@ function sokkies_configurator_assets() {
 		if ( ! sokkies_configurator_voor_type() ) {
 			return;
 		}
-	} elseif ( ! sokkies_configurator_in_kop() ) {
+	} elseif ( ! sokkies_configurator_in_sectie() ) {
 		return;
 	}
 	$catalogus = sokkies_configurator_catalogus();

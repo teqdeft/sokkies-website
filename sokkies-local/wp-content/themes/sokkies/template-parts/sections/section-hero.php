@@ -143,40 +143,32 @@ $assets = get_template_directory_uri() . '/assets/media/';
         </div>
     </div>
     <?php
-    /* De 3D-configurator in de kop (veld "3D-configurator in de kop").
+    /* De 3D-configurator (veld "3D-configurator in de kop").
        Staat BUITEN .banner-section maar BINNEN .hero-section, net als de
        fotoslider hieronder: zo loopt hij over de volle breedte onder de
        titel in plaats van in de tekstkolom.
 
-       DEZELFDE MARKUP als op de productpagina, met opzet - alle opmaak in
-       configurator.css en expivi-thema.css hangt aan .expivi-configurator en
-       #expivi-viewer/#expivi-options, en die ids zijn ook waar de app van
-       Expivi zich aan vastmaakt. Vandaar ook de regel van EEN PER PAGINA:
-       het zijn vaste ids, geen classes.
-
-       Het catalogus-ID is site-breed (sokkies_configurator_catalogus); hier
-       hoort geen soktype bij, de bezoeker kiest zijn model in stap 1. */
+       De markup zelf komt uit sokkies_configurator_blok() in de mu-plugin,
+       die hem HOOGSTENS EEN KEER PER PAGINA afgeeft - de app van Expivi
+       hangt aan vaste ids, dus een tweede blok zou allebei de
+       configurators breken. Het voorbeeldblok (conf_demo) gebruikt
+       dezelfde functie. */
     ?>
-    <?php if ( $configurator && function_exists( 'sokkies_configurator_aan' ) && sokkies_configurator_aan() ) : ?>
+    <?php
+    /* De kop LAAT HEM STAAN als er een voorbeeldblok op de pagina is; dat
+       blok is de plek uit het ontwerp. Zie sokkies_configurator_kop_wijkt. */
+    $kopKrijgtHem = $configurator
+        && function_exists( 'sokkies_configurator_blok' )
+        && ! sokkies_configurator_kop_wijkt();
+    ?>
+    <?php if ( $kopKrijgtHem ) : $blok = sokkies_configurator_blok(); ?>
+      <?php if ( $blok ) : ?>
     <section class="conf-hero-configurator">
       <div class="container">
-        <div class="expivi-configurator page product">
-          <div class="product-container">
-            <div class="expivi-viewer">
-              <div id="expivi-viewer"></div>
-            </div>
-            <div class="expivi-options">
-              <div id="expivi-price" class="price-and-button"></div>
-              <div id="expivi-options"></div>
-              <div class="btn-group">
-                <button type="button" class="btn btn-secondary" data-sokkies-pdf>Bekijk je ontwerp (PDF)</button>
-                <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary" data-sokkies-offerte>Vraag dit ontwerp aan</a>
-              </div>
-            </div>
-          </div>
-        </div>
+        <?php echo $blok; // phpcs:ignore WordPress.Security.EscapeOutput ?>
       </div>
     </section>
+      <?php endif; ?>
     <?php endif; ?>
     <?php if ( $fotos ) :
       // Zelfde ritme als htmlv: de set herhaalt tot minstens 16 slides.
