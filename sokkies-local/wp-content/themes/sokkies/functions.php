@@ -392,12 +392,59 @@ add_action( 'wp_enqueue_scripts', 'sokkies_assets' );
  * eentje die niet stilletjes kan verdwijnen. De preconnect hieronder dekt de
  * vertraging af.
  */
-function sokkies_cdn_handles() {
-	return array( 'sokkies-typekit', 'swiper', 'aos' );
+/**
+ * WELKE HANDLES ERBUITEN BLIJVEN - PER SOORT, EN DAT ONDERSCHEID IS DE CRUX.
+ *
+ * SCRIPTS (swiper, aos): erbuiten. Verdwijnt zo'n bestand uit de bundel, dan
+ * sterft custom.js op "Swiper is not defined" en ligt de halve site plat; zie
+ * de uitleg hierboven. Daar weegt een mislukte fetch dus het zwaarst.
+ *
+ * STYLESHEETS (alleen Typekit): swiper en aos horen er JUIST WEL IN. Dat is op
+ * 2026-11-17 duur geleerd - een dag nadat ze hier per ongeluk ook bij stonden,
+ * stonden de merklogo's op live schermvullend.
+ *
+ * WAT ER DAN GEBEURT: LiteSpeed hijst zijn gecombineerde bestand naar de TOP
+ * van de head, dus een uitgesloten stylesheet komt er per definitie ACHTER te
+ * staan. Gemeten op sokkies.com: COMBINED -> typekit -> SWIPER -> AOS. Daarmee
+ * draait de cascade om, want in de wachtrij staat swiper juist VOOR style.css
+ * (sokkies-style heeft hem als afhankelijkheid).
+ *
+ * EN DAN VERLIEST HET THEMA ELKE GELIJKE STRIJD. De merkenstrip is er het
+ * duidelijkste voorbeeld van: <div class="swiper-slide brand-logo-items"> heeft
+ * beide classes op HETZELFDE element, dus (0,1,0) tegen (0,1,0) en de volgorde
+ * beslist. Swiper zet .swiper-slide{width:100%;height:100%;display:block},
+ * het thema .brand-logo-items{height:34px;display:flex}. Gemeten op live:
+ * slide 1920x474 en display:block, logo op zijn natuurlijke 1920x470 in plaats
+ * van de bedoelde 34px hoogte.
+ *
+ * Dit raakt dus niet alleen de merkenstrip maar ELKE plek waar het thema op
+ * gelijke specificiteit van een swiper-class wint - en dat zijn alle sliders.
+ * Opmaak hoort daarom door de bundel te lopen, waar de wachtrijvolgorde
+ * bewaard blijft.
+ *
+ * TYPEKIT MAG ER WEL BUITEN, om de reden die hierboven staat: dat bestand
+ * bevat alleen @font-face-regels en geen opmaak, dus de volgorde doet er niet
+ * toe. Precies die afweging ontbrak toen swiper en aos erbij werden gezet.
+ *
+ * PRIJS DIE WE HIERVOOR BETALEN, eerlijk vermeld: lukt het ophalen van
+ * jsdelivr niet op het moment dat de bundel wordt gebouwd, dan mist de
+ * swiper-opmaak erin. Op live lukt dat ophalen (daar stond het jaren goed);
+ * op deze machine niet, dus daar staan de sliders voor een uitgelogde
+ * bezoeker ongestyled. Dat is cosmetisch en lokaal - de scripts, die het
+ * echte werk doen, kunnen niet meer verdwijnen. Wie dat ook lokaal wil
+ * oplossen: swiper en aos in het thema zetten in plaats van bij een CDN
+ * vandaan halen; dan is er geen fetch meer die kan mislukken.
+ */
+function sokkies_cdn_script_handles() {
+	return array( 'swiper', 'aos' );
 }
 
-function sokkies_cdn_los( $tag, $handle ) {
-	if ( ! in_array( $handle, sokkies_cdn_handles(), true ) ) {
+function sokkies_cdn_style_handles() {
+	return array( 'sokkies-typekit' );
+}
+
+function sokkies_cdn_markeer( $tag, $handle, $handles ) {
+	if ( ! in_array( $handle, $handles, true ) ) {
 		return $tag;
 	}
 	if ( false !== strpos( $tag, 'data-no-optimize' ) ) {
@@ -408,8 +455,16 @@ function sokkies_cdn_los( $tag, $handle ) {
 	   erachter (wp_add_inline_script) mag niet ook gemarkeerd worden. */
 	return preg_replace( '#<(link|script)\s#', '<$1 data-no-optimize="1" ', $tag, 1 );
 }
-add_filter( 'style_loader_tag', 'sokkies_cdn_los', 10, 2 );
-add_filter( 'script_loader_tag', 'sokkies_cdn_los', 10, 2 );
+
+function sokkies_cdn_los_style( $tag, $handle ) {
+	return sokkies_cdn_markeer( $tag, $handle, sokkies_cdn_style_handles() );
+}
+
+function sokkies_cdn_los_script( $tag, $handle ) {
+	return sokkies_cdn_markeer( $tag, $handle, sokkies_cdn_script_handles() );
+}
+add_filter( 'style_loader_tag', 'sokkies_cdn_los_style', 10, 2 );
+add_filter( 'script_loader_tag', 'sokkies_cdn_los_script', 10, 2 );
 
 function sokkies_typekit_hints( $hints, $relatie ) {
 	if ( 'preconnect' === $relatie ) {
@@ -418,11 +473,13 @@ function sokkies_typekit_hints( $hints, $relatie ) {
 			'crossorigin' => 'anonymous',
 		);
 		$hints[] = array( 'href' => 'https://p.typekit.net' );
-		/* Swiper en AOS worden sinds 2026-11-16 niet meer ingepakt (zie
-		   sokkies_cdn_los): de browser haalt ze zelf bij jsdelivr. Met de
-		   verbinding al open kost dat geen extra wachttijd voor het eerste
-		   verzoek. crossorigin, want script-tags naar een ander domein halen
-		   met CORS op. */
+		/* De SCRIPTS van Swiper en AOS worden sinds 2026-11-16 niet meer
+		   ingepakt (zie sokkies_cdn_script_handles): de browser haalt ze zelf
+		   bij jsdelivr. Met de verbinding al open kost dat geen extra
+		   wachttijd voor het eerste verzoek. crossorigin, want script-tags
+		   naar een ander domein halen met CORS op.
+		   Hun STYLESHEETS lopen wel gewoon door de bundel - dat moet ook, zie
+		   de uitleg bij sokkies_cdn_style_handles. */
 		$hints[] = array(
 			'href'        => 'https://cdn.jsdelivr.net',
 			'crossorigin' => 'anonymous',
