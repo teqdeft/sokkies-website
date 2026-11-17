@@ -396,8 +396,9 @@ html:not(.sk-configurator-ready) .expivi-configurator:not(:has(#expivi-viewer *)
   font-family:var(--roc-grotesk);
   font-size:var(--body-font-size);
   font-weight:600;
-  color:rgb(40 18 27 / 55%);
+  color:#28121B;
   white-space:nowrap;
+  z-index: 99;
 }
 .sk-laadpunten{
   display:inline-flex;
