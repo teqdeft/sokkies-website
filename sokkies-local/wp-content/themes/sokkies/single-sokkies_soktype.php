@@ -467,43 +467,17 @@ $staffel = $matrix[ $sleutel ]['rows'] ?? array();
             $expivi_aan = function_exists( 'sokkies_configurator_voor_type' ) && sokkies_configurator_voor_type();
             ?>
             <?php if ( $expivi_aan ) : ?>
-            <div class="expivi-configurator page product">
-              <div class="product-container">
-                <div class="expivi-viewer">
-                  <div id="expivi-viewer"></div>
-                </div>
-                <div class="expivi-options">
-                  <?php /* class price-and-button: het thema verplaatst dit blok
-                     naar boven de stappen zodra het de prijs vindt. */ ?>
-                  <div id="expivi-price" class="price-and-button"></div>
-                  <div id="expivi-options"></div>
-                  <?php
-                  /* De offerteknop. Het thema zoekt op '.btn-group', hangt er
-                     een .sk-bottom-actions omheen en zet die onder de stappen -
-                     dat is de rode balk uit het ontwerp. Zonder dit blok slaat
-                     die functie over en blijft de balk weg.
-                     De knop gaat naar ONS offerteformulier. De configuratie
-                     reist nog niet mee; dat vraagt saveConfiguration() van de
-                     viewer en een veld om het in op te slaan. */
-                  ?>
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-secondary" data-sokkies-pdf>Bekijk je ontwerp (PDF)</button>
-                    <?php
-                  /* EIGEN LABEL en niet sokkies_cta_label(). Die tekst staat ook
-                     op de knop in de header, en sinds die twee dezelfde gele pil
-                     zijn is op de productpagina niet meer te zien welke van de
-                     twee het ontwerp meeneemt - de header-knop is een gewone
-                     link naar het formulier. "dit ontwerp" zegt precies wat
-                     deze knop extra doet.
-                     Gewone Nederlandse tekst, dus TranslatePress vertaalt hem
-                     zoals alle andere zichtbare tekst; de vier vertalingen staan
-                     in de woordenboeken. */
-                  ?>
-                    <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary" data-sokkies-offerte>Vraag dit ontwerp aan</a>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <?php
+            /* DE MARKUP KOMT UIT DE MU-PLUGIN en stond hier tot 2026-11-17
+               als eigen kopie. Dat was precies een kopie te veel: de
+               laadtekst die in sokkies_configurator_blok() zit verscheen
+               daardoor wel op de configuratorpagina en niet hier (melding
+               Kulwant). Nu is er een bron, dus wat daar verandert geldt
+               overal - en de functie geeft hem hoogstens een keer per
+               pagina af, wat moet, want de app van Expivi hangt aan vaste
+               ids. */
+            echo sokkies_configurator_blok(); // phpcs:ignore WordPress.Security.EscapeOutput
+            ?>
             <?php else : ?>
             <img src="<?php echo esc_url( $design_foto ? $design_foto['url'] : $assets . 'configurator-demo-pdp.png' ); ?>" alt="Sok preview">
             <?php endif; ?>
