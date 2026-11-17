@@ -377,11 +377,16 @@ html:not(.sk-configurator-ready) .expivi-options{
 .sk-laadtekst{
   display:none;
 }
+/* HET BLOK IS HET ANKER, niet de viewerkolom. Zonder deze regel rekent de
+   absolute centrering tegen .expivi-viewer (die heeft position:relative) en
+   staat de regel links van het midden van de kaart. Alleen zolang de tekst
+   er staat, dus hij vervalt zodra Expivi begint te tekenen. */
+html:not(.sk-configurator-ready) .expivi-configurator:not(:has(#expivi-viewer *)){
+  position:relative;
+}
 html:not(.sk-configurator-ready) .expivi-configurator:not(:has(#expivi-viewer *)) .sk-laadtekst{
   display:flex;
   align-items:center;
-  /* .expivi-viewer heeft position:relative, dus dit centreert in de
-     viewerkolom - dezelfde plek waar de balk van Expivi straks verschijnt. */
   position:absolute;
   top:50%;
   left:50%;

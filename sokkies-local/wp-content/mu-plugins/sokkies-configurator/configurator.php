@@ -394,20 +394,26 @@ function sokkies_configurator_blok( $klasse = '' ) {
 	ob_start();
 	?>
 	<div class="<?php echo esc_attr( $classes ); ?>">
+	  <?php
+	  /* DE LAADTEKST STAAT HIER, als kind van het HELE blok en niet in de
+	     viewerkolom. Hij wordt absoluut gecentreerd, en dat rekent tegen de
+	     dichtstbijzijnde gepositioneerde voorouder: stond hij in
+	     .expivi-viewer, dan werd dat die kolom en kwam de regel links van het
+	     midden van de kaart te staan (melding Kulwant, 2026-11-17 - dezelfde
+	     misser als eerder met de ring).
+
+	     De tekst staat in de MARKUP en niet in content: van een
+	     pseudo-element - TranslatePress vertaalt alleen wat WordPress
+	     uitstuurt, dus vanuit CSS zou hier op /en/, /de/ en /fr/ Nederlands
+	     blijven staan.
+
+	     De punten zijn aria-hidden: een schermlezer heeft niets aan drie
+	     bolletjes, de zin ernaast zegt al genoeg. aria-live="polite" meldt
+	     hem een keer, zonder de bezoeker te onderbreken. */
+	  ?>
+	  <p class="sk-laadtekst" aria-live="polite">Configurator laden<span class="sk-laadpunten" aria-hidden="true"><span></span><span></span><span></span></span></p>
 	  <div class="product-container">
 	    <div class="expivi-viewer">
-	      <?php
-	      /* DE TEKST STAAT IN DE MARKUP EN NIET IN content: van een
-	         pseudo-element. TranslatePress vertaalt alleen wat WordPress
-	         uitstuurt; tekst uit CSS ziet hij nooit, en dan stond hier op
-	         /en/, /de/ en /fr/ Nederlands - dezelfde fout als eerder bij de
-	         melding op het offerteformulier.
-
-	         De punten zijn aria-hidden: een schermlezer heeft niets aan drie
-	         bolletjes, de zin ernaast zegt al genoeg. aria-live="polite" meldt
-	         hem een keer, zonder de bezoeker te onderbreken. */
-	      ?>
-	      <p class="sk-laadtekst" aria-live="polite">Configurator laden<span class="sk-laadpunten" aria-hidden="true"><span></span><span></span><span></span></span></p>
 	      <div id="expivi-viewer"></div>
 	    </div>
 	    <div class="expivi-options">
