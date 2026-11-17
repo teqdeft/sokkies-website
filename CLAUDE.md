@@ -6948,3 +6948,71 @@ VIER LAGEN STAAN VOOR ONZE CODE - WIE GEEFT WELKE FOUTPAGINA (2026-11-17,
 
   NOG IN TE VULLEN (navragen bij Kulwant): wie beheert Cloudflare, welke WAF
   de host draait, en wat live bijwerkt. Zodra dat bekend is hoort het hier.
+
+DE 403 IS OPGELOST EN HET WAS ONZE EIGEN CODE (2026-11-17, later die dag, na een
+  analyse van de serverbeheerder). De notitie hierboven zegt dat de oorzaak NIET
+  is achterhaald. Dat is achterhaald: hij is gevonden, en hij stond niet in
+  Cloudflare, niet in Wordfence en niet bij de host, maar in deze repo.
+  WAT ER GEBEURDE. LiteSpeed heeft een verzoeklimiet PER IP voor dynamische
+  (PHP-)verzoeken. Zat een bezoeker daar meer dan 15 seconden boven, dan werd
+  zijn IP vijf minuten geblokkeerd en kreeg hij op ELKE pagina een 403. Voor die
+  bezoeker lag de site plat. Dat verklaart ook waarom het hier niet te
+  reproduceren was: alles wat ik meette gaf 200, want mijn eigen IP zat niet over
+  de limiet.
+  WAT DE BEZOEKERS OVER DIE LIMIET DUWDE: onze CSP-rapportage.
+  sokkies-beveiligingsheaders.php zet een report-only-CSP met report-uri naar
+  /wp-json/sokkies/v1/csp-melding, en de BROWSER doet daar per overtreding een
+  LOSSE POST naartoe. Elk zo'n verzoek is een volledige WordPress-bootstrap.
+  De beheerder telde die dag ~62.500 meldingen op ~2.300 paginaweergaven (~27 per
+  weergave); zelf gemeten in de browser op een productpagina ZONDER
+  cookietoestemming: 30 POSTs voor een paginaweergave. Dat is dus de ONDERGRENS -
+  met toestemming laadt de tagmanager pas echt third-party scripts.
+  DE DENKFOUT, en die is het onthouden waard. In sokkies-csp-meldingen.php zit een
+  rem: dezelfde combinatie richtlijn + bron gaat 6 uur lang maar een keer het log
+  in. Die rem werkt ook gewoon - maar hij beschermt het LOGBESTAND, niet de
+  server. Op het moment dat hij ontdubbelt is het verzoek al binnen en is
+  WordPress al geladen. Ik had de kosten afgeschermd die ik KON ZIEN (een log dat
+  volloopt) en niet de kosten die ik niet zag (de verzoeken zelf). Een rem achter
+  de voordeur is geen rem.
+  WAT ER NU IN DE CODE STAAT: sokkies_csp_rapporteren(), standaard FALSE. Staat
+  het uit, dan gaat de Report-Only-header niet mee (zonder eindpunt is die inert)
+  en wordt de REST-route niet geregistreerd - dat sluit meteen een openbaar
+  POST-eindpunt dat niemand nodig heeft. Aanzetten kan met de constante
+  SOKKIES_CSP_RAPPORTEREN of het filter van dezelfde naam. GEVERIFIEERD: met de
+  schakelaar uit gaan de vier andere beveiligingsheaders nog mee, is
+  Content-Security-Policy-Report-Only weg en geeft een POST op het eindpunt 404;
+  met de schakelaar aan staat report-uri er weer in (769 vs 832 bytes policy).
+  BINNEN WORDPRESS IS DIT NIET GOEDKOOP TE MAKEN - de kosten zitten in het
+  verzoek, niet in wat de callback doet. Dus: aanzetten doe je bewust en kort,
+  met iemand die meekijkt. Permanent monitoren hoort buiten PHP (statische
+  collector of externe dienst; bij een externe dienst stuur je wel
+  bezoekersgegevens naar een derde, dus dat is een keuze van de klant). De
+  Reporting API (report-to) zou de meldingen bundelen tot een POST in plaats van
+  dertig, maar Firefox kent hem niet - afweging staat open.
+  TEGELIJK DE WITTE LIJST AANGEVULD, wat het aantal overtredingen aan de bron
+  verlaagt: assets.expivi.net (script + style), expivi.net en *.expivi.net
+  (connect), worker-src 'self' blob: voor de workers van de 3D-viewer, plus
+  *.sokkies.com en www.gstatic.com op connect-src. Report-only, dus dit kan niets
+  breken.
+  LES BIJ HET AANVULLEN UIT HET LOG: in het LOKALE meldingenlog stonden ook
+  bzr.openai.com en bzrcdn.openai.com. Dat is een browserextensie op de
+  ontwikkelmachine die zich in de pagina mengt, geen afhankelijkheid van de site.
+  analytics.tiktok.com en pagead2.googlesyndication.com stonden er ook in - dat
+  zijn trackers en dus een keuze van de klant. Zet dus NOOIT zomaar op de witte
+  lijst wat in het log staat; alleen wat je zelf hebt ingebouwd.
+  WAT DE LAGENKAART HIERBOVEN WEL GOED DEED: de kale LiteSpeed-403 wees naar laag
+  2 of 3, "voordat WordPress iets te zeggen had". Dat was juist. Wat ontbrak was
+  het inzicht dat WordPress die laag zelf kon laten aanslaan.
+  TWEE DINGEN DIE NOG OPEN STAAN:
+    1. De beheerder heeft de verzoeklimiet per IP UITGEZET om de storing te
+       stoppen. Dat is een vangnet dat nu voor de hele server weg is, weggehaald
+       om een bug van ons heen. Nu de oorzaak eruit is: vragen of hij weer aan
+       kan. Zolang hij uit staat is een open POST-eindpunt (van ons of van een
+       plugin) niets dat de server zelf nog afremt.
+    2. /wp-content/uploads/sokkies-csp/meldingen.log is wel netjes dicht (403,
+       de .htaccess doet zijn werk) - maar .ftp-deploy-sync-state.json is dat
+       nog niet, zie de notitie van 2026-10-29.
+  TERZIJDE, GEMETEN: op live laadt NIETS van Expivi, ook niet op
+  /en/configuration-tool/. De configurator staat dus nog nergens op live in een
+  sectie aan (de ACF-vlag is database en deployt niet mee). De Expivi-bronnen in
+  de witte lijst komen daarom uit het lokale log, niet van live.

@@ -8,6 +8,15 @@
  * je eigen browserconsole langskomt, en dat is op deze site maar een fractie:
  * de tagmanager laadt per pagina en per toestemming andere dingen.
  *
+ * HET EINDPUNT BESTAAT ALLEEN ALS sokkies_csp_rapporteren() AANSTAAT, en dat is
+ * sinds 2026-11-17 standaard uit. De rem hieronder bleek namelijk het
+ * verkeerde te beschermen: hij ontdubbelt voordat er iets in het LOG gaat,
+ * maar op dat moment is het verzoek al binnen en WordPress al geladen. Een
+ * productpagina leverde zo 30 POSTs per weergave; dat liep tegen de
+ * verzoeklimiet per IP van LiteSpeed aan en bezoekers kregen een kale 403.
+ * De afweging staat bij sokkies_csp_rapporteren() in
+ * sokkies-beveiligingsheaders.php.
+ *
  * HET EINDPUNT IS BEWUST OPENBAAR. Een browser stuurt een CSP-melding zonder
  * inloggegevens; dat kan niet anders. Daarom is alles eromheen dichtgezet:
  * - maximaal 8 KB per melding, daarboven wordt hij genegeerd;
@@ -152,6 +161,13 @@ function sokkies_csp_melding( $request ) {
 add_action(
 	'rest_api_init',
 	function () {
+		// Staat het rapporteren uit, dan bestaat het eindpunt niet. Dat scheelt niet
+		// alleen de last, het sluit ook een openbaar POST-eindpunt dat niemand
+		// nodig heeft.
+		if ( ! function_exists( 'sokkies_csp_rapporteren' ) || ! sokkies_csp_rapporteren() ) {
+			return;
+		}
+
 		register_rest_route(
 			'sokkies/v1',
 			'/csp-melding',

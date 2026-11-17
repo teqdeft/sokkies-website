@@ -47,8 +47,16 @@ defined( 'ABSPATH' ) || exit;
  * 'unsafe-inline' en 'unsafe-eval' zijn hier onvermijdelijk: WordPress,
  * Gravity Forms en de tagmanager zetten alle drie inline script op de pagina.
  *
- * NOG TOE TE VOEGEN: Expivi. /nl/configurator/ staat op concept en geeft 404,
- * dus er viel niet te meten wat die pagina laadt. Doen voordat hij live gaat.
+ * EXPIVI STAAT ER SINDS 2026-11-17 IN: assets.expivi.net (script en style),
+ * expivi.net plus *.expivi.net (connect) en blob:-workers. Niet gemeten op de
+ * live configurator - die laadt Expivi daar nog niet - maar uit het
+ * meldingenlog van de lokale omgeving, waar de viewer wel draait.
+ * LET OP bij het aanvullen uit dat log: er stonden ook bzr.openai.com en
+ * bzrcdn.openai.com in. Dat is een browserextensie op de ontwikkelmachine die
+ * zich in de pagina mengt, geen afhankelijkheid van de site. Zet dus nooit
+ * zomaar op de witte lijst wat in het log staat; alleen wat je zelf hebt
+ * ingebouwd. analytics.tiktok.com en pagead2.googlesyndication.com stonden er
+ * ook in - dat zijn trackers en dus een keuze van de klant, niet van ons.
  *
  * @return array<string,string[]> Richtlijn => toegestane bronnen.
  */
@@ -60,11 +68,18 @@ function sokkies_csp_regels() {
 			'*.sokkies.com', 'cdn.jsdelivr.net', '*.klaviyo.com', '*.trytagging.com',
 			'*.cookiebot.eu', '*.masslytics.io', 'www.feedbackcompany.com',
 			'www.google.com', 'www.gstatic.com', 'connect.facebook.net',
+			'assets.expivi.net',
 		),
-		'style-src'       => array( "'self'", "'unsafe-inline'", 'use.typekit.net', 'p.typekit.net', 'cdn.jsdelivr.net' ),
+		'style-src'       => array( "'self'", "'unsafe-inline'", 'use.typekit.net', 'p.typekit.net', 'cdn.jsdelivr.net', 'assets.expivi.net' ),
 		'font-src'        => array( "'self'", 'data:', 'use.typekit.net' ),
 		'img-src'         => array( "'self'", 'data:', 'blob:', 'https:' ),
-		'connect-src'     => array( "'self'", '*.klaviyo.com', '*.masslytics.io', '*.cookiebot.eu', '*.trytagging.com' ),
+		'connect-src'     => array(
+			"'self'", '*.sokkies.com', '*.klaviyo.com', '*.masslytics.io', '*.cookiebot.eu',
+			'*.trytagging.com', 'www.gstatic.com', 'expivi.net', '*.expivi.net',
+		),
+		// De 3D-viewer van Expivi maakt zijn workers uit een blob. Zonder deze
+		// richtlijn valt dat terug op default-src 'self' en is het een overtreding.
+		'worker-src'      => array( "'self'", 'blob:' ),
 		'frame-src'       => array( "'self'", '*.cookiebot.eu', 'www.youtube.com', 'www.facebook.com', 'www.instagram.com', 'www.linkedin.com' ),
 		'object-src'      => array( "'none'" ),
 		'base-uri'        => array( "'self'" ),
@@ -81,6 +96,48 @@ function sokkies_csp_regels() {
 }
 
 /**
+ * Staat het verzamelen van CSP-meldingen aan?
+ *
+ * STANDAARD UIT, en dat is op 2026-11-17 met een storing geleerd. report-uri
+ * laat de BROWSER per overtreding een losse POST doen naar WordPress, en dat
+ * is geen goedkoop verzoek: elke melding is een volledige WP-bootstrap plus
+ * een transient-lookup. Gemeten op een productpagina zonder cookietoestemming:
+ * 30 POSTs voor EEN paginaweergave. De host telde die dag ~62.500 meldingen op
+ * ~2.300 paginaweergaven; dat liep tegen de verzoeklimiet per IP van LiteSpeed
+ * aan, waarna bezoekers vijf minuten lang een kale 403 kregen op elke pagina.
+ * Voor hen lag de site plat.
+ *
+ * DE REM IN sokkies-csp-meldingen.php HELPT HIER NIET. Die ontdubbelt op
+ * richtlijn + bron en beschermt daarmee het LOGBESTAND, niet de server: het
+ * verzoek is dan al binnen en WordPress is al geladen. Dat was de denkfout.
+ *
+ * Er is geen manier om dit binnen WordPress goedkoop te maken - de kosten
+ * zitten in het verzoek zelf. Dus: aanzetten doe je BEWUST en KORT, met iemand
+ * die meekijkt, en daarna weer uit. Wil je het permanent, dan moet het
+ * eindpunt buiten PHP staan (een statische collector of een externe dienst -
+ * let bij dat laatste op dat je bezoekersgegevens naar een derde stuurt).
+ *
+ * Staat dit uit, dan gaat de Report-Only-header NIET mee. Zonder report-uri
+ * doet die header namelijk niets: report-only blokkeert niets en zonder
+ * eindpunt komt er ook niets aan. Het zou alleen ~800 bytes per respons zijn.
+ * De andere vijf headers staan er onverminderd.
+ *
+ * @return bool
+ */
+function sokkies_csp_rapporteren() {
+	if ( defined( 'SOKKIES_CSP_RAPPORTEREN' ) ) {
+		return (bool) SOKKIES_CSP_RAPPORTEREN;
+	}
+
+	/**
+	 * Zet het verzamelen van CSP-meldingen aan.
+	 *
+	 * @param bool $aan Standaard false. Lees de waarschuwing hierboven.
+	 */
+	return (bool) apply_filters( 'sokkies_csp_rapporteren', false );
+}
+
+/**
  * Bouwt de headerwaarde uit sokkies_csp_regels().
  *
  * report-uri en niet report-to: Firefox kent report-to nog niet, en report-uri
@@ -93,7 +150,9 @@ function sokkies_csp_waarde() {
 	foreach ( sokkies_csp_regels() as $richtlijn => $bronnen ) {
 		$delen[] = $richtlijn . ' ' . implode( ' ', $bronnen );
 	}
-	$delen[] = 'report-uri ' . esc_url_raw( rest_url( 'sokkies/v1/csp-melding' ) );
+	if ( sokkies_csp_rapporteren() ) {
+		$delen[] = 'report-uri ' . esc_url_raw( rest_url( 'sokkies/v1/csp-melding' ) );
+	}
 
 	return implode( '; ', $delen );
 }
@@ -112,7 +171,10 @@ function sokkies_beveiligingsheaders() {
 	header( 'X-Frame-Options: SAMEORIGIN' );
 	header( 'Referrer-Policy: strict-origin-when-cross-origin' );
 	header( 'Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()' );
-	header( 'Content-Security-Policy-Report-Only: ' . sokkies_csp_waarde() );
+	// Zonder eindpunt is een report-only-CSP inert; zie sokkies_csp_rapporteren().
+	if ( sokkies_csp_rapporteren() ) {
+		header( 'Content-Security-Policy-Report-Only: ' . sokkies_csp_waarde() );
+	}
 
 	// Alleen over https. Lokaal draait de site op http://localhost; HSTS daar
 	// zetten dwingt elke andere localhost-site ook naar https, en dat blijft
