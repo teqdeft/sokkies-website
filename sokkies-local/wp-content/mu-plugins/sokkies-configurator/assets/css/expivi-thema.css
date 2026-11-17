@@ -835,6 +835,7 @@ html.sk-calf-only .expivi-configurator .sk-place-btn[data-sel="both"]{
     display: flex !important;
     width: 100% !important;
     gap: 12px !important;
+    flex-direction: column !important;  
 }
 .page.product .btn-group > button{
     flex: 1 1 0 !important;
@@ -1305,14 +1306,20 @@ html.sk-calf-only .expivi-configurator .sk-place-btn[data-sel="both"]{
    enkele stylesheet las die class. De JS-kant hoefde dus niet aangepast te
    worden, alleen deze CSS-kant.
 
-   DE WERKENDE LOADER STAAT NU IN configurator.css, onder "Laadweergave": hij
-   hangt aan diezelfde vlag, gebruikt #expivi-options en .expivi-viewer, en
-   heeft bewust geen tekst naast de ring (tekst in content: ziet
-   TranslatePress niet, dus die zou op /en/, /de/ en /fr/ Nederlands blijven).
+   ER IS SINDSDIEN HELEMAAL GEEN EIGEN SPINNER MEER (2026-11-17). Expivi's
+   viewer toont zelf een voortgangsbalk met een percentage, en sinds de
+   configurator in .conf-preview-card staat zie je die balk en onze ring in
+   dezelfde kaart naast elkaar. Keuze van de klant: hun balk blijft staan,
+   onze ring is eruit.
+
+   Wat er in configurator.css onder "Laadweergave" overblijft, hangt nog wel
+   aan diezelfde vlag: het verbergen van de halfgebouwde optiekolom (anders
+   flitsen de kale knoppen in beeld) en het doorzichtig maken van de
+   kolomscheiding zolang beide kolommen leeg zijn.
 
    De keyframes sk-spin stonden hier ook en zijn mee verdwenen: ze werden
-   nergens anders gebruikt. De nieuwe loader draait op sokkies-draai, in
-   hetzelfde bestand als de regel die hem gebruikt.
+   nergens anders gebruikt. De sokkies-draai die ze verving is met de ring
+   weer opgeruimd.
    ============================================================ */
 
 /* 24px margin on .options-container pushed the whole column down. It has no

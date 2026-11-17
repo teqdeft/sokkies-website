@@ -266,31 +266,21 @@
    Laadweergave
    --------------------------------------------------------------------------
    De configurator heeft seconden nodig voordat Expivi zijn viewer en zijn
-   optiepaneel heeft opgebouwd. Tot dat moment stond hier een LEEG WIT VLAK
-   met alleen onze eigen knoppen erboven - niets dat zei dat er iets laadt.
+   optiepaneel heeft opgebouwd. Tot dat moment is dit een leeg wit vlak.
 
-   ER WAS AL EEN LOADER BEDOELD, in expivi-thema.css ("Configurator loader"),
-   en die heeft nooit iets gedaan. Twee onafhankelijke redenen, allebei
-   nagemeten:
+   DE LOADER IS DIE VAN EXPIVI ZELF: hun viewer toont een voortgangsbalk met
+   een percentage. Hier stond tot 2026-11-17 ook nog een eigen corale ring,
+   maar sinds de configurator in .conf-preview-card staat zie je ze allebei
+   tegelijk in een en dezelfde kaart. Keuze van de klant: hun balk blijft,
+   want die zegt hoe ver het is; onze ring is eruit.
 
-   1. Hij is gescoped als `.expivi-configurator .page.product` - een
-      AFSTAMMELING. In onze template staan die classes op HETZELFDE element
-      (<div class="expivi-configurator page product">), dus die selector
-      matcht hier nooit.
-   2. Hij hangt aan #options, en dat element bestaat in onze pagina niet: dat
-      is de container van Expivi's eigen themapagina. Bij ons heet het
-      #expivi-options. Gemeten: #options is nul keer aanwezig, voor en na het
-      laden.
+   WAT HIER WEL BLIJFT is het verbergen van de HALFGEBOUWDE optiekolom. Zonder
+   dat flitsen de kale knoppen en de prijsregel in beeld voordat het script ze
+   heeft verplaatst - precies waar een laadweergave voor bedoeld is.
 
-   De JS-kant werkt wel: expivi-thema.js zet html.sk-configurator-ready zodra
-   de stepper EN onze verplaatste knoppenbalk er staan, met een vangnet van
-   twaalf seconden als de app nooit mount. Die vlag stond alleen in geen
-   enkele stylesheet - vandaar deze regels.
-
-   GEEN TEKST BIJ DE SPINNER. Tekst in CSS (content:"...") ziet
-   TranslatePress niet, dus die zou op /en/, /de/ en /fr/ Nederlands blijven -
-   precies de fout die de melding op het offerteformulier eerder had. Een
-   draaiende ring zegt genoeg.
+   De JS-kant hoort hierbij: expivi-thema.js zet html.sk-configurator-ready
+   zodra de stepper EN onze verplaatste knoppenbalk er staan, met een vangnet
+   van twaalf seconden als de app nooit mount.
    ========================================================================== */
 html:not(.sk-configurator-ready) .expivi-configurator #expivi-options > *,
 html:not(.sk-configurator-ready) .expivi-configurator #expivi-price,
@@ -301,58 +291,13 @@ html:not(.sk-configurator-ready) .expivi-configurator .btn-group{
      wordt. */
   visibility:hidden !important;
 }
-/* DE RING STAAT MIDDEN IN HET HELE BLOK, niet in de viewerkolom. Dat was hij
-   eerst wel, en in de banner viel dat niet op: de viewer besloeg daar vrijwel
-   het hele vlak. Sinds de configurator in .conf-preview-card staat (2026-11-17)
-   leest de kaart als EEN witte doos van twee kolommen, en een ring die in de
-   linkerkolom gecentreerd staat oogt daarin scheef - gemeten op live: ring op
-   266px vanaf de kaartrand terwijl het midden op 526px ligt.
-
-   position:relative ALLEEN zolang hij laadt. .expivi-viewer heeft zijn eigen
-   position:relative en staat dichterbij, dus alles wat de app binnen de viewer
-   absoluut plaatst blijft daaraan hangen; de optiekolom is op dat moment nog
-   verborgen. Zodra html.sk-configurator-ready erbij komt vervalt deze regel
-   weer, en daarmee ook de containing block. */
-html:not(.sk-configurator-ready) .expivi-configurator{
-  position:relative;
-}
-/* MAAT EN CONTRAST (2026-11-17, melding Kulwant: "loader looking like
-   this"). De ring was 38px met een baan van 12% zwart en viel in een kaart
-   van ruim 1000 bij 750 nauwelijks op - op een schermafbeelding is hij amper
-   te onderscheiden van een vuiltje. Nu 48px met een baan van 20%, zodat de
-   corale kop er duidelijk tegen afsteekt. */
-html:not(.sk-configurator-ready) .expivi-configurator::before{
-  content:"";
-  position:absolute;
-  top:50%;
-  left:50%;
-  width:48px;
-  height:48px;
-  margin:-24px 0 0 -24px;
-  border:4px solid rgb(40 18 27 / 20%);
-  border-top-color:var(--coral);
-  border-radius:50%;
-  animation:sokkies-draai .8s linear infinite;
-}
 /* DE KOLOMSCHEIDING GAAT WEG ZOLANG HIJ LAADT. Die lijn hoort bij een gevuld
-   paneel; met beide kolommen nog leeg snijdt hij de kaart doormidden en loopt
-   hij precies achter de ring langs - want die staat in het midden van het
-   blok, en de scheiding ligt daar op brede schermen maar een paar pixels
-   vandaan. Alleen de KLEUR gaat weg, niet de rand zelf, zodat er niets
-   verschuift zodra het paneel verschijnt. */
+   paneel; met beide kolommen nog leeg snijdt hij de kaart zomaar doormidden,
+   terwijl de voortgangsbalk van Expivi links in de viewer staat. Alleen de
+   KLEUR gaat weg, niet de rand zelf, zodat er niets verschuift zodra het
+   paneel verschijnt. */
 html:not(.sk-configurator-ready) .expivi-options{
   border-left-color:transparent;
-}
-/* Eigen naam en niet de sk-spin uit expivi-thema.css: dan hangt deze loader
-   niet aan een keyframe in een ander bestand. */
-@keyframes sokkies-draai{ to{ transform:rotate(360deg); } }
-/* Respecteert de systeeminstelling "minder beweging": dan geen draaiende
-   ring maar een rustige pulse. */
-@media (prefers-reduced-motion:reduce){
-  html:not(.sk-configurator-ready) .expivi-configurator::before{
-    animation:sokkies-pulse 1.4s ease-in-out infinite;
-  }
-  @keyframes sokkies-pulse{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
 }
 
 /* ==========================================================================
