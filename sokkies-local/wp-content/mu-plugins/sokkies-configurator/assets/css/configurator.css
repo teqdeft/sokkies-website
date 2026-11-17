@@ -301,11 +301,22 @@ html:not(.sk-configurator-ready) .expivi-configurator .btn-group{
      wordt. */
   visibility:hidden !important;
 }
-/* De ring staat in het VIEWER-vak: daar verschijnt straks de sok, dus daar
-   kijkt de bezoeker al. .expivi-viewer is de buitenste div en heeft
-   position:relative (zie boven); de app schrijft alleen in #expivi-viewer
-   daarbinnen, dus dit pseudo-element zit hem nooit in de weg. */
-html:not(.sk-configurator-ready) .expivi-viewer::before{
+/* DE RING STAAT MIDDEN IN HET HELE BLOK, niet in de viewerkolom. Dat was hij
+   eerst wel, en in de banner viel dat niet op: de viewer besloeg daar vrijwel
+   het hele vlak. Sinds de configurator in .conf-preview-card staat (2026-11-17)
+   leest de kaart als EEN witte doos van twee kolommen, en een ring die in de
+   linkerkolom gecentreerd staat oogt daarin scheef - gemeten op live: ring op
+   266px vanaf de kaartrand terwijl het midden op 526px ligt.
+
+   position:relative ALLEEN zolang hij laadt. .expivi-viewer heeft zijn eigen
+   position:relative en staat dichterbij, dus alles wat de app binnen de viewer
+   absoluut plaatst blijft daaraan hangen; de optiekolom is op dat moment nog
+   verborgen. Zodra html.sk-configurator-ready erbij komt vervalt deze regel
+   weer, en daarmee ook de containing block. */
+html:not(.sk-configurator-ready) .expivi-configurator{
+  position:relative;
+}
+html:not(.sk-configurator-ready) .expivi-configurator::before{
   content:"";
   position:absolute;
   top:50%;
@@ -324,7 +335,7 @@ html:not(.sk-configurator-ready) .expivi-viewer::before{
 /* Respecteert de systeeminstelling "minder beweging": dan geen draaiende
    ring maar een rustige pulse. */
 @media (prefers-reduced-motion:reduce){
-  html:not(.sk-configurator-ready) .expivi-viewer::before{
+  html:not(.sk-configurator-ready) .expivi-configurator::before{
     animation:sokkies-pulse 1.4s ease-in-out infinite;
   }
   @keyframes sokkies-pulse{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
