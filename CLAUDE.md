@@ -6887,3 +6887,64 @@ DEPLOY-TOPOLOGIE GECORRIGEERD + PRESTATIERONDE (2026-10-29, n.a.v. een
     bestand met "var h4wp_ct_Cookies = Cookies.noConflict();" - niet
     geenqueued, terwijl ct-basic.js onvoorwaardelijk wordt afgedrukt. Lokaal
     staat die optie wel op javascript, op de servers niet. Zet hem daar gelijk.
+
+VIER LAGEN STAAN VOOR ONZE CODE - WIE GEEFT WELKE FOUTPAGINA (2026-11-17,
+  n.a.v. een 403 op sokkies.com/nl/ die bij Kulwant in beeld kwam terwijl de
+  site gewoon draaide). Dit kostte op een dag drie keer tijd aan iets dat niet
+  in deze repo staat, vandaar deze kaart.
+
+  WAT ER TUSSEN EEN BEZOEKER EN ONZE CODE ZIT, van buiten naar binnen:
+
+    1. CLOUDFLARE        Server: cloudflare, cf-cache-status: DYNAMIC (HTML
+                         wordt dus niet door CF gecachet). Blokkeert CF zelf,
+                         dan zie je de GEMERKTE CF-pagina ("Sorry, you have
+                         been blocked"). Logboek: Cloudflare > Security >
+                         Events, filteren op tijdstip.
+    2. WAF VAN DE HOST   ModSecurity / Imunify360. Blokkeert per VERZOEK, niet
+                         per IP. Logboek: hostpaneel.
+    3. LITESPEED         x-turbo-charged-by: LiteSpeed, x-litespeed-cache: hit.
+                         Zijn eigen 403 is de KALE pagina "403 Forbidden -
+                         Access to this resource on the server is denied!".
+    4. WORDFENCE         Eigen gemerkte blokpagina, en elk blok staat in
+                         Firewall > Blocking en in Tools > Live Traffic.
+
+  AAN DE FOUTPAGINA ZIE JE DUS WELKE LAAG HET WAS. De kale LiteSpeed-403 die
+  hier langskwam betekent: de beslissing viel bij laag 2 of 3, voordat
+  WordPress of onze code iets te zeggen had.
+
+  WAT ER OP 2026-11-17 IS UITGESLOTEN, met meting:
+    - niet de deploy: /nl/, /en/, de gewijzigde css en dev gaven alle vier 200
+    - niet de user-agent of taal: met een volledige Chrome-UA plus
+      Accept-Language nl-NL ook 200
+    - niet Wordfence: Blocking meldde "No blocks are currently active", met de
+      automatische blokken aangezet
+    - geen IP-ban: Kulwant kon wp-admin op dezelfde site gewoon gebruiken
+    - niets van ons: geen deny-regel in .htaccess en niets in de mu-plugins dat
+      op die route 403 geeft
+  De oorzaak is NIET achterhaald. De reden leeft alleen in de twee logboeken
+  hierboven en die lopen af; noteer dus TIJDSTIP en URL op het moment zelf.
+
+  DE PROMOTIESTAP NAAR LIVE IS NOG STEEDS ONBEKEND en dat is de duurste van
+  allemaal. De CI (deploy.yml) zet de code op DEV; live wordt daarna door iets
+  anders bijgewerkt dat niet in deze repo staat. Gemeten op 2026-11-17: de ene
+  commit stond binnen drie minuten op live, de drie erna na drie kwartier nog
+  niet, terwijl dev ze binnen een minuut had. Zolang dat onduidelijk is wordt
+  er tegen LIVE getest, en dat is precies het verkeer dat een WAF-regel kan
+  laten aanslaan.
+
+  WAT DIT VOORKOMT (volgorde = effect):
+    1. Eigen IP's op de allowlist, zowel bij Cloudflare (Security > WAF > IP
+       Access Rules) als in de firewall van de host. Dekt de hele categorie
+       "gedrag/rate" af. Beveiligingskeuze, dus van de klant.
+    2. Uitzoeken wat de promotiestap is, en de DATABASE VAN DEV
+       synchroniseren. Dev had op 2026-11-17 de code wel maar de database niet
+       (/nl/configurator/ gaf er 404 omdat pagina 14 daar nog concept is),
+       dus verifieren kon alleen op live.
+    3. Besluiten wat Wordfence mag. Hij werkt zichzelf bij op een site waarvan
+       de plugins NIET meedeployen (zie de uitsluitingen in deploy.yml), dus
+       live loopt stil uit de pas met de repo en een nieuwe regelset kan
+       bezoekers gaan blokkeren zonder dat hier iets verandert. Op 2026-11-17
+       stonden er 156 gewijzigde Wordfence-bestanden ongecommit in de werkmap.
+
+  NOG IN TE VULLEN (navragen bij Kulwant): wie beheert Cloudflare, welke WAF
+  de host draait, en wat live bijwerkt. Zodra dat bekend is hoort het hier.
