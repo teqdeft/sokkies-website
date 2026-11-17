@@ -350,3 +350,68 @@ html:not(.sk-configurator-ready) .expivi-options{
   display:block;
   background:#fff;
 }
+
+/* ==========================================================================
+   "Configurator laden" - het gat VOOR de voortgangsbalk van Expivi
+   --------------------------------------------------------------------------
+   Expivi toont zelf een balk met een percentage, maar pas zodra hun script
+   draait en begint te tekenen. In de seconden daarvoor is de kaart een leeg
+   wit vlak, en dat ziet eruit alsof er niets gebeurt (melding Kulwant met een
+   schermafbeelding, 2026-11-17).
+
+   HIJ VERDWIJNT ZODRA EXPIVI IETS TEKENT, zodat er nooit twee loaders naast
+   elkaar staan - precies waar de vorige ronde op strandde. De haak daarvoor is
+   :has(#expivi-viewer *): die mountdiv is leeg tot hun app erin begint te
+   renderen, en hun balk staat gecentreerd in de viewerkolom (gemeten op de
+   schermafbeelding: balkmidden 345, viewerkolom 55-635, midden 345). Onze
+   tekst staat BUITEN die mountdiv, dus hij triggert zijn eigen verdwijnregel
+   niet.
+
+   OMGEKEERD GESCHREVEN, en dat is met opzet: standaard staat hij UIT en hij
+   wordt alleen aangezet. Kent een browser :has() niet, dan is de hele
+   selector ongeldig en blijft hij dus uit - dan is er geen tekst, net als nu,
+   in plaats van een tekst die blijft hangen over de balk van Expivi heen.
+
+   De punten lopen na elkaar op; bij "minder beweging" staan ze stil.
+   ========================================================================== */
+.sk-laadtekst{
+  display:none;
+}
+html:not(.sk-configurator-ready) .expivi-configurator:not(:has(#expivi-viewer *)) .sk-laadtekst{
+  display:flex;
+  align-items:center;
+  /* .expivi-viewer heeft position:relative, dus dit centreert in de
+     viewerkolom - dezelfde plek waar de balk van Expivi straks verschijnt. */
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  margin:0;
+  pointer-events:none;
+  font-family:var(--roc-grotesk);
+  font-size:var(--body-font-size);
+  font-weight:600;
+  color:rgb(40 18 27 / 55%);
+  white-space:nowrap;
+}
+.sk-laadpunten{
+  display:inline-flex;
+  gap:3px;
+  margin-left:5px;
+}
+.sk-laadpunten span{
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:var(--coral);
+  animation:sokkies-laadpunt 1.2s ease-in-out infinite;
+}
+.sk-laadpunten span:nth-child(2){ animation-delay:.2s; }
+.sk-laadpunten span:nth-child(3){ animation-delay:.4s; }
+@keyframes sokkies-laadpunt{
+  0%, 80%, 100% { opacity:.25; transform:translateY(0); }
+  40%           { opacity:1;   transform:translateY(-3px); }
+}
+@media (prefers-reduced-motion:reduce){
+  .sk-laadpunten span{ animation:none; opacity:.6; }
+}
