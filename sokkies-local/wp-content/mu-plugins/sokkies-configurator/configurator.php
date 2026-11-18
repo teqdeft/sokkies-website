@@ -393,7 +393,25 @@ function sokkies_configurator_blok( $klasse = '' ) {
 
 	ob_start();
 	?>
-	<div class="<?php echo esc_attr( $classes ); ?>">
+	<?php
+	/* data-no-translation: de UI van Expivi is Engels en wordt CLIENT-SIDE
+	   opgebouwd. TranslatePress heeft DOM-detectie aan staan en pikt die
+	   tekst op als NEDERLANDSE bronstring - gemeten 2026-11-18: 'Upload Your
+	   Logo' (id 5387) en 'Customize Colors' (id 5396) stonden al in
+	   trp_original_strings. Een machinevertaalronde maakt van de kop
+	   'Cuff, Heel, Toe' dan 'Cuff, Very, Yes' - heel en toe LIJKEN Nederlands.
+	   Dat is niet alleen lelijk: pruneStaleTriggers() in expivi-thema.js
+	   matcht op /cuff|heel|toe|anti.?slip/ in het title-attribuut, dus zodra
+	   die tekst vertaald is wordt er stil niets meer opgeruimd bij het
+	   wisselen van sokmodel. Scheelt ook vertaaltegoed: elke configuratortekst
+	   belandde anders in de wachtrij.
+	   LET OP: hiermee blijft de configurator in ELKE taal Engels. Dat is nu al
+	   zo (ook op /nl/ staat er Model / Customize Colors), dus het verandert
+	   niets aan wat de bezoeker ziet - het voorkomt alleen onzin. Wil de klant
+	   hem wel vertaald, dan moeten de strings van Expivi met de hand in de
+	   TP-editor; dit attribuut moet er dan weer af. */
+	?>
+	<div class="<?php echo esc_attr( $classes ); ?>" data-no-translation>
 	  <?php
 	  /* DE LAADTEKST STAAT HIER, als kind van het HELE blok en niet in de
 	     viewerkolom. Hij wordt absoluut gecentreerd, en dat rekent tegen de

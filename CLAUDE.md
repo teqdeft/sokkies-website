@@ -7016,3 +7016,86 @@ DE 403 IS OPGELOST EN HET WAS ONZE EIGEN CODE (2026-11-17, later die dag, na een
   /en/configuration-tool/. De configurator staat dus nog nergens op live in een
   sectie aan (de ACF-vlag is database en deployt niet mee). De Expivi-bronnen in
   de witte lijst komen daarom uit het lokale log, niet van live.
+
+KLEURKIEZER VAN DE CONFIGURATOR WAS ONGESTYLED (2026-11-18, melding Kulwant met
+  twee schermafbeeldingen: bovenin de pagina een kale strook "Black White 485 C
+  298 C ..." met een los kruisje, en een rood kader om de kleurenrijen).
+  WAT DIE STROOK WAS: geen losse tekst maar DE POPUP ZELF, volledig zonder
+  opmaak. De kleurnamen stonden er wel, de bolletjes niet - gemeten kwamen die
+  uit op 0 x 15 px, dus onzichtbaar.
+  OORZAAK, en het is een eenvoudige: expivi-thema.js hangt de popup aan
+  document.body (regel 809), maar in expivi-thema.css was alles BINNEN de popup
+  gescoped als `.expivi-configurator .sk-cp-...`. Dat vlak ligt buiten
+  .expivi-configurator, dus geen van die elf regels matchte ooit. Alleen
+  .sk-cp-popup zelf stond ongescoped - vandaar dat je wel het donkere waas kreeg
+  en verder niets.
+  GEFIXT door die elf selectors om te zetten naar `.sk-cp-popup .sk-cp-...`
+  (panel, head, title, close, grid, card + :hover, circle, name, en de twee in
+  de 659px-mediaquery). Specificiteit blijft (0,2,0), dus er verschuift niets
+  anders. BEWUST NIET ONGESCOPED GELATEN: .sk-cp-card en .sk-cp-circle bestaan
+  alleen in de popup, maar een scope houdt het leesbaar en voorkomt lekken.
+  NIET AANGERAAKT: `.expivi-configurator .sk-cp-group:has(> .sk-cp-row:empty)`.
+  Die hoort bij het optiepaneel en staat dus terecht op de oude scope - de
+  sk-cp-namen worden door BEIDE delen gebruikt, dus kijk per regel waar het
+  element echt hangt.
+  GEMETEN na de fix, en de getallen komen exact overeen met wat de comments in
+  de CSS als bedoeling opschrijven: paneel 636x900, raster 4 kolommen van
+  130,25px, kaart 130x156, cirkel 50x50, 52 kleuren. Op 390: paneel 390x844,
+  2 kolommen van 169px, naam 14px, 0 horizontale scroll.
+
+  LOKALE VALKUIL DIE DE DIAGNOSE EERST VERTROEBELDE - DE GECOMBINEERDE CSS IS
+  HIER STUK. Voor de fix leek de hele stylesheet te ontbreken. Dat klopte ook:
+  LiteSpeed combineert op localhost alles tot een bestand en dat bestand is
+  CORRUPT - gemeten 602.020 bytes met 427 NUL-BYTES erin en 44 accolades te veel
+  dicht (6784 open, 6828 dicht). De browser stopt met parsen en houdt 112 regels
+  over; alles daarna valt weg. grep ziet het bestand niet voor niets als binair.
+  Dat is dezelfde waarneming als in de notitie van 2026-11-17 (112 regels) en nu
+  met harde cijfers.
+  OPGELOST VOOR LOKAAL door optm-css_comb, optm-css_comb_ext_inl en optm-js_comb
+  leeg te zetten en wp-content/litespeed/ te legen (59 bestanden). Daarna 23
+  losse stylesheets en expivi-thema.css doet het gewoon.
+  DIT IS EEN DATABASE-INSTELLING, dus hij deployt niet mee - maar hij KAN via de
+  WP Migrate DB-sync naar dev reizen. Dat is daar geen verlies: dev serveert nu
+  al losse stylesheets (nagemeten, geen litespeed/css-link in de HTML), dus
+  combine doet daar toch niets. Terugzetten is een UPDATE met waarde 1 op die
+  drie opties.
+  LES: zie je stijlen die er wel horen te zijn maar niet toegepast worden, kijk
+  dan EERST of de geladen stylesheet uberhaupt volledig geparsed is
+  (document.styleSheets[0].cssRules.length) voordat je de selector verdenkt. Hier
+  waren het twee onafhankelijke oorzaken tegelijk.
+
+  "CUFF, VERY, YES" - TRANSLATEPRESS OOGST DE CONFIGURATOR (zelfde melding).
+  De tweede schermafbeelding toont de kop als "Cuff, Very, Yes". Dat is geen
+  typfout van Expivi: TranslatePress leest de kop "Cuff, Heel, Toe" als
+  NEDERLANDS (heel = very, toe = yes) en vertaalt hem.
+  HOE HIJ ERBIJ KOMT, terwijl de configurator client-side wordt opgebouwd: TP
+  heeft DOM-detectie aan (window.trp_allow_detect_dom_changes_to_run bestaat op
+  de voorkant) en registreert die dynamische tekst als bronstring. BEWIJS in de
+  lokale database: 'Upload Your Logo' (id 5387) en 'Customize Colors' (id 5396)
+  staan in trp_original_strings met status 0. 'Cuff, Heel, Toe' stond hier NOG
+  niet - daarom was het lokaal niet te reproduceren; op de machine van de melder
+  had een vertaalronde dat wel al gedaan. Lokale databases zijn per machine (zie
+  MULTI-MACHINE), dus "het doet het hier niet" zegt hier weinig.
+  HET IS NIET ALLEEN COSMETISCH. pruneStaleTriggers() in expivi-thema.js bepaalt
+  met /cuff|heel|toe|anti.?slip/ op het title-attribuut welke kleurknop bij een
+  ander sokmodel weg moet. Staat daar "Very" of "Yes", dan matcht er niets, is
+  de key leeg en wordt er stil NIETS meer opgeruimd. Precies de les die al in dit
+  document staat: vergelijk in JS nooit op tekst die op het scherm staat zolang
+  TranslatePress draait.
+  GEFIXT met data-no-translation op het configuratorblok (configurator.php).
+  Daarmee laat TP de hele widget met rust: geen onzinvertaling, de prune-logica
+  blijft werken, en er belandt geen configuratortekst meer in de vertaalwachtrij
+  (dat kost tegoed - zie de notitie van 2026-10-05, 306.152 woorden voor een
+  volledige ronde).
+  WAT DIT KOST: de configurator blijft in elke taal Engels. Dat is nu al zo - ook
+  op /nl/ staat er Model / Upload Your Logo / Customize Colors - dus voor de
+  bezoeker verandert er niets; het voorkomt alleen de onzin. Wil de klant hem wel
+  vertaald, dan moeten de Expivi-strings met de hand in de TP-editor en moet dit
+  attribuut eraf. Voorleggen.
+  GEVERIFIEERD op /en/configuration-tool/: attribuut staat er, kop weer
+  "Cuff, Heel, Toe", titels Cuff/Heel/Toe, popup compleet opgemaakt.
+
+  TERZIJDE, NOG STEEDS WAAR: de configurator draait ALLEEN lokaal. Op dev geeft
+  /nl/configurator/ geen enkele expivi-verwijzing en wordt expivi-thema.css niet
+  eens ingeladen - de ACF-vlag secties_1_configurator_tonen staat daar niet aan
+  (database, deployt niet mee). Lokaal staat pagina 14 inmiddels op publish.

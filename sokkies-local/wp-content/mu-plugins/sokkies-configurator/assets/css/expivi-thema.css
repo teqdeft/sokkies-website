@@ -1062,47 +1062,47 @@ html.sk-calf-only .expivi-configurator .sk-place-btn[data-sel="both"]{
 .sk-cp-popup.is-open{ display: flex; }
 /* 636px, not 620: the grid's own scrollbar eats ~15px, and 636 is what puts
    the four columns on exactly 130px. */
-.expivi-configurator .sk-cp-panel{
+.sk-cp-popup .sk-cp-panel{
   width: 636px; max-width: 100%; height: 100%; background: #fff;
   display: flex; flex-direction: column; box-shadow: -8px 0 24px rgba(0,0,0,.18);
   animation: sk-cp-slide .25s ease;
 }
 @keyframes sk-cp-slide { from { transform: translateX(100%); } to { transform: translateX(0); } }
-.expivi-configurator .sk-cp-head{
+.sk-cp-popup .sk-cp-head{
   display: flex; align-items: center; justify-content: space-between;
   padding: 18px 22px; border-bottom: 1px solid #e5e7eb; flex: 0 0 auto;
 }
-.expivi-configurator .sk-cp-title{ font-weight: 700; font-size: 22px; color: #00262B; }
-.expivi-configurator .sk-cp-close{ background: none; border: none; font-size: 30px; line-height: 1; cursor: pointer; color: #333; }
+.sk-cp-popup .sk-cp-title{ font-weight: 700; font-size: 22px; color: #00262B; }
+.sk-cp-popup .sk-cp-close{ background: none; border: none; font-size: 30px; line-height: 1; cursor: pointer; color: #333; }
 /* Four swatches per row, sized off the reference configurator
    (custom.sockclub.com): 130x156 cards, 20px gap, 50px circle sitting 37px from
    the card top, label 16px/600 #4B5563 eight pixels under it. The 20px grid
    padding is what makes the columns land on exactly 130px. */
-.expivi-configurator .sk-cp-grid{
+.sk-cp-popup .sk-cp-grid{
   flex: 1 1 auto; overflow-y: auto; padding: 20px;
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; align-content: start;
 }
-.expivi-configurator .sk-cp-card{
+.sk-cp-popup .sk-cp-card{
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
   height: 156px; padding: 0; cursor: pointer;
   background: #fff; border: 4px solid #fff; border-radius: 8px;
   box-shadow: rgba(50,50,93,.25) 0 2px 5px -1px, rgba(0,0,0,.3) 0 1px 3px -1px;
   transition: border-color .2s, transform .2s;
 }
-.expivi-configurator .sk-cp-card:hover{ border-color: #FA4B46; transform: translateY(-2px); }
-.expivi-configurator .sk-cp-circle{
+.sk-cp-popup .sk-cp-card:hover{ border-color: #FA4B46; transform: translateY(-2px); }
+.sk-cp-popup .sk-cp-circle{
   width: 50px; height: 50px; border-radius: 9999px;
   box-shadow: rgba(50,50,93,.25) 0 2px 5px -1px, rgba(0,0,0,.3) 0 1px 3px -1px;
 }
 .expivi-configurator .sk-cp-group:has(> .sk-cp-row:empty){ display: none !important; }
-.expivi-configurator .sk-cp-name{ font-size: 16px; font-weight: 700; color: #4B5563; text-align: center; }
+.sk-cp-popup .sk-cp-name{ font-size: 16px; font-weight: 700; color: #4B5563; text-align: center; }
 
 /* On a phone the panel can only be as wide as the screen: at 360px four
    columns leave 73px cards, the fourth one clips and "Cool Gray 5 C" breaks
    over two lines. Drop back to two. */
 @media (max-width: 659px) {
-  .expivi-configurator .sk-cp-grid{ grid-template-columns: 1fr 1fr; gap: 16px; padding: 18px; }
-  .expivi-configurator .sk-cp-name{ font-size: 14px; }
+  .sk-cp-popup .sk-cp-grid{ grid-template-columns: 1fr 1fr; gap: 16px; padding: 18px; }
+  .sk-cp-popup .sk-cp-name{ font-size: 14px; }
 }
 
 /* Patterns: 3 tall thumbnails per row (Sock Club style). Flex-wrap with narrow
