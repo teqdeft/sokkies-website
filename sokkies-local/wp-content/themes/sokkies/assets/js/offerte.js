@@ -1035,3 +1035,61 @@
 
     straks();
 })();
+
+/* =============================================================
+   I-TJE MET UITLEG OP EEN KEUZEKAART (2026-11-18)
+   -------------------------------------------------------------
+   Hover en toetsenbordfocus regelt de CSS al; dit is er voor
+   AANRAAKSCHERMEN, waar hover niet bestaat. Een tik op het i-tje
+   zet .is-open, een tik ergens anders of Escape haalt hem weg.
+
+   EEN LUISTERAAR OP DOCUMENT, geen init per formulier: Gravity
+   Forms bouwt het formulier bij elke stap opnieuw op, en een
+   gedelegeerde luisteraar overleeft dat zonder dat er na elke
+   stapwissel opnieuw gekoppeld hoeft te worden.
+
+   preventDefault() is nodig omdat de kaart een <label> is. De
+   HTML-standaard zegt dat een klik op interactieve inhoud binnen
+   een label het bijbehorende vakje NIET aanvinkt, maar daar blind
+   op vertrouwen zou betekenen dat een afwijkende browser de optie
+   aanzet terwijl de bezoeker alleen uitleg wilde lezen.
+   ============================================================= */
+
+(function () {
+    'use strict';
+
+    var OPEN = 'is-open';
+
+    function sluitAlles(behalve) {
+        Array.prototype.forEach.call(
+            document.querySelectorAll('.extra-info.' + OPEN),
+            function (knop) {
+                if (knop !== behalve) {
+                    knop.classList.remove(OPEN);
+                }
+            }
+        );
+    }
+
+    document.addEventListener('click', function (e) {
+        var knop = e.target && e.target.closest ? e.target.closest('.extra-info') : null;
+
+        if (!knop) {
+            sluitAlles(null);
+            return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        var stondOpen = knop.classList.contains(OPEN);
+        sluitAlles(knop);
+        knop.classList.toggle(OPEN, !stondOpen);
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' || e.key === 'Esc') {
+            sluitAlles(null);
+        }
+    });
+})();

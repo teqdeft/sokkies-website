@@ -16234,3 +16234,36 @@
   .case-grid.optie-grid,
   .case-grid.optie-grid-4{ grid-template-columns:1fr; gap:16px; }
 }
+
+/* ===================================================================
+   520px en smaller - de uitlegballon wordt een regel onder de kaart
+   -------------------------------------------------------------------
+   De kaarten staan hier twee per rij (~169px op 390px breed). Een
+   zwevende ballon van 260px zou bij de linkerkaart tot buiten het
+   scherm steken en dus een horizontale schuifbalk geven. Daarom staat
+   de uitleg hier gewoon in de flow: de rij wordt een stukje hoger
+   zodra de bezoeker op het i-tje tikt, en er kan niets uitsteken.
+
+   MET display IN PLAATS VAN opacity, en dat is hier de hele truc: de
+   hover-regel uit style.css zet alleen opacity en visibility, dus een
+   display:none eroverheen houdt de ballon dicht zonder dat die regel
+   apart teruggedraaid hoeft te worden. Alleen de klik opent hem - en
+   dat is precies wat je op een aanraakscherm wilt.
+   =================================================================== */
+@media (max-width:520px){
+  .quote-card .extra-tip{
+    position:static;
+    display:none;
+    width:auto;
+    transform:none;
+    margin:8px 0 0;
+    padding:8px 10px;
+    font-size:12px;
+    opacity:1;
+    visibility:visible;
+  }
+  .quote-card .extra-info.is-open + .extra-tip{
+    display:block;
+    transform:none;
+  }
+}

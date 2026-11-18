@@ -730,7 +730,10 @@ add_filter( 'gform_progress_steps', function ( $markup, $form, $huidige ) {
 function sokkies_offerte_optioneel_labels() {
 	// 'Opmerkingen' hoort bij het sampleformulier; htmlv zet daar
 	// "(optioneel)" achter, net als bij het uploadveld.
-	return array( 'Upload je ontwerp', 'Jouw wensen', 'Opmerkingen' );
+	/* Allebei de schrijfwijzen van het uploadveld: de nieuwe naam komt uit
+	   sokkies_offerte_veldteksten() hieronder, de oude staat er nog zolang de
+	   database niet is bijgewerkt. */
+	return array( 'Upload je ontwerp', 'Upload jouw huisstijl of ontwerp', 'Jouw wensen', 'Opmerkingen' );
 }
 
 /**
@@ -878,6 +881,110 @@ function sokkies_offerte_adresblok_weg( $form ) {
 add_filter( 'gform_pre_render', 'sokkies_offerte_adresblok_weg' );
 add_filter( 'gform_pre_validation', 'sokkies_offerte_adresblok_weg' );
 add_filter( 'gform_pre_submission_filter', 'sokkies_offerte_adresblok_weg' );
+
+/**
+ * LABEL EN PLACEHOLDER VAN TWEE VELDEN (verzoek 2026-11-18, via Rick).
+ *
+ *   "Upload je ontwerp"  ->  "Upload jouw huisstijl of ontwerp"
+ *   Bedrijfsnaam krijgt de placeholder "Janssen BV"
+ *
+ * WAAROM IN CODE: allebei zijn het veldinstellingen van Gravity Forms en die
+ * staan in de DATABASE — die deployt niet mee. In de formulierbouwer wijzigen
+ * betekent het op dev en op live nog een keer doen, met de kans dat een van de
+ * drie omgevingen achterblijft. Zelfde afweging als bij het adresblok
+ * hierboven en bij de veldvolgorde.
+ *
+ * DE KLANT HOUDT HET LAATSTE WOORD: de hernoeming gebeurt alleen zolang er nog
+ * exact de oude tekst staat, en de placeholder alleen als het veld er nog geen
+ * heeft. Typt iemand in Gravity Forms iets eigens, dan blijft dat staan.
+ *
+ * LET OP BIJ EEN NIEUWE TEKST: het Nederlandse label is ook de SLEUTEL in de
+ * vertaalkaart (sokkies_form_labels() in inc/formulier-talen.php) en in
+ * sokkies_offerte_optioneel_labels() hierboven. Wijzigt de tekst, dan moeten
+ * die twee mee — anders staat het label op /en/, /de/ en /fr/ in het
+ * Nederlands en valt "(optioneel)" erachter weg.
+ */
+function sokkies_offerte_veldteksten( $form ) {
+	if ( is_admin() || ! is_array( $form ) || empty( $form['fields'] ) || ! sokkies_is_offerte( $form ) ) {
+		return $form;
+	}
+	foreach ( $form['fields'] as $veld ) {
+		if ( sokkies_offerte_is_veld( $veld, 'of-upload' ) && 'Upload je ontwerp' === trim( (string) $veld->label ) ) {
+			$veld->label = 'Upload jouw huisstijl of ontwerp';
+		}
+		if ( sokkies_offerte_is_veld( $veld, 'of-bedrijf' ) && '' === trim( (string) $veld->placeholder ) ) {
+			$veld->placeholder = 'Janssen BV';
+		}
+	}
+
+	return $form;
+}
+add_filter( 'gform_pre_render', 'sokkies_offerte_veldteksten' );
+/* Ook op de inzending, als vangnet. NAGEMETEN 2026-11-18: in de mail staat de
+   veldnaam als VASTE TEKST met een merge tag erachter ({Upload je ontwerp:3}),
+   en die tag zoekt op het veld-ID, niet op het label. De hernoeming is daar dus
+   niet te zien en breekt er ook niets. Stapt de mail ooit over op {all_fields},
+   dan komen de labels wel uit het formulierobject en doet deze haak zijn werk.
+   De mail noemt het veld bewust anders dan het formulier (daar staat ook
+   "Input:" tegenover "Jouw input"); dat is een keuze van de klant en staat in
+   de database, niet hier. */
+add_filter( 'gform_pre_submission_filter', 'sokkies_offerte_veldteksten' );
+
+/**
+ * "JOUW INPUT" VERHUIST VAN STAP 2 NAAR STAP 1 (verzoek 2026-11-18).
+ *
+ * Het veld komt daar direct onder "Upload jouw huisstijl of ontwerp" te staan:
+ * de bezoeker levert zijn ontwerp aan en vertelt er in dezelfde stap bij wat
+ * hij voor ogen heeft. Stap 2 houdt alleen de aanvullende opties over.
+ *
+ * WAAROM IN CODE: de veldvolgorde en het paginanummer zijn database, net als
+ * de labels hierboven.
+ *
+ * DRIE HAKEN, en dat is hier geen formaliteit. Gravity Forms bewaart de
+ * ingevulde waarden PER PAGINA: bij het verzenden van stap 1 kijkt de server
+ * welke velden op pagina 1 staan. Zou alleen het scherm zijn aangepast, dan
+ * staat het veld in beeld op stap 1 terwijl de server het nog op stap 2
+ * verwacht — en dan verdwijnt de ingevulde tekst zodra de bezoeker doorklikt.
+ *
+ * DE PLEK IN DE ARRAY MOET OOK KLOPPEN, niet alleen het paginanummer: Gravity
+ * Forms leest de velden op volgorde en knipt bij elk veld van het type 'page'
+ * een nieuwe stap af. Een veld met pageNumber 1 dat ACHTER die pagina-afbreker
+ * staat, belandt alsnog op stap 2.
+ */
+function sokkies_offerte_input_naar_stap1( $form ) {
+	if ( is_admin() || ! is_array( $form ) || empty( $form['fields'] ) || ! sokkies_is_offerte( $form ) ) {
+		return $form;
+	}
+
+	$invoer = null;
+	$na     = null;
+	foreach ( $form['fields'] as $i => $veld ) {
+		if ( sokkies_offerte_is_veld( $veld, 'of-input' ) ) {
+			$invoer = $i;
+		} elseif ( sokkies_offerte_is_veld( $veld, 'of-upload' ) ) {
+			$na = $i;
+		}
+	}
+	// Staat het al goed (of is een van de twee velden weg), dan niets doen.
+	if ( null === $invoer || null === $na || 1 === (int) $form['fields'][ $invoer ]->pageNumber ) {
+		return $form;
+	}
+
+	$veld             = $form['fields'][ $invoer ];
+	$veld->pageNumber = 1;
+
+	$velden = array_values( $form['fields'] );
+	array_splice( $velden, $invoer, 1 );
+	// Lag het uploadveld achter het invoerveld, dan is zijn index opgeschoven.
+	$doel = $invoer < $na ? $na : $na + 1;
+	array_splice( $velden, $doel, 0, array( $veld ) );
+	$form['fields'] = $velden;
+
+	return $form;
+}
+add_filter( 'gform_pre_render', 'sokkies_offerte_input_naar_stap1' );
+add_filter( 'gform_pre_validation', 'sokkies_offerte_input_naar_stap1' );
+add_filter( 'gform_pre_submission_filter', 'sokkies_offerte_input_naar_stap1' );
 
 /**
  * Het veld "Aantal paar" volgt de minimale afname uit Website-instellingen.
@@ -1943,6 +2050,60 @@ function sokkies_offerte_extra_fotos() {
 	);
 }
 
+/**
+ * UITLEG BIJ EEN AANVULLENDE OPTIE — het i-tje op de kaart (2026-11-18).
+ *
+ * Gevraagd voor "Borduren": niet iedereen weet wat het verschil met weven is,
+ * en dat verschil bepaalt mede de prijs.
+ *
+ * TWEE BRONNEN, in deze volgorde:
+ *   1. Website-instellingen > Aanvullende opties > "Uitleg (i-tje)" — zo kan
+ *      de klant de tekst zelf bijwerken en er ook bij andere opties een
+ *      zetten, zonder dat er code aan te pas komt.
+ *   2. De vaste tekst hieronder. Die reist WEL mee met een deploy, zodat het
+ *      i-tje er op dev en live meteen staat: het CMS-veld is database en komt
+ *      daar pas met de volgende synchronisatie of met de hand.
+ *
+ * KOPPELEN OP DE KEUZETEKST, en dat is bewust een zwak punt: hernoemt iemand
+ * "Borduren" in Gravity Forms, dan verdwijnt het i-tje gewoon (geen foutmelding,
+ * geen verkeerde tekst bij een andere optie). Terugzetten gaat dan via het
+ * CMS-veld hierboven. Een cssClass zou steviger zijn, maar Gravity Forms kent
+ * die alleen per VELD en niet per losse keuze.
+ */
+function sokkies_offerte_extra_uitleg_vast() {
+	return array(
+		'Borduren' => 'Bij weven zit jouw logo ín de sok verwerkt; bij borduren ligt het als premium finish óp de sok met extra detail en reliëf.',
+	);
+}
+
+/** De uitleg bij één keuze; lege string = geen i-tje. */
+function sokkies_offerte_extra_uitleg( $keuzetekst ) {
+	static $cms = null;
+	if ( null === $cms ) {
+		$cms   = array();
+		$rijen = function_exists( 'get_field' ) ? get_field( 'offerte_extras', 'option' ) : array();
+		if ( is_array( $rijen ) ) {
+			foreach ( $rijen as $rij ) {
+				$naam   = isset( $rij['naam'] ) ? sokkies_offerte_keuzetekst( trim( (string) $rij['naam'] ) ) : '';
+				$uitleg = isset( $rij['uitleg'] ) ? trim( (string) $rij['uitleg'] ) : '';
+				if ( '' !== $naam && '' !== $uitleg ) {
+					$cms[ $naam ] = $uitleg;
+				}
+			}
+		}
+	}
+
+	/* Gedecodeerd vergelijken: Gravity Forms bewaart een keuzetekst met een
+	   &-teken soms gecodeerd, zie sokkies_offerte_keuzetekst(). */
+	$naam = sokkies_offerte_keuzetekst( $keuzetekst );
+	if ( isset( $cms[ $naam ] ) ) {
+		return $cms[ $naam ];
+	}
+
+	$vast = sokkies_offerte_extra_uitleg_vast();
+
+	return isset( $vast[ $naam ] ) ? $vast[ $naam ] : '';
+}
 add_filter( 'gform_field_choice_markup_pre_render', function ( $markup, $choice, $field, $value ) {
 	if ( ! is_object( $field ) || ! sokkies_form_eigen_opmaak( $field->formId ) ) {
 		return $markup;
@@ -1981,7 +2142,28 @@ add_filter( 'gform_field_choice_markup_pre_render', function ( $markup, $choice,
 	   een rand en position:relative — als inline-element klopt die opmaak niet
 	   en zweven de vinkjes los van de kaart. Een <div> in een <label> is
 	   geldige HTML. */
-	$binnen = '<div class="type-pick-outer">' . $beeld . '<span class="pick-check"></span></div>'
+	/* Een i-tje op de kaart als er uitleg bij deze optie hoort. Het staat in
+	   .type-pick-outer omdat die position:relative is; de ballon hangt er
+	   absoluut boven. Een <button> BINNEN een <label> is veilig: de browser
+	   voert de label-actie niet uit als de klik op interactieve inhoud landt,
+	   dus het aanvinken van de kaart gebeurt niet per ongeluk. */
+	$info   = '';
+	$uitleg = 'extra' === $soort ? sokkies_offerte_extra_uitleg( $tekst ) : '';
+	if ( '' !== $uitleg ) {
+		$tip_id = 'of-uitleg-' . (int) $field->formId . '-' . sanitize_title( $tekst );
+		$info   = '<button type="button" class="extra-info" aria-describedby="' . esc_attr( $tip_id ) . '">'
+			/* De 'i' is beeld, geen tekst: zonder aria-hidden leest een
+			   schermlezer de losse letter voor. De naam van de knop staat in
+			   de span eronder. Bewust GEEN aria-label: TranslatePress
+			   vertaalt zichtbare tekst wel en een attribuut niet, dus een
+			   aria-label zou in elke taal Nederlands blijven. */
+			. '<span aria-hidden="true">i</span>'
+			. '<span class="sokkies-sr-only">Meer informatie</span>'
+			. '</button>'
+			. '<span class="extra-tip" id="' . esc_attr( $tip_id ) . '" role="tooltip">' . esc_html( $uitleg ) . '</span>';
+	}
+
+	$binnen = '<div class="type-pick-outer">' . $beeld . '<span class="pick-check"></span>' . $info . '</div>'
 		. '<span class="' . $soort . '-name">' . esc_html( $tekst ) . '</span>';
 
 	/* Hoort deze optie maar bij bepaalde soktypes, dan gaat die lijst als

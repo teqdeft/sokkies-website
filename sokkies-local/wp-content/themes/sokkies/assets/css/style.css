@@ -12055,3 +12055,81 @@ body.pdp-calc-open{
   clip-path:inset(50%);
   white-space:nowrap;
 }
+
+/* ====================================================================
+   I-TJE MET UITLEG OP EEN KEUZEKAART (verzoek 2026-11-18)
+   --------------------------------------------------------------------
+   Gevraagd bij "Borduren" op het offerteformulier: een rond i-knopje
+   rechtsboven in de kaart dat uitlegt wat het verschil met weven is.
+   De tekst komt uit het CMS (Website-instellingen > Aanvullende opties >
+   "Uitleg (i-tje)"); staat daar niets, dan uit de vaste tekst in
+   inc/offerte-formulier.php.
+
+   HET KNOPJE STAAT IN .type-pick-outer, want die is position:relative.
+   .extra-img heeft overflow:hidden en zou de ballon afknippen, dus die
+   hangt eraan als zusje van het beeld en niet erin.
+
+   ZICHTBAAR OP HOVER, OP TOETSENBORDFOCUS EN NA EEN KLIK. De eerste twee
+   doet de CSS zelf, zodat het ook werkt zonder JavaScript; de klik zet
+   .is-open (offerte.js) en is er voor aanraakschermen, waar hover niet
+   bestaat.
+
+   DE BALLON IS GECENTREERD BOVEN DE KAART en 260px breed. Op de breedste
+   band is de kaart smaller dan dat, dus hij steekt links en rechts ~45px
+   uit; dat valt binnen de witte formulierkaart en veroorzaakt geen
+   horizontale schuifbalk. Op <=520px is daar geen ruimte voor - zie het
+   blok in responsive.css, waar de uitleg gewoon onder de kaart komt.
+   ==================================================================== */
+.quote-card .extra-info{
+  position:absolute;
+  top:15px;
+  right:15px;
+  z-index:2;
+  width:22px;
+  height:22px;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--text);
+  border-radius:50%;
+  background:#fff;
+  color:var(--text);
+  font-family:var(--roc-grotesk);
+  font-size:13px;
+  font-weight:600;
+  line-height:1;
+  cursor:pointer;
+  transition:background .2s, color .2s;
+}
+.quote-card .extra-info:hover,
+.quote-card .extra-info:focus-visible{
+  background:var(--text);
+  color:#fff;
+}
+.quote-card .extra-tip{
+  position:absolute;
+  bottom:calc(100% + 10px);
+  left:50%;
+  transform:translateX(-50%) translateY(4px);
+  z-index:5;
+  width:260px;
+  padding:10px 13px;
+  border-radius:10px;
+  background:var(--text);
+  color:#fff;
+  font-size:13px;
+  line-height:1.45;
+  text-align:left;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .2s, transform .2s, visibility .2s;
+}
+.quote-card .extra-info:hover + .extra-tip,
+.quote-card .extra-info:focus-visible + .extra-tip,
+.quote-card .extra-info.is-open + .extra-tip{
+  opacity:1;
+  visibility:visible;
+  transform:translateX(-50%) translateY(0);
+}

@@ -5045,6 +5045,106 @@ OFFERTEFORMULIER (/offerte/) — NIEUW GRAVITY FORM, STAP ONTHOUDEN NA
   er gewoon in. BEWUST NIET AANGEPAST: source_url bijstellen raakt precies die
   taaldetectie, en dat risico weegt niet op tegen een regel die de klant niet
   ziet. Wie het alsnog wil: overnemen uit het URL-veld bij gform_entry_pre_save.
+
+VIJF TWEAKS OP HET OFFERTEFORMULIER (2026-11-18, lijstje via Rick).
+  WAT ER IS GEVRAAGD EN WAT HET IS GEWORDEN:
+    1. "Upload je ontwerp" -> "Upload jouw huisstijl of ontwerp"   CODE
+    2. "Jouw input" van stap 2 naar stap 1, onder het uploadveld   CODE
+    3. Frills mag ook bij Sportsokken                              CMS
+    4. Placeholder bij Bedrijfsnaam: "Janssen BV"                  CODE
+    5. Een i-tje bij Borduren met uitleg over weven vs. borduren   CODE + CMS
+  CODE WAAR HET KAN, want label, placeholder, veldvolgorde en paginanummer zijn
+  alle vier INSTELLINGEN VAN GRAVITY FORMS en dus database - die deployt niet
+  mee. In de formulierbouwer wijzigen betekent het op dev en op live nog een
+  keer doen, met de kans dat een omgeving achterblijft. Zelfde afweging als bij
+  het adresblok en de minimale afname.
+  DE KLANT HOUDT HET LAATSTE WOORD: sokkies_offerte_veldteksten() hernoemt
+  alleen zolang er nog exact de oude tekst staat en vult de placeholder alleen
+  als het veld er nog geen heeft. Typt iemand in Gravity Forms iets eigens, dan
+  blijft dat staan.
+  DE VERHUIZING NAAR STAP 1 HEEFT DRIE HAKEN NODIG, en dat is hier geen
+  formaliteit: Gravity Forms bewaart de ingevulde waarden PER PAGINA. Alleen het
+  scherm aanpassen zou betekenen dat het veld op stap 1 staat terwijl de server
+  het nog op stap 2 verwacht - en dan verdwijnt de ingevulde tekst zodra de
+  bezoeker doorklikt. Ook de PLEK IN DE ARRAY moet kloppen, niet alleen het
+  paginanummer: GF leest de velden op volgorde en knipt bij elk veld van het
+  type 'page' een nieuwe stap af, dus een veld met pageNumber 1 dat achter die
+  afbreker staat belandt alsnog op stap 2.
+  HET I-TJE heeft twee bronnen: Website-instellingen > Aanvullende opties >
+  "Uitleg (i-tje)" (nieuw ACF-subveld, zodat de klant de tekst zelf kan
+  bijwerken en er ook bij andere opties een kan zetten) en als terugval een
+  vaste tekst in sokkies_offerte_extra_uitleg_vast(). Die terugval reist WEL mee
+  met een deploy, zodat het i-tje er op dev en live meteen staat; het CMS-veld
+  komt daar pas met de volgende databasesync of met de hand.
+  ZWAK PUNT, bewust: de koppeling gaat op de KEUZETEKST. Hernoemt iemand
+  "Borduren" in Gravity Forms, dan verdwijnt het i-tje gewoon - geen foutmelding
+  en geen verkeerde tekst bij een andere optie. Terugzetten gaat dan via het
+  CMS-veld. Een cssClass zou steviger zijn, maar GF kent die alleen per VELD en
+  niet per losse keuze.
+  EEN <button> BINNEN EEN <label> IS VEILIG: de HTML-standaard zegt dat een klik
+  op interactieve inhoud in een label het bijbehorende vakje niet aanvinkt.
+  Gemeten en het klopt (vakje bleef uit voor en na de klik), maar de JS doet
+  alsnog preventDefault - blind vertrouwen op een spec-detail is hier niet nodig.
+  ZICHTBAAR OP HOVER EN FOCUS VIA CSS, zodat het ook werkt zonder JavaScript; de
+  klik zet .is-open en is er voor aanraakschermen, waar hover niet bestaat.
+  OP <=520px IS DE BALLON EEN BLOK ONDER DE KAART en geen zwevend vak: de
+  kaarten staan daar twee per rij (167,5px op 390), en een bubbel van 260px zou
+  bij de linkerkaart tot buiten het scherm steken. Dat gaat met display in
+  plaats van opacity - de hover-regel uit style.css zet alleen opacity en
+  visibility, dus een display:none eroverheen houdt hem dicht zonder die regel
+  apart terug te draaien.
+  GEVERIFIEERD, server-side en in de browser: of-input staat op stap 1 direct na
+  of-upload (stap 2 houdt alleen de extra's over), label en placeholder kloppen,
+  "(optioneel)" staat nog achter het nieuwe label, en een volledige inzending
+  (mail geblokkeerd met een tijdelijke mu-plugin) bevat de waarde van Jouw input
+  - ook na heen en weer bladeren door alle drie de stappen. Frills verschijnt nu
+  bij Sport terwijl "Antislip op maat" daar verborgen blijft. Het i-tje: open,
+  dicht, buiten klikken, Escape, en een klik op de kaartfoto vinkt nog gewoon
+  aan. 1440 -> ballon 260x95, 9px boven de kaart, 0 h-scroll; 390 -> blok van
+  147px onder de foto, rij groeit 748 -> 876, 0 h-scroll. Testinzending en
+  mu-plugin daarna verwijderd (1468 echte inzendingen onaangeroerd).
+  HET SAMPLEFORMULIER IS NAGEMETEN EN ONGEMOEID: 10 soktypekaarten, 0 i-knopjes,
+  geen nieuw label, geen placeholder. De twee nieuwe functies zitten achter
+  sokkies_is_offerte(); het i-tje alleen achter de of-extras-kaarten, en die
+  heeft het sampleformulier niet.
+  DE MAIL VERANDERT NIET MEE, en dat is geen vergissing: de beheerdersmelding
+  gebruikt geen {all_fields} maar vaste tekst met een merge tag erachter
+  ({Upload je ontwerp:3}), en die tag zoekt op het veld-ID. De mail noemt het
+  veld sowieso anders dan het formulier (daar staat "Input:" tegenover "Jouw
+  input"), dus dat lijkt een eigen keuze. Wil de klant het gelijk hebben, dan is
+  dat de notificatietekst in Gravity Forms - database, dus per omgeving.
+  TWEE MACHINEVERTALINGEN GECORRIGEERD (database, status 2 zodat een volgende
+  ronde ze niet terugdraait). TranslatePress vertaalde de uitlegtekst vanzelf,
+  maar met twee verkeerde woorden:
+    de  "Bei der Weberei" (= de weverij als bedrijf) en "bei der Bordüre"
+        (= een sierrand) -> "Beim Weben" en "beim Besticken"; ook "dein" naar
+        "Ihr", want de Duitse labels van dit formulier staan op "Ihre".
+    fr  "la doublure" (= de voering van een kledingstuk), twee keer, waar het
+        gewoon "la chaussette" moet zijn.
+  Engels was goed. Precies dezelfde klasse fout als skisokken -> Skischuhe en
+  kaartjes -> Billets: machinevertaling kent het vakjargon niet, dus loop de
+  kernbegrippen na zodra er nieuwe Nederlandse tekst bij komt.
+  GEEN aria-label op het i-tje maar een .sokkies-sr-only-span: TranslatePress
+  vertaalt zichtbare tekst wel en een attribuut niet. Gemeten: "More
+  information" / "Weitere Informationen" / "Plus d'informations".
+  WAT ER OP DEV EN LIVE NOG MOET (database, deployt niet mee): (1) Frills de
+  soktypes Antislip, Yoga & pilates EN Sport geven op Website-instellingen >
+  Aanvullende opties; (2) daar eventueel de uitleg bij Borduren invullen - zonder
+  die stap toont de code zijn eigen tekst, dus het i-tje staat er sowieso.
+  LOSSE VONDST: de eerste rij op Website-instellingen > Aanvullende opties heeft
+  een LEGE naam met wel een foto (bijlage 256). Dat is een wees van de optie
+  "Labels", die niet meer in het formulier staat; het veld is een keuzelijst uit
+  Gravity Forms, dus een waarde die er niet meer is komt leeg terug. Hij doet
+  niets (een rij zonder naam wordt overgeslagen) maar mag opgeruimd worden.
+  LET OP BIJ HET NALEZEN: het offerteformulier heeft hier ID 31 en het sample 32
+  - niet de 5/6 en 28/29 die eerder in dit document staan. Alles zoekt op titel,
+  dus voor de code maakt het niet uit, maar bij handmatig speuren wel.
+  MEETVALKUIL, bekend maar nu met een extra variant: een veld in een VERBORGEN
+  stap meet 0 bij 0. Een eerste mobiele meting gaf keurig "position: static,
+  display: block" maar breedte 0 en rijhoogte 0, omdat stap 2 nog dicht stond.
+  Meet in de zichtbare stap, en zet daarbij transition:none - in het
+  browserpaneel lopen transities niet door, dus een ballon die op opacity werkt
+  lijkt anders eeuwig dicht.
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
