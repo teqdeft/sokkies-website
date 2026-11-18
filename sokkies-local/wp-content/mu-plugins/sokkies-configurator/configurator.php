@@ -391,27 +391,35 @@ function sokkies_configurator_blok( $klasse = '' ) {
 		$classes .= ' ' . $klasse;
 	}
 
+	$t = sokkies_configurator_teksten();
+
 	ob_start();
 	?>
 	<?php
-	/* data-no-translation: de UI van Expivi is Engels en wordt CLIENT-SIDE
-	   opgebouwd. TranslatePress heeft DOM-detectie aan staan en pikt die
-	   tekst op als NEDERLANDSE bronstring - gemeten 2026-11-18: 'Upload Your
-	   Logo' (id 5387) en 'Customize Colors' (id 5396) stonden al in
-	   trp_original_strings. Een machinevertaalronde maakt van de kop
-	   'Cuff, Heel, Toe' dan 'Cuff, Very, Yes' - heel en toe LIJKEN Nederlands.
-	   Dat is niet alleen lelijk: pruneStaleTriggers() in expivi-thema.js
-	   matcht op /cuff|heel|toe|anti.?slip/ in het title-attribuut, dus zodra
-	   die tekst vertaald is wordt er stil niets meer opgeruimd bij het
-	   wisselen van sokmodel. Scheelt ook vertaaltegoed: elke configuratortekst
-	   belandde anders in de wachtrij.
-	   LET OP: hiermee blijft de configurator in ELKE taal Engels. Dat is nu al
-	   zo (ook op /nl/ staat er Model / Customize Colors), dus het verandert
-	   niets aan wat de bezoeker ziet - het voorkomt alleen onzin. Wil de klant
-	   hem wel vertaald, dan moeten de strings van Expivi met de hand in de
-	   TP-editor; dit attribuut moet er dan weer af. */
+	/* data-no-translation STAAT OP DE WIKKELS VAN EXPIVI en niet
+	   meer op deze hele wikkel. Reden om het ooit op de wikkel te zetten: de
+	   UI van Expivi wordt CLIENT-SIDE opgebouwd, TranslatePress heeft
+	   DOM-detectie aan en pikte die Engelse tekst op als NEDERLANDSE
+	   bronstring - gemeten 2026-11-18 stonden 'Upload Your Logo' (id 5387) en
+	   'Customize Colors' (id 5396) al in trp_original_strings, en een
+	   machinevertaalronde maakte van 'Cuff, Heel, Toe' dan 'Cuff, Very, Yes'
+	   (heel en toe LIJKEN Nederlands). Dat brak ook de logica, want die matcht
+	   op die woorden.
+
+	   HET ATTRIBUUT HOORT OP DE KLASSEWIKKELS en niet op #expivi-viewer /
+	   #expivi-options. Vue mount op die id's en VERVANGT het element, dus het
+	   attribuut verdwijnt zodra de app start - gemeten op /en/: #expivi-options
+	   bestond na het laden niet meer en TranslatePress maakte van
+	   'Cuff, Heel, Toe' meteen weer 'Cuff, Very, Yes'. De wikkels blijven staan.
+
+	   BUITEN DE WIKKELS STAAT ALLEEN DE LAADTEKST, en die vertaalt
+	   TranslatePress gewoon. De twee knoppen staan er wel in, dus die halen hun
+	   tekst uit sokkies_configurator_teksten() - net als alles wat ons eigen
+	   script in hun DOM zet (Logo-plaatsing, de plaatsingsknoppen, het
+	   sleepvlak, de kleurkoppen). Eén bron, en geen machinevertaling die bij de
+	   Expivi-DOM kan komen. */
 	?>
-	<div class="<?php echo esc_attr( $classes ); ?>" data-no-translation>
+	<div class="<?php echo esc_attr( $classes ); ?>">
 	  <?php
 	  /* DE LAADTEKST STAAT HIER, als kind van het HELE blok en niet in de
 	     viewerkolom. Hij wordt absoluut gecentreerd, en dat rekent tegen de
@@ -431,15 +439,15 @@ function sokkies_configurator_blok( $klasse = '' ) {
 	  ?>
 	  <p class="sk-laadtekst" aria-live="polite">Configurator laden<span class="sk-laadpunten" aria-hidden="true"><span></span><span></span><span></span></span></p>
 	  <div class="product-container">
-	    <div class="expivi-viewer">
+	    <div class="expivi-viewer" data-no-translation>
 	      <div id="expivi-viewer"></div>
 	    </div>
-	    <div class="expivi-options">
+	    <div class="expivi-options" data-no-translation>
 	      <div id="expivi-price" class="price-and-button"></div>
 	      <div id="expivi-options"></div>
 	      <div class="btn-group">
-	        <button type="button" class="btn btn-secondary" data-sokkies-pdf>Bekijk je ontwerp (PDF)</button>
-	        <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary" data-sokkies-offerte>Vraag dit ontwerp aan</a>
+	        <button type="button" class="btn btn-secondary" data-sokkies-pdf><?php echo esc_html( $t['knopPdf'] ); ?></button>
+	        <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary" data-sokkies-offerte><?php echo esc_html( $t['knopOfferte'] ); ?></a>
 	      </div>
 	    </div>
 	  </div>
@@ -519,6 +527,19 @@ function sokkies_configurator_assets() {
 		sokkies_configurator_versie( 'assets/js/expivi-thema.js' ),
 		true
 	);
+	/* VOOR dat bestand: de IIFE's erin draaien bij het inlezen. Ze LEZEN de
+	   teksten pas als er iets te tonen is, maar een eigen inline-blok vóór het
+	   script is de enige manier om dat hoe dan ook te garanderen - het blok met
+	   catalogueId hangt aan prf.js en die staat verderop in de rij. In twee
+	   losse regels en niet met Object.assign, zodat het ook werkt als het
+	   object er al is. */
+	wp_add_inline_script(
+		'sokkies-expivi-thema',
+		'window.SOKKIES_CONFIGURATOR = window.SOKKIES_CONFIGURATOR || {};'
+		. 'window.SOKKIES_CONFIGURATOR.teksten = '
+		. wp_json_encode( sokkies_configurator_teksten() ) . ';',
+		'before'
+	);
 	/* DE OFFERTE-/PDF-STROOM. Gekopieerd uit de Next.js-referentie van Expivi
 	   (lib/sokkies-prf.js) - zie de kop van het bestand. Levert
 	   window.SokkiesPrf.generateMockupPdf(), die in vijf stappen een PDF van
@@ -537,15 +558,18 @@ function sokkies_configurator_assets() {
 	);
 	/* VOOR het bestand, niet erna: prf.js leest deze waarden meteen bij het
 	   laden, dus later zetten is te laat. */
+	/* PER EIGENSCHAP EN NIET HET HELE OBJECT. Een kale toewijzing
+	   (window.SOKKIES_CONFIGURATOR = {...}) wiste de teksten die het blok
+	   hierboven er vlak daarvoor in zet - expivi-thema.js staat eerder in de
+	   rij dan prf.js, dus dat blok draait eerst. Nagemeten: teksten was
+	   daarna weg en elk label viel terug op het Engels. */
 	wp_add_inline_script(
 		'sokkies-prf',
-		'window.SOKKIES_CONFIGURATOR = ' . wp_json_encode(
-			array(
-				'catalogueId'    => $catalogus,
-				'printReadyFile' => 9139,
-				'soktypes'       => sokkies_configurator_soktype_kaart(),
-			)
-		) . ';',
+		'window.SOKKIES_CONFIGURATOR = window.SOKKIES_CONFIGURATOR || {};'
+		. 'window.SOKKIES_CONFIGURATOR.catalogueId = ' . wp_json_encode( $catalogus ) . ';'
+		. 'window.SOKKIES_CONFIGURATOR.printReadyFile = 9139;'
+		. 'window.SOKKIES_CONFIGURATOR.soktypes = '
+		. wp_json_encode( sokkies_configurator_soktype_kaart() ) . ';',
 		'before'
 	);
 	/* De knop die de PDF maakt en opent. Apart van prf.js, zodat die pijplijn
@@ -621,6 +645,180 @@ function sokkies_configurator_ontwerp_melding() {
 	return isset( $zinnen[ $taal ] ) ? $zinnen[ $taal ] : $zinnen['nl'];
 }
 
+/**
+ * De teksten die ONS script in de configurator zet.
+ *
+ * WAAROM HIER EN NIET IN HET JS-BESTAND: TranslatePress vertaalt alleen wat
+ * WordPress uitstuurt. Alles wat expivi-thema.js en knop.js zelf in de pagina
+ * zetten - de plaatsingsknoppen, het sleepvlak, de kleurkoppen, de
+ * voortgangsstappen - ziet hij nooit. Die stonden daardoor in ELKE taal in het
+ * Engels of in het Nederlands. Zelfde opzet als inc/formulier-talen.php en
+ * sokkies_configurator_ontwerp_melding(): een eigen kaart, geen __().
+ *
+ * WAT HIER NIET IN HOORT: tekst die uit Expivi komt (stapnamen, attribuutnamen,
+ * patroontegels). Die wordt in hun eigen beheerscherm per taal ingevuld -
+ * Producten > Configure > Attributes - en de site stuurt de juiste taal al mee
+ * (zie sokkies_configurator_locale).
+ *
+ * HET ENGELS IS 1-OP-1 WAT ER NU STAAT, inclusief de hoofdletters van
+ * 'Cuff, Heel, Toe' en 'Pattern Colors', zodat de Engelse pagina niet
+ * verandert. Duits en Frans formeel, Nederlands informeel - gelijk aan
+ * inc/formulier-talen.php.
+ *
+ * %s in kiesTitel is de naam van het kleurvak ("Kies boord"). Een sjabloon en
+ * geen samengeplakte tekst, want in het Duits staat het werkwoord achteraan.
+ *
+ * LET OP: deze woorden zijn door ons gekozen, niet door de klant aangeleverd.
+ * Vaktermen als boord/hiel/teen en Bund/Ferse/Spitze mogen ze aanpassen.
+ */
+function sokkies_configurator_teksten() {
+	$teksten = array(
+		'nl' => array(
+			'logoPlaatsing'  => 'Logo-plaatsing',
+			'kuit'           => 'Kuit',
+			'voetbed'        => 'Voetbed',
+			'kuitVoetbed'    => 'Kuit + voetbed',
+			'logo'           => 'LOGO',
+			'uploadKlik'     => 'Klik om te uploaden',
+			'uploadSleep'    => 'of sleep hierheen',
+			'aanbevolen'     => 'Aanbevolen bestanden: PNG, JPG',
+			'kiesTitel'      => 'Kies %s',
+			'sluiten'        => 'Sluiten',
+			'herstel'        => 'Herstel',
+			'boordHielTeen'  => 'Boord, Hiel, Teen',
+			'boord'          => 'Boord',
+			'hiel'           => 'Hiel',
+			'teen'           => 'Teen',
+			'antislip'       => 'Antislip',
+			'patroonkleuren' => 'Patroonkleuren',
+			'kleur'          => 'Kleur %s',
+			'stap1'          => 'Ontwerp opslaan',
+			'stap2'          => 'Ontwerp klaarzetten',
+			'stap3'          => 'Drukbestand aanvragen',
+			'stap4'          => 'Even geduld, we maken de weergave',
+			'stap5'          => 'PDF samenstellen',
+			'nogLaden'       => 'Nog even laden…',
+			'nietGelukt'     => 'Niet gelukt, probeer opnieuw',
+			'knopPdf'        => 'Bekijk je ontwerp (PDF)',
+			'knopOfferte'    => 'Vraag dit ontwerp aan',
+			'ontwerpGelukt'  => 'Je ontwerp uit de configurator is toegevoegd.',
+			'ontwerpHerstel' => 'Ontwerp opnieuw toevoegen',
+			'bezigTitel'     => 'We maken je ontwerp-PDF',
+			'bezigDuur'      => 'Dit duurt ongeveer vijftien seconden.',
+			'bezigDoor'      => 'Daarna ga je automatisch door naar het offerteformulier.',
+			'bezigMislukt'   => 'Het is niet gelukt om de PDF te maken. Sluit dit tabblad en probeer het opnieuw.',
+		),
+		'en' => array(
+			'logoPlaatsing'  => 'Logo Placement',
+			'kuit'           => 'Calf',
+			'voetbed'        => 'Footbed',
+			'kuitVoetbed'    => 'Calf + Footbed',
+			'logo'           => 'LOGO',
+			'uploadKlik'     => 'Click to upload',
+			'uploadSleep'    => 'or drag and drop',
+			'aanbevolen'     => 'Recommended files: PNG, JPG',
+			'kiesTitel'      => 'Select %s',
+			'sluiten'        => 'Close',
+			'herstel'        => 'Reset',
+			'boordHielTeen'  => 'Cuff, Heel, Toe',
+			'boord'          => 'Cuff',
+			'hiel'           => 'Heel',
+			'teen'           => 'Toe',
+			'antislip'       => 'Anti Slip',
+			'patroonkleuren' => 'Pattern Colors',
+			'kleur'          => 'Color %s',
+			'stap1'          => 'Saving your design',
+			'stap2'          => 'Preparing your design',
+			'stap3'          => 'Requesting the print file',
+			'stap4'          => 'One moment, creating the preview',
+			'stap5'          => 'Building the PDF',
+			'nogLaden'       => 'Still loading…',
+			'nietGelukt'     => "That didn't work, please try again",
+			'knopPdf'        => 'View your design (PDF)',
+			'knopOfferte'    => 'Request this design',
+			'ontwerpGelukt'  => 'Your design from the configurator has been added.',
+			'ontwerpHerstel' => 'Add the design again',
+			'bezigTitel'     => "We're creating your design PDF",
+			'bezigDuur'      => 'This takes about fifteen seconds.',
+			'bezigDoor'      => "You'll go to the quote form automatically afterwards.",
+			'bezigMislukt'   => "We couldn't create the PDF. Close this tab and try again.",
+		),
+		'de' => array(
+			'logoPlaatsing'  => 'Logo-Platzierung',
+			'kuit'           => 'Wade',
+			'voetbed'        => 'Fußbett',
+			'kuitVoetbed'    => 'Wade + Fußbett',
+			'logo'           => 'LOGO',
+			'uploadKlik'     => 'Zum Hochladen klicken',
+			'uploadSleep'    => 'oder hierher ziehen',
+			'aanbevolen'     => 'Empfohlene Dateien: PNG, JPG',
+			'kiesTitel'      => '%s wählen',
+			'sluiten'        => 'Schließen',
+			'herstel'        => 'Zurücksetzen',
+			'boordHielTeen'  => 'Bund, Ferse, Spitze',
+			'boord'          => 'Bund',
+			'hiel'           => 'Ferse',
+			'teen'           => 'Spitze',
+			'antislip'       => 'Anti-Rutsch',
+			'patroonkleuren' => 'Musterfarben',
+			'kleur'          => 'Farbe %s',
+			'stap1'          => 'Entwurf wird gespeichert',
+			'stap2'          => 'Entwurf wird vorbereitet',
+			'stap3'          => 'Druckdatei wird angefordert',
+			'stap4'          => 'Einen Moment, die Ansicht wird erstellt',
+			'stap5'          => 'PDF wird erstellt',
+			'nogLaden'       => 'Wird noch geladen…',
+			'nietGelukt'     => 'Hat nicht geklappt, bitte erneut versuchen',
+			'knopPdf'        => 'Ihr Design ansehen (PDF)',
+			'knopOfferte'    => 'Dieses Design anfragen',
+			'ontwerpGelukt'  => 'Ihr Entwurf aus dem Konfigurator wurde hinzugefügt.',
+			'ontwerpHerstel' => 'Entwurf erneut hinzufügen',
+			'bezigTitel'     => 'Wir erstellen Ihre Entwurfs-PDF',
+			'bezigDuur'      => 'Das dauert etwa fünfzehn Sekunden.',
+			'bezigDoor'      => 'Danach geht es automatisch weiter zum Angebotsformular.',
+			'bezigMislukt'   => 'Die PDF konnte nicht erstellt werden. Schließen Sie diesen Tab und versuchen Sie es erneut.',
+		),
+		'fr' => array(
+			'logoPlaatsing'  => 'Emplacement du logo',
+			'kuit'           => 'Mollet',
+			'voetbed'        => 'Semelle',
+			'kuitVoetbed'    => 'Mollet + semelle',
+			'logo'           => 'LOGO',
+			'uploadKlik'     => 'Cliquez pour téléverser',
+			'uploadSleep'    => 'ou glissez-déposez',
+			'aanbevolen'     => 'Fichiers recommandés : PNG, JPG',
+			'kiesTitel'      => 'Choisir %s',
+			'sluiten'        => 'Fermer',
+			'herstel'        => 'Réinitialiser',
+			'boordHielTeen'  => 'Bord, Talon, Pointe',
+			'boord'          => 'Bord',
+			'hiel'           => 'Talon',
+			'teen'           => 'Pointe',
+			'antislip'       => 'Antidérapant',
+			'patroonkleuren' => 'Couleurs du motif',
+			'kleur'          => 'Couleur %s',
+			'stap1'          => 'Enregistrement du design',
+			'stap2'          => 'Préparation du design',
+			'stap3'          => "Demande du fichier d'impression",
+			'stap4'          => 'Un instant, nous créons l’aperçu',
+			'stap5'          => 'Création du PDF',
+			'nogLaden'       => 'Chargement en cours…',
+			'nietGelukt'     => 'Échec, veuillez réessayer',
+			'knopPdf'        => 'Voir votre design (PDF)',
+			'knopOfferte'    => 'Demander ce design',
+			'ontwerpGelukt'  => 'Votre design du configurateur a été ajouté.',
+			'ontwerpHerstel' => 'Ajouter de nouveau le design',
+			'bezigTitel'     => 'Nous créons le PDF de votre design',
+			'bezigDuur'      => 'Cela prend environ quinze secondes.',
+			'bezigDoor'      => 'Vous serez ensuite redirigé vers le formulaire de devis.',
+			'bezigMislukt'   => "Le PDF n'a pas pu être créé. Fermez cet onglet et réessayez.",
+		),
+	);
+
+	$taal = function_exists( 'sokkies_huidige_taal' ) ? sokkies_huidige_taal() : 'nl';
+
+	return isset( $teksten[ $taal ] ) ? $teksten[ $taal ] : $teksten['nl'];
+}
 function sokkies_configurator_offerte_bijlage( $form ) {
 	if ( ! function_exists( 'sokkies_offerte_form_id' ) ) {
 		return;
@@ -652,7 +850,13 @@ function sokkies_configurator_offerte_bijlage( $form ) {
 		   er op /en/, /de/ en /fr/ een Nederlandse zin - nagemeten op
 		   /en/quote/. */
 		. 'window.SOKKIES_CONFIGURATOR.ontwerpMelding = '
-		. wp_json_encode( sokkies_configurator_ontwerp_melding() ) . ';',
+		. wp_json_encode( sokkies_configurator_ontwerp_melding() ) . ';'
+		/* De bevestiging dat het ontwerp er WEL in staat, en de knop om het
+		   opnieuw toe te voegen, komen uit dezelfde tabel als de rest van de
+		   configurator. Het hele blok meesturen is een regel en voorkomt dat
+		   er per tekst een eigen eigenschap bij moet. */
+		. 'window.SOKKIES_CONFIGURATOR.teksten = '
+		. wp_json_encode( sokkies_configurator_teksten() ) . ';',
 		'before'
 	);
 }

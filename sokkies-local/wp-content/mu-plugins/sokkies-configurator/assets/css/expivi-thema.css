@@ -449,7 +449,10 @@
 }
 /* Recommended file types hint, right under the prompt (compact, in-flow) */
 .expivi-configurator .dropbox::after{
-    content: "Recommended files: PNG, JPG";
+    /* SOKKIES-AANPASSING: de tekst komt uit WordPress. CSS kan geen
+       vertaling ophalen, dus zet expivi-thema.js --sk-rec-files; de Engelse
+       zin hier is de terugval als dat script niet draait. */
+    content: var(--sk-rec-files, "Recommended files: PNG, JPG");
     margin-top: 2px;
     text-align: center;
     font-size: 0.8rem;

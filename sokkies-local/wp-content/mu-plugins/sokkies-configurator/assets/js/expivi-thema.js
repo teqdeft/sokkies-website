@@ -14,6 +14,64 @@
    ========================================================================== */
 
 /* ============================================================
+   SOKKIES-AANPASSINGEN OP DEZE KOPIE
+   ------------------------------------------------------------
+   De kop hierboven zegt "niet met de hand bewerken". Dat klopte tot
+   2026-11-18; vanaf nu staan hier vier aanpassingen in. Haalt iemand een
+   nieuwe versie van het thema op, dan moeten ze opnieuw. Ze zijn te vinden
+   met: grep SOKKIES-AANPASSING
+
+     1. skT()  - alle tekst die DIT script zelf in de pagina zet, komt uit
+                 WordPress (sokkies_configurator_teksten). TranslatePress ziet
+                 tekst die JavaScript plaatst nooit, dus die stond in elke
+                 taal in het Engels.
+     2. De kleurgroepen (Boord/Hiel/Teen, Patroonkleuren, Antislip) worden
+        herkend aan de SLEUTEL van het attribuut (data-xpv-key) en niet meer
+        aan de Engelse naam. Zolang een attribuut nog geen sleutel heeft,
+        blijft de oude naamherkenning als terugval staan - vandaag werkt dus
+        alles precies als voorheen.
+     3. Welke sub-tab een kleurvak toont, wordt ONTHOUDEN i.p.v. afgeleid uit
+        de tekst op die tab (die komt uit Expivi en verandert mee met de taal).
+     4. De twee tweede-upload-kaarten worden ook op sleutel verborgen.
+
+   WAAROM DIT NODIG IS: zodra iemand in Expivi de attribuutnamen vertaalt
+   (Producten > Configure > Attributes), matcht /cuff|heel|toe/ niet meer en
+   blijven de kleurrijen leeg. Met sleutels kan dat niet gebeuren. De
+   sleutels die dit script verwacht:
+     sk-cuff-color  sk-heel-color  sk-toe-color  sk-antislip-color
+     sk-pattern     sk-color-01 .. sk-color-06
+     sk-logo-calf-1 sk-logo-calf-2 sk-logo-footbed-1 sk-logo-footbed-2
+   De laatste vier staan al in de catalogus; de rest moet de klant nog
+   invullen in het veld "Key".
+   ============================================================ */
+
+/* Een tekst uit WordPress, met de Engelse tekst van het thema als terugval.
+   Terugval en niet leeg: valt het inline-blok ooit weg, dan staat er gewoon
+   wat er altijd stond in plaats van niets. */
+function skT(sleutel, terugval) {
+    var t = window.SOKKIES_CONFIGURATOR && window.SOKKIES_CONFIGURATOR.teksten;
+    var w = t && t[sleutel];
+    return ('string' === typeof w && w) ? w : terugval;
+}
+
+/* De sleutel van het attribuut waar dit element bij hoort. Expivi zet
+   data-xpv-key alleen op attributen die er een hebben; de rest geeft ''. */
+function skSleutel(el) {
+    return (el && el.getAttribute && el.getAttribute('data-xpv-key')) || '';
+}
+
+/* De regel onder het sleepvlak staat in CSS (content:), en daar kan geen
+   JavaScript bij. Via een eigen eigenschap kan het wel: de CSS leest
+   var(--sk-rec-files) met de Engelse tekst als terugval. JSON.stringify zet
+   er de aanhalingstekens omheen die CSS voor een string verlangt. */
+try {
+    document.documentElement.style.setProperty(
+        '--sk-rec-files',
+        JSON.stringify(skT('aanbevolen', 'Recommended files: PNG, JPG'))
+    );
+} catch (e) { /* niets */ }
+
+/* ============================================================
    Sokkies — Request Quote PDF flow (server-side via Expivi API)
    On VIEW MOCKUP (PDF) button click:
      1) saveConfiguration         → bundle_uuid + configured_products
@@ -752,33 +810,123 @@
         return l ? l.textContent.trim() : '';
     }
 
-    /* Which custom group a colour attribute belongs to, and its short label. */
+    /* Which custom group a colour attribute belongs to, and its short label.
+
+       SOKKIES-AANPASSING - HERKENNING IN DRIE STAPPEN:
+         1. de SLEUTEL van het attribuut (data-xpv-key / a.key)
+         2. de SLUG (a.slug)
+         3. pas als laatste de Engelse naam in de DOM
+
+       Waarom niet meer op de naam: die is in Expivi per taal in te vullen en
+       dat is inmiddels gebeurd. Op /de/ heet het patroonvak "Wählen Sie das
+       Muster" en de tabs "Farbe des Manschettes" / "Heel Farbe" / "Toefarbe";
+       /cuff|heel|toe/ en /pattern/i vinden daar niets, en dan bouwt dit hele
+       blok niets meer op. Gemeten 2026-11-18: de kleurensectie ontbrak
+       volledig op de Duitse pagina.
+
+       SLUG EN NIET ALLEEN SLEUTEL, want sleutels zijn op deze attributen nog
+       niet ingevuld; alleen de vier logo-zones hebben er een. Een slug ligt
+       vast zodra een attribuut is aangemaakt en verandert niet mee met de
+       taal. Zodra de klant de sleutels invult, winnen die.
+
+       DE SLUGS ZIJN HISTORISCH SLORDIG - Color 01 heet 'test' en Color 04
+       heet 'color-4'. Daarom staan ze hier letterlijk in de tabel en wordt het
+       nummer niet uit de slug gerekend. */
+    var VAKKEN = {};
+    [
+        ['sk-cuff-color',         'choose-cuffs-color',    'cht', 0, 'boord',    'Cuff'],
+        ['sk-heel-color',         'choose-heels-color',    'cht', 1, 'hiel',     'Heel'],
+        ['sk-toe-color',          'choose-toes-color',     'cht', 2, 'teen',     'Toe'],
+        ['sk-antislip-color',     'choose-antislip-color', 'as',  3, 'antislip', 'Anti Slip']
+    ].forEach(function (r) {
+        var v = { groep: r[2], volgorde: r[3], sleutel: r[4], engels: r[5] };
+        VAKKEN[r[0]] = v;
+        VAKKEN[r[1]] = v;
+    });
+    [
+        ['sk-color-01', 'test',     '01'],
+        ['sk-color-02', 'color-02', '02'],
+        ['sk-color-03', 'color-03', '03'],
+        ['sk-color-04', 'color-4',  '04'],
+        ['sk-color-05', 'color-05', '05'],
+        ['sk-color-06', 'color-06', '06']
+    ].forEach(function (r) {
+        var v = { groep: 'pat', volgorde: parseInt(r[2], 10), nr: r[2] };
+        VAKKEN[r[0]] = v;
+        VAKKEN[r[1]] = v;
+    });
+
+    /* id -> { key, slug } uit de API. De DOM draagt data-xpv-key alleen op
+       attributen die een sleutel HEBBEN, en een slug staat er nooit in - dus
+       halen we het bij de viewer op. Eén keer per paar seconden; de tick
+       draait toch elke 900 ms en één tick vertraging is onzichtbaar. */
+    var attrInfo = {}, attrBezig = false, attrLaatst = 0;
+    function ververAttr() {
+        var e = window.expivi;
+        var nu = new Date().getTime();
+        if (attrBezig || !e || typeof e.getProductAttributes !== 'function') return;
+        if (nu - attrLaatst < 3000) return;
+        attrLaatst = nu;
+        attrBezig = true;
+        Promise.resolve(e.getProductAttributes()).then(function (lijst) {
+            var n = {};
+            (lijst || []).forEach(function (a) {
+                if (a && a.id != null) n[String(a.id)] = { key: a.key || '', slug: a.slug || '' };
+            });
+            attrInfo = n;
+        }).catch(function () {}).then(function () { attrBezig = false; });
+    }
+    function infoVan(el) {
+        var id = el && el.getAttribute && el.getAttribute('data-xpv-attribute-id');
+        var i = id ? attrInfo[id] : null;
+        return { key: (i && i.key) || skSleutel(el), slug: (i && i.slug) || '' };
+    }
+    function vakVan(el) {
+        var i = infoVan(el);
+        return VAKKEN[i.key] || VAKKEN[i.slug] || null;
+    }
+
     var GROUPS = [
         /* Anti Slip is tested FIRST: it gets its own row, under Heel, Toe,
            not a fourth swatch in theirs. The row only
            shows on the Anti Slip model — elsewhere it has no triggers and CSS
            hides an empty group. */
-        { key: 'as', title: 'Anti Slip',
-          test: function (l) { return /anti.?slip/i.test(l); },
-          relabel: function () { return 'Anti Slip'; } },
-        { key: 'cht', title: 'Cuff, Heel, Toe',
-          test: function (l) { return /cuff|heel|toe/i.test(l); },
-          relabel: function (l) {
-              if (/cuff/i.test(l)) return 'Cuff';
-              if (/heel/i.test(l)) return 'Heel';
-              if (/toe/i.test(l))  return 'Toe';
-              return l;
-          } },
-        { key: 'pat', title: 'Pattern Colors',
-          test: function (l) { return /color\s*0?\d/i.test(l); },
-          relabel: function (l) { return l.replace(/^\s*choose\s*/i, '').trim(); } }
+        { key: 'as',
+          title: function () { return skT('antislip', 'Anti Slip'); },
+          test: function (l) { return /anti.?slip/i.test(l); } },
+        { key: 'cht',
+          title: function () { return skT('boordHielTeen', 'Cuff, Heel, Toe'); },
+          test: function (l) { return /cuff|heel|toe/i.test(l); } },
+        { key: 'pat',
+          title: function () { return skT('patroonkleuren', 'Pattern Colors'); },
+          test: function (l) { return /color\s*0?\d/i.test(l); } }
     ];
-    function groupFor(label) {
+    function groepMet(k) {
+        for (var i = 0; i < GROUPS.length; i++) if (GROUPS[i].key === k) return GROUPS[i];
+        return null;
+    }
+    /* el mag null zijn: dan alleen de naamherkenning. */
+    function groupFor(label, el) {
+        var v = el ? vakVan(el) : null;
+        if (v) return groepMet(v.groep);
         for (var i = 0; i < GROUPS.length; i++) if (GROUPS[i].test(label)) return GROUPS[i];
         return null;
     }
-    function orderOf(g, label) {
-        if (g.key === 'cht') {
+    function labelFor(label, el) {
+        var v = el ? vakVan(el) : null;
+        if (v && v.sleutel) return skT(v.sleutel, v.engels);
+        if (v && v.nr) return skT('kleur', 'Color %s').replace('%s', v.nr);
+        /* terugval op de naam uit de DOM */
+        if (/cuff/i.test(label)) return skT('boord', 'Cuff');
+        if (/heel/i.test(label)) return skT('hiel', 'Heel');
+        if (/toe/i.test(label))  return skT('teen', 'Toe');
+        if (/anti.?slip/i.test(label)) return skT('antislip', 'Anti Slip');
+        return label.replace(/^\s*choose\s*/i, '').trim();
+    }
+    function orderOf(g, label, el) {
+        var v = el ? vakVan(el) : null;
+        if (v) return v.volgorde;
+        if (g.key === 'cht' || g.key === 'as') {
             if (/cuff/i.test(label)) return 0;
             if (/heel/i.test(label)) return 1;
             if (/toe/i.test(label))  return 2;
@@ -798,7 +946,7 @@
         pop.innerHTML =
             '<div class="sk-cp-panel">' +
             '  <div class="sk-cp-head"><span class="sk-cp-title"></span>' +
-            '    <button type="button" class="sk-cp-close" aria-label="Close">&times;</button></div>' +
+            '    <button type="button" class="sk-cp-close" aria-label="' + skT('sluiten', 'Close') + '">&times;</button></div>' +
             '  <div class="sk-cp-grid"></div>' +
             '</div>';
         popGrid = pop.querySelector('.sk-cp-grid');
@@ -828,30 +976,48 @@
 
     // Re-resolve the source container by attribute id at click time — a pattern
     // change re-renders the colour slots, so a captured node reference goes stale.
-    // Find the sub-tab button that renders a given grouped colour, so a popup can
-    // re-activate a panel that Vuetify un-rendered while its tab was inactive.
-    function subTabFor(label) {
-        var re = /cuff/i.test(label) ? /cuff/i
-               : /heel/i.test(label) ? /heel/i
-               : /toe/i.test(label)  ? /toe/i
-               : /anti.?slip/i.test(label) ? /anti.?slip/i : null;
-        if (!re) return null;
+    /* Find the sub-tab button that renders a given grouped colour, so a popup can
+       re-activate a panel that Vuetify un-rendered while its tab was inactive.
+
+       SOKKIES-AANPASSING: de tab wordt ONTHOUDEN. De knoptekst ("Cuff color")
+       komt uit Expivi en is daar per taal in te vullen; zoeken op die tekst
+       breekt dan. Zodra een kleurvak zichtbaar is, is de actieve tab per
+       definitie de zijne - dat leggen we vast. De oude tekstzoektocht blijft
+       als terugval staan voor de eerste keer, vóór er iets is onthouden. */
+    var tabVoor = {};
+    function onthoudTab(attrId) {
         var btns = document.querySelectorAll('.v-slide-group__content .v-btn');
+        for (var i = 0; i < btns.length; i++) {
+            if (btns[i].classList.contains('v-btn--active')) { tabVoor[attrId] = i; return; }
+        }
+    }
+    function subTabFor(attrId, ruwLabel) {
+        var btns = document.querySelectorAll('.v-slide-group__content .v-btn');
+        var idx = tabVoor[attrId];
+        if (idx != null && btns[idx]) return btns[idx];
+        var l = ruwLabel || '';
+        var re = /cuff/i.test(l) ? /cuff/i
+               : /heel/i.test(l) ? /heel/i
+               : /toe/i.test(l)  ? /toe/i
+               : /anti.?slip/i.test(l) ? /anti.?slip/i : null;
+        if (!re) return null;
         for (var i = 0; i < btns.length; i++) if (re.test(btns[i].textContent)) return btns[i];
         return null;
     }
 
-    function openPopup(attrId, label, retried) {
+    /* SOKKIES-AANPASSING: ruwLabel is de ONVERTAALDE naam uit de DOM, alleen
+       voor de terugval van subTabFor; label is wat de bezoeker leest. */
+    function openPopup(attrId, label, ruwLabel, retried) {
         var container = document.querySelector('[data-xpv-attribute-id="' + attrId + '"]');
         // The colour panel may have un-rendered (inactive sub-tab) since its trigger
         // was built. Re-activate its sub-tab ONCE so its swatches render, then reopen.
         if ((!container || colorTiles(container).length < MIN_SWATCHES) && !retried) {
-            var tab = subTabFor(label);
-            if (tab) { tab.click(); setTimeout(function () { openPopup(attrId, label, true); }, 450); return; }
+            var tab = subTabFor(attrId, ruwLabel || label);
+            if (tab) { tab.click(); setTimeout(function () { openPopup(attrId, label, ruwLabel, true); }, 450); return; }
         }
         if (!container) return;
         ensurePop();
-        popTitle.textContent = 'Select ' + label;
+        popTitle.textContent = skT('kiesTitel', 'Select %s').replace('%s', label);
         popGrid.innerHTML = '';
         colorTiles(container).forEach(function (tile) {   // re-query CURRENT tiles each open
             var card = document.createElement('button');
@@ -951,7 +1117,7 @@
                 var sec = document.createElement('div');
                 sec.className = 'sk-cp-group';
                 sec.setAttribute('data-key', g.key);
-                sec.innerHTML = '<h3 class="sk-cp-grouptitle">' + g.title + '</h3>' +
+                sec.innerHTML = '<h3 class="sk-cp-grouptitle">' + g.title() + '</h3>' +
                                 '<div class="sk-cp-row"></div>';
                 groups.appendChild(sec);
             });
@@ -963,28 +1129,39 @@
         // appending would scramble them.
         colorLeaves.forEach(function (c) {
             var label = labelOf(c);
-            var g = groupFor(label);
+            var g = groupFor(label, c);                     // SOKKIES-AANPASSING
             if (!g) return;
             var row = groups.querySelector('.sk-cp-group[data-key="' + g.key + '"] .sk-cp-row');
             if (!row) return;
             var attrId = c.getAttribute('data-xpv-attribute-id');
-            var disp = g.relabel(label);
+            var disp = labelFor(label, c);
+            /* Dit vak is nu zichtbaar, dus de actieve sub-tab is de zijne. */
+            if ('cht' === g.key || 'as' === g.key) { onthoudTab(attrId); }
             var trig = row.querySelector('.sk-cp-trigger[data-for="' + attrId + '"]');
             if (!trig) {
                 trig = document.createElement('button');
                 trig.type = 'button';
                 trig.className = 'sk-cp-trigger';
                 trig.setAttribute('data-for', attrId);
-                trig.setAttribute('data-order', orderOf(g, label));
+                trig.setAttribute('data-order', orderOf(g, label, c));
                 trig.innerHTML = '<span class="sk-cp-sw"></span>';
                 trig.setAttribute('title', disp);
-                trig.addEventListener('click', function () { openPopup(attrId, disp); });
-                var ord = orderOf(g, label), ref = null, ex = row.querySelectorAll('.sk-cp-trigger');
+                /* De titel bij de KLIK lezen en niet uit de closure: hij wordt
+                   hieronder bijgewerkt zodra de attribuutkaart binnen is. */
+                trig.addEventListener('click', function () {
+                    openPopup(attrId, trig.getAttribute('title') || disp, label);
+                });
+                var ord = orderOf(g, label, c), ref = null, ex = row.querySelectorAll('.sk-cp-trigger');
                 for (var k = 0; k < ex.length; k++) {
                     if (parseInt(ex[k].getAttribute('data-order'), 10) > ord) { ref = ex[k]; break; }
                 }
                 row.insertBefore(trig, ref);
             }
+            /* SOKKIES-AANPASSING: de titel bijwerken. Bij het aanmaken is de
+               attribuutkaart (id -> key/slug) vaak nog niet binnen, en dan valt
+               labelFor() terug op de Engelse naam uit de DOM. Zonder deze regel
+               bleef dat zo staan - gemeten op /nl/: 'Color 01' i.p.v. 'Kleur 01'. */
+            if (trig.getAttribute('title') !== disp) { trig.setAttribute('title', disp); }
             var tiles = colorTiles(c);
             var col = tiles.length ? swatchColor(tiles[selIdx(tiles)]) : '';
             if (col && trig.getAttribute('data-col') !== col) {
@@ -1017,7 +1194,10 @@
             var list = Array.isArray(all) ? all : Object.keys(all || {}).map(function (k) { return all[k]; });
             for (var i = 0; i < list.length; i++) {
                 var a = list[i];
-                if (a && a.type === 'svg_image_selector' && /pattern/i.test(a.name || '')) {
+                /* SOKKIES-AANPASSING: sleutel wint van de naam. */
+                if (a && a.type === 'svg_image_selector' &&
+                    ('sk-choose-pattern-svg' === a.key || 'choose-pattern-svg' === a.slug ||
+                     /pattern/i.test(a.name || ''))) {
                     var v = a.selected_value_value;       // an object with .name
                     noPatternSel = /no\s*pattern/i.test(String((v && v.name) || v || ''));
                     return;
@@ -1040,8 +1220,9 @@
         var n = 0;
         colorLeaves.forEach(function (c) {
             var label = labelOf(c);
-            if (!pat.test(label)) return;
-            if (onlyFirst && orderOf(pat, label) !== 1) return;
+            var g = groupFor(label, c);                 // SOKKIES-AANPASSING
+            if (!g || 'pat' !== g.key) return;
+            if (onlyFirst && orderOf(pat, label, c) !== 1) return;
             live[c.getAttribute('data-xpv-attribute-id')] = true; n++;
         });
         if (!n) return;
@@ -1061,8 +1242,15 @@
         if (pat) return pat;
         var leaves = Array.prototype.slice.call(document.querySelectorAll('[data-xpv-attribute-id]'))
             .filter(function (c) { return !c.querySelector('[data-xpv-attribute-id]'); });
+        /* SOKKIES-AANPASSING: eerst op sleutel/slug, dan pas op de Engelse
+           naam. Op /de/ heet dit vak "Wählen Sie das Muster" en vond de oude
+           naamzoektocht niets - waarmee de hele kleurensectie wegbleef. */
         for (var i = 0; i < leaves.length; i++) {
-            if (/pattern/i.test(labelOf(leaves[i]))) return leaves[i];
+            var inf = infoVan(leaves[i]);
+            if ('sk-pattern' === inf.key || 'choose-the-pattern' === inf.slug) return leaves[i];
+        }
+        for (var j = 0; j < leaves.length; j++) {
+            if (/pattern/i.test(labelOf(leaves[j]))) return leaves[j];
         }
         return null;
     }
@@ -1177,6 +1365,7 @@
                 var patRow = document.querySelector('.sk-cp-group[data-key="pat"] .sk-cp-row');
                 if (patRow) patRow.innerHTML = '';
             }
+            ververAttr();           // SOKKIES-AANPASSING: id -> key/slug
             refreshPatternState();  // async; read by the next prune
             hideSubTabs();          // hide the native bar ASAP (clicks work on display:none)
             if (!primed) primeOnce();
@@ -1396,6 +1585,17 @@
     var SECONDARY_RE = /\b(footbed|calf)\s*2\b/i;
     var PRIMARY_RE = /^\s*(footbed|calf)\s*1\s*$/i;
     function tidyFields() {
+        /* SOKKIES-AANPASSING: de tweede kaart per zone ook op SLEUTEL verbergen.
+           De tekstzoektocht hieronder blijft als terugval staan, maar die kijkt
+           naar "calf 2" / "footbed 2" - precies de naam die in Expivi per taal
+           in te vullen is. Deze vier zones hebben wel een sleutel. */
+        document.querySelectorAll('[data-xpv-key]').forEach(function (kaart) {
+            var k = kaart.getAttribute('data-xpv-key');
+            if ('sk-logo-calf-2' !== k && 'sk-logo-footbed-2' !== k) return;
+            if (kaart.style.display !== 'none') {
+                kaart.style.setProperty('display', 'none', 'important');
+            }
+        });
         var heads = document.querySelectorAll('h1,h2,h3,h4,h5,label,[class*="title"],[class*="label"]');
         heads.forEach(function (h) {
             var t = (h.textContent || '').trim();
@@ -1573,8 +1773,9 @@
         document.querySelectorAll('.dropbox .browse-btn').forEach(function (bb) {
             if (bb.dataset.skText) return;
             bb.dataset.skText = '1';
-            bb.innerHTML = '<span class="sk-txt-red">Click to upload</span> ' +
-                           '<span class="sk-txt-gray">or drag and drop</span>';
+            /* SOKKIES-AANPASSING: tekst uit WordPress. */
+            bb.innerHTML = '<span class="sk-txt-red">' + skT('uploadKlik', 'Click to upload') + '</span> ' +
+                           '<span class="sk-txt-gray">' + skT('uploadSleep', 'or drag and drop') + '</span>';
         });
     }
 
@@ -1637,7 +1838,7 @@
 
         if (ac) {
             var lbl = ac.querySelector('h1,h2,h3,h4,h5,label,[class*="label"]');
-            if (lbl && !lbl.dataset.skGen) { lbl.textContent = 'LOGO'; lbl.dataset.skGen = '1'; }
+            if (lbl && !lbl.dataset.skGen) { lbl.textContent = skT('logo', 'LOGO'); lbl.dataset.skGen = '1'; }
         }
 
         var anchor = stepAnchor();
@@ -1658,11 +1859,12 @@
         row.id = 'sk-place-row';
         row.className = 'sk-place-row';
         row.innerHTML =
-            '<div class="sk-place-title">Logo Placement</div>' +
+            /* SOKKIES-AANPASSING: teksten uit WordPress. */
+            '<div class="sk-place-title">' + skT('logoPlaatsing', 'Logo Placement') + '</div>' +
             '<div class="sk-place-btns">' +
-            '<button type="button" data-sel="calf" class="sk-place-btn">Calf</button>' +
-            '<button type="button" data-sel="both" class="sk-place-btn">Calf + Footbed</button>' +
-            '<button type="button" data-sel="footbed" class="sk-place-btn">Footbed</button>' +
+            '<button type="button" data-sel="calf" class="sk-place-btn">' + skT('kuit', 'Calf') + '</button>' +
+            '<button type="button" data-sel="both" class="sk-place-btn">' + skT('kuitVoetbed', 'Calf + Footbed') + '</button>' +
+            '<button type="button" data-sel="footbed" class="sk-place-btn">' + skT('voetbed', 'Footbed') + '</button>' +
             '</div>';
         anchor.insertBefore(row, anchor.firstChild);
 
@@ -1999,8 +2201,8 @@
        stored as -90 because the attribute's range is -180..180; the label is
        what the shopper reads, the value is what fits. */
     var ROT_ZONES = [
-        { key: CALF_KEY,    label: 'Calf' },
-        { key: FOOTBED_KEY, label: 'Footbed' }
+        { key: CALF_KEY,    label: skT('kuit', 'Calf') },
+        { key: FOOTBED_KEY, label: skT('voetbed', 'Footbed') }
     ];
     var ROT_STEPS = [
         { deg: 0, label: '0°' },
@@ -2072,7 +2274,7 @@
                 block.setAttribute('data-sk-zone', z.key);
                 block.innerHTML =
                     '<div class="sk-tf__head"><div class="sk-rot-zone-label">' + z.label + '</div>' +
-                    '<button type="button" class="sk-zone-reset">Reset</button></div>' +
+                    '<button type="button" class="sk-zone-reset">' + skT('herstel', 'Reset') + '</button></div>' +
                     '<div class="sk-rot-row">' + ROT_STEPS.map(function (s) {
                         return '<button type="button" class="sk-place-btn" data-deg="' + s.deg + '">' + s.label + '</button>';
                     }).join('') + '</div>';
@@ -2588,8 +2790,8 @@
         position: function () { return { offset: [0, 0] }; }
     };
     var ZONE_LABEL = {};
-    ZONE_LABEL[CALF_KEY] = 'Calf';
-    ZONE_LABEL[FOOTBED_KEY] = 'Footbed';
+    ZONE_LABEL[CALF_KEY] = skT('kuit', 'Calf');
+    ZONE_LABEL[FOOTBED_KEY] = skT('voetbed', 'Footbed');
 
     function fmtVal(f, n) { return (f.unit === ' X' ? Math.round(n * 100) / 100 : Math.round(n)) + f.unit; }
 
@@ -2609,7 +2811,7 @@
             var h = document.createElement('div');
             h.className = 'sk-tf__head';
             h.innerHTML = '<span class="sk-tf__zone">' + ZONE_LABEL[zone] + '</span>' +
-                '<button type="button" class="sk-zone-reset">Reset</button>';
+                '<button type="button" class="sk-zone-reset">' + skT('herstel', 'Reset') + '</button>';
             h.querySelector('button').addEventListener('click', function (ev) {
                 ev.preventDefault();                    // inside FORM#product-form
                 writeKey(zone, RESET[kind](zone)).catch(function () {});
