@@ -10652,6 +10652,45 @@ main.contact{
     opacity:.75;
     margin:0 0 8px;
   }
+  /* HET ONTWERP STAAT ER WEL IN. Zelfde regel en plek als de melding
+     hierboven, maar NIET gedempt: dit is het antwoord op de vraag "zit
+     mijn ontwerp er nu in?" en mag dus opvallen. Zonder deze regel voegde
+     het formulier stil een bestand toe in een veld dat "(optioneel)" heet
+     - melding klant, 2026-11-18. Het vinkje is var(--green), hetzelfde
+     groen als een gekozen keuzekaart. */
+  .quote-card .of-ontwerp-gelukt,
+  .quote-card .of-ontwerp-herstel{
+    opacity:1;
+  }
+  .quote-card .of-ontwerp-gelukt{
+    display:flex;
+    align-items:flex-start;
+    gap:7px;
+  }
+  .quote-card .of-ontwerp-gelukt::before{
+    content:"";
+    flex:0 0 auto;
+    width:15px;
+    height:15px;
+    margin-top:3px;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231DD665' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+  /* De weg terug als het bestand per ongeluk is weggeklikt. Een knop en
+     geen link: er valt niets te navigeren, het bestand komt terug uit de
+     opslag van dit tabblad. type="button" staat in de JS, anders zou hij
+     het formulier verzenden. */
+  .quote-card .of-ontwerp-knop{
+    -webkit-appearance:none;
+    appearance:none;
+    background:none;
+    border:0;
+    padding:0;
+    font:inherit;
+    color:var(--coral);
+    font-weight:600;
+    text-decoration:underline;
+    cursor:pointer;
+  }
   /* Zelfde plek, maar in de gewone tekstkleur: een postcode buiten Nederland
      is geen fout van de bezoeker, alleen iets wat de opzoekdienst niet kent. */
   .quote-card .of-adres-info{

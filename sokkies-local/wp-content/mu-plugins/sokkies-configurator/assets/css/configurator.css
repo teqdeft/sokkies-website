@@ -421,3 +421,71 @@ html:not(.sk-configurator-ready) .expivi-configurator:not(:has(#expivi-viewer *)
 @media (prefers-reduced-motion:reduce){
   .sk-laadpunten span{ animation:none; opacity:.6; }
 }
+
+/* ===================================================================
+   WACHTSCHERM BIJ "VRAAG DIT ONTWERP AAN"  (2026-11-18)
+   -------------------------------------------------------------------
+   Het maken van de PDF duurt vijftien tot twintig seconden. Tot nu toe
+   was het enige teken daarvan de tekst OP de knop; wie verder scrollde
+   of even wegkeek zag niets gebeuren en dacht dat het stuk was (melding
+   klant). Dit scherm zegt wat er gebeurt, hoe lang het ongeveer duurt en
+   dat de bezoeker daarna automatisch doorgaat.
+
+   z-index 300: boven de nieuwsbriefpopup (200), de topbalk (130) en de
+   zwevende promokaart (99) - dit mag niets anders onder zich dulden.
+
+   Het is GEEN dialog en vangt geen focus: er valt niets te kiezen, het
+   is een melding. Daarom role="status" met aria-live in de JS.
+   =================================================================== */
+.sk-bezig{
+  position:fixed;
+  inset:0;
+  z-index:300;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(40, 18, 27, .55);
+}
+.sk-bezig-kaart{
+  /* EXPLICIET border-box, want dit vlak hangt aan document.body en valt dus
+     buiten elke sectie: zonder deze regel zou de padding van 28px bij de
+     breedte opgeteld worden zodra een pagina de globale reset niet heeft.
+     Op 390px past de kaart met 20px lucht aan weerszijden (nagemeten). */
+  box-sizing:border-box;
+  width:100%;
+  max-width:380px;
+  padding:34px 28px;
+  border-radius:18px;
+  background:#fff;
+  text-align:center;
+  box-shadow:0 18px 50px rgba(0, 0, 0, .18);
+}
+.sk-bezig-ring{
+  width:46px;
+  height:46px;
+  margin:0 auto 20px;
+  border:3px solid rgba(40, 18, 27, .15);
+  border-top-color:var(--coral, #FA4B46);
+  border-radius:50%;
+  animation:sk-bezig-draai 1s linear infinite;
+}
+@keyframes sk-bezig-draai{ to{ transform:rotate(360deg); } }
+@media (prefers-reduced-motion:reduce){
+  .sk-bezig-ring{ animation:none; }
+}
+.sk-bezig-titel{
+  margin:0 0 8px;
+  font-size:19px;
+  font-weight:600;
+}
+.sk-bezig-stap{
+  margin:0;
+  font-weight:600;
+  min-height:1.6em;
+}
+.sk-bezig-sub{
+  margin:8px 0 0;
+  font-size:14px;
+  opacity:.6;
+}

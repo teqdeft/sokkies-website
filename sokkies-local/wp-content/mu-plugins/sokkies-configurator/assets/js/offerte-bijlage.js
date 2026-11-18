@@ -9,6 +9,15 @@
    Ze staan LOS van elkaar en worden hier ook los afgehandeld: het maken van
    de PDF duurt een seconde of tien en kan stranden, en dan hoort de gekozen
    sok nog steeds op het formulier te staan.
+
+   DE PDF BLIJFT NA HET PLAATSEN BEWAARD (2026-11-18). Eerst werd hij meteen
+   gewist, zodat een volgende pagina hem niet nog eens zou toevoegen. Gevolg:
+   klikte de bezoeker het bestand per ongeluk weg, dan was zijn ontwerp
+   voorgoed weg en moest hij terug naar de configurator - precies wat de klant
+   meldde. Nu blijft hij in de opslag van dit tabblad staan en is dubbel
+   toevoegen op een andere manier afgedekt: er wordt alleen geplaatst als het
+   veld LEEG is. De opslag wordt gewist op de bedankpagina
+   (section-bedankt_inhoud.php), want wie daar komt is klaar met invullen.
    ============================================================= */
 
 (function () {
@@ -34,6 +43,14 @@
         try { sessionStorage.setItem(sleutel, waarde); } catch (e) { /* niets */ }
     }
 
+    /* De teksten komen uit WordPress (sokkies_configurator_teksten), want
+       TranslatePress ziet geen tekst die JavaScript in de pagina zet. */
+    function tekst(sleutel, terugval) {
+        var t = window.SOKKIES_CONFIGURATOR && window.SOKKIES_CONFIGURATOR.teksten;
+        var w = t && t[sleutel];
+        return ('string' === typeof w && w) ? w : terugval;
+    }
+
     /* ---------- 1. de PDF in het uploadveld ---------- */
 
     /* base64 terug naar bytes. Niet via fetch(dataURL): dat is asynchroon en
@@ -47,7 +64,10 @@
         return new File([bytes], opslag.naam, { type: opslag.type || 'application/pdf' });
     }
 
-    function uploaderVinden() {
+    /* De uploader PLUS het formulier- en veldnummer. Die twee staan in de
+       sleutel van de map (gform_multifile_upload_<formulier>_<veld>) en zijn
+       hieronder nodig om te zien hoeveel bestanden er in het veld staan. */
+    function uploaderInfo() {
         if (!window.gfMultiFileUploader || !window.gfMultiFileUploader.uploaders) {
             return null;
         }
@@ -55,16 +75,146 @@
         var namen = Object.keys(alle);
         for (var i = 0; i < namen.length; i++) {
             if (alle[namen[i]] && typeof alle[namen[i]].addFile === 'function') {
-                return alle[namen[i]];
+                var m = namen[i].match(/_(\d+)_(\d+)$/);
+                return {
+                    uploader: alle[namen[i]],
+                    formulier: m ? m[1] : '',
+                    veld: m ? m[2] : ''
+                };
             }
         }
         return null;
     }
 
-    function plaatsPdf() {
+    /* Hoeveel bestanden staan er NU in het veld? Gravity Forms houdt dat bij
+       in een verborgen veld en werkt dat ook bij zodra de bezoeker er een
+       weghaalt (gravityforms.js, gformDeleteUploadedFile r709-734). Dat is
+       dus de betrouwbare bron - de zichtbare lijst is opmaak.
+       -1 = niet te bepalen; dan doen we alsof het veld leeg is. */
+    function aantalBestanden(info) {
+        if (!info || !info.formulier || !info.veld) { return -1; }
+        var veld = document.getElementById('gform_uploaded_files_' + info.formulier);
+        if (!veld) { return -1; }
+        try {
+            var alles = JSON.parse(veld.value || '{}');
+            var lijst = alles['input_' + info.veld];
+            if (!lijst) { return 0; }
+            return Array.isArray(lijst) ? lijst.length : 1;
+        } catch (e) {
+            return -1;
+        }
+    }
+
+    /* De naam waaronder ons ontwerp wordt geupload. */
+    function onzeNaam() {
+        try {
+            return (JSON.parse(lees(PDF_SLEUTEL) || '{}').naam) || '';
+        } catch (e) {
+            return '';
+        }
+    }
+
+    /* Staat ONS ontwerp tussen de geuploade bestanden? Op de NAAM en niet op
+       de telling: haalt de bezoeker ons ontwerp weg en zet hij er zijn eigen
+       bestand voor in de plaats, dan is de telling weer 1 maar klopt
+       "je ontwerp uit de configurator is toegevoegd" niet meer. */
+    function onsBestandAanwezig(info) {
+        if (!info || !info.formulier || !info.veld) { return false; }
+        var veld = document.getElementById('gform_uploaded_files_' + info.formulier);
+        var naam = onzeNaam();
+        if (!veld || !naam) { return false; }
+        try {
+            var lijst = (JSON.parse(veld.value || '{}'))['input_' + info.veld];
+            if (!lijst || !lijst.length) { return false; }
+            for (var i = 0; i < lijst.length; i++) {
+                if (lijst[i] && lijst[i].uploaded_filename === naam) { return true; }
+            }
+        } catch (e) { /* niets */ }
+        return false;
+    }
+
+    function veldVan(info) {
+        if (info && info.veld) {
+            var op = document.getElementById('field_' + info.formulier + '_' + info.veld);
+            if (op) { return op; }
+        }
+        return document.querySelector('.of-upload') ||
+               document.querySelector('.gfield--type-fileupload');
+    }
+
+    /* Een regel boven het sleepvlak. Boven en niet onder: "hieronder" in de
+       foutmelding moet kloppen met waar hij staat. role="status" en geen
+       alert - het hoeft de invoer niet te onderbreken, een schermlezer leest
+       het voor zodra hij uitgesproken is. */
+    function melding(veld, klasse, maak) {
+        if (!veld) { return null; }
+        var bestaat = veld.querySelector('.' + klasse);
+        if (bestaat) { return bestaat; }
+        var el = maak();
+        el.className = 'of-ontwerp-melding ' + klasse;
+        el.setAttribute('role', 'status');
+        var vak = veld.querySelector('.ginput_container');
+        if (vak) {
+            veld.insertBefore(el, vak);
+        } else {
+            veld.appendChild(el);
+        }
+        return el;
+    }
+
+    function weg(veld, klasse) {
+        var el = veld && veld.querySelector('.' + klasse);
+        if (el) { el.remove(); }
+    }
+
+    /* ZEGGEN DAT HET ONTWERP ERIN STAAT. Zonder deze regel voegt het
+       formulier stil een bestand toe dat de bezoeker niet zelf koos, in een
+       veld dat "(optioneel)" heet - dan is niet te zien dat zijn ontwerp
+       meegaat. Melding van de klant, 2026-11-18. */
+    function meldGelukt(info) {
+        var veld = veldVan(info);
+        weg(veld, 'of-ontwerp-herstel');
+        melding(veld, 'of-ontwerp-gelukt', function () {
+            var p = document.createElement('p');
+            p.textContent = tekst('ontwerpGelukt', 'Je ontwerp uit de configurator is toegevoegd.');
+            return p;
+        });
+    }
+
+    /* En een weg terug als hij het tóch weghaalt. */
+    function meldHerstel(info) {
+        var veld = veldVan(info);
+        weg(veld, 'of-ontwerp-gelukt');
+        melding(veld, 'of-ontwerp-herstel', function () {
+            var p = document.createElement('p');
+            var knop = document.createElement('button');
+            knop.type = 'button';            /* geen submit: dit staat ín het formulier */
+            knop.className = 'of-ontwerp-knop';
+            knop.textContent = tekst('ontwerpHerstel', 'Ontwerp opnieuw toevoegen');
+            knop.addEventListener('click', function () {
+                plaatsPdf(uploaderInfo(), true);
+            });
+            p.appendChild(knop);
+            return p;
+        });
+    }
+
+    /* @param {boolean} gevraagd  true = de bezoeker klikte zelf op herstellen,
+     *                            dus ook plaatsen als de telling onzeker is. */
+    function plaatsPdf(info, gevraagd) {
         var ruw = lees(PDF_SLEUTEL);
         if (!ruw) {
             return true; // niets te doen, stoppen met wachten
+        }
+        if (!info) {
+            return false; // uploader nog niet klaar, straks opnieuw
+        }
+
+        /* Staat er al een bestand, dan niet nog een keer toevoegen. Dit
+           vervangt het meteen wissen van de opslag: hergebruik van hetzelfde
+           bestand wordt zo voorkomen zonder het ontwerp weg te gooien. */
+        if (!gevraagd && aantalBestanden(info) > 0) {
+            return true;
         }
 
         var opslag;
@@ -77,11 +227,6 @@
         if (!opslag || !opslag.base64) {
             wissen(PDF_SLEUTEL);
             return true;
-        }
-
-        var uploader = uploaderVinden();
-        if (!uploader) {
-            return false; // nog niet klaar, straks opnieuw
         }
 
         try {
@@ -104,7 +249,8 @@
                een leeg id is false). Nagemeten: eerste poging 400, tweede
                poging 200, want dan stond het id nog van de vorige keer in
                het formulier. */
-            uploader.addFile(wikkel);
+            info.uploader.addFile(wikkel);
+            wachtOpBestand(info);
         } catch (e) {
             /* Zeggen en niet alleen loggen: een bezoeker opent geen console.
                Direct melden, want de lus heeft meldFout() mogelijk al
@@ -114,12 +260,65 @@
             if (window.console) {
                 console.error('Sokkies: ontwerp kon niet worden toegevoegd', e);
             }
+            /* Alleen bij een MISLUKKING wissen: anders probeert elke volgende
+               pagina het opnieuw met hetzelfde kapotte bestand. */
+            wissen(PDF_SLEUTEL);
         }
 
-        /* Ook bij een mislukking wissen: anders probeert elke volgende pagina
-           het opnieuw met hetzelfde bestand. */
-        wissen(PDF_SLEUTEL);
         return true;
+    }
+
+    /* EERST WACHTEN, DAN PAS MELDEN. addFile() zet het bestand alleen in de
+       wachtrij van plupload; Gravity Forms uploadt het daarna en vult het
+       verborgen veld. Gemeten op dit formulier: dat duurt ~1,8 seconde, en
+       bij een groter ontwerp langer. Meldden we meteen "toegevoegd", dan
+       stond die regel boven een leeg vak - precies de schermafbeelding van de
+       klant (2026-11-18). */
+    function wachtOpBestand(info) {
+        var pogingen = 0;
+        var klok = setInterval(function () {
+            if (onsBestandAanwezig(info)) {
+                clearInterval(klok);
+                meldGelukt(info);
+                bewaken(info);
+                return;
+            }
+            /* 60 x 300 ms = achttien seconden. Komt het er dan nog niet in,
+               dan is de upload gestrand. Dat hoort de bezoeker te horen - met
+               de knop erbij, zodat hij het opnieuw kan proberen zonder terug
+               te hoeven naar de configurator. */
+            if (++pogingen > 60) {
+                clearInterval(klok);
+                schrijf(FOUT_SLEUTEL, '1');
+                meldFout();
+                meldHerstel(info);
+            }
+        }, 300);
+    }
+
+    /* Daarna blijven kijken of ons ontwerp in het veld BLIJFT staan. Pollen en
+       geen event: Gravity Forms kondigt een verwijdering nergens aan - het
+       schrijft alleen het verborgen veld opnieuw. Elke seconde een JSON.parse
+       van een kort stukje tekst is verwaarloosbaar, en de lus stopt zodra er
+       geen ontwerp meer in de opslag staat.
+
+       Deze lus zet de bevestiging OOK terug. Gaat de bezoeker naar stap 2 en
+       weer terug, dan rendert Gravity Forms stap 1 opnieuw en is onze regel
+       weg terwijl het bestand er nog gewoon staat. */
+    var bewaakt = false;
+    function bewaken(info) {
+        if (bewaakt || !info) { return; }
+        bewaakt = true;
+        var klok = setInterval(function () {
+            if (!lees(PDF_SLEUTEL)) { clearInterval(klok); return; }
+            var veld = veldVan(info);
+            if (!veld) { return; }
+            if (onsBestandAanwezig(info)) {
+                if (!veld.querySelector('.of-ontwerp-gelukt')) { meldGelukt(info); }
+            } else if (!veld.querySelector('.of-ontwerp-herstel')) {
+                meldHerstel(info);
+            }
+        }, 1000);
     }
 
     /* ---------- 2. de gekozen sok aanvinken ---------- */
@@ -179,10 +378,6 @@
        niet". De melding staat BIJ het uploadveld en niet bovenaan de pagina:
        daar moet hij iets doen.
 
-       role="status" en geen alert: het is geen fout van de bezoeker en het
-       hoeft zijn invoer niet te onderbreken; een schermlezer leest het voor
-       zodra hij uitgesproken is.
-
        De vlag wordt in knop.js gezet - zowel als het maken van de PDF
        strandt als wanneer de configurator nog niet klaar was bij de klik. */
     function meldFout() {
@@ -190,34 +385,23 @@
             return true;
         }
 
-        var veld = document.querySelector('.of-upload') ||
-                   document.querySelector('.gfield--type-fileupload');
+        var veld = veldVan(null);
         if (!veld) {
             return false;   // formulier nog niet gerenderd
         }
 
-        if (!veld.querySelector('.of-ontwerp-melding')) {
-            var melding = document.createElement('p');
-            melding.className = 'of-ontwerp-melding';
-            melding.setAttribute('role', 'status');
+        melding(veld, 'of-ontwerp-fout', function () {
+            var p = document.createElement('p');
             /* De zin komt uit PHP (sokkies_configurator_ontwerp_melding), want
                TranslatePress ziet geen tekst die JavaScript in de pagina zet -
                hier hardgecodeerd stond er op /en/ een Nederlandse zin. De
                Nederlandse zin blijft als terugval staan voor het geval het
                inline-blok er niet is. */
-            melding.textContent =
+            p.textContent =
                 (window.SOKKIES_CONFIGURATOR && window.SOKKIES_CONFIGURATOR.ontwerpMelding) ||
                 'We konden je ontwerp niet meesturen. Voeg het hieronder zelf toe.';
-
-            /* Boven het sleepvlak, onder het label: "hieronder" moet ook
-               kloppen met waar de melding staat. */
-            var vak = veld.querySelector('.ginput_container');
-            if (vak) {
-                veld.insertBefore(melding, vak);
-            } else {
-                veld.appendChild(melding);
-            }
-        }
+            return p;
+        });
 
         wissen(FOUT_SLEUTEL);
         return true;
@@ -238,7 +422,8 @@
         var foutKlaar = false;
         var pogingen  = 0;
         var klok = setInterval(function () {
-            if (!pdfKlaar)  { pdfKlaar  = plaatsPdf(); }
+            var info = uploaderInfo();
+            if (!pdfKlaar)  { pdfKlaar  = plaatsPdf(info); }
             if (!sokKlaar)  { sokKlaar  = kiesSoktype(); }
             if (!foutKlaar) { foutKlaar = meldFout(); }
             /* 80 x 250 ms = twintig seconden. Was tien, maar op een trage
@@ -256,6 +441,11 @@
                     schrijf(FOUT_SLEUTEL, '1');
                     meldFout();
                 }
+
+                /* Staat er een ontwerp in de opslag, dan vanaf nu in de gaten
+                   houden of het in het veld blijft staan. Dubbel starten kan
+                   niet: bewaken() bewaakt zichzelf met een vlag. */
+                if (lees(PDF_SLEUTEL) && info) { bewaken(info); }
             }
         }, 250);
     }

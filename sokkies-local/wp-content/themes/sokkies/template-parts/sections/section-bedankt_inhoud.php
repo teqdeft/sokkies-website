@@ -232,7 +232,13 @@ $pijl = '<svg xmlns="http://www.w3.org/2000/svg" width="12.199" height="9.39" vi
 (function () {
   try {
     Object.keys(sessionStorage)
-      .filter(function (k) { return k.indexOf('sokkies-formulier-') === 0; })
+      .filter(function (k) {
+        /* Ook het ontwerp uit de configurator: dat blijft sinds 2026-11-18
+           bewaard zolang het formulier open staat, zodat een per ongeluk
+           weggeklikt bestand terug te halen is. Wie hier komt is klaar. */
+        return k.indexOf('sokkies-formulier-') === 0 ||
+               k.indexOf('sokkies-ontwerp-') === 0;
+      })
       .forEach(function (k) { sessionStorage.removeItem(k); });
   } catch (e) {}
 })();

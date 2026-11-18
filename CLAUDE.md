@@ -5145,6 +5145,254 @@ VIJF TWEAKS OP HET OFFERTEFORMULIER (2026-11-18, lijstje via Rick).
   Meet in de zichtbare stap, en zet daarbij transition:none - in het
   browserpaneel lopen transities niet door, dus een ballon die op opacity werkt
   lijkt anders eeuwig dicht.
+CONFIGURATOR VERTAALBAAR - EN EEN KAPOTTE DUITSE PAGINA ONDERWEG GEVONDEN
+  (2026-11-18, opdracht Kulwant na klantfeedback "de configurator is in het
+  Engels, de buttons in het Nederlands").
+  DRIE DINGEN GEDAAN: (1) alle tekst die ONS script zelf in de configurator
+  zet komt nu uit WordPress, (2) de kleurgroepen worden herkend op SLEUTEL en
+  SLUG in plaats van op de Engelse naam, (3) data-no-translation is ingeperkt
+  zodat de laadtekst gewoon door TranslatePress gaat.
+  WAT ER AL WERKTE EN NIET IS AANGERAAKT: de site stuurt Expivi de juiste taal
+  mee (sokkies_configurator_locale geeft nl-NL/en-GB/de-DE/fr-FR, nagemeten in
+  de uitgestuurde config). Dat de UI toch Engels was, komt doordat de
+  vertalingen in de Expivi-catalogus niet waren ingevuld. Inmiddels doet de
+  klant dat - en dat bracht het volgende aan het licht.
+  DE DUITSE KLEURENSECTIE WAS VOLLEDIG WEG, en dat was geen regressie maar de
+  voorspelde breuk die nu echt optrad. patternLeaf() zocht het patroonvak op
+  /pattern/i in de DOM-naam; op /de/ heet dat vak sinds de vertaalronde
+  "Wählen Sie das Muster". Geen treffer betekent null, en daarmee stopt de
+  hele opbouw in één keer: geen markPattern, geen getRoot, geen buildGroups.
+  Gemeten op /de/: 0 kleurgroepen, 0 triggers, .sk-pattern-grid afwezig,
+  terwijl de 11 kleurvakken gewoon in de DOM stonden. De sub-tabs heten daar
+  nu "Muster" / "Farbe des Manschettes" / "Heel Farbe" / "Toefarbe" - dus ook
+  /cuff/i vond niets meer.
+  HERKENNING IN DRIE STAPPEN (expivi-thema.js, tabel VAKKEN):
+    1. SLEUTEL (data-xpv-key / a.key) - taalonafhankelijk, de bedoelde weg
+    2. SLUG (a.slug)                  - taalonafhankelijk, bestaat al
+    3. de Engelse naam                - alleen nog als laatste terugval
+  Stap 2 is de reden dat het VANDAAG werkt: op de kleurattributen staan nog
+  geen sleutels. Gemeten na de wijziging: /de/ toont weer "Bund, Ferse,
+  Spitze" / "Anti-Rutsch" / "Musterfarben", /nl/ "Boord, Hiel, Teen" /
+  "Antislip" / "Patroonkleuren", /en/ onveranderd "Cuff, Heel, Toe".
+  DE SLUGS ZIJN HISTORISCH SLORDIG en staan daarom letterlijk in de tabel:
+  Color 01 heeft slug 'test' en Color 04 'color-4'. Het nummer wordt dus niet
+  uit de slug gerekend. Calf 1 heeft slug 'sport-socks-calf-2' - een slug zegt
+  niets over wat het is, alleen DAT het hetzelfde blijft.
+  WAT DE KLANT NOG MOET DOEN IN EXPIVI (Producten > Configure > Attributes,
+  veld "Key"): sk-cuff-color, sk-heel-color, sk-toe-color, sk-antislip-color,
+  sk-pattern, sk-color-01 t/m sk-color-06. Zolang die leeg zijn draait alles
+  op de slug; dat werkt, maar een slug kan iemand nog wijzigen en een sleutel
+  is er expliciet voor bedoeld. De vier logo-zones hadden al een sleutel
+  (sk-logo-calf-1/2, sk-logo-footbed-1/2) - die worden nu ook gebruikt om de
+  tweede uploadkaart per zone te verbergen, wat eerst op "calf 2"/"footbed 2"
+  in de tekst ging.
+  DE SUB-TAB WORDT ONTHOUDEN i.p.v. op de knoptekst gezocht. Als een kleurvak
+  zichtbaar is, is de actieve tab per definitie de zijne; die index leggen we
+  vast en gebruiken we om een ingeklapt paneel open te klikken. De oude
+  tekstzoektocht blijft als terugval voor de allereerste keer.
+  VUE VERVANGT ZIJN MOUNTPUNT - DE VALKUIL DIE ME EEN RONDE KOSTTE. Eerst zette
+  ik data-no-translation op #expivi-viewer / #expivi-price / #expivi-options,
+  zodat de twee knoppen eromheen wél vertaald zouden worden. Dat leek te
+  werken, maar op /en/ stond er even later weer "Cuff, Very, Yes" in de
+  kleurkop. Oorzaak: de optie-app mount op #expivi-options en VERVANGT dat
+  element - gemeten na het laden bestaat #expivi-options niet meer, en dus ook
+  het attribuut niet. De Expivi-DOM lag daarmee weer open voor de
+  DOM-detectie van TranslatePress. Het attribuut hoort op de KLASSEWIKKELS
+  .expivi-viewer en .expivi-options; die blijven staan. #expivi-viewer bleef
+  overigens wél bestaan - de viewer mount anders dan de optie-app, dus aan één
+  van de twee testen heb je niets.
+  GEVOLG DAARVAN: de twee knoppen staan ín die wikkel en vallen dus ook buiten
+  TranslatePress. Ze halen hun tekst nu uit dezelfde tabel als de rest
+  (knopPdf / knopOfferte). Eén bron voor de hele configurator, en geen
+  machinevertaling die bij de Expivi-DOM kan komen. Alleen de LAADTEKST staat
+  buiten de wikkels en loopt wel gewoon via TranslatePress - nagemeten:
+  "Configurator laden" / "Loading configurator" / "Konfigurator laden" /
+  "Chargement du configurateur".
+  DE TEKSTEN STAAN IN PHP (sokkies_configurator_teksten, 27 sleutels x 4
+  talen), zelfde opzet als inc/formulier-talen.php. Het Engels is 1-op-1 wat
+  er stond, inclusief de hoofdletters van "Cuff, Heel, Toe" en "Pattern
+  Colors", zodat de Engelse pagina niet verandert. LET OP: de Nederlandse,
+  Duitse en Franse woorden zijn door mij gekozen, niet door de klant
+  aangeleverd - boord/hiel/teen, Bund/Ferse/Spitze, bord/talon/pointe.
+  EEN TEKST DIE IN CSS ZAT ("Recommended files: PNG, JPG") loopt nu via een
+  eigen eigenschap: content: var(--sk-rec-files, "...") en expivi-thema.js zet
+  die met JSON.stringify (CSS wil de aanhalingstekens in de waarde). De
+  Engelse zin blijft als terugval in de CSS staan.
+  TWEE EIGEN BUGS ONDERWEG, allebei gevonden door te meten en niet door te
+  kijken:
+    - het inline-blok bij prf.js deed window.SOKKIES_CONFIGURATOR = {...} en
+      WISTE daarmee de teksten die het blok vlak daarvoor had gezet (de thema-
+      enqueue staat eerder in de rij). Nu per eigenschap.
+    - de titel van een kleurtrigger werd alleen bij het AANMAKEN gezet, en op
+      dat moment is de attribuutkaart (id -> key/slug) vaak nog niet binnen.
+      Gemeten op /nl/: "Color 01" in plaats van "Kleur 01". De titel wordt nu
+      elke tick bijgewerkt en de klikhandler leest hem op klikmoment i.p.v.
+      uit de closure.
+  TWEE MACHINEVERTALINGEN GECORRIGEERD (database, status 2): het Frans maakte
+  van "Bekijk je ontwerp (PDF)" -> "Consultez votre projet (PDF)" (projet = een
+  project, niet een sok-ontwerp) en het Duits "Sehen Sie sich Ihr Design an
+  (PDF)" - correct maar lang voor een knop. Nu "Voir votre design (PDF)" en
+  "Ihr Design ansehen (PDF)".
+  DE DUITSE VERTALINGEN IN EXPIVI ZELF ZIJN ZWAK en dat is klantwerk, geen
+  code: "Farbe des Manschettes" (moet Bundfarbe of Farbe der Manschette zijn),
+  "Heel Farbe" (half Engels) en "Toefarbe". Voorleggen.
+  DIT BESTAND IS NIET LANGER EEN LETTERLIJKE KOPIE. De kop van
+  expivi-thema.js zei "niet met de hand bewerken"; daar staat nu in wat er is
+  veranderd en hoe je het terugvindt: grep SOKKIES-AANPASSING. Haalt iemand
+  een nieuwe versie van het Expivi-thema op, dan moeten die aanpassingen
+  opnieuw.
+  NIET GEVERIFIEERD, EERLIJK VASTGELEGD: de weergave op 390px. Het
+  browserpaneel paste de mobiele breedte niet toe op de layout (innerWidth
+  bleef 1500 terwijl clientWidth 375 was, ook na herladen), en headless Chrome
+  rendert de pagina hier ONGESTYLED omdat de gecombineerde CSS van LiteSpeed
+  opnieuw kapot is - gemeten: 604250 bytes met 427 NUL-bytes en 6800 { tegen
+  6844 }. Dat is exact hetzelfde euvel als eerder vandaag beschreven; de
+  combine-instellingen staan lokaal weer op 1 (optm-css_comb, optm-js_comb,
+  optm-*_comb_ext_inl). Bewust niet opnieuw uitgezet: het is een
+  database-instelling die via WP Migrate DB naar dev kan reizen. De wijziging
+  zelf raakt geen enkele layoutregel - alleen teksten en één content:-waarde -
+  dus het risico is beperkt tot langere vertalingen die anders afbreken. De
+  langste zijn "Zum Hochladen klicken oder hierher ziehen" en "Cliquez pour
+  téléverser ou glissez-déposez"; op desktop eindigt de breedste knoppenrij op
+  x=224 binnen de optiekolom.
+  GEVERIFIEERD WEL: nl/en/de/fr alle vier de knoppen en de laadtekst,
+  nl/en/de de volledige kleurensectie met groepen en triggers, de
+  plaatsingsrij en het sleepvlak in nl en de, 0 console-errors, en
+  node --check op beide JS-bestanden.
+
+HET ONTWERP UIT DE CONFIGURATOR: ZICHTBAAR, TERUG TE HALEN EN MET ZICHTBARE
+  WACHTTIJD (2026-11-18, drie klantmeldingen over dezelfde overgang van de
+  configurator naar het offerteformulier).
+  WAT ER GEMELD WERD: (1) "als je doorklikt naar vraag dit ontwerp aan is niet
+  duidelijk dat het document er meteen in zit", (2) "klik je hem per ongeluk
+  weg, ben je hem dan kwijt?" en (3) "het opmaken van de PDF duurt erg lang,
+  daardoor denk je dat het niet werkt en klik je misschien weg".
+  (1) ER WAS ALLEEN EEN FOUTMELDING. offerte-bijlage.js zette het bestand stil
+  in het uploadveld; er bestond wel een regel voor het geval het MISLUKTE, maar
+  niets voor het geval het lukte. Het veld heet bovendien "(optioneel)", dus
+  een bestand dat de bezoeker niet zelf koos leest als iets wat er toevallig
+  staat. Nu een regel boven het sleepvlak met een groen vinkje: "Je ontwerp uit
+  de configurator is toegevoegd." Zelfde plek, zelfde opbouw en zelfde
+  role="status" als de foutmelding - die twee sluiten elkaar uit.
+  DE BESTANDSNAAM DOET MEE: van sokkies-ontwerp.pdf naar
+  ontwerp-uit-configurator.pdf. In de bestandenlijst van het formulier is dat
+  het enige wat de bezoeker leest, dus de naam mag het zelf uitleggen. Bewust
+  niet vertaald - een bestandsnaam is geen zin.
+  (2) HET ANTWOORD WAS JA, EN DAT IS NU NEE. De PDF werd uit sessionStorage
+  gewist zodra hij geplaatst was, zodat een volgende pagina hem niet nog eens
+  zou toevoegen. Hij blijft nu staan zolang het tabblad leeft. Dubbel
+  toevoegen is op een andere manier afgedekt: er wordt alleen geplaatst als het
+  veld LEEG is.
+  DE BRON VOOR "IS HET VELD LEEG" IS HET VERBORGEN VELD VAN GRAVITY FORMS
+  (#gform_uploaded_files_<formulier>), niet de zichtbare lijst. GF werkt dat
+  veld ook bij als de bezoeker iets weghaalt (gravityforms.js,
+  gformDeleteUploadedFile r709-734) - de lijst eromheen is opmaak. Een lichte
+  lus van een seconde kijkt of de telling van 1 naar 0 gaat en zet dan de knop
+  "Ontwerp opnieuw toevoegen" onder het label; die lus stopt zodra er geen
+  ontwerp meer in de opslag staat. GEEN EVENT: Gravity Forms kondigt een
+  verwijdering nergens aan, het herschrijft alleen dat veld.
+  OPRUIMEN GEBEURT OP DE BEDANKPAGINA. Daar stond al een scriptje dat de
+  sokkies-formulier-*-sleutels wist (gform_confirmation_loaded vuurt niet bij
+  een doorverwijzing); sokkies-ontwerp-* gaat nu mee. Wie daar komt is klaar.
+  (3) DE WACHTTIJD IS NIET KORTER GEWORDEN, WEL ZICHTBAAR. Waar hij zit, staat
+  vast: vijf stappen, waarvan stap 4 elke 1,5 seconde bij Expivi vraagt of de
+  render klaar is (prf.js:99). Dat rendert op HUN servers; daar kunnen wij
+  niets aan doen.
+  WAT ER WEL AAN TE DOEN WAS: de PDF-knop opende meteen een NIEUW TABBLAD en
+  liet dat vijftien tot twintig seconden leeg - en een leeg tabblad leest als
+  "stuk". Dat tabblad moet wel meteen open (een window.open na een await vangt
+  de popupblokkering weg), dus er wordt nu een echte wachtpagina in geschreven:
+  titel, dezelfde stapteller als op de knop, en "Dit duurt ongeveer vijftien
+  seconden." Mislukt het, dan wordt het tabblad NIET meer gesloten maar krijgt
+  het een zin - een tabblad dat vanzelf verdwijnt is verwarrender.
+  De offerteknop houdt de bezoeker op de pagina en krijgt een overlay met
+  dezelfde drie regels plus "Daarna ga je automatisch door naar het
+  offerteformulier". Geen dialog en geen focusval: er valt niets te kiezen,
+  het is een melding (role="status", aria-live).
+  ZES NIEUWE TEKSTSLEUTELS in sokkies_configurator_teksten (ontwerpGelukt,
+  ontwerpHerstel, bezigTitel, bezigDuur, bezigDoor, bezigMislukt). De hele
+  tabel gaat nu OOK naar de offertepagina - dat is een regel en voorkomt dat
+  er per zin een eigen eigenschap bij moet, zoals bij ontwerpMelding.
+  LET OP: de Nederlandse, Duitse en Franse formuleringen zijn door mij
+  gekozen, niet door de klant aangeleverd.
+  WAT ER NIET IS GEDAAN, en bewust: de wachttijd UIT het pad van de bezoeker
+  halen. Dat kan - stap 1 (saveConfiguration) is het enige dat de viewer nodig
+  heeft, de rest zijn gewone API-aanroepen met het viewertoken, en dat token
+  staat gewoon op window.expivi (nagemeten: 984 tekens). Je kunt dus meteen
+  doorgaan naar het formulier en de PDF op de achtergrond afmaken terwijl de
+  bezoeker invult. Twee dingen moeten daarvoor eerst gemeten worden: hoe groot
+  de configuratie is (met een geupload logo erin kan sessionStorage te klein
+  zijn) en wat er moet gebeuren als iemand sneller klaar is dan de PDF.
+  GEVERIFIEERD MET EEN ECHTE RUN op /nl/offerte/ en /nl/configurator/:
+    - klik op "Vraag dit ontwerp aan" -> overlay verschijnt, teller loopt
+      (3/5 na 2,5 s), na afloop staat de bezoeker op /nl/offerte/ met het
+      ECHTE ontwerp in het veld (uploaded_filename ontwerp-uit-configurator.pdf)
+      en de bevestigingsregel erboven; overlay weg, 0 console-errors.
+    - bestand weghalen met de eigen verwijderknop van GF -> verborgen veld
+      {"input_3":[]}, bevestiging weg, "Ontwerp opnieuw toevoegen" verschijnt.
+    - op die knop klikken -> bestand staat er weer in (nieuw temp-bestand),
+      bevestiging terug, knop weg.
+    - de wachtpagina in het tabblad los getest via een iframe: titel, stap,
+      duur en ring staan er, en skTabFout() vervangt de stap door de zin en
+      verbergt de ring.
+  DRIE MEETVALKUILEN, waarvan twee nieuw:
+    - HET BROWSERPANEEL WAS VERBORGEN: innerWidth en clientWidth gaven allebei
+      0, en dus klopte geen enkele maat (een kaart "mat" 56x528). Staat al
+      langer in dit document, maar nu met het signaal erbij: meet eerst
+      innerWidth en stop als die 0 is.
+    - HEADLESS CHROME HONOREERT --window-size=390 HIER NIET. De pagina lijkt
+      dan rechts afgekapt en de layout is gewoon breder; ik had daardoor bijna
+      een overloop "gefixt" die er niet was. Wat wel werkt: een wrapperpagina
+      met <iframe width="390">, want media queries binnen een iframe volgen de
+      iframebreedte. Op die manier gemeten past de overlay netjes met 20px
+      lucht aan weerszijden.
+    - DE GECOMBINEERDE CSS VAN LITESPEED IS LOKAAL WEER KAPOT, derde keer met
+      cijfers: 605.790 bytes, 430 NUL-bytes, 6826 { tegen 6867 }. De browser
+      stopt met parsen en houdt 326 regels over voor de HELE site, dus niets
+      is zo opgemaakt als het hoort. De combine-instellingen stonden weer op
+      1. Bewust niet opnieuw uitgezet (database, kan via WP Migrate DB naar
+      dev reizen); in plaats daarvan is de opmaak los geverifieerd met een
+      testpagina die de echte CSS-bestanden inlaadt. Wie hier tegenaan loopt:
+      kijk eerst of document.styleSheets[0].cssRules.length klopt.
+  CORRECTIE NOG DEZELFDE DAG - DE BEVESTIGING KWAM TE VROEG (melding Kulwant
+  met een schermafbeelding: de regel "Je ontwerp uit de configurator is
+  toegevoegd" stond er, maar het vak eronder was leeg).
+  OORZAAK: addFile() is GEEN upload. Het zet het bestand in de wachtrij van
+  plupload; Gravity Forms uploadt het daarna en vult pas dan het verborgen
+  veld. Ik meldde meteen na addFile(), dus de bevestiging liep vooruit op de
+  werkelijkheid. Nagemeten met een lus van 300 ms: op 300 ms stond de melding
+  er al terwijl de telling nog 0 was; het bestand landde pas op ~1800 ms. Bij
+  een groter ontwerp of een tragere verbinding is dat gat navenant langer, en
+  dan staat er een bevestiging boven een leeg vak - erger dan helemaal geen
+  bevestiging, want het is niet waar.
+  OPGELOST: wachtOpBestand() kijkt elke 300 ms tot ONS bestand echt in het
+  verborgen veld staat en meldt dan pas. Gemeten na de wijziging: melding en
+  bestand verschijnen samen op 2100 ms. Blijft het achttien seconden uit, dan
+  volgt de bestaande foutregel plus de herstelknop - stil mislukken mag niet.
+  OP DE NAAM EN NIET OP DE TELLING: haalt de bezoeker ons ontwerp weg en zet
+  hij er zijn eigen bestand voor in de plaats, dan is de telling weer 1 maar
+  klopt "je ontwerp uit de configurator is toegevoegd" niet. onsBestandAanwezig()
+  vergelijkt daarom uploaded_filename met de naam uit de opslag.
+  BIJVANGST uit diezelfde omzetting: de bevestiging komt nu ook TERUG na een
+  stapwissel. Gravity Forms rendert stap 1 opnieuw als je van stap 2 terugkomt,
+  waardoor onze regel verdween terwijl het bestand er gewoon stond. De
+  bewaaklus zet hem terug. Nagemeten: stap 1 -> 2 -> 1 houdt het bestand (1) en
+  de regel staat er weer.
+  LES: een bevestiging hoort aan de UITKOMST te hangen, niet aan het feit dat
+  je de opdracht hebt gegeven. Hier was dat een verschil van anderhalve
+  seconde, en precies daarin keek de klant.
+  LOSSE VONDST, NIET GEFIXT EN NIET VAN DEZE WIJZIGING: het gekozen SOKMODEL
+  komt niet meer mee naar het formulier. sokkies_configurator_soktype_kaart()
+  is gesleuteld op de waardenamen van Expivi (RegularSocks, SportSocks,
+  AntiSlipSocks...), en de klant heeft precies die namen inmiddels vertaald:
+  de eerste drie heten daar nu "Reguliere", "Sport" en "Antislip". Die matchen
+  dus niet meer; CyclingSocks en WorkSocks nog wel, want die zijn onvertaald.
+  Gemeten: na een echte run stond er 0 soktype aangevinkt op /offerte/.
+  Dezelfde klasse fout als de kleurgroepen van vanochtend, en dezelfde
+  oplossing: de waarden hebben GEEN key (nagemeten, alle zes null), dus of de
+  klant vult die in, of we matchen met de woordvergelijking die het thema al
+  heeft (sokkies_soktype_zelfde / sokkies_kaartfoto_kies). Apart oppakken.
+
 ## MULTI-MACHINE (2026-08-21): twee ontwikkelmachines delen deze map
 ## via DROPBOX (Kulwant + collega met Claude Cowork). Afspraken:
 ## (1) wp-config.php kiest het DB-wachtwoord per hostnaam
