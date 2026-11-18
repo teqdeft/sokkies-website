@@ -3459,3 +3459,10 @@ function sokkies_taalloos_naar_standaardtaal( $url, $taal ) {
 	return sokkies_site_basis() . '/' . $slugs . '/';
 }
 add_filter( 'trp_link_to_redirect_to', 'sokkies_taalloos_naar_standaardtaal', 10, 2 );
+
+function custom_loginlogo() {
+echo '<style type="text/css">
+h1 a {background-image: url('.get_bloginfo('template_directory').'/assets/media/new-logo-studio.png) !important; width: 270px !important; /*background-size: 220px !important;*/ height: 100px !important;}
+</style>';
+}
+add_action('login_head', 'custom_loginlogo');
