@@ -16236,21 +16236,42 @@
 }
 
 /* ===================================================================
-   520px en smaller - de uitlegballon wordt een regel onder de kaart
+   DE UITLEGBALLON MAG NOOIT DE KAART ERBOVEN BEDEKKEN
    -------------------------------------------------------------------
-   De kaarten staan hier twee per rij (~169px op 390px breed). Een
-   zwevende ballon van 260px zou bij de linkerkaart tot buiten het
-   scherm steken en dus een horizontale schuifbalk geven. Daarom staat
-   de uitleg hier gewoon in de flow: de rij wordt een stukje hoger
-   zodra de bezoeker op het i-tje tikt, en er kan niets uitsteken.
+   De ballon hangt boven de kaart. Staat die kaart in de TWEEDE rij van
+   het raster, dan valt hij dus over de kaart uit de eerste rij heen -
+   precies wat Kulwant meldde met een schermafbeelding op een smal
+   scherm, waar de uitleg bij Borduren over Kaartjes lag.
 
-   MET display IN PLAATS VAN opacity, en dat is hier de hele truc: de
+   HET IS GEEN MOBIEL PROBLEEM MAAR EEN RIJ-PROBLEEM, en dat verschil
+   bepaalt de oplossing. Het aantal kolommen verschilt per band, dus
+   schuift "Borduren" (de vierde optie) van rij 1 naar rij 2:
+     >=1680   5 kolommen   rij 1   goed
+     1440     4 kolommen   rij 1   goed
+     992      5 kolommen   rij 1   goed
+     768      3 kolommen   rij 2   BEDEKTE Geschenkdoosjes
+     600      2 kolommen   rij 2   BEDEKTE Kaartjes
+     390      2 kolommen   rij 2   stond al als blok onder de kaart
+   Daarom loopt de blok-weergave nu door tot 991px, en niet tot 520.
+
+   EN VOOR DE TOEKOMST: de klant kan via Website-instellingen bij ELKE
+   optie uitleg zetten. Zet hij hem bij "Frills" of "Geen extra's", dan
+   staan die ook op een breed scherm in de tweede rij. De nth-child-
+   regels hieronder vangen dat af; ze zijn vandaag inert, want alleen
+   Borduren heeft uitleg. Het getal volgt per band het kolomaantal uit
+   de regels op .quote-card .of-extras .gfield_checkbox - wijzigt dat
+   kolomaantal, dan moet dit getal mee.
+
+   MET display IN PLAATS VAN opacity, en dat is de hele truc: de
    hover-regel uit style.css zet alleen opacity en visibility, dus een
    display:none eroverheen houdt de ballon dicht zonder dat die regel
-   apart teruggedraaid hoeft te worden. Alleen de klik opent hem - en
-   dat is precies wat je op een aanraakscherm wilt.
+   apart teruggedraaid hoeft te worden.
+
+   ALLEEN DE KLIK OPENT HEM in deze weergave, ook op desktop. Met hover
+   zou de rij omhoog en omlaag springen zodra de muis er langs gaat, en
+   dat is storender dan een extra klik.
    =================================================================== */
-@media (max-width:520px){
+@media (max-width:991px){
   .quote-card .extra-tip{
     position:static;
     display:none;
@@ -16263,6 +16284,62 @@
     visibility:visible;
   }
   .quote-card .extra-info.is-open + .extra-tip{
+    display:block;
+    transform:none;
+  }
+}
+
+/* 992-1439 en 1680+: 5 kolommen, dus kaart 6 en verder staan in rij 2. */
+@media (min-width:992px) and (max-width:1439px){
+  .quote-card .of-extras .gchoice:nth-child(n+6) .extra-tip{
+    position:static;
+    display:none;
+    width:auto;
+    transform:none;
+    margin:8px 0 0;
+    padding:8px 10px;
+    font-size:12px;
+    opacity:1;
+    visibility:visible;
+  }
+  .quote-card .of-extras .gchoice:nth-child(n+6) .extra-info.is-open + .extra-tip{
+    display:block;
+    transform:none;
+  }
+}
+
+/* 1440-1679: 4 kolommen, dus al vanaf kaart 5. */
+@media (min-width:1440px) and (max-width:1679px){
+  .quote-card .of-extras .gchoice:nth-child(n+5) .extra-tip{
+    position:static;
+    display:none;
+    width:auto;
+    transform:none;
+    margin:8px 0 0;
+    padding:8px 10px;
+    font-size:12px;
+    opacity:1;
+    visibility:visible;
+  }
+  .quote-card .of-extras .gchoice:nth-child(n+5) .extra-info.is-open + .extra-tip{
+    display:block;
+    transform:none;
+  }
+}
+
+@media (min-width:1680px){
+  .quote-card .of-extras .gchoice:nth-child(n+6) .extra-tip{
+    position:static;
+    display:none;
+    width:auto;
+    transform:none;
+    margin:8px 0 0;
+    padding:8px 10px;
+    font-size:12px;
+    opacity:1;
+    visibility:visible;
+  }
+  .quote-card .of-extras .gchoice:nth-child(n+6) .extra-info.is-open + .extra-tip{
     display:block;
     transform:none;
   }
