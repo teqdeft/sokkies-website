@@ -7447,3 +7447,71 @@ KLEURKIEZER VAN DE CONFIGURATOR WAS ONGESTYLED (2026-11-18, melding Kulwant met
   /nl/configurator/ geen enkele expivi-verwijzing en wordt expivi-thema.css niet
   eens ingeladen - de ACF-vlag secties_1_configurator_tonen staat daar niet aan
   (database, deployt niet mee). Lokaal staat pagina 14 inmiddels op publish.
+
+  ONTWERP KWAM ER PAS IN NA EEN KLIK OP "OPNIEUW TOEVOEGEN" (2026-11-18,
+  melding Kulwant met twee schermafbeeldingen van sokkies.com/nl/offerte/: eerst
+  de herstelknop boven een leeg sleepvlak, daarna - na die klik - het bestand
+  gewoon geupload). Zijn vermoeden was Wordfence.
+  HET IS WORDFENCE NIET. Op de LIVE pagina twee keer een ontwerp in
+  sessionStorage gezet en de pagina herladen: beide keren ging het bestand er
+  zonder meer in, ook een van 60 kB (dus even groot als een echt ontwerp).
+  Was de uploadroute geblokkeerd, dan was de tweede poging net zo goed
+  geweigerd - een firewall die een POST weigert, weigert de volgende met
+  dezelfde inhoud ook.
+  WAT HET WEL IS - EEN RACE, EN EEN DIE PLUPLOAD STIL VERLIEST. Gravity Forms
+  zet de uploader in gfMultiFileUploader.uploaders op de regel DIRECT NA
+  new plupload.Uploader(), dus voordat init() is aangeroepen en voordat het zijn
+  eigen handlers bindt (gravityforms.js, setup()). Onze lus zoekt daar elke
+  250 ms naar een uploader met een addFile-functie en vindt dan dus een
+  uploader die nog nergens klaar voor is.
+  addFile() haalt als eerste de runtime-id op (plupload.js, getRUID) en zonder
+  runtime stopt resolveFile met een "weird case": geen fout, geen bestand, geen
+  FilesAdded. Het bestand is weg zonder dat iemand iets merkt. Daarna wacht
+  wachtOpBestand() achttien seconden voor niets en verschijnt de herstelknop -
+  en die DOET het wel, want dan is de uploader allang klaar. Precies het beeld
+  uit de melding.
+  GEMETEN op de live pagina, drie identieke uploaders naast elkaar:
+    vóór init()        wachtrij 0, FilesAdded 0
+    direct ná init()   wachtrij 0, FilesAdded 0   (init is asynchroon!)
+    ná het Init-event  wachtrij 1, FilesAdded 1
+  FIX: uploaderKlaar() in offerte-bijlage.js. Twee eisen - er moet een runtime
+  zijn, en Gravity Forms moet zijn eigen FilesAdded-handler gebonden hebben
+  (díé vult gform_unique_id en start de upload). Tot die tijd geeft plaatsPdf()
+  false terug en probeert de bestaande lus het gewoon opnieuw.
+  VALKUIL DIE IK ER BIJNA IN LIET LOPEN: moxie maakt van elke eventnaam kleine
+  letters, dus hasEventListener('FilesAdded') geeft ALTIJD false - ook op een
+  uploader die prima werkt. Nagemeten op de echte uploader: 'filesadded' true,
+  'FilesAdded' false. Met de hoofdlettervorm was de guard permanent false
+  geweest en had het ontwerp er NOOIT meer in gestaan.
+  WAAROM HET LOKAAL NIET OPVIEL: ons script hangt zonder afhankelijkheden in de
+  voet (wp_enqueue_script met deps array()), dus de volgorde ten opzichte van
+  gravityforms.js en plupload ligt nergens vast. Lokaal wint de pagina, op live
+  combineert en stelt LiteSpeed de JS uit en kan het andersom vallen. Een
+  dependency toevoegen lost het NIET op - init() blijft asynchroon - en is
+  bovendien riskant: ontbreekt zo'n handle ooit, dan laadt WordPress ons script
+  helemaal niet meer. De runtimecontrole dekt beide gevallen af.
+  TWEE DINGEN MEEGENOMEN IN DEZELFDE RONDE:
+  (1) BIJ OPGEVEN WORDT HET ONTWERP NIET MEER WEGGEGOOID. Kwam de uploader
+      binnen twintig seconden niet, dan wiste beginnen() de opslag - en dan is
+      het ontwerp voorgoed weg en moet de bezoeker terug naar de configurator.
+      Dat is precies de klacht van vanochtend ("ben ik hem dan kwijt?"). Nu
+      blijft hij staan en verschijnt de herstelknop; die houdt zelf tien
+      seconden vol tot de uploader er is (probeerOpnieuw), want stil niets doen
+      bij een knop die de bezoeker zélf indrukt is het slechtste antwoord.
+  (2) DE HERSTELKNOP FLITSTE. bewaken() tikt elke seconde en de upload duurt er
+      ongeveer twee, dus tussen "toegevoegd" en "geupload" zag de bezoeker even
+      "Ontwerp opnieuw toevoegen" staan. Een vlag (bezig) houdt die knop weg
+      zolang onze eigen upload loopt.
+  GEVERIFIEERD lokaal met een ontwerp van 60 kB: bestand in het veld na 1,4 s,
+  bevestiging op hetzelfde moment, herstelknop 0 keer in beeld (elke 100 ms
+  gemeten); daarna het bestand weggehaald met de eigen knop van Gravity Forms ->
+  herstelknop verschijnt -> klikken -> bestand terug en bevestiging terug;
+  0 console-fouten (alleen de bekende Cookiebot-waarschuwing over localhost).
+  De guard los nagemeten: echte uploader true, verse uploader vóór Init false,
+  ná Init true.
+  NIET GEREPRODUCEERD, eerlijk vastgelegd: de storing zelf is op live niet
+  nagespeeld - beide pogingen daar gingen juist goed. Wat vaststaat is dat de
+  uploadroute niet geblokkeerd wordt, dat deze faalstand bestaat en meetbaar is,
+  en dat hij exact dit beeld geeft. Komt het terug, dan is het iets anders en is
+  de volgende stap de respons van de POST naar /?gf_page=upload lezen op het
+  moment dat het misgaat.

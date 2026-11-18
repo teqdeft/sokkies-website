@@ -27,6 +27,12 @@
     var SOKTYPE_SLEUTEL = 'sokkies-ontwerp-soktype';
     var FOUT_SLEUTEL    = 'sokkies-ontwerp-fout';
 
+    /* Loopt er op dit moment een upload van ONS ontwerp? Zolang dat zo is
+       mag bewaken() geen herstelknop tonen: die lus tikt elke seconde en de
+       upload duurt er ongeveer twee, dus anders flitst die knop even in
+       beeld vlak voordat de bevestiging verschijnt. */
+    var bezig = false;
+
     function lees(sleutel) {
         try {
             return sessionStorage.getItem(sleutel);
@@ -84,6 +90,41 @@
             }
         }
         return null;
+    }
+
+    /* IS DIE UPLOADER AL ZOVER? Gravity Forms zet hem in
+       gfMultiFileUploader.uploaders op de regel direct NA
+       new plupload.Uploader() - dus voordat init() is aangeroepen en voordat
+       het zijn eigen handlers bindt (gravityforms.js, setup()). Komt ons
+       bestand in dat gaatje binnen, dan gooit plupload het STIL weg:
+       addFile() haalt eerst de runtime-id op (getRUID) en zonder runtime
+       stopt resolveFile met een "weird case" - geen fout, geen bestand, geen
+       FilesAdded. Daarna wacht wachtOpBestand() achttien seconden voor niets
+       en krijgt de bezoeker de herstelknop te zien, terwijl een klik daarop
+       het wel doet. Precies de melding van 2026-11-18, en de reden dat het
+       lokaal niet opviel: daar is de pagina eerder klaar dan ons script.
+
+       Gemeten op de live-pagina, drie identieke uploaders:
+         vóór init()           wachtrij 0, FilesAdded 0
+         direct ná init()      wachtrij 0, FilesAdded 0   (init is asynchroon)
+         ná het Init-event     wachtrij 1, FilesAdded 1
+
+       Vandaar twee eisen. De runtime zegt dat plupload bestanden kan
+       aannemen; de FilesAdded-handler is die van Gravity Forms zelf, en díé
+       vult gform_unique_id en start de upload - zonder hem blijft het
+       bestand in de wachtrij staan.
+
+       LET OP: moxie maakt van elke eventnaam kleine letters, dus
+       hasEventListener('FilesAdded') geeft ALTIJD false. Nagemeten op een
+       werkende uploader: 'filesadded' true, 'FilesAdded' false. */
+    function uploaderKlaar(uploader) {
+        if (!uploader || !uploader.runtime) {
+            return false;
+        }
+        if ('function' === typeof uploader.hasEventListener) {
+            return !!uploader.hasEventListener('filesadded');
+        }
+        return true;
     }
 
     /* Hoeveel bestanden staan er NU in het veld? Gravity Forms houdt dat bij
@@ -192,11 +233,25 @@
             knop.className = 'of-ontwerp-knop';
             knop.textContent = tekst('ontwerpHerstel', 'Ontwerp opnieuw toevoegen');
             knop.addEventListener('click', function () {
-                plaatsPdf(uploaderInfo(), true);
+                probeerOpnieuw(0);
             });
             p.appendChild(knop);
             return p;
         });
+    }
+
+    /* De bezoeker drukt zelf op "opnieuw toevoegen", dus stil niets doen is
+       hier het slechtste antwoord. Is de uploader op dat moment nog niet
+       zover (zie uploaderKlaar), dan nog even volhouden. */
+    function probeerOpnieuw(poging) {
+        var info = uploaderInfo();
+        if (info && uploaderKlaar(info.uploader)) {
+            plaatsPdf(info, true);
+            return;
+        }
+        if (poging < 40) {   /* 40 x 250 ms = tien seconden */
+            setTimeout(function () { probeerOpnieuw(poging + 1); }, 250);
+        }
     }
 
     /* @param {boolean} gevraagd  true = de bezoeker klikte zelf op herstellen,
@@ -206,7 +261,7 @@
         if (!ruw) {
             return true; // niets te doen, stoppen met wachten
         }
-        if (!info) {
+        if (!info || !uploaderKlaar(info.uploader)) {
             return false; // uploader nog niet klaar, straks opnieuw
         }
 
@@ -250,6 +305,7 @@
                poging 200, want dan stond het id nog van de vorige keer in
                het formulier. */
             info.uploader.addFile(wikkel);
+            bezig = true;
             wachtOpBestand(info);
         } catch (e) {
             /* Zeggen en niet alleen loggen: een bezoeker opent geen console.
@@ -279,6 +335,7 @@
         var klok = setInterval(function () {
             if (onsBestandAanwezig(info)) {
                 clearInterval(klok);
+                bezig = false;
                 meldGelukt(info);
                 bewaken(info);
                 return;
@@ -289,6 +346,7 @@
                te hoeven naar de configurator. */
             if (++pogingen > 60) {
                 clearInterval(klok);
+                bezig = false;
                 schrijf(FOUT_SLEUTEL, '1');
                 meldFout();
                 meldHerstel(info);
@@ -315,7 +373,7 @@
             if (!veld) { return; }
             if (onsBestandAanwezig(info)) {
                 if (!veld.querySelector('.of-ontwerp-gelukt')) { meldGelukt(info); }
-            } else if (!veld.querySelector('.of-ontwerp-herstel')) {
+            } else if (!bezig && !veld.querySelector('.of-ontwerp-herstel')) {
                 meldHerstel(info);
             }
         }, 1000);
@@ -433,13 +491,13 @@
                 clearInterval(klok);
 
                 /* Opgegeven terwijl er NOG een ontwerp klaarstond: de
-                   uploader is nooit verschenen. Niet stil laten verdampen -
-                   opruimen en het zeggen, anders probeert de volgende pagina
-                   het opnieuw met hetzelfde bestand. */
+                   uploader is nooit klaargekomen. NIET de opslag wissen -
+                   dan is het ontwerp voorgoed weg en moet de bezoeker terug
+                   naar de configurator, precies de klacht van 2026-11-18.
+                   Wel een knop, zodat hij het zelf kan proberen; die houdt
+                   zelf vol tot de uploader er is (probeerOpnieuw). */
                 if (!pdfKlaar && lees(PDF_SLEUTEL)) {
-                    wissen(PDF_SLEUTEL);
-                    schrijf(FOUT_SLEUTEL, '1');
-                    meldFout();
+                    meldHerstel(info);
                 }
 
                 /* Staat er een ontwerp in de opslag, dan vanaf nu in de gaten
