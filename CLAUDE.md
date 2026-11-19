@@ -7515,3 +7515,25 @@ KLEURKIEZER VAN DE CONFIGURATOR WAS ONGESTYLED (2026-11-18, melding Kulwant met
   en dat hij exact dit beeld geeft. Komt het terug, dan is het iets anders en is
   de volgende stap de respons van de POST naar /?gf_page=upload lezen op het
   moment dat het misgaat.
+
+  PDF-KNOP UIT DE CONFIGURATOR (2026-11-19, verzoek Kulwant met een
+  schermafbeelding van /de/ waarop "Ihr Design ansehen (PDF)" rood omkaderd
+  staat: "hide this button for now").
+  ALLEEN DE MARKUP IS WEG in configurator.php; op die plek staat nu een
+  comment die zegt wat er stond. De rest van de PDF-route blijft volledig
+  intact: knop.js stopt vanzelf zonder dat element (de IIFE begint met
+  `if (!knop || !window.SokkiesPrf) return;`), de vier vertalingen in
+  sokkies_configurator_teksten en de opmaak in configurator.css zijn
+  ongemoeid. Terugzetten is dus één regel markup.
+  IN CODE EN NIET MET CSS: een display:none-knop staat nog in de paginabron
+  en levert nog steeds de hele PDF-route aan elke bezoeker. Bovendien reist
+  een codewijziging mee met de deploy, terwijl een CSS- of CMS-ingreep per
+  omgeving opnieuw gedaan moet worden.
+  GEVERIFIEERD lokaal: 0 keer data-sokkies-pdf in de gerenderde HTML op nl,
+  de, en en fr (alle vier 200), de knoppenrij bevat alleen nog "Vraag dit
+  ontwerp aan", php -l schoon.
+  LET OP - DE PDF ZELF IS NIET WEG. "Vraag dit ontwerp aan" doorloopt nog
+  steeds dezelfde vijf stappen bij Expivi, met de overlay en de wachttijd van
+  ongeveer vijftien seconden, en hangt het ontwerp aan het offerteformulier.
+  Deze wijziging haalt dus de VOORVERTONING weg, niet de PDF. Moet de hele
+  PDF-stap eruit, dan is dat een andere wijziging.

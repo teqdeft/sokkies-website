@@ -446,7 +446,16 @@ function sokkies_configurator_blok( $klasse = '' ) {
 	      <div id="expivi-price" class="price-and-button"></div>
 	      <div id="expivi-options"></div>
 	      <div class="btn-group">
-	        <button type="button" class="btn btn-secondary" data-sokkies-pdf><?php echo esc_html( $t['knopPdf'] ); ?></button>
+	        <?php
+	        /* PDF-KNOP TIJDELIJK UIT (2026-11-19, verzoek Kulwant). Hier stond
+	           de knop "Bekijk je ontwerp (PDF)" als
+	           <button type="button" class="btn btn-secondary" data-sokkies-pdf>
+	           met $t['knopPdf'] als label. ALLEEN de markup is weg; de rest van
+	           de PDF-route blijft volledig staan - knop.js stopt vanzelf zonder
+	           dat element (eigen guard bovenin die IIFE), de vier vertalingen en
+	           de opmaak in configurator.css zijn ongemoeid. Terugzetten is dus
+	           deze ene regel markup. */
+	        ?>
 	        <a href="<?php echo esc_url( home_url( '/offerte/' ) ); ?>" class="btn btn-primary" data-sokkies-offerte><?php echo esc_html( $t['knopOfferte'] ); ?></a>
 	      </div>
 	    </div>
